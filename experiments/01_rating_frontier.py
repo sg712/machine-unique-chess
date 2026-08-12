@@ -86,7 +86,9 @@ def main() -> None:
     for pos_id, grp in df.groupby("position"):
         lo = grp[grp.elo <= 1400]["p_az_move"].mean()
         hi = grp[grp.elo >= 1700]["p_az_move"].mean()
-        print(f"{pos_id:34s} low={lo:.4f}  high={hi:.4f}  slope={'FLAT (machine-only?)' if abs(hi-lo) < 0.03 else 'RISING (partially human-visible)'}")
+        d = hi - lo
+        verdict = "RISING (partially human-visible)" if d > 0.02 else ("FALLING (skill moves humans AWAY)" if d < -0.02 else "FLAT (invisible at every level)")
+        print(f"{pos_id:34s} low={lo:.4f}  high={hi:.4f}  {verdict}")
     print(f"\nwrote {out/'01_frontier.csv'}")
 
 
