@@ -6,3 +6,4 @@ __pycache__/
 models/maia2-repo/
 models/leela-interp/
 models/stockfish-build/src/*.o
+models/leela-saes/
