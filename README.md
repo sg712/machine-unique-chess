@@ -33,16 +33,18 @@ conda activate unnamed-concepts   # python 3.12: maia2, torch, python-chess, pan
 python experiments/01_rating_frontier.py
 ```
 
-## Roadmap
+## Roadmap & results so far
 
-- [x] Papers, reference repos, engine build, env
-- [ ] **Exp 01 — legibility frontier v0**: P(AZ concept move) vs P(GM move) across Maia-2 Elo 1100–2000 on the 4 paper positions. Prediction: AZ moves flat-low at every human level (that's what "machine-unique" means); GM moves rise with Elo.
-- [ ] **Exp 02 — scale it**: same sweep over a large corpus of engine-vs-human disagreement positions (generate via Stockfish/Leela top moves that Maia never plays at any Elo) → the frontier *curve*, not 4 anecdotes. Candidate first real result.
-- [ ] **Exp 03 — reproduce concept probing** on Leela latents using `leela-interp` machinery (McGrath-style human-concept probes first, then Schut's convex-optimization mining §4.1 — dynamic concepts over rollouts).
-- [ ] **Exp 04 — curriculum generation**: for a discovered concept vector, retrieve maximally-expressing prototype positions (the paper's teachability filter, §4.2) → practice sets.
-- [ ] **Site**: publish frontier curves + practice sets; steppable-board format already prototyped.
-- [ ] Swap Maia-2 → Maia-3 (released 2026, CSSLab recommends; HF: UofTCSSLab/maia3).
-- [ ] (Stretch) Sub-elite transfer study — the paper's n=4-no-control gap, run at club level online.
+- [x] Papers, reference repos, engine build, envs (`unnamed-concepts` py3.12 for Maia; `leela` py3.11 for leela-interp)
+- [x] **Exp 01 — legibility frontier v0** (4 Schut positions × Maia-2 1100–2000): AZ concept moves ≤7% at every level; 2/4 *decline* with skill. `results/01_frontier.csv`
+- [x] **Exp 02/03 — scale** (2,000 real-game positions × SF depth 16 × Maia at 4 levels): **77 machine-unique positions (3.9%)**. Humans converge toward the engine with skill on normal positions (32%→38%) but stay flat ≈1.5% on the machine-unique subset — the frontier result at scale. `results/03_disagreements.csv`, boards in `results/machine_unique.html`
+- [x] **Exp 05 — Schut LP on Leela latents** (30 positions, layer 10, pooled residuals): every LP solves sparse (6–16/768 nonzeros) but **0/30 generalize** (held-out separation ≈0.5). Consistent with the paper's 97.6% attrition — mining is easy, transfer is the bottleneck.
+- [x] **Exp 05b — group mining**: one vector per group of 5 stacks constraints and separates its own group perfectly (in-group 1.00) but held-out ≈ 0.515 — still chance. Conclusion: the failure is the *representation* (mean-pooled residuals), not LP underdetermination.
+- [ ] Square-aware pooling (pool over the plan's from/to squares, not all 64) — the Leela-SAEs result says features are square-localized; mean-pooling likely destroys them
+- [ ] Use pretrained Leela-SAEs transcoders (HF: JacklE0niden/lc0-BT4-tc) to describe machine-unique positions in *feature* space
+- [ ] Teachability filter proper (student net on prototypes vs random-position control)
+- [ ] **Site**: publish frontier + positions + concept galleries (formats prototyped: two artifact pages live)
+- [ ] Maia-3 swap · sub-elite transfer study (the n=4-no-control gap)
 
 ## People / orbit
 
