@@ -32,12 +32,15 @@ def cp(score: chess.engine.PovScore, pov: bool) -> float:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--limit", type=int, default=2000)
+    ap.add_argument("--offset", type=int, default=0)
+    ap.add_argument("--input", default=None, help="positions csv (default data/positions.csv)")
+    ap.add_argument("--output", default="03_disagreements.csv")
     ap.add_argument("--depth", type=int, default=16)
     ap.add_argument("--gap", type=float, default=100.0, help="min centipawn gap to count as 'clearly best'")
     ap.add_argument("--pmax", type=float, default=0.05, help="max human prob to count as 'invisible'")
     args = ap.parse_args()
 
-    positions = pd.read_csv(ROOT / "data" / "positions.csv").head(args.limit)
+    positions = pd.read_csv(args.input or (ROOT / "data" / "positions.csv")).iloc[args.offset:args.offset + args.limit]
     m = model.from_pretrained(type="rapid", device="auto")
     prepared = inference.prepare()
     engine = chess.engine.SimpleEngine.popen_uci(str(ENGINE))
@@ -95,7 +98,7 @@ def main() -> None:
     out = ROOT / "results"
     out.mkdir(exist_ok=True)
     df = pd.DataFrame(rows)
-    df.to_csv(out / "03_disagreements.csv", index=False)
+    df.to_csv(out / args.output, index=False)
 
     mu = df[df.machine_unique]
     print(f"\n=== {len(df)} positions analysed ===")
@@ -105,7 +108,7 @@ def main() -> None:
         print(f"  {e}: {df[f'p_engine_move_{e}'].mean():.4f}   (machine-unique subset: {mu[f'p_engine_move_{e}'].mean() if len(mu) else float('nan'):.4f})")
     print(f"\nmean eval cost of the top human move: {df.human_cost_cp.mean():.1f} cp")
     print(f"positions where humans agree with engine at 2000: {(df.human_top_2000 == df.engine_best).mean()*100:.1f}%")
-    print(f"\nwrote {out/'03_disagreements.csv'}")
+    print(f"\nwrote {out/args.output}")
 
 
 if __name__ == "__main__":
