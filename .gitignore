@@ -7,3 +7,9 @@ models/maia2-repo/
 models/leela-interp/
 models/stockfish-build/src/*.o
 models/leela-saes/
+models/maia3-repo/
+models/bt4/
+models/bt4-transcoders/
+models/leela-weights/
+maia2_models/
+data/
