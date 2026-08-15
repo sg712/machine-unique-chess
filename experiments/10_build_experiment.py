@@ -57,6 +57,7 @@ def main() -> None:
 
     # interleave families, stable shuffle
     quiz = pd.DataFrame(sets["baseline"]).sample(frac=1, random_state=7).to_dict("records")
+    quiz = quiz[:10]  # baseline shortened to the 10 actually attempted; 11-20 stay unseen for the retest pool
     positions = []
     for i, p in enumerate(quiz):
         b = chess.Board(p["fen"])
