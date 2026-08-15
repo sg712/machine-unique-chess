@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Unnamed Concepts{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="sheet {% block width %}{% endblock %}">
+  <div class="masthead">
+    <span>Unnamed Concepts &middot; study</span>
+    <span>
+      {% if code %}<span class="who">participant {{ code }}</span>{% endif %}
+      <a href="{{ url_for('index') }}">Overview</a>
+      <a href="{{ url_for('results') }}">Results</a>
+      {% if code %}<a href="{{ url_for('logout') }}">Sign out</a>
+      {% else %}<a href="{{ url_for('join') }}">Join</a>{% endif %}
+    </span>
+  </div>
+  {% block body %}{% endblock %}
+</div>
+</body>
+</html>

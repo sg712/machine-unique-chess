@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}{{ phase|capitalize }} — Unnamed Concepts{% endblock %}
+{% block body %}
+
+<h1>{{ phase|capitalize }}</h1>
+<p class="lede">One move is decisively best and almost no human plays it. Move a piece on the
+board, then confirm. No feedback until the end.</p>
+
+<div class="stage">
+  <div id="board"></div>
+  <div class="side">
+    <p class="stm" id="stm"></p>
+    <p class="small">Click a piece to see where it can go, then click its destination.
+    You can change your mind before confirming.</p>
+    <p class="pickline" id="pick">&mdash;</p>
+    <div class="row">
+      <button class="btn" id="undo" disabled>Take back</button>
+      <button class="btn p" id="lock" disabled>Confirm move</button>
+    </div>
+    <div class="tally" id="tally"></div>
+    <div class="counter" id="counter"></div>
+  </div>
+</div>
+
+<script type="module">
+import { Board } from "{{ url_for('static', filename='board.js') }}";
+
+const POS = {{ positions|tojson }};
+const PIECES = {{ pieces|tojson }};
+const PHASE = {{ phase|tojson }};
+let idx = {{ start }};
+let picked = null, t0 = Date.now();
+
+const el = document.getElementById("board");
+const pickEl = document.getElementById("pick");
+const lock = document.getElementById("lock");
+const undo = document.getElementById("undo");
+const tally = document.getElementById("tally");
+
+POS.forEach((_, i) => {
+  const b = document.createElement("i");
+  if (i < idx) b.classList.add("done");
+  tally.appendChild(b);
+});
+
+const board = new Board(el, {
+  pieces: PIECES,
+  interactive: true,
+  onSelect: ({ from, to }) => {
+    picked = from + to;
+    pickEl.textContent = from + " → " + to;
+    lock.disabled = false;
+    undo.disabled = false;
+  },
+});
+
+function load() {
+  const p = POS[idx];
+  board.orientation = p.orientation;
+  board.el.innerHTML = "";
+  const nb = new Board(el, {
+    pieces: PIECES, orientation: p.orientation, interactive: true,
+    onSelect: ({ from, to }) => {
+      picked = from + to;
+      pickEl.textContent = from + " → " + to;
+      lock.disabled = false; undo.disabled = false;
+    },
+  });
+  nb.setLegal(p.legal);
+  nb.setPosition(p.fen);
+  window.__b = nb;
+  document.getElementById("stm").textContent = p.stm + " to move.";
+  document.getElementById("counter").textContent =
+    "Position " + (idx + 1) + " of " + POS.length;
+  picked = null;
+  pickEl.innerHTML = "&mdash;";
+  lock.disabled = true; undo.disabled = true;
+  t0 = Date.now();
+}
+
+undo.addEventListener("click", () => {
+  window.__b.setPosition(POS[idx].fen);
+  picked = null; pickEl.innerHTML = "&mdash;";
+  lock.disabled = true; undo.disabled = true;
+});
+
+lock.addEventListener("click", async () => {
+  if (!picked) return;
+  lock.disabled = true;
+  await fetch("/answer", {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ phase: PHASE, idx, picked,
+                           seconds: Math.round((Date.now() - t0) / 100) / 10 }),
+  });
+  tally.children[idx].classList.add("done");
+  idx++;
+  if (idx < POS.length) load();
+  else window.location = "/results";
+});
+
+load();
+</script>
+{% endblock %}

@@ -13,3 +13,5 @@ models/bt4-transcoders/
 models/leela-weights/
 maia2_models/
 data/
+webapp/study.db
+webapp/__pycache__/

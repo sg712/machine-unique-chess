@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Study — Unnamed Concepts{% endblock %}
+{% block body %}
+
+<h1>Study</h1>
+<p class="lede">Each position shows the engine's move and what follows. Step through the line,
+then step back and look at the starting position again.</p>
+<p class="small">There is deliberately no explanation. In the original study the grandmasters
+were taught the same way — by example only — because the concepts have no names. Go through
+every position at least twice, and ask yourself what the moves have in common.</p>
+
+<div class="protos" id="protos"></div>
+
+<form method="post" action="{{ url_for('study_done') }}" style="margin-top:2.4rem">
+  <button class="btn p" type="submit">
+    {% if done %}I've studied again{% else %}I've been through them{% endif %}</button>
+  {% if done %}<span class="small" style="margin-left:.8rem">Study already marked complete —
+  the retest is unlocked.</span>{% endif %}
+</form>
+
+<script type="module">
+import { Board } from "{{ url_for('static', filename='board.js') }}";
+const LINES = {{ lines|tojson }};
+const PIECES = {{ pieces|tojson }};
+const wrap = document.getElementById("protos");
+
+LINES.forEach((line, i) => {
+  const box = document.createElement("div");
+  box.className = "proto";
+  const bd = document.createElement("div");
+  const ctl = document.createElement("div");
+  ctl.className = "ctl";
+  ctl.innerHTML = '<button data-d="-1">&#9664;</button>' +
+                  '<span class="pos">start</span><button data-d="1">&#9654;</button>';
+  const mv = document.createElement("p");
+  mv.className = "mv";
+  mv.innerHTML = line.sans.map((s, k) =>
+    `<button data-go="${k + 1}">${s}</button>`).join(" ");
+  box.append(bd, ctl, mv);
+  wrap.appendChild(box);
+
+  const board = new Board(bd, { pieces: PIECES, orientation: line.orientation });
+  let cur = 0;
+  const show = (n) => {
+    cur = Math.max(0, Math.min(line.frames.length - 1, n));
+    const f = line.frames[cur];
+    board.setPosition(f.fen, f.last);
+    ctl.querySelector(".pos").textContent = cur === 0 ? "start" : line.sans[cur - 1];
+    mv.querySelectorAll("button").forEach((b, k) =>
+      b.classList.toggle("cur", k === cur - 1));
+  };
+  ctl.querySelectorAll("button").forEach(b =>
+    b.addEventListener("click", () => show(cur + (+b.dataset.d))));
+  mv.querySelectorAll("button").forEach(b =>
+    b.addEventListener("click", () => show(+b.dataset.go)));
+  show(0);
+});
+</script>
+{% endblock %}
