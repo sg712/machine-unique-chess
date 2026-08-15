@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}{{ c.name }} — Unnamed Concepts{% endblock %}
+{% block body %}
+
+<p class="crumb"><a href="{{ url_for('index') }}">All concepts</a></p>
+<h1>{{ c.name }}</h1>
+<p class="lede">{{ c.gloss }}</p>
+
+<div class="sigbar">
+  <span><b>{{ c.signature.positions }}</b> positions found</span>
+  <span><b>{{ (c.signature.found_by_real_players * 100)|round(1) }}%</b> found over the board</span>
+  <span><b>{{ (c.signature.quiet_share * 100)|round(0)|int }}%</b> quiet moves</span>
+  <span><b>&minus;{{ c.signature.avg_cost_cp }}cp</b> average human error</span>
+  <span class="mo">closest named motifs:
+    {% for m, v in c.signature.top_motifs %}{{ m }} {{ '%.2f'|format(v) }}{% if not loop.last %} &middot; {% endif %}{% endfor %}</span>
+</div>
+
+<h2>Study</h2>
+<p>Four positions from this family, with the engine's move and what follows. There is no
+commentary on purpose — the pattern is easier to absorb than to describe, which is the
+whole reason it has no name. Step through each line, then look at the starting position again.</p>
+
+<div class="protos" id="protos"></div>
+
+<form method="post" action="{{ url_for('mark_studied', cid=c.id) }}" class="cta">
+  <button class="btn p" type="submit">I've studied these &rarr; drill {{ c.drill|length }} new positions</button>
+  {% if prog.n %}<span class="small">You've already tried {{ prog.n }} of {{ prog.of }}
+    ({{ prog.correct }} solved).</span>{% endif %}
+</form>
+
+<script type="module">
+import { Board } from "{{ url_for('static', filename='board.js') }}";
+const LINES = {{ lines|tojson }};
+const PIECES = {{ pieces|tojson }};
+const wrap = document.getElementById("protos");
+
+LINES.forEach((line) => {
+  const box = document.createElement("div");
+  box.className = "proto";
+  const bd = document.createElement("div");
+  const ctl = document.createElement("div");
+  ctl.className = "ctl";
+  ctl.innerHTML = '<button data-d="-1" aria-label="previous">&#9664;</button>' +
+                  '<span class="pos">start</span>' +
+                  '<button data-d="1" aria-label="next">&#9654;</button>';
+  const mv = document.createElement("p");
+  mv.className = "mv";
+  mv.innerHTML = line.sans.map((s, k) => `<button data-go="${k + 1}">${s}</button>`).join(" ");
+  box.append(bd, ctl, mv);
+  wrap.appendChild(box);
+
+  const board = new Board(bd, { pieces: PIECES, orientation: line.orientation });
+  let cur = 0;
+  const show = (n) => {
+    cur = Math.max(0, Math.min(line.frames.length - 1, n));
+    const f = line.frames[cur];
+    board.setPosition(f.fen, f.last);
+    ctl.querySelector(".pos").textContent = cur === 0 ? "start" : line.sans[cur - 1];
+    mv.querySelectorAll("button").forEach((b, k) => b.classList.toggle("cur", k === cur - 1));
+  };
+  ctl.querySelectorAll("button").forEach(b =>
+    b.addEventListener("click", () => show(cur + (+b.dataset.d))));
+  mv.querySelectorAll("button").forEach(b =>
+    b.addEventListener("click", () => show(+b.dataset.go)));
+  show(0);
+});
+</script>
+{% endblock %}

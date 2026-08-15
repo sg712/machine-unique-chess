@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Your progress{% endblock %}
+{% block body %}
+<h1>Your progress</h1>
+<p class="lede">Player <b>{{ code }}</b> — write this down to pick up on another device.</p>
+
+{% if tot.n %}
+<p class="bignum">{{ tot.c or 0 }}<span>/{{ tot.n }}</span></p>
+<p>positions solved{% if tot.h %} · your moves are played by {{ (tot.h * 100)|round(1) }}%
+of humans on average{% endif %}.</p>
+{% else %}
+<p class="lede">Nothing yet. <a href="{{ url_for('index') }}">Pick a concept</a> to start.</p>
+{% endif %}
+
+<h2>By concept</h2>
+<table>
+<thead><tr><th>Concept</th><th>Studied</th><th>Seen</th><th>Solved</th><th>Rate</th></tr></thead>
+<tbody>
+{% for c in concepts %}
+{% set s = stats.get(c.id) %}
+<tr>
+  <td><a href="{{ url_for('concept', cid=c.id) }}">{{ c.name }}</a></td>
+  <td>{{ 'yes' if prog[c.id].studied else '—' }}</td>
+  <td>{{ s.seen if s else 0 }}/{{ prog[c.id].of }}</td>
+  <td>{{ s.hits or 0 if s else 0 }}</td>
+  <td>{% if s and s.tries %}{{ (100 * (s.hits or 0) / s.tries)|round(0)|int }}%{% else %}—{% endif %}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% endblock %}

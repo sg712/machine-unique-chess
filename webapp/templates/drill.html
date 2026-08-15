@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% block title %}Drill — {{ c.name }}{% endblock %}
+{% block body %}
+
+<p class="crumb"><a href="{{ url_for('concept', cid=c.id) }}">{{ c.name }}</a> &middot; drill</p>
+<h1 class="tight">Find the move</h1>
+
+<div class="stage">
+  <div id="board"></div>
+  <div class="side">
+    <p class="stm" id="stm"></p>
+    <p class="small">Click a piece, then its destination.</p>
+    <p class="pickline" id="pick">&mdash;</p>
+    <div class="row">
+      <button class="btn" id="undo" disabled>Take back</button>
+      <button class="btn p" id="lock" disabled>Play it</button>
+    </div>
+
+    <div id="fb" class="fb">
+      <p class="verdict" id="verdict"></p>
+      <p class="fbline" id="fbline"></p>
+      <div class="humanbars" id="humanbars"></div>
+      <button class="btn p" id="next">Next position</button>
+    </div>
+
+    <div class="tally" id="tally"></div>
+    <div class="counter" id="counter"></div>
+  </div>
+</div>
+
+<div id="linebox" class="linebox">
+  <p class="lb-h">The engine's line</p>
+  <div id="lineboard"></div>
+  <div class="ctl" id="lctl">
+    <button data-d="-1">&#9664;</button><span class="pos">start</span><button data-d="1">&#9654;</button>
+  </div>
+  <p class="mv" id="lmoves"></p>
+</div>
+
+<script type="module">
+import { Board } from "{{ url_for('static', filename='board.js') }}";
+const POS = {{ positions|tojson }};
+const PIECES = {{ pieces|tojson }};
+const CID = {{ c.id }};
+let idx = {{ start }}, picked = null, t0 = Date.now(), board = null, lineBoard = null;
+
+const el = document.getElementById("board");
+const pickEl = document.getElementById("pick");
+const lock = document.getElementById("lock");
+const undo = document.getElementById("undo");
+const fb = document.getElementById("fb");
+const tally = document.getElementById("tally");
+const linebox = document.getElementById("linebox");
+
+POS.forEach((_, i) => {
+  const b = document.createElement("i");
+  if (i < idx) b.classList.add("done");
+  tally.appendChild(b);
+});
+
+function load() {
+  const p = POS[idx];
+  el.innerHTML = "";
+  board = new Board(el, {
+    pieces: PIECES, orientation: p.orientation, interactive: true,
+    onSelect: ({ from, to }) => {
+      picked = from + to;
+      pickEl.textContent = from + " → " + to;
+      lock.disabled = false; undo.disabled = false;
+    },
+  });
+  board.setLegal(p.legal);
+  board.setPosition(p.fen);
+  document.getElementById("stm").textContent = p.stm + " to move.";
+  document.getElementById("counter").textContent = "Position " + (idx + 1) + " of " + POS.length;
+  picked = null; pickEl.innerHTML = "&mdash;";
+  lock.disabled = true; undo.disabled = true;
+  fb.classList.remove("on");
+  linebox.classList.remove("on");
+  document.querySelector(".row").style.display = "flex";
+  t0 = Date.now();
+}
+
+undo.addEventListener("click", () => {
+  board.setPosition(POS[idx].fen);
+  picked = null; pickEl.innerHTML = "&mdash;";
+  lock.disabled = true; undo.disabled = true;
+});
+
+lock.addEventListener("click", async () => {
+  if (!picked) return;
+  lock.disabled = true; undo.disabled = true;
+  const r = await fetch("/api/answer", {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ concept: CID, idx, picked,
+                           seconds: Math.round((Date.now() - t0) / 100) / 10 }),
+  }).then(r => r.json());
+  showFeedback(r);
+});
+
+function pct(x) { return (x * 100).toFixed(x >= 0.1 ? 0 : 1) + "%"; }
+
+function showFeedback(r) {
+  document.querySelector(".row").style.display = "none";
+  tally.children[idx].classList.add(r.correct ? "hit" : "done");
+
+  const v = document.getElementById("verdict");
+  v.textContent = r.correct ? "You found it." : "Not the engine's move.";
+  v.className = "verdict " + (r.correct ? "good" : "bad");
+
+  let line = "";
+  if (r.correct) {
+    line = `<b>${r.best_san}</b> — played by ${pct(r.p_best)} of humans at 1900. ` +
+           `You are in the minority that sees this.`;
+  } else {
+    line = `You played <b>${r.picked_san}</b>` +
+           (r.human_p > 0 ? ` — so does ${pct(r.human_p)} of humans at 1900.` : `.`) +
+           ` The engine plays <b>${r.best_san}</b>, which ${pct(r.p_best)} of humans find` +
+           (r.cost_cp ? `. The difference is worth ${r.cost_cp} centipawns.` : `.`);
+  }
+  document.getElementById("fbline").innerHTML = line;
+
+  document.getElementById("humanbars").innerHTML =
+    '<p class="hb-h">What humans play here</p>' +
+    r.human.map(h => {
+      const isBest = h.uci === r.best;
+      return `<div class="hb${isBest ? ' best' : ''}"><span class="mv">${h.san}</span>` +
+             `<span class="tr"><span class="fl" style="width:${Math.max(h.p * 100, 1)}%"></span></span>` +
+             `<span class="vl">${pct(h.p)}</span></div>`;
+    }).join("") +
+    (r.human.some(h => h.uci === r.best) ? "" :
+      `<div class="hb best"><span class="mv">${r.best_san}</span>` +
+      `<span class="tr"><span class="fl" style="width:${Math.max(r.p_best * 100, 1)}%"></span></span>` +
+      `<span class="vl">${pct(r.p_best)}</span></div>`);
+
+  fb.classList.add("on");
+  showLine(r.line);
+}
+
+function showLine(line) {
+  const holder = document.getElementById("lineboard");
+  holder.innerHTML = "";
+  lineBoard = new Board(holder, { pieces: PIECES, orientation: line.orientation });
+  const lmoves = document.getElementById("lmoves");
+  lmoves.innerHTML = line.sans.map((s, k) => `<button data-go="${k + 1}">${s}</button>`).join(" ");
+  const ctl = document.getElementById("lctl");
+  let cur = 0;
+  const show = (n) => {
+    cur = Math.max(0, Math.min(line.frames.length - 1, n));
+    const f = line.frames[cur];
+    lineBoard.setPosition(f.fen, f.last);
+    ctl.querySelector(".pos").textContent = cur === 0 ? "start" : line.sans[cur - 1];
+    lmoves.querySelectorAll("button").forEach((b, k) => b.classList.toggle("cur", k === cur - 1));
+  };
+  ctl.querySelectorAll("button").forEach(b => {
+    b.onclick = () => show(cur + (+b.dataset.d));
+  });
+  lmoves.querySelectorAll("button").forEach(b => {
+    b.onclick = () => show(+b.dataset.go);
+  });
+  show(1);
+  linebox.classList.add("on");
+}
+
+document.getElementById("next").addEventListener("click", () => {
+  if (idx + 1 < POS.length) { idx++; load(); }
+  else window.location = "/concept/" + CID + "?done=1";
+});
+
+load();
+</script>
+{% endblock %}

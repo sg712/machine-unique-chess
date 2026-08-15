@@ -1,74 +1,54 @@
 {% extends "base.html" %}
 {% block body %}
 
-<h1>Can a person learn what only the engine knows?</h1>
-<p class="lede">Chess engines prefer moves that essentially no human plays — at any rating.
-This study tests whether those moves can be taught the way DeepMind taught them to four
-grandmasters: by silent example, with no explanation at all.</p>
+<h1>Eight chess ideas that have no name.</h1>
+<p class="lede">A strong engine and a strong human disagree in about four positions
+out of a hundred. Those disagreements aren't random — they cluster into patterns.
+These are the eight, mined from 43,603 real games. Most have never been taught,
+because nobody had a word for them.</p>
 
-{% if not code %}
-  <p class="row" style="margin-top:1.6rem">
-    <a class="btn p" href="{{ url_for('join') }}">Take part</a>
-    <a class="btn ghost" href="{{ url_for('paper') }}">Read the paper first</a>
-  </p>
-  <div class="note">Three sittings, about ten minutes each. You get a code so you can stop
-  and resume from any browser. No email, no password.</div>
-{% else %}
-  <h2>Your protocol</h2>
-  <ol class="steps">
-    <li><span class="n">1</span><span class="t">
-      <div class="h">Baseline — {{ n_baseline }} positions, cold</div>
-      <div class="d">No feedback. Establishes what you find without help.</div></span>
-      {% if prog.baseline >= prog.baseline_n %}<span class="done">done</span>
-      {% else %}<a class="btn p" href="{{ url_for('test', phase='baseline') }}">
-        {% if prog.baseline %}Resume ({{ prog.baseline }}/{{ prog.baseline_n }}){% else %}Start{% endif %}</a>{% endif %}
-    </li>
-    <li><span class="n">2</span><span class="t">
-      <div class="h">Study — prototype positions</div>
-      <div class="d">The engine's move and its continuation, shown without commentary.</div></span>
-      {% if prog.study_done %}<span class="done">done</span>
-      {% elif prog.baseline >= prog.baseline_n %}
-        <a class="btn p" href="{{ url_for('study') }}">Open</a>
-      {% else %}<span class="small">after baseline</span>{% endif %}
-    </li>
-    <li><span class="n">3</span><span class="t">
-      <div class="h">Retest — {{ n_retest }} unseen positions</div>
-      <div class="d">Fresh positions from the same families. The measurement.</div></span>
-      {% if prog.retest >= prog.retest_n %}<span class="done">done</span>
-      {% elif prog.study_done %}<a class="btn p" href="{{ url_for('test', phase='retest') }}">
-        {% if prog.retest %}Resume ({{ prog.retest }}/{{ prog.retest_n }}){% else %}Start{% endif %}</a>
-      {% else %}<span class="small">after study</span>{% endif %}
-    </li>
-  </ol>
-  <p class="small">Ideally leave a day between study and retest. Your progress is saved after
-  every position — closing the tab loses nothing.</p>
+<p class="small">Pick one. Study four examples, then try twelve positions you haven't seen.
+No account needed — progress saves itself.</p>
+
+<div class="cards">
+  {% for c in concepts %}
+  {% set p = prog[c.id] %}
+  <a class="card" href="{{ url_for('concept', cid=c.id) }}">
+    <div class="ct">
+      <span class="nm">{{ c.name }}</span>
+      <span class="rate">{{ (c.signature.found_by_real_players * 100)|round(1) }}%</span>
+    </div>
+    <p class="gl">{{ c.gloss }}</p>
+    <div class="sig">
+      <span>{{ c.signature.positions }} positions</span>
+      <span>{{ (c.signature.quiet_share * 100)|round(0)|int }}% quiet</span>
+      <span>&minus;{{ c.signature.avg_cost_cp }}cp average error</span>
+    </div>
+    <div class="foot">
+      {% if p.n %}
+        <span class="prog">{{ p.correct }}/{{ p.n }} solved</span>
+        <span class="pbar"><span style="width:{{ (100 * p.n / p.of)|round(0)|int }}%"></span></span>
+      {% elif p.studied %}<span class="prog">studied &middot; not drilled</span>
+      {% else %}<span class="prog new">not started</span>{% endif %}
+    </div>
+  </a>
+  {% endfor %}
+</div>
+
+<p class="small" style="margin-top:1.4rem">The percentage is how often players who
+actually reached these positions over the board found the engine's move. Lower is harder.</p>
+
+<h2>Where this comes from</h2>
+<p>Every position was played in a real game. A position qualifies when a strong engine's
+move is decisively better than the alternatives <em>and</em> a neural model of human play
+gives that move under 5% probability at every rating from 1100 to 2600. Of 43,603 positions
+analysed, 1,745 qualified; in 1,499 the player at the board missed it too.</p>
+<p>Clustering those positions by how the engine represents them internally produces the eight
+groups above. <a href="{{ url_for('research') }}">The full method and findings &rarr;</a></p>
+
+{% if totals.attempts %}
+<p class="small">{{ totals.players }} players &middot; {{ totals.attempts }} positions attempted
+&middot; {{ totals.pct }}% solved.</p>
 {% endif %}
-
-<h2>Results so far</h2>
-{% if stats.baseline.answers %}
-  <table>
-    <thead><tr><th>Phase</th><th>Participants</th><th>Answers</th><th>Engine move found</th>
-      <th>Chose the typical human move</th></tr></thead>
-    <tbody>
-      <tr><td>Baseline</td><td>{{ stats.baseline.participants }}</td><td>{{ stats.baseline.answers }}</td>
-        <td>{{ stats.baseline.pct }}%</td><td>{{ stats.baseline.pct_human }}%</td></tr>
-      {% if stats.retest.answers %}
-      <tr><td>Retest</td><td>{{ stats.retest.participants }}</td><td>{{ stats.retest.answers }}</td>
-        <td>{{ stats.retest.pct }}%</td><td>{{ stats.retest.pct_human }}%</td></tr>
-      {% endif %}
-    </tbody>
-  </table>
-  {% if stats.delta is defined %}
-    <p><b>{{ stats.completed }}</b> participant(s) have completed both phases.
-    Change from baseline to retest: <b>{{ '%+.1f' % stats.delta }}</b> percentage points.</p>
-  {% endif %}
-{% else %}
-  <p class="small">No responses yet — the table fills in as people take part.</p>
-{% endif %}
-
-<h2>Reference rates</h2>
-<p>On these positions, simulated humans find the engine's move under 3% of the time at every
-rating from 1100 to 2600. Real players over the board manage 13% around 2000, and 47% at 2600+.
-The grandmaster in the original study scored 0/4 before study and 42% after.</p>
 
 {% endblock %}

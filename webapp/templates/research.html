@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}The research — Unnamed Concepts{% endblock %}
+{% block body %}
+<h1>How eight nameless ideas were found</h1>
+<p class="lede">Every concept in this trainer came out of a pipeline, not a chess book.
+Here is exactly what it does and what it found.</p>
+
+<h2>1 &middot; Finding disagreement</h2>
+<p>Positions are sampled from public Lichess games &mdash; both club play and games between
+2300+ rated players. Each is analysed twice: by <b>Stockfish 17.1</b> at depth 16, and by
+<b>Maia</b>, a neural network trained to predict what a human of a given rating actually plays
+rather than what is best.</p>
+<p>A position is <em>machine-unique</em> when the engine's move is decisively better &mdash; at
+least 100 centipawns above the human favourite &mdash; and Maia gives that move under 5%
+probability at <em>every</em> rating from 1100 to 2600. Out of <b>43,603</b> positions analysed,
+<b>1,745</b> qualified, a rate of 4.0% that held steady across five separate batches and both
+rating populations.</p>
+<p>In <b>1,499</b> of those the player who was actually at the board also failed to find the
+move. In <b>247</b>, that player was rated 2500 or above.</p>
+
+<h2>2 &middot; Blindness, then disbelief</h2>
+<p>Simulated players agree with the engine more often as they get stronger &mdash; on ordinary
+positions. On machine-unique positions the rate at which they <em>play</em> the engine's move
+stays near zero from 1100 all the way to 2600. But the rate at which the move appears anywhere
+in their top five climbs from 29% to 57%.</p>
+<p>Weak players never see the move. Strong players see it and reject it.</p>
+
+<h2>3 &middot; Grouping them</h2>
+<p>Each position is embedded using the internal representations of <b>Leela Chess Zero</b>
+(layer 10), then clustered. Eight groups emerge. To describe them, each group's direction is
+compared against twelve named tactical motifs, built from thousands of tagged Lichess puzzles.</p>
+<p>Roughly half of what makes these positions machine-only is expressible in known terms
+(R&sup2; = 0.46) &mdash; a signature of sacrifice without a combination to justify it. The other
+half is not expressible at all. One group, <a href="/concept/4">The one with no name</a>, has
+zero or negative similarity to every named motif.</p>
+
+<table class="research">
+<thead><tr><th>Concept</th><th>Positions</th><th>Found over the board</th><th>Quiet</th>
+<th>Avg error (cp)</th><th>Closest named motifs</th></tr></thead>
+<tbody>
+<tr><td><a href="/concept/0">The heavy-piece pause</a></td>
+  <td>287</td>
+  <td>16.7%</td>
+  <td>80%</td>
+  <td>&minus;335</td>
+  <td class="mo">exposedKing 0.19 · defensiveMove 0.11 · quietMove 0.08</td></tr>
+<tr><td><a href="/concept/1">The unpaid sacrifice</a></td>
+  <td>204</td>
+  <td>7.8%</td>
+  <td>89%</td>
+  <td>&minus;505</td>
+  <td class="mo">sacrifice 0.41 · deflection 0.35 · attraction 0.35</td></tr>
+<tr><td><a href="/concept/2">Order of operations</a></td>
+  <td>339</td>
+  <td>15.0%</td>
+  <td>88%</td>
+  <td>&minus;212</td>
+  <td class="mo">pin 0.27 · clearance 0.25 · attraction 0.19</td></tr>
+<tr><td><a href="/concept/3">Against the book</a></td>
+  <td>145</td>
+  <td>9.7%</td>
+  <td>86%</td>
+  <td>&minus;215</td>
+  <td class="mo">intermezzo 0.20 · clearance 0.14 · pin 0.11</td></tr>
+<tr><td><a href="/concept/4">The one with no name</a></td>
+  <td>105</td>
+  <td>19.0%</td>
+  <td>68%</td>
+  <td>&minus;507</td>
+  <td class="mo">exposedKing 0.00 · quietMove -0.05 · defensiveMove -0.07</td></tr>
+<tr><td><a href="/concept/5">Nothing happens</a></td>
+  <td>278</td>
+  <td>18.0%</td>
+  <td>94%</td>
+  <td>&minus;306</td>
+  <td class="mo">skewer 0.29 · attraction 0.28 · deflection 0.28</td></tr>
+<tr><td><a href="/concept/6">The long fuse</a></td>
+  <td>295</td>
+  <td>10.2%</td>
+  <td>83%</td>
+  <td>&minus;414</td>
+  <td class="mo">sacrifice 0.42 · attraction 0.41 · pin 0.39</td></tr>
+<tr><td><a href="/concept/7">Walking into the fire</a></td>
+  <td>92</td>
+  <td>18.5%</td>
+  <td>86%</td>
+  <td>&minus;303</td>
+  <td class="mo">exposedKing 0.53 · pin 0.30 · deflection 0.29</td></tr>
+</tbody></table>
+
+<p class="small">&ldquo;Quiet&rdquo; means the move is neither a capture nor a check. Across all
+eight groups, between 68% and 94% of these moves are quiet &mdash; the part of chess humans
+cannot see is not tactics. Tactics are what training drills.</p>
+
+<h2>4 &middot; What this is built on</h2>
+<p>The approach follows Schut et&nbsp;al., <i>PNAS</i> 2025, who mined concepts from AlphaZero
+that do not exist in human play and taught them to four grandmasters using only example
+positions &mdash; no explanations, because none were possible. All four improved. This project
+reproduces the idea on open models and turns the result into something anyone can train on.</p>
+<p class="small">Stockfish 17.1 &middot; Maia-2 and Maia-3 (CSSLab, Toronto) &middot;
+Leela Chess Zero &middot; Lichess open database. Every analysis ran on one laptop.</p>
+{% endblock %}

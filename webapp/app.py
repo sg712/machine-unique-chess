@@ -1,10 +1,10 @@
-"""Study platform for the machine-unique chess experiment.
+"""Unnamed Concepts — a trainer for chess ideas that have no name.
 
-Participants get a resumable code, work through baseline -> study -> retest,
-and every answer is stored as it happens. Aggregate results are computed across
-all participants, which is what turns the n=1 protocol into a real sample.
+Eight concepts mined from 43,603 real positions: patterns where a strong engine
+is decisively right and essentially no human plays the move. Each concept is
+studied by example, then drilled on fresh positions from the same family.
 
-    python webapp/app.py           # http://127.0.0.1:5000
+    python webapp/app.py            # http://127.0.0.1:5055
 """
 import json
 import os
@@ -16,18 +16,21 @@ import time
 
 import chess
 import chess.svg
-from flask import Flask, g, jsonify, redirect, render_template, request, session, url_for
+from flask import (Flask, g, jsonify, redirect, render_template, request,
+                   session, url_for)
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 DB = ROOT / "webapp" / "study.db"
-PHASES = ("baseline", "study", "retest")
 CODE_RE = re.compile(r"^[A-Z0-9]{6}$")
 
 app = Flask(__name__)
-app.secret_key = "unnamed-concepts-local-dev"
+app.secret_key = os.environ.get("SECRET_KEY", "unnamed-concepts-local-dev")
+
+CONCEPTS = json.load(open(ROOT / "webapp" / "concepts.json"))
+BY_ID = {c["id"]: c for c in CONCEPTS}
 
 
-# ── data ──────────────────────────────────────────────────────────────────────
+# ── storage ───────────────────────────────────────────────────────────────────
 def db():
     if "db" not in g:
         g.db = sqlite3.connect(DB)
@@ -45,259 +48,211 @@ def init_db():
     DB.parent.mkdir(exist_ok=True)
     conn = sqlite3.connect(DB)
     conn.executescript("""
-    CREATE TABLE IF NOT EXISTS participant (
-        code TEXT PRIMARY KEY, name TEXT, rating INTEGER,
-        created_at REAL, study_done_at REAL);
-    CREATE TABLE IF NOT EXISTS response (
+    CREATE TABLE IF NOT EXISTS player (
+        code TEXT PRIMARY KEY, name TEXT, rating INTEGER, created_at REAL);
+    CREATE TABLE IF NOT EXISTS attempt (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        code TEXT NOT NULL, phase TEXT NOT NULL, idx INTEGER NOT NULL,
-        fen TEXT, picked TEXT, best TEXT, human_top TEXT,
-        correct INTEGER, matched_human INTEGER, seconds REAL, created_at REAL,
-        UNIQUE(code, phase, idx));
-    CREATE INDEX IF NOT EXISTS resp_code ON response(code);
+        code TEXT NOT NULL, concept INTEGER NOT NULL, idx INTEGER NOT NULL,
+        fen TEXT, picked TEXT, best TEXT, correct INTEGER,
+        human_p REAL, seconds REAL, created_at REAL);
+    CREATE TABLE IF NOT EXISTS studied (
+        code TEXT NOT NULL, concept INTEGER NOT NULL, at REAL,
+        PRIMARY KEY (code, concept));
+    CREATE INDEX IF NOT EXISTS a_code ON attempt(code, concept);
     """)
     conn.commit()
     conn.close()
 
 
-def load_sets() -> dict:
-    """Position sets: baseline/retest from the manifest, study from prototypes."""
-    man = json.load(open(ROOT / "results" / "experiment" / "manifest.json"))
-    pub = json.load(open(ROOT / "results" / "experiment" / "public_test.json"))
-    pvs = json.load(open(ROOT / "results" / "experiment" / "study_pvs.json"))
-
-    def clean(rows):
-        out = []
-        for r in rows:
-            b = chess.Board(r["fen"])
-            mv = chess.Move.from_uci(r["best"])
-            if mv not in b.legal_moves:
-                continue
-            out.append({"fen": r["fen"], "best": r["best"],
-                        "human_top": str(r.get("human_top") or ""),
-                        "cost_cp": round(float(r.get("cost_cp") or 0))})
-        return out
-
-    baseline = clean(pub)                      # 8 public, depth-20 verified
-    retest = clean(man["retest"])[:10]
-    study = []
-    for r in man["study"]:
-        pv = pvs.get(r["fen"])
-        if not pv or pv[0] != r["best"]:       # drop depth-unstable prototypes
-            continue
-        study.append({"fen": r["fen"], "pv": pv[:6]})
-    return {"baseline": baseline, "study": study, "retest": retest}
+def me():
+    code = session.get("code")
+    if not code:
+        return None
+    row = db().execute("SELECT * FROM player WHERE code=?", (code,)).fetchone()
+    return code if row else None
 
 
-SETS = load_sets()
+def ensure_player() -> str:
+    """Every visitor gets a player row on first action — no signup wall."""
+    code = me()
+    if code:
+        return code
+    code = secrets.token_hex(3).upper()
+    db().execute("INSERT INTO player(code, created_at) VALUES(?,?)", (code, time.time()))
+    db().commit()
+    session["code"] = code
+    session.permanent = True
+    return code
 
-# ── piece art (rendered once, embedded in the page) ───────────────────────────
+
+def concept_progress(code: str) -> dict:
+    """Per-concept: studied?, drills attempted, drills correct."""
+    out = {}
+    if not code:
+        return {c["id"]: {"studied": False, "n": 0, "correct": 0, "of": len(c["drill"])}
+                for c in CONCEPTS}
+    st = {r["concept"] for r in db().execute("SELECT concept FROM studied WHERE code=?", (code,))}
+    rows = db().execute(
+        """SELECT concept, COUNT(DISTINCT idx) n, SUM(correct) c FROM attempt
+           WHERE code=? GROUP BY concept""", (code,)).fetchall()
+    agg = {r["concept"]: (r["n"], r["c"] or 0) for r in rows}
+    for c in CONCEPTS:
+        n, corr = agg.get(c["id"], (0, 0))
+        out[c["id"]] = {"studied": c["id"] in st, "n": n, "correct": corr,
+                        "of": len(c["drill"])}
+    return out
+
+
 def piece_svgs() -> dict:
     out = {}
     for sym in "KQRBNPkqrbnp":
         svg = chess.svg.piece(chess.Piece.from_symbol(sym))
-        out[sym] = svg[svg.index(">", svg.index("<svg")) + 1: svg.rindex("</svg>")]
+        out[sym] = svg[svg.index(">", svg.index("<svg")) + 1:svg.rindex("</svg>")]
     return out
 
 
 PIECES = piece_svgs()
 
 
-# ── helpers ───────────────────────────────────────────────────────────────────
-def board_payload(fen: str) -> dict:
+def board_of(fen: str) -> dict:
     b = chess.Board(fen)
-    return {
-        "fen": fen,
-        "orientation": "w" if b.turn else "b",
-        "stm": "White" if b.turn else "Black",
-        "legal": sorted(m.uci() for m in b.legal_moves),
-        "check": b.is_check(),
-    }
+    return {"fen": fen, "orientation": "w" if b.turn else "b",
+            "stm": "White" if b.turn else "Black",
+            "legal": sorted(m.uci() for m in b.legal_moves)}
 
 
-def line_payload(fen: str, pv: list) -> dict:
-    """Board states and SAN for a principal variation, for the study phase."""
+def frames_of(fen: str, pv: list) -> dict:
     b = chess.Board(fen)
-    orient = "w" if b.turn else "b"
-    frames, sans = [{"fen": b.fen(), "last": None}], []
-    for uci in pv:
-        mv = chess.Move.from_uci(uci)
-        num, white = b.fullmove_number, b.turn
-        sans.append(("%d." % num if white else "%d..." % num) + " " + b.san(mv))
+    out = {"orientation": "w" if b.turn else "b",
+           "frames": [{"fen": b.fen(), "last": None}], "sans": []}
+    for step in pv:
+        mv = chess.Move.from_uci(step["uci"])
+        out["sans"].append(step["san"])
         b.push(mv)
-        frames.append({"fen": b.fen(), "last": uci})
-    return {"orientation": orient, "frames": frames, "sans": sans}
-
-
-def current(code: str) -> sqlite3.Row | None:
-    return db().execute("SELECT * FROM participant WHERE code=?", (code,)).fetchone()
-
-
-def done_count(code: str, phase: str) -> int:
-    r = db().execute("SELECT COUNT(*) c FROM response WHERE code=? AND phase=?",
-                     (code, phase)).fetchone()
-    return r["c"]
-
-
-def progress(code: str) -> dict:
-    p = current(code)
-    return {
-        "baseline": done_count(code, "baseline"),
-        "baseline_n": len(SETS["baseline"]),
-        "study_done": bool(p and p["study_done_at"]),
-        "retest": done_count(code, "retest"),
-        "retest_n": len(SETS["retest"]),
-    }
-
-
-def require_code():
-    code = session.get("code")
-    return code if code and current(code) else None
-
-
-# ── routes ────────────────────────────────────────────────────────────────────
-@app.route("/")
-def index():
-    code = require_code()
-    return render_template("index.html", code=code,
-                           prog=progress(code) if code else None,
-                           n_baseline=len(SETS["baseline"]), n_retest=len(SETS["retest"]),
-                           stats=aggregate())
-
-
-@app.route("/join", methods=["GET", "POST"])
-def join():
-    if request.method == "POST":
-        resume = (request.form.get("resume") or "").strip().upper()
-        if resume:
-            if not CODE_RE.match(resume) or not current(resume):
-                return render_template("join.html", error="No study with that code.")
-            session["code"] = resume
-            return redirect(url_for("index"))
-        code = secrets.token_hex(3).upper()
-        rating = request.form.get("rating", "").strip()
-        db().execute("INSERT INTO participant(code,name,rating,created_at) VALUES(?,?,?,?)",
-                     (code, (request.form.get("name") or "").strip()[:40],
-                      int(rating) if rating.isdigit() else None, time.time()))
-        db().commit()
-        session["code"] = code
-        return redirect(url_for("index"))
-    return render_template("join.html", error=None)
-
-
-@app.route("/logout")
-def logout():
-    session.pop("code", None)
-    return redirect(url_for("index"))
-
-
-@app.route("/test/<phase>")
-def test(phase):
-    if phase not in ("baseline", "retest"):
-        return redirect(url_for("index"))
-    code = require_code()
-    if not code:
-        return redirect(url_for("join"))
-    if phase == "retest" and not progress(code)["study_done"]:
-        return redirect(url_for("index"))
-    rows = SETS[phase]
-    start = done_count(code, phase)
-    if start >= len(rows):
-        return redirect(url_for("results"))
-    payload = [board_payload(r["fen"]) for r in rows]
-    return render_template("test.html", phase=phase, start=start, n=len(rows),
-                           positions=payload, pieces=PIECES)
-
-
-@app.post("/answer")
-def answer():
-    code = require_code()
-    if not code:
-        return jsonify(error="no session"), 403
-    d = request.get_json(force=True)
-    phase, idx = d.get("phase"), int(d.get("idx", -1))
-    if phase not in ("baseline", "retest") or not 0 <= idx < len(SETS[phase]):
-        return jsonify(error="bad index"), 400
-    row = SETS[phase][idx]
-    picked = str(d.get("picked", ""))[:5]
-    db().execute(
-        """INSERT OR IGNORE INTO response
-           (code,phase,idx,fen,picked,best,human_top,correct,matched_human,seconds,created_at)
-           VALUES(?,?,?,?,?,?,?,?,?,?,?)""",
-        (code, phase, idx, row["fen"], picked, row["best"], row["human_top"],
-         int(picked == row["best"]), int(picked == row["human_top"]),
-         float(d.get("seconds", 0)), time.time()))
-    db().commit()
-    return jsonify(ok=True, done=done_count(code, phase), of=len(SETS[phase]))
-
-
-@app.route("/study")
-def study():
-    code = require_code()
-    if not code:
-        return redirect(url_for("join"))
-    lines = [line_payload(r["fen"], r["pv"]) for r in SETS["study"]]
-    return render_template("study.html", lines=lines, pieces=PIECES,
-                           done=progress(code)["study_done"])
-
-
-@app.post("/study/done")
-def study_done():
-    code = require_code()
-    if code:
-        db().execute("UPDATE participant SET study_done_at=? WHERE code=?", (time.time(), code))
-        db().commit()
-    return redirect(url_for("index"))
-
-
-@app.route("/results")
-def results():
-    code = require_code()
-    if not code:
-        return redirect(url_for("join"))
-    rows = db().execute("SELECT * FROM response WHERE code=? ORDER BY phase,idx", (code,)).fetchall()
-    mine = {}
-    for ph in ("baseline", "retest"):
-        rs = [r for r in rows if r["phase"] == ph]
-        if rs:
-            mine[ph] = {
-                "n": len(rs), "correct": sum(r["correct"] for r in rs),
-                "matched": sum(r["matched_human"] for r in rs),
-                "rows": [dict(r) for r in rs],
-            }
-    return render_template("results.html", mine=mine, stats=aggregate(),
-                           prog=progress(code), code=code)
-
-
-def aggregate() -> dict:
-    conn = db()
-    out = {}
-    for ph in ("baseline", "retest"):
-        r = conn.execute(
-            """SELECT COUNT(DISTINCT code) p, COUNT(*) n, SUM(correct) c, SUM(matched_human) m
-               FROM response WHERE phase=?""", (ph,)).fetchone()
-        out[ph] = {"participants": r["p"] or 0, "answers": r["n"] or 0,
-                   "correct": r["c"] or 0, "matched": r["m"] or 0,
-                   "pct": round(100 * (r["c"] or 0) / r["n"], 1) if r["n"] else None,
-                   "pct_human": round(100 * (r["m"] or 0) / r["n"], 1) if r["n"] else None}
-    both = conn.execute(
-        """SELECT code FROM response WHERE phase='baseline' GROUP BY code
-           INTERSECT SELECT code FROM response WHERE phase='retest' GROUP BY code""").fetchall()
-    out["completed"] = len(both)
-    if both:
-        codes = tuple(r["code"] for r in both)
-        q = ("SELECT phase, AVG(correct)*100 p FROM response WHERE code IN (%s) "
-             "AND phase IN ('baseline','retest') GROUP BY phase" % ",".join("?" * len(codes)))
-        paired = {r["phase"]: round(r["p"], 1) for r in conn.execute(q, codes).fetchall()}
-        out["paired"] = paired
-        if "baseline" in paired and "retest" in paired:
-            out["delta"] = round(paired["retest"] - paired["baseline"], 1)
+        out["frames"].append({"fen": b.fen(), "last": step["uci"]})
     return out
 
 
-@app.route("/paper")
-def paper():
-    return render_template("paper.html", stats=aggregate())
+# ── pages ─────────────────────────────────────────────────────────────────────
+@app.route("/")
+def index():
+    code = me()
+    return render_template("index.html", code=code, concepts=CONCEPTS,
+                           prog=concept_progress(code), totals=totals())
+
+
+@app.route("/concept/<int:cid>")
+def concept(cid):
+    if cid not in BY_ID:
+        return redirect(url_for("index"))
+    c = BY_ID[cid]
+    code = me()
+    p = concept_progress(code)[cid]
+    lines = [frames_of(s["fen"], s["pv"]) for s in c["study"]]
+    return render_template("concept.html", c=c, lines=lines, pieces=PIECES,
+                           prog=p, code=code)
+
+
+@app.post("/concept/<int:cid>/studied")
+def mark_studied(cid):
+    code = ensure_player()
+    db().execute("INSERT OR REPLACE INTO studied(code, concept, at) VALUES(?,?,?)",
+                 (code, cid, time.time()))
+    db().commit()
+    return redirect(url_for("drill", cid=cid))
+
+
+@app.route("/concept/<int:cid>/drill")
+def drill(cid):
+    if cid not in BY_ID:
+        return redirect(url_for("index"))
+    c = BY_ID[cid]
+    code = me()
+    done = 0
+    if code:
+        r = db().execute("SELECT COUNT(DISTINCT idx) n FROM attempt WHERE code=? AND concept=?",
+                         (code, cid)).fetchone()
+        done = r["n"]
+    positions = []
+    for i, d in enumerate(c["drill"]):
+        positions.append({**board_of(d["fen"]), "idx": i})
+    return render_template("drill.html", c=c, positions=positions, pieces=PIECES,
+                           start=min(done, len(positions) - 1), code=code)
+
+
+@app.post("/api/answer")
+def api_answer():
+    code = ensure_player()
+    d = request.get_json(force=True)
+    cid, idx = int(d.get("concept", -1)), int(d.get("idx", -1))
+    if cid not in BY_ID or not 0 <= idx < len(BY_ID[cid]["drill"]):
+        return jsonify(error="bad position"), 400
+    pos = BY_ID[cid]["drill"][idx]
+    picked = str(d.get("picked", ""))[:5]
+    b = chess.Board(pos["fen"])
+
+    hp = next((h["p"] for h in pos["human"] if h["uci"] == picked), 0.0)
+    correct = picked == pos["best"]
+    db().execute(
+        """INSERT INTO attempt(code,concept,idx,fen,picked,best,correct,human_p,seconds,created_at)
+           VALUES(?,?,?,?,?,?,?,?,?,?)""",
+        (code, cid, idx, pos["fen"], picked, pos["best"], int(correct), hp,
+         float(d.get("seconds", 0)), time.time()))
+    db().commit()
+
+    try:
+        picked_san = b.san(chess.Move.from_uci(picked))
+    except Exception:
+        picked_san = picked
+    return jsonify(
+        correct=correct, best=pos["best"], best_san=pos["best_san"],
+        picked_san=picked_san, human_p=hp, p_best=pos["p_best"],
+        cost_cp=pos["cost_cp"], gap_cp=pos["gap_cp"],
+        human=pos["human"][:3], line=frames_of(pos["fen"], pos["pv"]),
+    )
+
+
+@app.route("/me")
+def profile():
+    code = me()
+    if not code:
+        return redirect(url_for("index"))
+    rows = db().execute(
+        """SELECT concept, COUNT(*) tries, COUNT(DISTINCT idx) seen, SUM(correct) hits,
+                  AVG(human_p) avg_human FROM attempt WHERE code=? GROUP BY concept""",
+        (code,)).fetchall()
+    stats = {r["concept"]: dict(r) for r in rows}
+    tot = db().execute(
+        "SELECT COUNT(*) n, SUM(correct) c, AVG(human_p) h FROM attempt WHERE code=?",
+        (code,)).fetchone()
+    return render_template("me.html", code=code, concepts=CONCEPTS, stats=stats,
+                           tot=dict(tot), prog=concept_progress(code))
+
+
+@app.route("/research")
+def research():
+    return render_template("research.html", concepts=CONCEPTS, totals=totals())
+
+
+@app.route("/claim", methods=["GET", "POST"])
+def claim():
+    if request.method == "POST":
+        resume = (request.form.get("resume") or "").strip().upper()
+        if CODE_RE.match(resume) and db().execute(
+                "SELECT 1 FROM player WHERE code=?", (resume,)).fetchone():
+            session["code"] = resume
+            session.permanent = True
+            return redirect(url_for("profile"))
+        return render_template("claim.html", error="No player with that code.", code=me())
+    return render_template("claim.html", error=None, code=me())
+
+
+def totals() -> dict:
+    r = db().execute("SELECT COUNT(*) n, SUM(correct) c FROM attempt").fetchone()
+    p = db().execute("SELECT COUNT(*) n FROM player").fetchone()
+    return {"attempts": r["n"] or 0, "correct": r["c"] or 0, "players": p["n"] or 0,
+            "pct": round(100 * (r["c"] or 0) / r["n"], 1) if r["n"] else None,
+            "positions": sum(len(c["drill"]) + len(c["study"]) for c in CONCEPTS)}
 
 
 if __name__ == "__main__":
