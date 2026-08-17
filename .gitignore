@@ -20,3 +20,8 @@ webapp/study.db
 # large generated pages (regenerate with experiments/13, 14)
 site/*.html
 site/dir/
+results/corpus_emb_*.npy
+results/families.html
+results/master_all.csv
+results/03_disagreements_b*.csv
+results/03_elite_b*.csv
