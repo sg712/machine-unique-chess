@@ -1,53 +1,104 @@
-# unnamed-concepts
+# machine-unique chess
 
-**Can machine-exclusive chess knowledge be extracted from open engines and taught to strong human players?**
+**Finding chess positions where a strong engine is decisively right and essentially
+no human plays the move — then turning them into something you can train on.**
 
-AlphaZero-class engines hold concepts that exist beyond the human chess vocabulary — Schut et al. (PNAS 2025) proved they can be mined and taught to 2700-rated grandmasters using nothing but prototype positions. This project reproduces and extends that line of work on *open* models (Leela Chess Zero, Maia-2/3), aiming at three outputs:
+Across 43,603 positions from real games, 4.0% contain a move that Stockfish rates
+clearly best and that a neural model of human play gives under 5% probability at
+*every* rating from 1100 to 2600. In 1,499 of those, the player actually at the board
+missed it too; in 247, that player was rated 2500 or above.
 
-1. **Research** — reproduce concept probing/discovery on open weights; measure the *legibility frontier* (at what human skill level does machine knowledge become invisible?)
-2. **Practice material** — turn discovered concepts into prototype-position curricula for strong players (IM-level+), the way the paper taught its GMs
-3. **A site** — publish discoveries + interactive practice sets (prototype exists: chess-book-style artifact page with steppable boards)
+Clustering those positions by how an engine represents them internally produces eight
+groups. One of them has zero or negative similarity to every named chess motif — a
+coherent pattern that human chess vocabulary has no word for.
 
-This is a research project, not a startup. The relevant precedent for *why* practice material: Southwick et al. 2026 (N=44k) — structured study beats raw play 3.6×/hour.
+The trainer teaches all eight, by example.
 
-## Layout
+---
+
+## What's here
 
 ```
-papers/         6 core PDFs (Schut, McGrath, Jenner ×3, Maia-2)
-models/
-  maia2-repo/          CSSLab Maia-2 (skill-aware human move model, Elo 1100–2000)
-  leela-interp/        Jenner NeurIPS 2024 code — Leela policy net in PyTorch
-  stockfish-build/     Stockfish 17.1 built from source (src/stockfish works)
-experiments/
-  01_rating_frontier.py   Maia-2 sweep over the 4 Schut prototype positions
-results/        experiment outputs (CSV)
-site/           (later) the public face
-notes/          working notes
-BIBLIOGRAPHY.md annotated reading list
+experiments/     the pipeline, numbered in the order it was built
+webapp/          the trainer (Flask + SQLite)
+scripts/setup.sh fetches engines and networks (nothing large is committed)
+notes/           working notes and the research landscape
+BIBLIOGRAPHY.md  annotated reading list
 ```
 
-## Environment
+### The pipeline
+
+| Step | What it does |
+|---|---|
+| `02_build_dataset.py` | Streams the Lichess open database, samples mid-game positions from rated games |
+| `03_disagreement_mining.py` | Stockfish at depth 16 vs Maia at four rating levels; flags machine-unique positions |
+| `06_frontier_2600.py` | Extends the human-visibility curve to 2600 with Maia-3 |
+| `09_consolidate.py` | Merges batches, defines the "hard core" (also missed by the real player) |
+| `16_concept_families.py` | Embeds positions with Leela Chess Zero, clusters into concepts |
+| `17_build_concepts.py` | Engine lines + human move distributions for each concept |
+
+Everything ran on one laptop.
+
+### The trainer
 
 ```bash
-conda activate unnamed-concepts   # python 3.12: maia2, torch, python-chess, pandas
-python experiments/01_rating_frontier.py
+bash scripts/setup.sh          # only needed to re-run the pipeline
+pip install flask python-chess
+python webapp/app.py           # http://127.0.0.1:5055
 ```
 
-## Roadmap & results so far
+Eight concepts. Each opens with four study positions showing the engine's move and
+what follows — deliberately without commentary, since the patterns are easier absorbed
+than described — then twelve unseen positions to drill. Feedback names your move, tells
+you what share of 1900-rated humans play it, and steps through the engine's line.
 
-- [x] Papers, reference repos, engine build, envs (`unnamed-concepts` py3.12 for Maia; `leela` py3.11 for leela-interp)
-- [x] **Exp 01 — legibility frontier v0** (4 Schut positions × Maia-2 1100–2000): AZ concept moves ≤7% at every level; 2/4 *decline* with skill. `results/01_frontier.csv`
-- [x] **Exp 02/03 — scale** (final: **43,603 positions** — all 33.8k club + 10k elite × SF depth 16 × Maia): **1,745 machine-unique (4.0%** — rate identical across every batch and both rating populations). `results/master_all.csv`
-- [x] **Exp 09 — hard core**: 1,499 of the 1,745 also defeated the *real* player at the board (318 from elite games; 247 failed by 2500+ movers) — `results/hard_core.csv`. Real 2600+ players find MU moves 47.3% (n=148) vs 59.5% on normal positions: the wall is real at every level, permeable at the top.
-- [x] **Exp 05 — Schut LP on Leela latents** (30 positions, layer 10, pooled residuals): every LP solves sparse (6–16/768 nonzeros) but **0/30 generalize** (held-out separation ≈0.5). Consistent with the paper's 97.6% attrition — mining is easy, transfer is the bottleneck.
-- [x] **Exp 05b — group mining**: one vector per group of 5 stacks constraints and separates its own group perfectly (in-group 1.00) but held-out ≈ 0.515 — still chance. Conclusion: the failure is the *representation* (mean-pooled residuals), not LP underdetermination.
-- [x] **Exp 06 — frontier to 2600** (Maia-3, 77 MU + 60 control): control converges 46→68% top-1; machine-unique **0→2.6%** — invisibility holds at 2600. But top-5 rises 29→57%: strong players increasingly *consider* the move and still reject it. Blindness at low Elo becomes disbelief at high Elo. `results/06_frontier_2600.csv`
-- [ ] Square-aware pooling (pool over the plan's from/to squares, not all 64) — the Leela-SAEs result says features are square-localized; mean-pooling likely destroys them
-- [ ] Use pretrained Leela-SAEs transcoders (HF: JacklE0niden/lc0-BT4-tc) to describe machine-unique positions in *feature* space
-- [ ] Teachability filter proper (student net on prototypes vs random-position control)
-- [ ] **Site**: publish frontier + positions + concept galleries (formats prototyped: two artifact pages live)
-- [ ] Maia-3 swap · sub-elite transfer study (the n=4-no-control gap)
+The app serves precomputed positions from `webapp/concepts.json`; no engine runs per
+request, which keeps it fast and deterministic.
 
-## People / orbit
+---
 
-Lisa Schut (lead author: Oxford OATML PhD → DeepMind, ex-Dutch Olympiad player) · Been Kim (DeepMind) · CSSLab Toronto (Maia, Ashton Anderson) · Erik Jenner (Berkeley CHAI → ?, leela-interp). Contact with a concrete reproduction in hand, not before.
+## The eight concepts
+
+| Concept | Positions | Found over the board | Character |
+|---|---|---|---|
+| The unpaid sacrifice | 204 | 7.8% | Material goes, no combination follows. Costs the average human 505cp |
+| Against the book | 145 | 9.7% | Opening positions where the engine disagrees with theory |
+| The long fuse | 295 | 10.2% | Middlegame setups whose payoff is too distant to connect |
+| Order of operations | 339 | 15.0% | Right ideas, order nobody considers |
+| The heavy-piece pause | 287 | 16.7% | Queens and rooks improving without threatening |
+| Nothing happens | 278 | 18.0% | 94% quiet; positions that look settled and aren't |
+| Walking into the fire | 92 | 18.5% | Opening lines toward a king, usually its own |
+| **The one with no name** | 105 | 19.0% | **Matches no named motif — cosine ≤ 0 to all twelve** |
+
+Between 68% and 94% of these moves are quiet — neither capture nor check. The part of
+chess humans can't see isn't tactics; tactics are what training drills.
+
+---
+
+## Findings
+
+**Blindness becomes disbelief.** Simulated humans converge toward engine choices as
+rating rises on ordinary positions. On machine-unique positions the rate at which they
+*play* the engine's move stays near zero from 1100 to 2600 — but the rate at which it
+appears in their top five climbs from 29% to 57%. Weak players never see the move;
+strong players see it and reject it.
+
+**Simulation underestimates real masters.** Maia-3 predicts 2.6% for simulated 2600s.
+Real 2600+ players in the source games found these moves 47% of the time — roughly 18×
+higher. Behaviour models capture pattern recognition, not calculation under a clock.
+
+**Half-nameable.** Regressing the machine-unique direction onto twelve motif directions
+built from tagged Lichess puzzles gives R² = 0.46 — a signature of sacrifice without a
+combination to justify it. The other half is not expressible in known terms.
+
+---
+
+## Built on
+
+Schut et al., *Bridging the human–AI knowledge gap through concept discovery and transfer
+in AlphaZero*, PNAS 2025 — which mined concepts from AlphaZero absent from human play and
+taught them to four grandmasters using only example positions. This project reproduces the
+idea on open models and at scale.
+
+Stockfish 17.1 · Maia-2 / Maia-3 (CSSLab, Toronto) · Leela Chess Zero · Lichess open
+database. Full citations in [BIBLIOGRAPHY.md](BIBLIOGRAPHY.md).

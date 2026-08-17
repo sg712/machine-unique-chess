@@ -1,0 +1,328 @@
+[
+ {
+  "id": 0,
+  "n": 287,
+  "motifs": [
+   [
+    "exposedKing",
+    0.1940000057220459
+   ],
+   [
+    "defensiveMove",
+    0.10899999737739563
+   ],
+   [
+    "quietMove",
+    0.07500000298023224
+   ],
+   [
+    "pin",
+    0.06199999898672104
+   ]
+  ],
+  "pieces": {
+   "queen": 79,
+   "rook": 72,
+   "knight": 40
+  },
+  "phase": {
+   "middlegame": 194,
+   "endgame": 91,
+   "opening": 2
+  },
+  "quiet_frac": 0.805,
+  "pawn_frac": 0.132,
+  "retreat_frac": 0.213,
+  "capture_frac": 0.146,
+  "real_found": 0.167,
+  "mean_cost_cp": 335,
+  "mean_p_human": 0.0222,
+  "name": "Quiet queen play",
+  "gloss": "Unforcing queen moves whose justification sits outside the usual vocabulary."
+ },
+ {
+  "id": 1,
+  "n": 204,
+  "motifs": [
+   [
+    "sacrifice",
+    0.4129999876022339
+   ],
+   [
+    "deflection",
+    0.3540000021457672
+   ],
+   [
+    "attraction",
+    0.3529999852180481
+   ],
+   [
+    "pin",
+    0.335999995470047
+   ]
+  ],
+  "pieces": {
+   "pawn": 55,
+   "queen": 48,
+   "rook": 34
+  },
+  "phase": {
+   "middlegame": 141,
+   "endgame": 58,
+   "opening": 5
+  },
+  "quiet_frac": 0.892,
+  "pawn_frac": 0.27,
+  "retreat_frac": 0.23,
+  "capture_frac": 0.088,
+  "real_found": 0.078,
+  "mean_cost_cp": 505,
+  "mean_p_human": 0.0183,
+  "name": "The unpaid sacrifice",
+  "gloss": "Material goes, and nothing comes back right away. No combination follows \u2014 the compensation is position, and it arrives later than a human is willing to wait."
+ },
+ {
+  "id": 2,
+  "n": 339,
+  "motifs": [
+   [
+    "pin",
+    0.26899999380111694
+   ],
+   [
+    "clearance",
+    0.2549999952316284
+   ],
+   [
+    "attraction",
+    0.19300000369548798
+   ],
+   [
+    "sacrifice",
+    0.16899999976158142
+   ]
+  ],
+  "pieces": {
+   "pawn": 86,
+   "bishop": 65,
+   "queen": 64
+  },
+  "phase": {
+   "middlegame": 297,
+   "opening": 40,
+   "endgame": 2
+  },
+  "quiet_frac": 0.882,
+  "pawn_frac": 0.254,
+  "retreat_frac": 0.183,
+  "capture_frac": 0.1,
+  "real_found": 0.15,
+  "mean_cost_cp": 212,
+  "mean_p_human": 0.0231,
+  "name": "Order of operations",
+  "gloss": "The right moves in an order humans don't consider \u2014 an in-between move, or a clearance, inserted before the obvious continuation."
+ },
+ {
+  "id": 3,
+  "n": 145,
+  "motifs": [
+   [
+    "intermezzo",
+    0.19599999487400055
+   ],
+   [
+    "clearance",
+    0.13699999451637268
+   ],
+   [
+    "pin",
+    0.10999999940395355
+   ],
+   [
+    "discoveredAttack",
+    0.10100000351667404
+   ]
+  ],
+  "pieces": {
+   "knight": 47,
+   "pawn": 46,
+   "queen": 26
+  },
+  "phase": {
+   "opening": 131,
+   "middlegame": 14
+  },
+  "quiet_frac": 0.855,
+  "pawn_frac": 0.317,
+  "retreat_frac": 0.138,
+  "capture_frac": 0.131,
+  "real_found": 0.097,
+  "mean_cost_cp": 215,
+  "mean_p_human": 0.0221,
+  "name": "The pawn that isn't urgent",
+  "gloss": "Quiet pawn moves that change the structure for reasons that pay off many moves later \u2014 nothing about them looks forcing."
+ },
+ {
+  "id": 4,
+  "n": 105,
+  "motifs": [
+   [
+    "exposedKing",
+    0.003000000026077032
+   ],
+   [
+    "quietMove",
+    -0.050999999046325684
+   ],
+   [
+    "defensiveMove",
+    -0.06800000369548798
+   ],
+   [
+    "skewer",
+    -0.10499999672174454
+   ]
+  ],
+  "pieces": {
+   "rook": 28,
+   "queen": 28,
+   "pawn": 19
+  },
+  "phase": {
+   "middlegame": 57,
+   "endgame": 46,
+   "opening": 2
+  },
+  "quiet_frac": 0.676,
+  "pawn_frac": 0.181,
+  "retreat_frac": 0.21,
+  "capture_frac": 0.181,
+  "real_found": 0.19,
+  "mean_cost_cp": 507,
+  "mean_p_human": 0.0236,
+  "name": "Endgame against instinct",
+  "gloss": "Simplified positions where the natural human plan is measurably second-best."
+ },
+ {
+  "id": 5,
+  "n": 278,
+  "motifs": [
+   [
+    "skewer",
+    0.28600001335144043
+   ],
+   [
+    "attraction",
+    0.2849999964237213
+   ],
+   [
+    "deflection",
+    0.2800000011920929
+   ],
+   [
+    "exposedKing",
+    0.21699999272823334
+   ]
+  ],
+  "pieces": {
+   "rook": 68,
+   "pawn": 67,
+   "queen": 56
+  },
+  "phase": {
+   "endgame": 150,
+   "middlegame": 128
+  },
+  "quiet_frac": 0.935,
+  "pawn_frac": 0.241,
+  "retreat_frac": 0.234,
+  "capture_frac": 0.061,
+  "real_found": 0.18,
+  "mean_cost_cp": 306,
+  "mean_p_human": 0.0231,
+  "name": "Endgame against instinct",
+  "gloss": "Simplified positions where the natural human plan is measurably second-best."
+ },
+ {
+  "id": 6,
+  "n": 295,
+  "motifs": [
+   [
+    "sacrifice",
+    0.42399999499320984
+   ],
+   [
+    "attraction",
+    0.41100001335144043
+   ],
+   [
+    "pin",
+    0.3869999945163727
+   ],
+   [
+    "clearance",
+    0.3330000042915344
+   ]
+  ],
+  "pieces": {
+   "queen": 68,
+   "pawn": 55,
+   "knight": 55
+  },
+  "phase": {
+   "middlegame": 260,
+   "endgame": 19,
+   "opening": 16
+  },
+  "quiet_frac": 0.827,
+  "pawn_frac": 0.186,
+  "retreat_frac": 0.18,
+  "capture_frac": 0.163,
+  "real_found": 0.102,
+  "mean_cost_cp": 414,
+  "mean_p_human": 0.0199,
+  "name": "The unpaid sacrifice",
+  "gloss": "Material goes, and nothing comes back right away. No combination follows \u2014 the compensation is position, and it arrives later than a human is willing to wait."
+ },
+ {
+  "id": 7,
+  "n": 92,
+  "motifs": [
+   [
+    "exposedKing",
+    0.5270000100135803
+   ],
+   [
+    "pin",
+    0.3019999861717224
+   ],
+   [
+    "deflection",
+    0.2879999876022339
+   ],
+   [
+    "attraction",
+    0.2150000035762787
+   ]
+  ],
+  "pieces": {
+   "pawn": 28,
+   "rook": 26,
+   "bishop": 14
+  },
+  "phase": {
+   "middlegame": 66,
+   "endgame": 17,
+   "opening": 9
+  },
+  "quiet_frac": 0.859,
+  "pawn_frac": 0.304,
+  "retreat_frac": 0.13,
+  "capture_frac": 0.13,
+  "real_found": 0.185,
+  "mean_cost_cp": 303,
+  "mean_p_human": 0.0213,
+  "name": "Walking into the fire",
+  "gloss": "Moves that expose or advance near a king \u2014 the engine's own, or its opponent's \u2014 where human instinct says shelter first and ask questions later."
+ }
+]

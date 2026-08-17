@@ -1,17 +1,22 @@
+# environments
 .venv/
-results/
 __pycache__/
 *.pyc
 .DS_Store
-models/maia2-repo/
-models/leela-interp/
-models/stockfish-build/src/*.o
-models/leela-saes/
-models/maia3-repo/
-models/bt4/
-models/bt4-transcoders/
-models/leela-weights/
+
+# large binaries — fetched by scripts/setup.sh, never committed
+models/
 maia2_models/
-data/
+papers/
+
+# generated data and intermediates
+data/*.csv
+data/*.zip
+data/pgn/
+results/emb_cache/
+results/*.npz
 webapp/study.db
-webapp/__pycache__/
+
+# large generated pages (regenerate with experiments/13, 14)
+site/*.html
+site/dir/

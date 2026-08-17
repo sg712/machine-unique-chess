@@ -1,0 +1,39 @@
+{
+  "themes": [
+    "pin",
+    "fork",
+    "skewer",
+    "discoveredAttack",
+    "deflection",
+    "attraction",
+    "sacrifice",
+    "quietMove",
+    "defensiveMove",
+    "clearance",
+    "intermezzo",
+    "exposedKing"
+  ],
+  "r2_global_mu_direction": 0.46202760684599997,
+  "coef_global": {
+    "pin": 0.22920000553131104,
+    "fork": -0.2190999984741211,
+    "skewer": 0.08889999985694885,
+    "discoveredAttack": 0.05990000069141388,
+    "deflection": -0.20640000700950623,
+    "attraction": -0.0215000007301569,
+    "sacrifice": 0.635200023651123,
+    "quietMove": -0.09920000284910202,
+    "defensiveMove": 0.07039999961853027,
+    "clearance": -0.499099999666214,
+    "intermezzo": -0.09459999948740005,
+    "exposedKing": 0.18940000236034393
+  },
+  "r2_mu_per_position": {
+    "mean": 0.20193835523140796,
+    "median": 0.1741508137599035
+  },
+  "r2_control_per_position": {
+    "mean": 0.18418055589320845,
+    "median": 0.16289388134579608
+  }
+}
