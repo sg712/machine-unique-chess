@@ -41,6 +41,15 @@ def main() -> None:
     args = ap.parse_args()
 
     positions = pd.read_csv(args.input or (ROOT / "data" / "positions.csv")).iloc[args.offset:args.offset + args.limit]
+
+    # Resume support: a long run must survive a crash or a closed lid. Anything
+    # already in the output file is skipped, and new rows are appended in chunks.
+    out_path = ROOT / "results" / args.output
+    done_fens = set()
+    if out_path.exists():
+        done_fens = set(pd.read_csv(out_path, usecols=["fen"]).fen)
+        print(f"resuming: {len(done_fens)} positions already in {args.output}")
+    positions = positions[~positions.fen.isin(done_fens)]
     m = model.from_pretrained(type="rapid", device="auto")
     prepared = inference.prepare()
     engine = chess.engine.SimpleEngine.popen_uci(str(ENGINE))
@@ -91,14 +100,19 @@ def main() -> None:
             })
             if i % 100 == 0:
                 n_mu = sum(x["machine_unique"] for x in rows)
-                print(f"{i}/{len(positions)} positions, {n_mu} machine-unique so far")
+                print(f"{i}/{len(positions)} positions, {n_mu} machine-unique this run", flush=True)
+                pd.DataFrame(rows).to_csv(out_path, mode="a", index=False,
+                                          header=not out_path.exists())
+                rows = []
     finally:
         engine.quit()
 
     out = ROOT / "results"
     out.mkdir(exist_ok=True)
-    df = pd.DataFrame(rows)
-    df.to_csv(out / args.output, index=False)
+    if rows:
+        pd.DataFrame(rows).to_csv(out_path, mode="a", index=False,
+                                  header=not out_path.exists())
+    df = pd.read_csv(out_path)
 
     mu = df[df.machine_unique]
     print(f"\n=== {len(df)} positions analysed ===")
@@ -108,7 +122,7 @@ def main() -> None:
         print(f"  {e}: {df[f'p_engine_move_{e}'].mean():.4f}   (machine-unique subset: {mu[f'p_engine_move_{e}'].mean() if len(mu) else float('nan'):.4f})")
     print(f"\nmean eval cost of the top human move: {df.human_cost_cp.mean():.1f} cp")
     print(f"positions where humans agree with engine at 2000: {(df.human_top_2000 == df.engine_best).mean()*100:.1f}%")
-    print(f"\nwrote {out/args.output}")
+    print(f"\nwrote {out_path} ({len(df)} rows total)")
 
 
 if __name__ == "__main__":

@@ -7,7 +7,7 @@ mkdir -p models
 
 echo "==> Stockfish (engine used for ground truth)"
 if [ ! -x models/stockfish-build/src/stockfish ]; then
-  git clone --depth 1 https://github.com/official-stockfish/Stockfish models/stockfish-build
+  git clone --depth 1 --branch sf_17.1 https://github.com/official-stockfish/Stockfish models/stockfish-build
   ( cd models/stockfish-build/src && make -j build ARCH=apple-silicon )
 fi
 

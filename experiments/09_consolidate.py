@@ -31,11 +31,18 @@ def main() -> None:
         print(f"{pathlib.Path(f).name}: {len(df)} rows, {df.machine_unique.sum()} MU")
     allpos = pd.concat(frames).drop_duplicates("fen").reset_index(drop=True)
 
-    # attach player ratings from the position files
-    pos = pd.concat([
-        pd.read_csv(ROOT / "data" / "positions.csv"),
-        pd.read_csv(ROOT / "data" / "positions_elite.csv"),
-    ]).drop_duplicates("fen")[["fen", "white_elo", "black_elo"]]
+    # attach player ratings. Original position files are the first choice, but the
+    # club file was trimmed from the repo — for fens already consolidated once, the
+    # previous master_all.csv still carries the ratings, so it serves as a fallback.
+    sources = []
+    for f in ["positions.csv", "positions_elite.csv", "positions_elite_remaining.csv"]:
+        fp = ROOT / "data" / f
+        if fp.exists():
+            sources.append(pd.read_csv(fp)[["fen", "white_elo", "black_elo"]])
+    prev = R / "master_all.csv"
+    if prev.exists():
+        sources.append(pd.read_csv(prev, usecols=["fen", "white_elo", "black_elo"]))
+    pos = pd.concat(sources).dropna(subset=["white_elo"]).drop_duplicates("fen")
     allpos = allpos.merge(pos, on="fen", how="left")
 
     def mover_elo(r):
