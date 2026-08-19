@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 {% block title %}The research — Unnamed Concepts{% endblock %}
 {% block body %}
-<h1>How eight nameless ideas were found</h1>
-<p class="lede">Every concept in this trainer came out of a pipeline, not a chess book.
-Here is exactly what it does and what it found.</p>
+<h1>How these positions were found</h1>
+<p class="lede">Nothing in this trainer came out of a chess book. It came out of a pipeline
+that looks for positions where a strong engine is decisively right and essentially no human
+plays the move. Here is exactly what it does, what it found, and where it falls short.</p>
 
 <h2>1 &middot; Finding disagreement</h2>
 <p>Positions are sampled from public Lichess games &mdash; both club play and games between
@@ -27,72 +28,107 @@ in their top five climbs from 29% to 57%.</p>
 
 <h2>3 &middot; Grouping them</h2>
 <p>Each position is embedded using the internal representations of <b>Leela Chess Zero</b>
-(layer 10), then clustered. Eight groups emerge. To describe them, each group's direction is
-compared against twelve named tactical motifs, built from thousands of tagged Lichess puzzles.</p>
-<p>Roughly half of what makes these positions machine-only is expressible in known terms
-(R&sup2; = 0.46) &mdash; a signature of sacrifice without a combination to justify it. The other
-half is not expressible at all. One group, <a href="/concept/4">The one with no name</a>, has
-zero or negative similarity to every named motif.</p>
+(layer 10), then clustered into eight groups. To characterise each group, its direction is
+compared against twelve named tactical motifs built from thousands of tagged Lichess puzzles.</p>
+<p>The groups are deliberately unnamed. Naming them would be the one move this project cannot
+justify: a name asserts that the group is a thing chess vocabulary already covers, and the
+measurements below say that is mostly false. Roughly half of what makes these positions
+machine-only is expressible in known terms (R&sup2; = 0.46) &mdash; a signature of sacrifice
+without a combination to justify it. The other half is not expressible at all. One group,
+<a href="/concept/4">Concept 5</a>, has zero or negative similarity to every named motif.</p>
 
 <table class="research">
-<thead><tr><th>Concept</th><th>Positions</th><th>Found over the board</th><th>Quiet</th>
+<thead><tr><th>Group</th><th>Positions</th><th>Found over the board</th><th>Quiet</th>
 <th>Avg error (cp)</th><th>Closest named motifs</th></tr></thead>
 <tbody>
-<tr><td><a href="/concept/0">The heavy-piece pause</a></td>
-  <td>287</td>
-  <td>16.7%</td>
-  <td>80%</td>
-  <td>&minus;335</td>
-  <td class="mo">exposedKing 0.19 · defensiveMove 0.11 · quietMove 0.08</td></tr>
-<tr><td><a href="/concept/1">The unpaid sacrifice</a></td>
-  <td>204</td>
-  <td>7.8%</td>
-  <td>89%</td>
-  <td>&minus;505</td>
-  <td class="mo">sacrifice 0.41 · deflection 0.35 · attraction 0.35</td></tr>
-<tr><td><a href="/concept/2">Order of operations</a></td>
-  <td>339</td>
-  <td>15.0%</td>
-  <td>88%</td>
-  <td>&minus;212</td>
-  <td class="mo">pin 0.27 · clearance 0.25 · attraction 0.19</td></tr>
-<tr><td><a href="/concept/3">Against the book</a></td>
-  <td>145</td>
-  <td>9.7%</td>
-  <td>86%</td>
-  <td>&minus;215</td>
-  <td class="mo">intermezzo 0.20 · clearance 0.14 · pin 0.11</td></tr>
-<tr><td><a href="/concept/4">The one with no name</a></td>
-  <td>105</td>
-  <td>19.0%</td>
-  <td>68%</td>
-  <td>&minus;507</td>
-  <td class="mo">exposedKing 0.00 · quietMove -0.05 · defensiveMove -0.07</td></tr>
-<tr><td><a href="/concept/5">Nothing happens</a></td>
-  <td>278</td>
-  <td>18.0%</td>
-  <td>94%</td>
-  <td>&minus;306</td>
-  <td class="mo">skewer 0.29 · attraction 0.28 · deflection 0.28</td></tr>
-<tr><td><a href="/concept/6">The long fuse</a></td>
-  <td>295</td>
-  <td>10.2%</td>
-  <td>83%</td>
-  <td>&minus;414</td>
-  <td class="mo">sacrifice 0.42 · attraction 0.41 · pin 0.39</td></tr>
-<tr><td><a href="/concept/7">Walking into the fire</a></td>
-  <td>92</td>
-  <td>18.5%</td>
-  <td>86%</td>
-  <td>&minus;303</td>
-  <td class="mo">exposedKing 0.53 · pin 0.30 · deflection 0.29</td></tr>
+{% for c in concepts %}
+<tr><td><a href="{{ url_for('concept', cid=c.id) }}">{{ c.label }}</a></td>
+  <td>{{ c.signature.positions }}</td>
+  <td>{{ (c.signature.found_by_real_players * 100)|round(1) }}%</td>
+  <td>{{ (c.signature.quiet_share * 100)|round(0)|int }}%</td>
+  <td>&minus;{{ c.signature.avg_cost_cp }}</td>
+  <td class="mo">{% for m, val in c.signature.top_motifs %}{{ m }} {{ '%.2f'|format(val) }}{% if not loop.last %} &middot; {% endif %}{% endfor %}</td></tr>
+{% endfor %}
 </tbody></table>
 
 <p class="small">&ldquo;Quiet&rdquo; means the move is neither a capture nor a check. Across all
 eight groups, between 68% and 94% of these moves are quiet &mdash; the part of chess humans
 cannot see is not tactics. Tactics are what training drills.</p>
 
-<h2>4 &middot; What this is built on</h2>
+<h2>4 &middot; Is the grouping real?</h2>
+<p>Clustering always returns clusters. The only honest thing to do is test whether these ones
+survive contact with a null hypothesis. Three tests, all of which the grouping could have
+failed, and one of which it did.</p>
+
+<p><b>The structure exists.</b> Compared against a control built by shuffling each embedding
+dimension independently &mdash; which destroys the structure while preserving the scale and
+spectrum of the data &mdash; the real embeddings separate roughly nine times better. But the
+absolute separation is small. These are soft regions in a continuous space, not sharp
+categories.</p>
+
+<table class="research">
+<thead><tr><th>Groups (k)</th><th>Silhouette, real</th><th>Silhouette, shuffled null</th>
+<th>Margin</th></tr></thead>
+<tbody>
+{% for k in ['2','3','4','6','8','9','12','16'] %}
+<tr{% if k == '8' %} class="hl"{% endif %}>
+  <td>{{ k }}</td>
+  <td>{{ '%.4f'|format(v.silhouette_real[k]) }}</td>
+  <td>{{ '%.4f'|format(v.silhouette_null[k]) }}</td>
+  <td>{{ '%+.4f'|format(v.silhouette_real[k] - v.silhouette_null[k]) }}</td></tr>
+{% endfor %}
+</tbody></table>
+
+<p><b>Eight is not derivable from the data.</b> The margin over the null is essentially flat
+from k=3 to k=12 &mdash; there is no elbow, no natural number of groups. Resampling 80% of the
+positions twenty-five times, k=6 reproduces itself most reliably (adjusted Rand
+{{ '%.2f'|format(v.stability['6'].mean_ari) }}), better than k=8
+({{ '%.2f'|format(v.stability['8'].mean_ari) }}) and far better than k=4
+({{ '%.2f'|format(v.stability['4'].mean_ari) }}). Eight groups is a teaching decision, not a
+discovery.</p>
+
+<p><b>It does predict something outside itself.</b> At k=8, the groups differ in how often real
+players found the move by more than random groupings of the same sizes would
+(p&nbsp;=&nbsp;{{ '%.3f'|format(v.external_validity['8'].p_value) }}). At k=9 the same test
+fails (p&nbsp;=&nbsp;{{ '%.3f'|format(v.external_validity['9'].p_value) }}). So the partition
+carries real information about human difficulty &mdash; but it is the one arrangement that
+happened to clear the bar, which is a weaker claim than it first sounds.</p>
+
+<h2>5 &middot; What clustering throws away</h2>
+<p>The last test is the one that changed how this project describes itself. Given a position,
+how well can you predict whether the player at the board actually found the move? Five-fold
+cross-validation, {{ (e.found_rate * 100)|round(1) }}% base rate, scored by area under the
+ROC curve &mdash; 0.5 is a coin flip.</p>
+
+<table class="research">
+<thead><tr><th>What the model sees</th><th>AUC</th></tr></thead>
+<tbody>
+<tr><td>Nothing (random)</td><td>{{ '%.3f'|format(e.random_auc) }}</td></tr>
+<tr><td>Surface chess features &mdash; piece, phase, quiet, capture, check, cost</td>
+    <td>{{ '%.3f'|format(e.surface_auc) }}</td></tr>
+<tr><td>Which group the position falls in, alone</td>
+    <td>{{ '%.3f'|format(e.by_k['4'].cluster_auc) }}</td></tr>
+<tr><td>Surface features + group</td><td>{{ '%.3f'|format(e.by_k['4'].combined_auc) }}</td></tr>
+<tr><td>Leela's embedding, 40 principal components</td>
+    <td>{{ '%.3f'|format(e.raw_embedding_auc) }}</td></tr>
+<tr class="hl"><td><b>Surface features + embedding</b></td>
+    <td><b>{{ '%.3f'|format(e.surface_plus_raw_auc) }}</b></td></tr>
+</tbody></table>
+
+<p>The engine's internal representation knows something real about human difficulty that piece,
+phase and quietness do not: adding it lifts prediction by
+{{ '%+.3f'|format(e.surface_plus_raw_auc - e.surface_auc) }}. But collapsing that same
+representation into group labels recovers only
+{{ '%+.3f'|format(e.by_k['4'].gain_over_surface) }} &mdash; roughly a sixth of it. The
+information lives in the continuous geometry, not in which bucket a position lands in.</p>
+
+<p class="note">So the accurate description of this project is not &ldquo;eight machine concepts
+were discovered.&rdquo; It is: there is a continuous space of positions where engines and humans
+part company, that space has measurable structure, and eight regions of it are a convenient way
+to teach from &mdash; nothing more. The groups earn their place as a curriculum. They do not
+earn the status of natural kinds, and they certainly do not earn names.</p>
+
+<h2>6 &middot; What this is built on</h2>
 <p>The approach follows Schut et&nbsp;al., <i>PNAS</i> 2025, who mined concepts from AlphaZero
 that do not exist in human play and taught them to four grandmasters using only example
 positions &mdash; no explanations, because none were possible. All four improved. This project

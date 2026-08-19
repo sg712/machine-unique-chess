@@ -1,6 +1,6 @@
 """Exp 17 — turn the eight families into teachable concepts.
 
-Each family gets a name and description authored from its measured signature
+Each family gets a neutral label and a gloss assembled from its measured signature
 (shown alongside, so nothing is hidden), a set of study prototypes with the
 engine's line, and a set of drill positions with Maia's human-move distribution
 for feedback.
@@ -19,42 +19,31 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 ENGINE = ROOT / "models" / "stockfish-build" / "src" / "stockfish"
 N_STUDY, N_DRILL, DEPTH = 4, 12, 18
 
-# Names and glosses authored from each family's measured signature. The evidence
-# for each sits in `signature` on the output object, so a reader can check them.
-NAMES = {
-    0: ("The heavy-piece pause",
-        "Queens and rooks making quiet, non-committal moves. Nothing is attacked and nothing is "
-        "defended in the obvious sense — the piece simply stands better afterwards, and the "
-        "position is easier to play for reasons that show up several moves later."),
-    1: ("The unpaid sacrifice",
-        "Material goes and no combination follows. This is the family humans fail hardest — the "
-        "average human choice here costs five pawns of evaluation. The compensation is real but "
-        "it arrives slowly, and a human wants to see the payoff before paying the price."),
-    2: ("Order of operations",
-        "The right ideas in an order nobody considers. A clearance or a pin inserted before the "
-        "natural continuation, which changes what the natural continuation is worth. The single "
-        "largest family, and the one where the human move costs least — these are near-misses."),
-    3: ("Against the book",
-        "Opening positions where the engine's preference diverges from what people actually play. "
-        "Almost entirely knight and pawn moves in the first dozen moves, where human choice is "
-        "driven by theory and habit rather than by the position in front of them."),
-    4: ("The one with no name",
-        "This family matches no named motif — its cosine to all twelve is zero or negative. It is "
-        "also the most tactical of the eight and carries the joint-highest cost. Whatever the "
-        "engine is seeing here, human chess vocabulary has no word for it."),
-    5: ("Nothing happens",
-        "The quietest family: 94% of the moves neither capture nor check, and barely one in "
-        "twenty takes anything. Mostly endgames and late middlegames where the position looks "
-        "settled and is not."),
-    6: ("The long fuse",
-        "Middlegame sacrifices, attractions and pins that set up a payoff far enough away that "
-        "the connection is invisible. Related to the unpaid sacrifice, but sharper and always "
-        "with pieces still on the board."),
-    7: ("Walking into the fire",
-        "By far the strongest king-exposure signal of the eight. Moves that open lines toward a "
-        "king — often the engine's own — where human instinct is to shelter first and calculate "
-        "afterwards. The smallest family, and one of the most alien."),
-}
+# No names. The whole premise is that these groups are not covered by existing chess
+# vocabulary — exp 18/19 show the clusters are soft regions in a continuous space, not
+# discrete kinds — so a name would assert more than the data supports. Each group gets a
+# neutral label and a gloss assembled purely from its measured signature, so every clause
+# is checkable against `signature` on the output object.
+
+
+def describe(fid: int, fam: dict) -> tuple[str, str]:
+    phase = max(fam["phase"], key=fam["phase"].get)
+    piece = max(fam["pieces"], key=fam["pieces"].get)
+    quiet = round(fam["quiet_frac"] * 100)
+    motif, cos = fam["motifs"][0]
+    if cos <= 0.01:
+        nearest = ("it has no measurable similarity to any of the twelve named motifs — "
+                   f"the closest, {motif}, sits at {cos:.2f}")
+    else:
+        nearest = f"this group is closest to {motif} ({cos:.2f}), and only weakly"
+    gloss = (
+        f"{fam['n']} positions, mostly {phase}. {quiet}% of the moves are quiet — neither "
+        f"capture nor check — and the piece moved is most often a {piece}. In the engine's "
+        f"representation {nearest}. Real players at the board found these moves "
+        f"{fam['real_found'] * 100:.1f}% of the time, losing an average of "
+        f"{fam['mean_cost_cp']} centipawns by choosing otherwise."
+    )
+    return f"Concept {fid + 1}", gloss
 
 
 def main() -> None:
@@ -107,9 +96,9 @@ def main() -> None:
                     "p_best": round(probs.get(best, 0.0), 4),
                     "quiet": bool(r.quiet), "piece": r.piece, "phase": r.phase,
                 })
-            name, gloss = NAMES[fid]
+            label, gloss = describe(fid, fam)
             concepts.append({
-                "id": fid, "name": name, "gloss": gloss,
+                "id": fid, "name": label, "label": label, "gloss": gloss,
                 "signature": {
                     "positions": fam["n"],
                     "found_by_real_players": fam["real_found"],
@@ -122,7 +111,7 @@ def main() -> None:
                 "study": picked[:N_STUDY],
                 "drill": picked[N_STUDY:N_STUDY + N_DRILL],
             })
-            print(f"[{fid}] {name:26s} study={len(picked[:N_STUDY])} drill={len(picked[N_STUDY:])}")
+            print(f"[{fid}] {label:12s} study={len(picked[:N_STUDY])} drill={len(picked[N_STUDY:])}")
     finally:
         engine.quit()
 

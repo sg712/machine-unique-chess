@@ -191,3 +191,5 @@ h1.tight { margin-bottom:.3rem; }
 .bignum span { font-size:1.6rem; color:var(--muted); }
 table.research { max-width:none; font-size:.86rem; }
 table.research .mo { color:var(--muted); font-size:.8rem; }
+table.research tr.hl td { background:#8a1f110d; }
+table.research tr.hl td:first-child { box-shadow:inset 2px 0 0 var(--accent); }

@@ -28,6 +28,10 @@ app.secret_key = os.environ.get("SECRET_KEY", "unnamed-concepts-local-dev")
 
 CONCEPTS = json.load(open(ROOT / "webapp" / "concepts.json"))
 BY_ID = {c["id"]: c for c in CONCEPTS}
+VALIDATION = {
+    "cluster": json.load(open(ROOT / "results" / "18_validation.json")),
+    "embed": json.load(open(ROOT / "results" / "19_embedding_value.json")),
+}
 
 
 # ── storage ───────────────────────────────────────────────────────────────────
@@ -231,7 +235,8 @@ def profile():
 
 @app.route("/research")
 def research():
-    return render_template("research.html", concepts=CONCEPTS, totals=totals())
+    return render_template("research.html", concepts=CONCEPTS, totals=totals(),
+                           v=VALIDATION["cluster"], e=VALIDATION["embed"])
 
 
 @app.route("/claim", methods=["GET", "POST"])
