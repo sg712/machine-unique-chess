@@ -32,6 +32,8 @@ VALIDATION = {
     "cluster": json.load(open(ROOT / "results" / "18_validation.json")),
     "embed": json.load(open(ROOT / "results" / "19_embedding_value.json")),
     "difficulty": json.load(open(ROOT / "results" / "20_difficulty.json")),
+    "curve": json.load(open(ROOT / "results" / "21_learning_curve.json")),
+    "bands": json.load(open(ROOT / "results" / "23_band_value.json")),
 }
 
 
@@ -239,7 +241,8 @@ def profile():
 def research():
     return render_template("research.html", concepts=CONCEPTS, totals=totals(),
                            v=VALIDATION["cluster"], e=VALIDATION["embed"],
-                           d=VALIDATION["difficulty"])
+                           d=VALIDATION["difficulty"], lc=VALIDATION["curve"],
+                           bv=VALIDATION["bands"])
 
 
 @app.route("/claim", methods=["GET", "POST"])

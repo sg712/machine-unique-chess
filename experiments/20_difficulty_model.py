@@ -235,6 +235,8 @@ def part_b() -> tuple[dict, pd.DataFrame]:
                            for p, a in zip(mean_pred, frac)]
     res["_pred_mu"] = float(best_oof[mu_mask].mean())
     res["_pred_ordinary"] = float(best_oof[~mu_mask].mean())
+    res["_actual_mu"] = float(y[mu_mask].mean())
+    res["_actual_ordinary"] = float(y[~mu_mask].mean())
 
     scored = df[["fen", "engine_best", "game_id", "machine_unique", "found"]].copy()
     scored["predicted_find_rate"] = best_oof

@@ -150,3 +150,38 @@ The honest position after exps 18–20:
 Claim 4 is the one that changed. The trainer's justification rests on 1–3, which
 survive. What does not survive is any suggestion that the embedding is a privileged
 window into what humans cannot see.
+
+---
+
+## Addendum (2026-08-19) — the grouped-CV bug, and what the second batch bought
+
+Everything above was computed with a broken split. Every elite position carried the
+placeholder game id `"?"` (the Elite Database's `Site` header is literally `?`, and
+the sampler keyed on it), so "grouped by game" cross-validation treated all 29,741
+elite positions as **one game**: whichever fold drew it owned the entire elite
+corpus, and out-of-fold elite predictions always came from a club-only model.
+
+Exp 22 reconstructs real ids by replaying the source archive deterministically and
+matching positions back by FEN (95% mapped; ambiguous FENs become singleton groups).
+After the repair, on the enlarged 63,486-position master:
+
+- **Part A's conclusion stands.** Best embedding gain at any width: +0.008 —
+  noise-level. The Maia-control verdict is unchanged. (Exp 19's original +0.062 also
+  used *ungrouped* StratifiedKFold, one more reason it flattered the embedding.)
+- **Part B: AUC 0.846 ± 0.004.** Fold variance fell 4× (was ±0.018). The
+  calibration drift reported above — up to 7pp overconfident mid-range — **vanished**;
+  every decile is now within ~0.5pp. It was an artefact of the broken folds.
+- **The underestimate claim is retracted.** Predicted 16.7% vs actual 17.2% on
+  machine-unique positions. The 17.7%-vs-14.1% gap above was the artefact again.
+- **Learning curve (exp 21): saturated.** 0.845 AUC at 10k training positions,
+  0.848 at 51k. More data does not move the headline number.
+- **But the second elite batch was not wasted (exp 23).** Same held-out games,
+  one model trained with the batch and one without: +0.0053 AUC and −0.0044 Brier
+  at 2600+, versus +0.0005 AUC below 2000. The gain concentrates exactly where the
+  new data went — and the strongest band remains the hardest to predict
+  (0.820 at 2600+ vs 0.860 below 2000).
+
+Corrected headline numbers: 63,486 positions, 2,571 machine-unique (4.0%, six
+batches), 2,129 hard-core, 707 missed by a 2500+ player. Real 2600+ players find
+machine-unique moves 39.7% of the time (n=438), revising the earlier 47% (n=247);
+the Maia-3 underestimate is ~15×, not 18×.

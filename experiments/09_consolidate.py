@@ -31,6 +31,19 @@ def main() -> None:
         print(f"{pathlib.Path(f).name}: {len(df)} rows, {df.machine_unique.sum()} MU")
     allpos = pd.concat(frames).drop_duplicates("fen").reset_index(drop=True)
 
+    # Elite batches were mined with game_id "?" (exp 22 explains why). Apply the
+    # reconstructed fen -> game mapping; whatever stays unmapped becomes a
+    # singleton group rather than one giant fake game.
+    gid_map = ROOT / "data" / "elite_game_ids.csv"
+    if gid_map.exists():
+        m = pd.read_csv(gid_map).set_index("fen").game_id
+        needs = allpos.game_id == "?"          # only rows that lack a real id —
+        fixed = allpos.loc[needs, "fen"].map(m)  # club ids are correct already
+        allpos.loc[needs, "game_id"] = fixed.fillna("?")
+        orphans = allpos.game_id == "?"
+        allpos.loc[orphans, "game_id"] = ["orph_" + str(i) for i in allpos.index[orphans]]
+        print(f"elite game ids: {fixed.notna().sum()} repaired, {orphans.sum()} singletons")
+
     # attach player ratings. Original position files are the first choice, but the
     # club file was trimmed from the repo — for fens already consolidated once, the
     # previous master_all.csv still carries the ratings, so it serves as a fallback.

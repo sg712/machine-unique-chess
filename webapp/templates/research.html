@@ -13,11 +13,11 @@ plays the move. Here is exactly what it does, what it found, and where it falls 
 rather than what is best.</p>
 <p>A position is <em>machine-unique</em> when the engine's move is decisively better &mdash; at
 least 100 centipawns above the human favourite &mdash; and Maia gives that move under 5%
-probability at <em>every</em> rating from 1100 to 2600. Out of <b>43,603</b> positions analysed,
-<b>1,745</b> qualified, a rate of 4.0% that held steady across five separate batches and both
-rating populations.</p>
-<p>In <b>1,499</b> of those the player who was actually at the board also failed to find the
-move. In <b>247</b>, that player was rated 2500 or above.</p>
+probability at <em>every</em> rating from 1100 to 2600. Out of <b>63,486</b> positions analysed,
+<b>2,571</b> qualified, a rate of 4.0% that has now held steady across six separate batches and
+both rating populations.</p>
+<p>In <b>2,129</b> of those the player who was actually at the board also failed to find the
+move. In <b>707</b>, that player was rated 2500 or above.</p>
 
 <h2>2 &middot; Blindness, then disbelief</h2>
 <p>Simulated players agree with the engine more often as they get stronger &mdash; on ordinary
@@ -28,7 +28,9 @@ in their top five climbs from 29% to 57%.</p>
 
 <h2>3 &middot; Grouping them</h2>
 <p>Each position is embedded using the internal representations of <b>Leela Chess Zero</b>
-(layer 10), then clustered into eight groups. To characterise each group, its direction is
+(layer 10), then clustered into eight groups. The clusters were built on the first 1,745
+qualifying positions; the 826 found by the latest batch have not been assigned to groups,
+because that requires the embedding model rather than anything in this repository. To characterise each group, its direction is
 compared against twelve named tactical motifs built from thousands of tagged Lichess puzzles.</p>
 <p>The groups are deliberately unnamed. Naming them would be the one move this project cannot
 justify: a name asserts that the group is a thing chess vocabulary already covers, and the
@@ -160,12 +162,29 @@ in the middle of the range.</p>
 {% endfor %}
 </tbody></table>
 
-<p>On machine-unique positions it predicts a
-{{ '%.1f'|format(d.part_b_difficulty_model['_pred_mu'] * 100) }}% find-rate where the true rate is
-{{ '%.1f'|format(e.found_rate * 100) }}%. A model built to detect difficulty still
-<em>underestimates</em> how hard these positions are &mdash; a small piece of independent
-evidence that the machine-unique set is genuinely unusual, not just the tail of a smooth
-distribution.</p>
+<p>An earlier version of this section claimed the model <em>underestimates</em>
+machine-unique positions. With the repaired game splits (section 6&frac12; below) that gap
+disappears: the model predicts a
+{{ '%.1f'|format(d.part_b_difficulty_model['_pred_mu'] * 100) }}% find-rate on them against an
+actual {{ '%.1f'|format(d.part_b_difficulty_model['_actual_mu'] * 100) }}%. The earlier gap was
+an artefact of a broken evaluation, not a property of the positions.</p>
+
+<h2>6&frac12; &middot; Two audits</h2>
+<p><b>The evaluation had a bug, now fixed.</b> Every elite game carried the same placeholder id,
+so splits that promised &ldquo;positions from one game never straddle train and test&rdquo; were
+treating all {{ '{:,}'.format(29741) }} elite positions as a single game &mdash; one fold owned
+all of them. Real ids were reconstructed by replaying the source archive. With sound folds the
+fold-to-fold variance fell four-fold and the calibration drift this page previously reported
+vanished. Numbers on this page are post-repair.</p>
+<p><b>More data no longer helps &mdash; except at the top.</b> Holding out
+{{ '{:,}'.format(lc.test_n) }} positions and training on growing subsets:
+{% for pt in lc.curve %}{{ '{:,}'.format(pt.train_n) }} &rarr; {{ '%.3f'|format(pt.auc_mean) }}{% if not loop.last %}, {% endif %}{% endfor %}.
+The curve is flat past twenty thousand. But the flatness is a club-position statement &mdash;
+splitting the same held-out set by the rating of the player at the board, a model trained with
+the second elite batch beats one trained without it by
+{{ '%+.4f'|format(bv['2600+'].delta_auc) }} AUC at 2600+ and only
+{{ '%+.4f'|format(bv['<2000'].delta_auc) }} below 2000. The new data helped exactly where it
+was aimed, and nowhere else.</p>
 
 <p>Every position in this trainer now carries a prediction from that model: how often a
 1900-rated player would find the move. It is shown with the feedback after you answer.</p>

@@ -3,10 +3,11 @@
 **Finding chess positions where a strong engine is decisively right and essentially no
 human plays the move — then testing how much structure those positions actually have.**
 
-Across 43,603 positions from real games, 4.0% contain a move that Stockfish rates
+Across 63,486 positions from real games, 4.0% contain a move that Stockfish rates
 clearly best and that a neural model of human play gives under 5% probability at
-*every* rating from 1100 to 2600. In 1,499 of those, the player actually at the board
-missed it too; in 247, that player was rated 2500 or above.
+*every* rating from 1100 to 2600 — a rate that has held across six separate batches.
+In 2,129 of those, the player actually at the board missed it too; in 707, that
+player was rated 2500 or above.
 
 Clustering those positions by how an engine represents them internally produces groups
 that are real but soft — nine times better separated than a shuffled null, yet with no
@@ -42,6 +43,9 @@ BIBLIOGRAPHY.md  annotated reading list
 | `18_cluster_validation.py` | Tests the clustering against a null: is it real, and at what k? |
 | `19_does_embedding_matter.py` | Does the embedding beat surface chess features — and does clustering keep that? |
 | `20_difficulty_model.py` | The Maia control that overturns 19; a calibrated human-difficulty model |
+| `21_learning_curve.py` | Is the model data-hungry or saturated? (saturated past ~20k) |
+| `22_repair_elite_game_ids.py` | Rebuilds elite game ids — the grouped-CV bug fix |
+| `23_band_value.py` | What the second elite batch bought, per rating band |
 
 Everything ran on one laptop.
 
@@ -98,8 +102,10 @@ appears in their top five climbs from 29% to 57%. Weak players never see the mov
 strong players see it and reject it.
 
 **Simulation underestimates real masters.** Maia-3 predicts 2.6% for simulated 2600s.
-Real 2600+ players in the source games found these moves 47% of the time — roughly 18×
-higher. Behaviour models capture pattern recognition, not calculation under a clock.
+Real 2600+ players in the source games found these moves 39.7% of the time (n=438,
+after the second elite batch quadrupled the evidence; an earlier 47% rested on 247
+positions) — roughly 15× higher. Behaviour models capture pattern recognition, not
+calculation under a clock.
 
 **Half-nameable.** Regressing the machine-unique direction onto twelve motif directions
 built from tagged Lichess puzzles gives R² = 0.46 — a signature of sacrifice without a
@@ -115,7 +121,7 @@ k=8); k=8 is the arrangement whose groups predict human find-rate better than ch
 there.** Predicting whether the player at the board found the move, the Leela embedding
 beat surface chess features by +0.062 AUC. But that baseline had no access to **Maia**,
 a network trained specifically to predict human moves, or to the engine's own evaluation.
-Against a fair baseline (5-fold CV grouped by game, n=1,745, 14.1% base rate):
+Against a fair baseline (5-fold CV grouped by game, n=1,745, 14.1% base rate; game ids repaired by exp 22):
 
 | What the model sees | AUC |
 |---|---|
@@ -132,13 +138,24 @@ a monotonic decline and a best-case gain of −0.001, so this is redundancy, not
 **The embedding tells you nothing about human difficulty that Maia and the engine did not
 already say.** Exp 18 is untouched; what falls is exp 19's interpretation.
 
-**A difficulty model that works.** Trained over all 43,603 mined positions rather than the
+**A difficulty model that works.** Trained over all 63,486 mined positions rather than the
 machine-unique subset, predicting whether a human plays the engine's best move:
-**AUC 0.849**, Brier 0.158 against 0.246 for guessing the base rate, close to calibrated
-across all ten deciles. On machine-unique positions it predicts 17.7% where the truth is
-14.1% — even a model built to detect difficulty underestimates these. Every position in the
-trainer now carries its prediction of how often a 1900-rated player finds the move. Full
-write-up in [docs/FINDINGS_difficulty.md](docs/FINDINGS_difficulty.md).
+**AUC 0.846 ± 0.004**, Brier 0.158 against 0.248 for guessing the base rate, calibrated to
+within about half a point in every decile. (An earlier version claimed the model
+underestimates machine-unique positions; that gap was an artefact of a broken evaluation —
+see below — and is gone.) Every position in the trainer carries its prediction of how often
+a 1900-rated player finds the move. Full write-up in
+[docs/FINDINGS_difficulty.md](docs/FINDINGS_difficulty.md).
+
+**The evaluation had a bug, found and fixed.** Every elite game carried the placeholder id
+`"?"`, so "grouped by game" cross-validation was treating all 29,741 elite positions as one
+game — one fold owned all of them. Exp 22 reconstructs real ids by replaying the source
+archive; with sound folds, fold variance fell 4× and the reported calibration drift vanished.
+
+**More data is done helping — except at the top.** A learning curve over the enlarged set is
+flat past 20k training positions (0.845 at 10k → 0.848 at 51k). But split the same held-out
+games by the rating of the player at the board and the second elite batch buys +0.0053 AUC at
+2600+ against +0.0005 below 2000 — the new data helped exactly where it was aimed.
 
 So: the groups are a defensible **teaching partition**, not a discovery of discrete kinds,
 and not a privileged window into what humans cannot see.

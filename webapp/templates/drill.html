@@ -122,7 +122,7 @@ function showFeedback(r) {
   // (exp 20) estimates how likely they are to *find* it, trained on 43,603 real
   // decisions rather than on move imitation. Two different estimates, both shown.
   if (r.predicted != null) {
-    line += ` <span class="pred">A difficulty model trained on 43,603 real ` +
+    line += ` <span class="pred">A difficulty model trained on 63,486 real ` +
             `decisions puts the chance a 1900 finds it at ${pct(r.predicted)}.</span>`;
   }
   document.getElementById("fbline").innerHTML = line;
