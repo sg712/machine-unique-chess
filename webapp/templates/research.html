@@ -94,41 +94,83 @@ fails (p&nbsp;=&nbsp;{{ '%.3f'|format(v.external_validity['9'].p_value) }}). So 
 carries real information about human difficulty &mdash; but it is the one arrangement that
 happened to clear the bar, which is a weaker claim than it first sounds.</p>
 
-<h2>5 &middot; What clustering throws away</h2>
-<p>The last test is the one that changed how this project describes itself. Given a position,
-how well can you predict whether the player at the board actually found the move? Five-fold
-cross-validation, {{ (e.found_rate * 100)|round(1) }}% base rate, scored by area under the
-ROC curve &mdash; 0.5 is a coin flip.</p>
+<h2>5 &middot; What the representation actually adds &mdash; a correction</h2>
+<p>An earlier version of this page claimed the engine's internal representation knows
+something about human difficulty that ordinary chess features do not. That claim was
+tested properly and it did not hold. It is left here, corrected, rather than quietly
+deleted.</p>
+
+<p>The question: given a position, how well can you predict whether the player at the board
+actually found the move? Scored by area under the ROC curve, where 0.5 is a coin flip,
+five-fold cross-validation grouped by game so positions from one game never straddle the
+train/test split.</p>
+
+<p>The first pass compared Leela's embedding against surface chess features &mdash; piece,
+phase, quiet, capture, check, cost &mdash; and the embedding won by
+{{ '%+.3f'|format(e.surface_plus_raw_auc - e.surface_auc) }}. But that baseline had no access
+to <b>Maia</b>, a network trained specifically to predict human moves, or to the engine's own
+evaluation. Against a baseline that has both, the picture reverses.</p>
 
 <table class="research">
 <thead><tr><th>What the model sees</th><th>AUC</th></tr></thead>
 <tbody>
-<tr><td>Nothing (random)</td><td>{{ '%.3f'|format(e.random_auc) }}</td></tr>
-<tr><td>Surface chess features &mdash; piece, phase, quiet, capture, check, cost</td>
-    <td>{{ '%.3f'|format(e.surface_auc) }}</td></tr>
-<tr><td>Which group the position falls in, alone</td>
-    <td>{{ '%.3f'|format(e.by_k['4'].cluster_auc) }}</td></tr>
-<tr><td>Surface features + group</td><td>{{ '%.3f'|format(e.by_k['4'].combined_auc) }}</td></tr>
-<tr><td>Leela's embedding, 40 principal components</td>
-    <td>{{ '%.3f'|format(e.raw_embedding_auc) }}</td></tr>
-<tr class="hl"><td><b>Surface features + embedding</b></td>
-    <td><b>{{ '%.3f'|format(e.surface_plus_raw_auc) }}</b></td></tr>
+<tr><td>Maia's probabilities alone</td><td>{{ '%.3f'|format(d.part_a_embedding_vs_maia['Maia only']['auc']) }}</td></tr>
+<tr><td>Leela embedding alone</td><td>{{ '%.3f'|format(d.part_a_embedding_vs_maia['embedding only']['auc']) }}</td></tr>
+<tr><td>Surface chess features alone</td><td>{{ '%.3f'|format(d.part_a_embedding_vs_maia['surface only']['auc']) }}</td></tr>
+<tr><td>Engine evaluation alone</td><td>{{ '%.3f'|format(d.part_a_embedding_vs_maia['engine only']['auc']) }}</td></tr>
+<tr><td>Surface + engine + Maia</td><td>{{ '%.3f'|format(d.part_a_embedding_vs_maia['surface + engine + Maia']['auc']) }}</td></tr>
+<tr class="hl"><td><b>Surface + engine + Maia + player rating</b></td>
+    <td><b>{{ '%.3f'|format(d.part_a_embedding_vs_maia['surface + engine + Maia + elo']['auc']) }}</b></td></tr>
+<tr><td>&nbsp;&nbsp;&hellip; and the Leela embedding on top</td>
+    <td>{{ '%.3f'|format(d.part_a_embedding_vs_maia['...+ EMBEDDING']['auc']) }}</td></tr>
 </tbody></table>
 
-<p>The engine's internal representation knows something real about human difficulty that piece,
-phase and quietness do not: adding it lifts prediction by
-{{ '%+.3f'|format(e.surface_plus_raw_auc - e.surface_auc) }}. But collapsing that same
-representation into group labels recovers only
-{{ '%+.3f'|format(e.by_k['4'].gain_over_surface) }} &mdash; roughly a sixth of it. The
-information lives in the continuous geometry, not in which bucket a position lands in.</p>
+<p>Adding the embedding to a fair baseline <em>costs</em>
+{{ '%.3f'|format(-d.part_a_embedding_vs_maia['_embedding_gain_over_baseline']) }} AUC. That could
+have been a sample-size artefact &mdash; forty extra features against 246 positive cases can
+lose on dimensionality alone &mdash; so the width was swept from forty components down to two.
+The decline is monotonic and the best result at <em>any</em> width is
+{{ '%+.3f'|format(d.part_a_embedding_vs_maia['_best_embedding_gain_any_width']) }}:
+indistinguishable from adding nothing.</p>
 
-<p class="note">So the accurate description of this project is not &ldquo;eight machine concepts
-were discovered.&rdquo; It is: there is a continuous space of positions where engines and humans
-part company, that space has measurable structure, and eight regions of it are a convenient way
-to teach from &mdash; nothing more. The groups earn their place as a curriculum. They do not
-earn the status of natural kinds, and they certainly do not earn names.</p>
+<p class="note">So the embedding is <b>redundant</b> for this purpose. Whatever it knows about
+human difficulty, Maia and the engine evaluation already knew. This does not touch section 4
+&mdash; the clusters still beat the shuffled null, and the k=8 result still holds. What falls
+is the stronger claim that the representation is a privileged window into what humans cannot
+see. It is a reasonable way to <em>group</em> positions for teaching. It is not a source of
+information nothing else has.</p>
 
-<h2>6 &middot; What this is built on</h2>
+<h2>6 &middot; How hard is this position, actually?</h2>
+<p>The useful half of that experiment. Trained across all
+<b>43,603</b> mined positions
+&mdash; not just the machine-unique ones &mdash; a model predicting whether a human plays the
+engine's best move reaches <b>AUC
+{{ '%.3f'|format(d.part_b_difficulty_model['everything cheap']['auc']) }}</b>, with a Brier score
+of {{ '%.3f'|format(d.part_b_difficulty_model['_brier']) }} against
+{{ '%.3f'|format(d.part_b_difficulty_model['_base_rate'] * (1 - d.part_b_difficulty_model['_base_rate'])) }}
+for always guessing the base rate. It is close to calibrated, drifting slightly overconfident
+in the middle of the range.</p>
+
+<table class="research">
+<thead><tr><th>Predicted find-rate</th><th>Actual find-rate</th></tr></thead>
+<tbody>
+{% for row in d.part_b_difficulty_model['_calibration'] %}
+<tr><td>{{ '%.1f'|format(row.predicted * 100) }}%</td>
+    <td>{{ '%.1f'|format(row.actual * 100) }}%</td></tr>
+{% endfor %}
+</tbody></table>
+
+<p>On machine-unique positions it predicts a
+{{ '%.1f'|format(d.part_b_difficulty_model['_pred_mu'] * 100) }}% find-rate where the true rate is
+{{ '%.1f'|format(e.found_rate * 100) }}%. A model built to detect difficulty still
+<em>underestimates</em> how hard these positions are &mdash; a small piece of independent
+evidence that the machine-unique set is genuinely unusual, not just the tail of a smooth
+distribution.</p>
+
+<p>Every position in this trainer now carries a prediction from that model: how often a
+1900-rated player would find the move. It is shown with the feedback after you answer.</p>
+
+<h2>7 &middot; What this is built on</h2>
 <p>The approach follows Schut et&nbsp;al., <i>PNAS</i> 2025, who mined concepts from AlphaZero
 that do not exist in human play and taught them to four grandmasters using only example
 positions &mdash; no explanations, because none were possible. All four improved. This project

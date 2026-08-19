@@ -31,6 +31,7 @@ BY_ID = {c["id"]: c for c in CONCEPTS}
 VALIDATION = {
     "cluster": json.load(open(ROOT / "results" / "18_validation.json")),
     "embed": json.load(open(ROOT / "results" / "19_embedding_value.json")),
+    "difficulty": json.load(open(ROOT / "results" / "20_difficulty.json")),
 }
 
 
@@ -212,6 +213,7 @@ def api_answer():
         correct=correct, best=pos["best"], best_san=pos["best_san"],
         picked_san=picked_san, human_p=hp, p_best=pos["p_best"],
         cost_cp=pos["cost_cp"], gap_cp=pos["gap_cp"],
+        predicted=pos.get("predicted_find_1900"),
         human=pos["human"][:3], line=frames_of(pos["fen"], pos["pv"]),
     )
 
@@ -236,7 +238,8 @@ def profile():
 @app.route("/research")
 def research():
     return render_template("research.html", concepts=CONCEPTS, totals=totals(),
-                           v=VALIDATION["cluster"], e=VALIDATION["embed"])
+                           v=VALIDATION["cluster"], e=VALIDATION["embed"],
+                           d=VALIDATION["difficulty"])
 
 
 @app.route("/claim", methods=["GET", "POST"])

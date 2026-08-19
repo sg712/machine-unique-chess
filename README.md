@@ -41,6 +41,7 @@ BIBLIOGRAPHY.md  annotated reading list
 | `17_build_concepts.py` | Engine lines + human move distributions for each group |
 | `18_cluster_validation.py` | Tests the clustering against a null: is it real, and at what k? |
 | `19_does_embedding_matter.py` | Does the embedding beat surface chess features — and does clustering keep that? |
+| `20_difficulty_model.py` | The Maia control that overturns 19; a calibrated human-difficulty model |
 
 Everything ran on one laptop.
 
@@ -104,24 +105,37 @@ number of groups. k=6 is the most reproducible partition (bootstrap ARI 0.90 vs 
 k=8); k=8 is the arrangement whose groups predict human find-rate better than chance
 (p = 0.009, where k=9 gives p = 0.063).
 
-**Clustering discards most of the signal.** Predicting whether the player at the board
-found the move (5-fold CV, 14.1% base rate):
+**Clustering discards most of the signal — and then the signal turned out not to be
+there.** Predicting whether the player at the board found the move, the Leela embedding
+beat surface chess features by +0.062 AUC. But that baseline had no access to **Maia**,
+a network trained specifically to predict human moves, or to the engine's own evaluation.
+Against a fair baseline (5-fold CV grouped by game, n=1,745, 14.1% base rate):
 
 | What the model sees | AUC |
 |---|---|
-| Random | 0.500 |
-| Surface chess features (piece, phase, quiet, capture, check, cost) | 0.561 |
-| Group label alone | 0.581 |
-| Surface + group | 0.572 (**+0.011**) |
-| Leela embedding, 40 PCs | 0.590 |
-| **Surface + embedding** | **0.622 (+0.062)** |
+| Maia's probabilities alone | 0.581 |
+| Leela embedding alone | 0.583 |
+| Surface chess features alone | 0.613 |
+| Engine evaluation alone | 0.636 |
+| Surface + engine + Maia | 0.648 |
+| **Surface + engine + Maia + player rating** | **0.724** |
+| … and the Leela embedding on top | 0.683 |
 
-The embedding carries real information about human difficulty that surface features do
-not — and bucketing it into groups throws away about five-sixths of that. The structure
-lives in continuous geometry, not in category membership. Full write-up in
-[docs/FINDINGS_validation.md](docs/FINDINGS_validation.md).
+Adding the embedding *costs* 0.041. Sweeping from 40 principal components down to 2 gives
+a monotonic decline and a best-case gain of −0.001, so this is redundancy, not overfitting.
+**The embedding tells you nothing about human difficulty that Maia and the engine did not
+already say.** Exp 18 is untouched; what falls is exp 19's interpretation.
 
-So: the groups are a defensible **teaching partition**, not a discovery of discrete kinds.
+**A difficulty model that works.** Trained over all 43,603 mined positions rather than the
+machine-unique subset, predicting whether a human plays the engine's best move:
+**AUC 0.849**, Brier 0.158 against 0.246 for guessing the base rate, close to calibrated
+across all ten deciles. On machine-unique positions it predicts 17.7% where the truth is
+14.1% — even a model built to detect difficulty underestimates these. Every position in the
+trainer now carries its prediction of how often a 1900-rated player finds the move. Full
+write-up in [docs/FINDINGS_difficulty.md](docs/FINDINGS_difficulty.md).
+
+So: the groups are a defensible **teaching partition**, not a discovery of discrete kinds,
+and not a privileged window into what humans cannot see.
 
 ---
 
