@@ -48,10 +48,8 @@ def main() -> None:
     # club file was trimmed from the repo — for fens already consolidated once, the
     # previous master_all.csv still carries the ratings, so it serves as a fallback.
     sources = []
-    for f in ["positions.csv", "positions_elite.csv", "positions_elite_remaining.csv"]:
-        fp = ROOT / "data" / f
-        if fp.exists():
-            sources.append(pd.read_csv(fp)[["fen", "white_elo", "black_elo"]])
+    for fp in sorted((ROOT / "data").glob("positions*.csv")):
+        sources.append(pd.read_csv(fp)[["fen", "white_elo", "black_elo"]])
     prev = R / "master_all.csv"
     if prev.exists():
         sources.append(pd.read_csv(prev, usecols=["fen", "white_elo", "black_elo"]))
