@@ -59,7 +59,13 @@ than described — then twelve unseen positions to drill. Feedback names your mo
 you what share of 1900-rated humans play it, and steps through the engine's line.
 
 The app serves precomputed positions from `webapp/concepts.json`; no engine runs per
-request, which keeps it fast and deterministic.
+request, which keeps it fast and deterministic. Feedback also quotes a difficulty model's
+estimate of how often a 1900-rated player finds the move (exp 20).
+
+To deploy: the repo carries a `render.yaml`, so connecting it to Render picks up the
+build and start commands automatically. Runtime dependencies are Flask and python-chess
+only — no engine, no neural network. Set `DB_PATH` to a mounted disk if progress should
+survive redeploys.
 
 ---
 

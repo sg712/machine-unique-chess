@@ -20,7 +20,7 @@ from flask import (Flask, g, jsonify, redirect, render_template, request,
                    session, url_for)
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-DB = ROOT / "webapp" / "study.db"
+DB = pathlib.Path(os.environ.get("DB_PATH", ROOT / "webapp" / "study.db"))
 CODE_RE = re.compile(r"^[A-Z0-9]{6}$")
 
 app = Flask(__name__)
@@ -263,6 +263,9 @@ def totals() -> dict:
             "positions": sum(len(c["drill"]) + len(c["study"]) for c in CONCEPTS)}
 
 
+# Under gunicorn there is no __main__, so the schema has to be created at import
+# time or the first request hits a missing table.
+init_db()
+
 if __name__ == "__main__":
-    init_db()
     app.run(debug=False, port=int(os.environ.get("PORT", 5055)))
