@@ -31,7 +31,7 @@ def main() -> None:
     meta = pd.DataFrame([exp20.move_meta(r.fen, r.engine_best) for r in df.itertuples()])
     df = pd.concat([df.reset_index(drop=True), meta], axis=1)
     df = df[meta.notna().all(axis=1).values].reset_index(drop=True)
-    old = df.batch != "03_elite_b3"          # the pre-batch world
+    old = ~df.batch.isin(["03_bands_club", "03_elite_bands2"])   # pre band-targeting
 
     games = df.game_id.astype(str).unique()
     rng = np.random.default_rng(SEED)

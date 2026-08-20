@@ -3,11 +3,16 @@
 **Finding chess positions where a strong engine is decisively right and essentially no
 human plays the move — then testing how much structure those positions actually have.**
 
-Across 63,486 positions from real games, 4.0% contain a move that Stockfish rates
+Across 103,200 positions from real games — deliberately balanced, 20–21k in each
+rating band from 1800 to 2600+ — about 4% contain a move that Stockfish rates
 clearly best and that a neural model of human play gives under 5% probability at
-*every* rating from 1100 to 2600 — a rate that has held across six separate batches.
-In 2,129 of those, the player actually at the board missed it too; in 707, that
-player was rated 2500 or above.
+*every* rating from 1100 to 2600. The rate has held across eight separate batches
+and every band. In 3,475 of those, the player actually at the board missed it too;
+in 1,051, that player was rated 2500 or above.
+
+With ~850 machine-unique positions per band, the find-rate by strength is cleanly
+measured: 6.6% under 2000, then 13.0%, 15.9%, 17.1% — and 37.7% at 2600+. The jump
+at the top is a discontinuity, not a trend.
 
 Clustering those positions by how an engine represents them internally produces groups
 that are real but soft — nine times better separated than a shuffled null, yet with no
@@ -45,7 +50,8 @@ BIBLIOGRAPHY.md  annotated reading list
 | `20_difficulty_model.py` | The Maia control that overturns 19; a calibrated human-difficulty model |
 | `21_learning_curve.py` | Is the model data-hungry or saturated? (saturated past ~20k) |
 | `22_repair_elite_game_ids.py` | Rebuilds elite game ids — the grouped-CV bug fix |
-| `23_band_value.py` | What the second elite batch bought, per rating band |
+| `23_band_value.py` | What each new batch bought, per rating band |
+| `24_band_sampler.py` | Band-targeted sampling — evens the dataset to ~20k per band |
 
 Everything ran on one laptop.
 
@@ -102,9 +108,9 @@ appears in their top five climbs from 29% to 57%. Weak players never see the mov
 strong players see it and reject it.
 
 **Simulation underestimates real masters.** Maia-3 predicts 2.6% for simulated 2600s.
-Real 2600+ players in the source games found these moves 39.7% of the time (n=438,
-after the second elite batch quadrupled the evidence; an earlier 47% rested on 247
-positions) — roughly 15× higher. Behaviour models capture pattern recognition, not
+Real 2600+ players in the source games found these moves 37.7% of the time (n=901;
+earlier estimates of 47% and 39.7% rested on 247 and 438 positions) — roughly 15×
+higher. Behaviour models capture pattern recognition, not
 calculation under a clock.
 
 **Half-nameable.** Regressing the machine-unique direction onto twelve motif directions
@@ -138,9 +144,9 @@ a monotonic decline and a best-case gain of −0.001, so this is redundancy, not
 **The embedding tells you nothing about human difficulty that Maia and the engine did not
 already say.** Exp 18 is untouched; what falls is exp 19's interpretation.
 
-**A difficulty model that works.** Trained over all 63,486 mined positions rather than the
+**A difficulty model that works.** Trained over all 103,200 mined positions rather than the
 machine-unique subset, predicting whether a human plays the engine's best move:
-**AUC 0.846 ± 0.004**, Brier 0.158 against 0.248 for guessing the base rate, calibrated to
+**AUC 0.847 ± 0.003**, Brier 0.158 against 0.248 for guessing the base rate, calibrated to
 within about half a point in every decile. (An earlier version claimed the model
 underestimates machine-unique positions; that gap was an artefact of a broken evaluation —
 see below — and is gone.) Every position in the trainer carries its prediction of how often
@@ -152,10 +158,13 @@ a 1900-rated player finds the move. Full write-up in
 game — one fold owned all of them. Exp 22 reconstructs real ids by replaying the source
 archive; with sound folds, fold variance fell 4× and the reported calibration drift vanished.
 
-**More data is done helping — except at the top.** A learning curve over the enlarged set is
-flat past 20k training positions (0.845 at 10k → 0.848 at 51k). But split the same held-out
-games by the rating of the player at the board and the second elite batch buys +0.0053 AUC at
-2600+ against +0.0005 below 2000 — the new data helped exactly where it was aimed.
+**More data is done helping — except at the top.** A learning curve over the full set is flat
+past 20k training positions (0.839 at 10k → 0.843 at 82k). Splitting the same held-out games by
+the rating of the player at the board: the band-targeted batches buy +0.0050 AUC at 2600+ and
+nothing anywhere else (−0.0003 to +0.0002). Evening out the middle bands improved the
+*measurements* (each band's find-rate now rests on ~850 machine-unique positions instead of as
+few as 155), not the model — the model was already saturated there. Only the top band still
+pays for data.
 
 So: the groups are a defensible **teaching partition**, not a discovery of discrete kinds,
 and not a privileged window into what humans cannot see.
