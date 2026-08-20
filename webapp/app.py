@@ -1,6 +1,6 @@
 """Unnamed Concepts — a trainer for chess ideas that have no name.
 
-Eight concepts mined from 43,603 real positions: patterns where a strong engine
+Eight concepts mined from 123,405 real positions: patterns where a strong engine
 is decisively right and essentially no human plays the move. Each concept is
 studied by example, then drilled on fresh positions from the same family.
 

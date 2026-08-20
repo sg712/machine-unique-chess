@@ -1,6 +1,6 @@
 # Unnamed Concepts — the trainer
 
-Eight chess concepts mined from 43,603 real positions, each one a pattern where a
+Eight chess concepts mined from 123,405 real positions, each one a pattern where a
 strong engine is decisively right and essentially no human plays the move.
 
 ```bash
