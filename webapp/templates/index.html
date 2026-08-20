@@ -4,7 +4,7 @@
 <h1>Eight chess ideas that have no name.</h1>
 <p class="lede">A strong engine and a strong human disagree in about four positions
 out of a hundred. Those disagreements aren't random — they cluster into patterns.
-These are the eight, mined from 43,603 real games. Most have never been taught,
+These are the eight, mined from 123,405 positions of real games. Most have never been taught,
 because nobody had a word for them.</p>
 
 <p class="small">Pick one. Study four examples, then try twelve positions you haven't seen.
@@ -41,10 +41,10 @@ actually reached these positions over the board found the engine's move. Lower i
 <h2>Where this comes from</h2>
 <p>Every position was played in a real game. A position qualifies when a strong engine's
 move is decisively better than the alternatives <em>and</em> a neural model of human play
-gives that move under 5% probability at every rating from 1100 to 2600. Of 43,603 positions
-analysed, 1,745 qualified; in 1,499 the player at the board missed it too.</p>
-<p>Clustering those positions by how the engine represents them internally produces the eight
-groups above. <a href="{{ url_for('research') }}">The full method and findings &rarr;</a></p>
+gives that move under 5% probability at every rating from 1100 to 2600. Of 123,405 positions
+analysed, 5,155 qualified; in 3,956 the player at the board missed it too.</p>
+<p>The eight groups above come from clustering the first 1,745 of those by how the engine
+represents them internally. <a href="{{ url_for('research') }}">The full method and findings &rarr;</a></p>
 
 {% if totals.attempts %}
 <p class="small">{{ totals.players }} players &middot; {{ totals.attempts }} positions attempted
