@@ -4,16 +4,36 @@
 human plays the move — then testing how much structure those positions actually have.**
 
 All ratings are **Lichess ratings** (the scale runs ~200–400 above FIDE and past 3000
-at the top). Across 103,200 positions from real games — deliberately balanced, 20–21k
-in each rating band from 1800 to 2600+ — about 4% contain a move that Stockfish rates
+at the top). Across 123,405 positions from real games — deliberately balanced, 19–21k
+in each rating band from 1800 to 2800+ — about 4% contain a move that Stockfish rates
 clearly best and that a neural model of human play gives under 5% probability at
-*every* rating from 1100 to 2600. The rate has held across eight separate batches
-and every band. In 3,475 of those, the player actually at the board missed it too;
-in 1,051, that player was rated 2500 or above.
+*every* rating from 1100 to 2600. The rate has held across nine separate batches
+and every band. In 3,956 of those, the player actually at the board missed it too;
+in 1,532, that player was rated 2500 or above.
 
 With ~850 machine-unique positions per band, the find-rate by strength is cleanly
-measured: 6.6% under 2000, then 13.0%, 15.9%, 17.1% — and 37.7% at 2600+. The jump
-at the top is a discontinuity, not a trend.
+measured:
+
+| Mover (Lichess) | Finds the machine-unique move |
+|---|---|
+| 1800–2000 | 6.6% |
+| 2000–2200 | 13.0% |
+| 2200–2400 | 15.9% |
+| 2400–2600 | 17.0% |
+| 2600–2800 | 27.4% |
+| **2800+** | **56.9%** |
+
+Nearly flat through 2600, then a steep climb — at the top of the pool a *majority* of
+these moves are found. "Machine-unique" is a statement about everyone below ~2800.
+
+**Why the moves are invisible.** Comparing equal-stakes positions that differ only in
+visibility (both ≥100cp better than the human favourite): thirty plain yes/no features
+of the move predict invisibility at **AUC 0.851** — no neural network needed. The
+invisible signature is *anti-heuristic* moves: offering material with no visible payoff
+(3.8× enriched), quiet moves (1.8×), deep retreats, moves to the rim. The visible
+signature is forcing moves: captures (4× depleted), checks, escapes, immediate threats.
+All trends monotone across the visibility spectrum. The machine-unique set is, to first
+order, the set of moves that violate the heuristics humans use to order their search.
 
 Clustering those positions by how an engine represents them internally produces groups
 that are real but soft — nine times better separated than a shuffled null, yet with no
@@ -53,6 +73,9 @@ BIBLIOGRAPHY.md  annotated reading list
 | `22_repair_elite_game_ids.py` | Rebuilds elite game ids — the grouped-CV bug fix |
 | `23_band_value.py` | What each new batch bought, per rating band |
 | `24_band_sampler.py` | Band-targeted sampling — evens the dataset to ~20k per band |
+| `25_top_band_sampler.py` | Extends the ladder to Lichess 2800+ (mover-side sampling) |
+| `26_why_invisible.py` | Equal-stakes contrast: which plain features make a move invisible |
+| `27_other_lenses.py` | HDBSCAN, GMM-BIC, hierarchy, dictionary atoms — all say "continuum" |
 
 Everything ran on one laptop.
 
@@ -145,9 +168,9 @@ a monotonic decline and a best-case gain of −0.001, so this is redundancy, not
 **The embedding tells you nothing about human difficulty that Maia and the engine did not
 already say.** Exp 18 is untouched; what falls is exp 19's interpretation.
 
-**A difficulty model that works.** Trained over all 103,200 mined positions rather than the
+**A difficulty model that works.** Trained over all 123,405 mined positions rather than the
 machine-unique subset, predicting whether a human plays the engine's best move:
-**AUC 0.847 ± 0.003**, Brier 0.158 against 0.248 for guessing the base rate, calibrated to
+**AUC 0.845 ± 0.003**, Brier 0.160 against 0.250 for guessing the base rate, calibrated to
 within about half a point in every decile. (An earlier version claimed the model
 underestimates machine-unique positions; that gap was an artefact of a broken evaluation —
 see below — and is gone.) Every position in the trainer carries its prediction of how often
@@ -159,13 +182,12 @@ a 1900-rated player finds the move. Full write-up in
 game — one fold owned all of them. Exp 22 reconstructs real ids by replaying the source
 archive; with sound folds, fold variance fell 4× and the reported calibration drift vanished.
 
-**More data is done helping — except at the top.** A learning curve over the full set is flat
-past 20k training positions (0.839 at 10k → 0.843 at 82k). Splitting the same held-out games by
-the rating of the player at the board: the band-targeted batches buy +0.0050 AUC at 2600+ and
-nothing anywhere else (−0.0003 to +0.0002). Evening out the middle bands improved the
-*measurements* (each band's find-rate now rests on ~850 machine-unique positions instead of as
-few as 155), not the model — the model was already saturated there. Only the top band still
-pays for data.
+**More data is done helping — except at the top.** The learning curve is flat past 20k
+training positions (0.843 at 30k → 0.844 at 99k). Splitting the same held-out games by the
+rating of the player at the board: each new elite batch has bought accuracy only in its own
+top band (+0.0084 AUC at 2800+ for the latest; −0.0003 to +0.0007 everywhere else). And the
+model's accuracy falls monotonically with player strength — 0.855 under 2000 down to 0.812
+at 2800+. Strong players are genuinely harder to predict.
 
 So: the groups are a defensible **teaching partition**, not a discovery of discrete kinds,
 and not a privileged window into what humans cannot see.

@@ -31,7 +31,7 @@ def main() -> None:
     meta = pd.DataFrame([exp20.move_meta(r.fen, r.engine_best) for r in df.itertuples()])
     df = pd.concat([df.reset_index(drop=True), meta], axis=1)
     df = df[meta.notna().all(axis=1).values].reset_index(drop=True)
-    old = ~df.batch.isin(["03_bands_club", "03_elite_bands2"])   # pre band-targeting
+    old = df.batch != "03_elite_top"        # everything before the 2600-2800/2800+ batch
 
     games = df.game_id.astype(str).unique()
     rng = np.random.default_rng(SEED)
@@ -52,8 +52,8 @@ def main() -> None:
     p_old = fit(~is_test & old.to_numpy())
     p_full = fit(~is_test)
 
-    bands = pd.cut(df.mover_elo[is_test], [0, 2000, 2300, 2600, 4000],
-                   labels=["<2000", "2000-2300", "2300-2600", "2600+"])
+    bands = pd.cut(df.mover_elo[is_test], [0, 2000, 2300, 2600, 2800, 4000],
+                   labels=["<2000", "2000-2300", "2300-2600", "2600-2800", "2800+"])
     y_te = y[is_test]
     out = {}
     print(f"test: {is_test.sum()} positions | old train: {(~is_test & old.to_numpy()).sum()} "

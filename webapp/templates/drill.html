@@ -119,10 +119,10 @@ function showFeedback(r) {
            (r.cost_cp ? `. The difference is worth ${r.cost_cp} centipawns.` : `.`);
   }
   // Maia says how likely a 1900 is to *play* this move; the difficulty model
-  // (exp 20) estimates how likely they are to *find* it, trained on 103,200 real
+  // (exp 20) estimates how likely they are to *find* it, trained on 123,405 real
   // decisions rather than on move imitation. Two different estimates, both shown.
   if (r.predicted != null) {
-    line += ` <span class="pred">A difficulty model trained on 103,200 real ` +
+    line += ` <span class="pred">A difficulty model trained on 123,405 real ` +
             `decisions puts the chance a 1900 finds it at ${pct(r.predicted)}.</span>`;
   }
   document.getElementById("fbline").innerHTML = line;

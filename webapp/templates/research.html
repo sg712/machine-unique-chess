@@ -15,16 +15,27 @@ is a strong expert, not a super-grandmaster, and 2800+ here means the genuine to
 rather than what is best.</p>
 <p>A position is <em>machine-unique</em> when the engine's move is decisively better &mdash; at
 least 100 centipawns above the human favourite &mdash; and Maia gives that move under 5%
-probability at <em>every</em> rating from 1100 to 2600. Out of <b>103,200</b> positions analysed,
-<b>4,257</b> qualified, a rate of ~4% that has now held steady across eight separate batches,
+probability at <em>every</em> rating from 1100 to 2600. Out of <b>123,405</b> positions analysed,
+<b>5,155</b> qualified, a rate of ~4% that has now held steady across nine separate batches,
 both rating populations, and every rating band. The dataset is deliberately balanced: each of
-the five bands from 1800 to 2600+ contributes 20&ndash;21 thousand positions, so nothing below
+the six bands from 1800 to 2800+ contributes 19&ndash;21 thousand positions, so nothing below
 is an artefact of where the data happened to be thick.</p>
-<p>In <b>3,475</b> of those the player who was actually at the board also failed to find the
-move. In <b>1,051</b>, that player was rated 2500 or above. With ~850 machine-unique positions
-per band, the find-rate by strength is now cleanly measured: 6.6% under 2000, 13.0%, 15.9%,
-17.1% &mdash; and then <b>37.7%</b> at 2600+. The jump at the top is a discontinuity, not a
-trend.</p>
+<p>In <b>3,956</b> of those the player who was actually at the board also failed to find the
+move. In <b>1,532</b>, that player was rated 2500 or above. With ~850 machine-unique positions
+per band, the find-rate by strength is cleanly measured:</p>
+<table class="research">
+<thead><tr><th>Mover's rating (Lichess)</th><th>Finds the machine-unique move</th></tr></thead>
+<tbody>
+<tr><td>1800&ndash;2000</td><td>6.6%</td></tr>
+<tr><td>2000&ndash;2200</td><td>13.0%</td></tr>
+<tr><td>2200&ndash;2400</td><td>15.9%</td></tr>
+<tr><td>2400&ndash;2600</td><td>17.0%</td></tr>
+<tr><td>2600&ndash;2800</td><td>27.4%</td></tr>
+<tr class="hl"><td><b>2800+</b></td><td><b>56.9%</b></td></tr>
+</tbody></table>
+<p>Nearly flat through 2600, then a steep climb &mdash; and at the genuine top of the pool a
+<em>majority</em> of these moves are found. &ldquo;Machine-unique&rdquo; is a statement about
+everyone below roughly 2800, and about how the rest of us search.</p>
 
 <h2>2 &middot; Blindness, then disbelief</h2>
 <p>Simulated players agree with the engine more often as they get stronger &mdash; on ordinary
@@ -32,6 +43,33 @@ positions. On machine-unique positions the rate at which they <em>play</em> the 
 stays near zero from 1100 all the way to 2600. But the rate at which the move appears anywhere
 in their top five climbs from 29% to 57%.</p>
 <p>Weak players never see the move. Strong players see it and reject it.</p>
+
+<h2>2&frac12; &middot; What makes a move invisible</h2>
+<p>Take two sets of positions with <em>identical stakes</em> &mdash; in both, the engine's move
+is at least 100 centipawns better than the human favourite. In one set humans see it (Maia
+gives it &ge;30%; real players found 60%); in the other they don't (&le;5% at every rating;
+real players found 18%). What separates them is not depth or subtlety in the abstract &mdash;
+it is visible in plain chess descriptors. Thirty yes/no features of the move predict which
+group a position belongs to at <b>AUC 0.851</b>, no neural network involved.</p>
+<table class="research">
+<thead><tr><th>The engine's move&hellip;</th><th>Invisible</th><th>In between</th>
+<th>Visible</th></tr></thead>
+<tbody>
+<tr><td>offers material with no visible payoff</td><td>20.5%</td><td>9.2%</td><td>5.4%</td></tr>
+<tr><td>is quiet &mdash; no capture, no check</td><td>87.2%</td><td>79.8%</td><td>49.4%</td></tr>
+<tr><td>retreats two or more ranks</td><td>7.8%</td><td>5.9%</td><td>4.5%</td></tr>
+<tr><td>heads for the board edge</td><td>38.9%</td><td>30.9%</td><td>26.4%</td></tr>
+<tr><td>is a capture</td><td>10.9%</td><td>16.3%</td><td>43.4%</td></tr>
+<tr><td>gives check</td><td>3.9%</td><td>5.5%</td><td>11.3%</td></tr>
+<tr><td>escapes an attacked square</td><td>10.5%</td><td>17.5%</td><td>26.8%</td></tr>
+<tr><td>creates an immediate threat</td><td>24.8%</td><td>34.3%</td><td>38.4%</td></tr>
+</tbody></table>
+<p>Every one of those trends runs monotonically through the in-between group &mdash; the
+signature of a real gradient, not a threshold artefact. The reading: the invisible moves are
+the ones that violate the heuristics humans use to order their search &mdash; look at forcing
+moves first, don't hang material, answer threats, play toward the king. The engine has no
+search-order prior to violate. This also explains why the strong find them: checking
+wrong-looking moves is precisely what distinguishes a 2800 from a 2400.</p>
 
 <h2>3 &middot; Grouping them</h2>
 <p>Each position is embedded using the internal representations of <b>Leela Chess Zero</b>
@@ -96,6 +134,12 @@ positions twenty-five times, k=6 reproduces itself most reliably (adjusted Rand
 ({{ '%.2f'|format(v.stability['4'].mean_ari) }}). Eight groups is a teaching decision, not a
 discovery.</p>
 
+<p><b>Four other lenses agree it is soft.</b> A density-based method allowed to answer
+&ldquo;no cluster&rdquo; labels 74&ndash;83% of positions as noise, with small dense cores that
+match the k-means groups; a likelihood criterion (BIC) keeps improving to k=12 with no minimum;
+a hierarchical method at k=8 matches k-means' separation but only partially agrees with its
+partition (ARI 0.36); sparse dictionary atoms enriched among these positions lean
+sacrifice/clearance. Every method that could say &ldquo;continuum&rdquo; said continuum.</p>
 <p><b>It does predict something outside itself.</b> At k=8, the groups differ in how often real
 players found the move by more than random groupings of the same sizes would
 (p&nbsp;=&nbsp;{{ '%.3f'|format(v.external_validity['8'].p_value) }}). At k=9 the same test
@@ -188,8 +232,8 @@ vanished. Numbers on this page are post-repair.</p>
 {% for pt in lc.curve %}{{ '{:,}'.format(pt.train_n) }} &rarr; {{ '%.3f'|format(pt.auc_mean) }}{% if not loop.last %}, {% endif %}{% endfor %}.
 The curve is flat past twenty thousand. But the flatness is a club-position statement &mdash;
 splitting the same held-out set by the rating of the player at the board, a model trained with
-the band-targeted batches beats one trained without them by
-{{ '%+.4f'|format(bv['2600+'].delta_auc) }} AUC at 2600+ and only
+the newest top-band batch beats one trained without it by
+{{ '%+.4f'|format(bv['2800+'].delta_auc) }} AUC at 2800+ and only
 {{ '%+.4f'|format(bv['<2000'].delta_auc) }} below 2000. The new data helped exactly where it
 was aimed, and nowhere else.</p>
 

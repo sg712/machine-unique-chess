@@ -80,8 +80,8 @@ def main() -> None:
     print(f"  failed by a 2500+ rated mover:     {(hc.mover_elo>=2500).sum()}")
 
     print("\nreal players finding the engine move, by band:")
-    allpos["band"] = pd.cut(allpos.mover_elo, [0, 2000, 2200, 2400, 2600, 4000],
-                            labels=["<2000", "2000-2200", "2200-2400", "2400-2600", "2600+"])
+    allpos["band"] = pd.cut(allpos.mover_elo, [0, 2000, 2200, 2400, 2600, 2800, 4000],
+                            labels=["<2000", "2000-2200", "2200-2400", "2400-2600", "2600-2800", "2800+"])
     t = allpos.pivot_table(index="band", columns="machine_unique", values="real_found",
                            aggfunc=["mean", "count"], observed=False)
     t.columns = ["normal %", "MU %", "n normal", "n MU"]
