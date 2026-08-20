@@ -3,8 +3,9 @@
 **Finding chess positions where a strong engine is decisively right and essentially no
 human plays the move — then testing how much structure those positions actually have.**
 
-Across 103,200 positions from real games — deliberately balanced, 20–21k in each
-rating band from 1800 to 2600+ — about 4% contain a move that Stockfish rates
+All ratings are **Lichess ratings** (the scale runs ~200–400 above FIDE and past 3000
+at the top). Across 103,200 positions from real games — deliberately balanced, 20–21k
+in each rating band from 1800 to 2600+ — about 4% contain a move that Stockfish rates
 clearly best and that a neural model of human play gives under 5% probability at
 *every* rating from 1100 to 2600. The rate has held across eight separate batches
 and every band. In 3,475 of those, the player actually at the board missed it too;
