@@ -144,8 +144,12 @@ def frames_of(fen: str, pv: list) -> dict:
 @app.route("/")
 def index():
     code = me()
+    previews = {c["id"]: {"fen": c["study"][0]["fen"],
+                          "orientation": c["study"][0]["stm"],
+                          "best": c["study"][0]["best"]} for c in CONCEPTS}
     return render_template("index.html", code=code, concepts=CONCEPTS,
-                           prog=concept_progress(code), totals=totals())
+                           prog=concept_progress(code), totals=totals(),
+                           previews=previews, pieces=piece_svgs())
 
 
 @app.route("/concept/<int:cid>")

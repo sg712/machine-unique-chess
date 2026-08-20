@@ -132,6 +132,9 @@ h1.tight { margin-bottom:.3rem; }
 .card { display:block; background:var(--paper); padding:1.3rem 1.4rem 1.1rem; text-decoration:none;
   color:var(--ink); transition:background .12s; }
 .card:hover { background:#faf8f2; }
+.card .mini { margin:0 0 .95rem; max-width:15.5rem; }
+.card .mini .board { width:100%; pointer-events:none; border-color:var(--hair); }
+.card .mini .rk, .card .mini .fl { display:none; }
 .card .ct { display:flex; justify-content:space-between; align-items:baseline; gap:.8rem; }
 .card .nm { font-size:1.16rem; letter-spacing:-.008em; }
 .card .rate { font-family:var(--mono); font-size:.9rem; color:var(--accent); }

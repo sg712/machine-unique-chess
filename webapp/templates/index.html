@@ -2,11 +2,10 @@
 {% block body %}
 
 <h1>Magnus Carlsen would lose about 950 of 1,000 games to a chess engine.</h1>
-<p class="lede">Not because he calculates worse — because the moves that decide those games
-are the ones human search never considers. Across 123,405 positions from real games, about
-four in a hundred contain a move a strong engine rates decisively best that virtually no
-human plays, at any rating. Those moves cluster into eight patterns with no names, because
-nobody ever had a word for them. This site teaches them.</p>
+<p class="lede">Across 123,405 positions from real games, about four in a hundred contain a
+move a strong engine rates decisively best that virtually no human plays, at any rating.
+Those moves cluster into eight patterns with no names — nobody ever had a word for them.
+Each position below is one of them, from a real game. This site teaches the patterns.</p>
 
 <p class="small">Learn to play like an engine, the way the research says it's possible: by
 example, not explanation. Pick a concept, study four positions, then drill twelve you haven't
@@ -16,6 +15,7 @@ seen. No account needed — progress saves itself.</p>
   {% for c in concepts %}
   {% set p = prog[c.id] %}
   <a class="card" href="{{ url_for('concept', cid=c.id) }}">
+    <div class="mini" data-cid="{{ c.id }}"></div>
     <div class="ct">
       <span class="nm">{{ c.name }}</span>
       <span class="rate">{{ (c.signature.found_by_real_players * 100)|round(1) }}%</span>
@@ -36,6 +36,18 @@ seen. No account needed — progress saves itself.</p>
   </a>
   {% endfor %}
 </div>
+
+<script type="module">
+import { Board } from "{{ url_for('static', filename='board.js') }}";
+const PREVIEWS = {{ previews|tojson }};
+const PIECES = {{ pieces|tojson }};
+document.querySelectorAll(".mini").forEach((el) => {
+  const p = PREVIEWS[el.dataset.cid];
+  if (!p) return;
+  const board = new Board(el, { pieces: PIECES, orientation: p.orientation });
+  board.setPosition(p.fen, null);
+});
+</script>
 
 <p class="small" style="margin-top:1.4rem">The percentage is how often players who
 actually reached these positions over the board found the engine's move. Lower is harder.</p>
