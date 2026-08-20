@@ -1,0 +1,402 @@
+{
+ "n": 15218,
+ "auc_logistic": 0.8518359351697175,
+ "auc_sd": 0.00914614521783231,
+ "enrichment": {
+  "piece_pawn": {
+   "invisible": 0.2151750058726803,
+   "mid": 0.23530089923910538,
+   "visible": 0.23567993003935286,
+   "ratio": 0.9129967317825971,
+   "monotone": true
+  },
+  "piece_minor": {
+   "invisible": 0.28353300446323704,
+   "mid": 0.3460917685035739,
+   "visible": 0.36029733275032794,
+   "ratio": 0.7869417247662902,
+   "monotone": true
+  },
+  "piece_rook": {
+   "invisible": 0.2135306553911205,
+   "mid": 0.17431404196449157,
+   "visible": 0.14604285089637078,
+   "ratio": 1.4621096074236306,
+   "monotone": true
+  },
+  "piece_queen": {
+   "invisible": 0.2144702842377261,
+   "mid": 0.1736223195757436,
+   "visible": 0.1639702667249672,
+   "ratio": 1.3079827734711456,
+   "monotone": true
+  },
+  "piece_king": {
+   "invisible": 0.07329105003523609,
+   "mid": 0.07067097071708554,
+   "visible": 0.0940096195889812,
+   "ratio": 0.7796122392120229,
+   "monotone": false
+  },
+  "is_capture": {
+   "invisible": 0.1129903688043223,
+   "mid": 0.1641687802628545,
+   "visible": 0.43594228246611283,
+   "ratio": 0.259186533054649,
+   "monotone": true
+  },
+  "captures_smaller": {
+   "invisible": 0.09631195677707306,
+   "mid": 0.07228498962416417,
+   "visible": 0.1294271972015741,
+   "ratio": 0.7441400173958315,
+   "monotone": false
+  },
+  "gives_check": {
+   "invisible": 0.04181348367394879,
+   "mid": 0.056029513488586584,
+   "visible": 0.1114997813729777,
+   "ratio": 0.3750095574992976,
+   "monotone": true
+  },
+  "quiet": {
+   "invisible": 0.8663377965703547,
+   "mid": 0.7957113211897625,
+   "visible": 0.4910362920857018,
+   "ratio": 1.7643050229353527,
+   "monotone": true
+  },
+  "retreat": {
+   "invisible": 0.19638242894056848,
+   "mid": 0.15782799169933134,
+   "visible": 0.1390467861827722,
+   "ratio": 1.412347845871321,
+   "monotone": true
+  },
+  "deep_retreat": {
+   "invisible": 0.07775428705661264,
+   "mid": 0.05983398662670048,
+   "visible": 0.04678618277219064,
+   "ratio": 1.661907051387599,
+   "monotone": true
+  },
+  "advance2plus": {
+   "invisible": 0.2659149635893822,
+   "mid": 0.2857966336177081,
+   "visible": 0.2968954962833406,
+   "ratio": 0.8956517256685084,
+   "monotone": true
+  },
+  "sideways": {
+   "invisible": 0.2135306553911205,
+   "mid": 0.1751210514180309,
+   "visible": 0.135111499781373,
+   "ratio": 1.5804032649821766,
+   "monotone": true
+  },
+  "long_move": {
+   "invisible": 0.15762273901808785,
+   "mid": 0.1615171777726539,
+   "visible": 0.15522518583296896,
+   "ratio": 1.015445645448921,
+   "monotone": false
+  },
+  "to_rim": {
+   "invisible": 0.39229504345783417,
+   "mid": 0.30919990777034817,
+   "visible": 0.2610406646261478,
+   "ratio": 1.502812000650028,
+   "monotone": true
+  },
+  "escapes_attack": {
+   "invisible": 0.10476861639652338,
+   "mid": 0.17696564445469218,
+   "visible": 0.2645386969829471,
+   "ratio": 0.39604268710553553,
+   "monotone": true
+  },
+  "into_attack": {
+   "invisible": 0.2659149635893822,
+   "mid": 0.2433709937744985,
+   "visible": 0.18277219064276345,
+   "ratio": 1.4548983773419069,
+   "monotone": true
+  },
+  "to_pawn_attacked": {
+   "invisible": 0.061780596664317594,
+   "mid": 0.045884251786949506,
+   "visible": 0.07039790118058592,
+   "ratio": 0.8775914569645611,
+   "monotone": false
+  },
+  "lands_en_prise": {
+   "invisible": 0.18792576932111815,
+   "mid": 0.14433940511874568,
+   "visible": 0.23218189768255357,
+   "ratio": 0.8093902720101642,
+   "monotone": false
+  },
+  "att_by_lesser_after": {
+   "invisible": 0.10970166784120272,
+   "mid": 0.08219967719621858,
+   "visible": 0.1329252295583734,
+   "ratio": 0.825288534055364,
+   "monotone": false
+  },
+  "offers_material": {
+   "invisible": 0.20742306788818415,
+   "mid": 0.09465068019368227,
+   "visible": 0.05378224748578924,
+   "ratio": 3.8567199695957495,
+   "monotone": true
+  },
+  "creates_threat": {
+   "invisible": 0.24712238665727038,
+   "mid": 0.3468987779571132,
+   "visible": 0.38828159160472236,
+   "ratio": 0.6364514620328573,
+   "monotone": true
+  },
+  "weakens_own_king": {
+   "invisible": 0.053558844256518676,
+   "mid": 0.05994927369149181,
+   "visible": 0.07783121993878443,
+   "ratio": 0.6881408809812259,
+   "monotone": true
+  },
+  "king_walk": {
+   "invisible": 0.046511627906976744,
+   "mid": 0.04530781646299285,
+   "visible": 0.06252732837778749,
+   "ratio": 0.7438607903724184,
+   "monotone": false
+  },
+  "toward_their_king": {
+   "invisible": 0.5266619685224336,
+   "mid": 0.5902697717316117,
+   "visible": 0.6462614779186707,
+   "ratio": 0.8149363477745641,
+   "monotone": true
+  },
+  "restricting": {
+   "invisible": 0.22903453136011276,
+   "mid": 0.24832833756052572,
+   "visible": 0.28377787494534323,
+   "ratio": 0.8070908678283173,
+   "monotone": true
+  },
+  "material_down": {
+   "invisible": 0.16607939863753818,
+   "mid": 0.1303896702789947,
+   "visible": 0.1884564932225623,
+   "ratio": 0.8812612173643848,
+   "monotone": false
+  },
+  "endgame": {
+   "invisible": 0.21822879962414846,
+   "mid": 0.20106064099608023,
+   "visible": 0.20113686051595978,
+   "ratio": 1.0849766624791903,
+   "monotone": false
+  },
+  "many_options": {
+   "invisible": 0.5539112050739958,
+   "mid": 0.5454231035277842,
+   "visible": 0.5054656755574989,
+   "ratio": 1.0958433615953533,
+   "monotone": true
+  },
+  "high_tension": {
+   "invisible": 0.05825698848954663,
+   "mid": 0.051763892091307356,
+   "visible": 0.06515085264538698,
+   "ratio": 0.8941861253395512,
+   "monotone": false
+  }
+ },
+ "odds_ratios": {
+  "quiet": 4.5844068063730266,
+  "offers_material": 1.9120038270136053,
+  "captures_smaller": 1.824342954402683,
+  "escapes_attack": 0.5910480500147802,
+  "is_capture": 0.6109259460372811,
+  "lands_en_prise": 1.5783719058698347,
+  "to_pawn_attacked": 1.4476156771665376,
+  "creates_threat": 0.7127997926341415,
+  "to_rim": 1.2689566079644141,
+  "piece_king": 0.8316478003567526,
+  "material_down": 1.1848524489887324,
+  "piece_queen": 1.172168044984197,
+  "many_options": 1.1568311310823192,
+  "att_by_lesser_after": 0.8649256082895616,
+  "retreat": 1.1474602068063235,
+  "gives_check": 1.1318990466471035,
+  "piece_rook": 1.1251443076634924,
+  "high_tension": 1.1230629889482078,
+  "piece_minor": 0.8924232439768347,
+  "weakens_own_king": 1.1068509602133467,
+  "endgame": 1.0568267458527023,
+  "king_walk": 0.9502625094705032,
+  "advance2plus": 1.0379519703022593,
+  "sideways": 1.0356370596587228,
+  "toward_their_king": 0.9701076325808734,
+  "into_attack": 0.9758793645163114,
+  "deep_retreat": 1.0208742619902416,
+  "long_move": 0.9827360322778531,
+  "piece_pawn": 0.9842694980688578,
+  "restricting": 1.0158255991872283
+ },
+ "tree_rules": "|--- quiet <= 0\n|   |--- offers_material <= 0\n|   |   |--- is_capture <= 0\n|   |   |   |--- weights: [130, 37] class: 0\n|   |   |--- is_capture >  0\n|   |   |   |--- weights: [955, 97] class: 0\n|   |--- offers_material >  0\n|   |   |--- gives_check <= 0\n|   |   |   |--- weights: [35, 306] class: 1\n|   |   |--- gives_check >  0\n|   |   |   |--- weights: [44, 129] class: 1\n|--- quiet >  0\n|   |--- escapes_attack <= 0\n|   |   |--- creates_threat <= 0\n|   |   |   |--- weights: [421, 2567] class: 1\n|   |   |--- creates_threat >  0\n|   |   |   |--- weights: [283, 687] class: 1\n|   |--- escapes_attack >  0\n|   |   |--- piece_king <= 0\n|   |   |   |--- weights: [293, 396] class: 1\n|   |   |--- piece_king >  0\n|   |   |   |--- weights: [126, 38] class: 0\n",
+ "invisible_found_by": {
+  "piece_pawn": {
+   "found_with": 0.15283842794759825,
+   "found_without": 0.19215803651601318,
+   "n_with": 916
+  },
+  "piece_minor": {
+   "found_with": 0.17895608947804473,
+   "found_without": 0.1855737704918033,
+   "n_with": 1207
+  },
+  "piece_rook": {
+   "found_with": 0.20242024202420242,
+   "found_without": 0.17861409796893668,
+   "n_with": 909
+  },
+  "piece_queen": {
+   "found_with": 0.19934282584884994,
+   "found_without": 0.17942583732057416,
+   "n_with": 913
+  },
+  "piece_king": {
+   "found_with": 0.19230769230769232,
+   "found_without": 0.18301647655259823,
+   "n_with": 312
+  },
+  "is_capture": {
+   "found_with": 0.2598752598752599,
+   "found_without": 0.1739936440677966,
+   "n_with": 481
+  },
+  "captures_smaller": {
+   "found_with": 0.2658536585365854,
+   "found_without": 0.17494151286716922,
+   "n_with": 410
+  },
+  "gives_check": {
+   "found_with": 0.3202247191011236,
+   "found_without": 0.1777396420691346,
+   "n_with": 178
+  },
+  "quiet": {
+   "found_with": 0.17136659436008678,
+   "found_without": 0.26362038664323373,
+   "n_with": 3688
+  },
+  "retreat": {
+   "found_with": 0.16028708133971292,
+   "found_without": 0.18941829874305757,
+   "n_with": 836
+  },
+  "deep_retreat": {
+   "found_with": 0.13293051359516617,
+   "found_without": 0.1879775853285787,
+   "n_with": 331
+  },
+  "advance2plus": {
+   "found_with": 0.21113074204946997,
+   "found_without": 0.17376,
+   "n_with": 1132
+  },
+  "sideways": {
+   "found_with": 0.18151815181518152,
+   "found_without": 0.18428912783751494,
+   "n_with": 909
+  },
+  "long_move": {
+   "found_with": 0.21758569299552907,
+   "found_without": 0.177356385945343,
+   "n_with": 671
+  },
+  "to_rim": {
+   "found_with": 0.16706586826347306,
+   "found_without": 0.19443370699652107,
+   "n_with": 1670
+  },
+  "escapes_attack": {
+   "found_with": 0.23094170403587444,
+   "found_without": 0.17816845972185777,
+   "n_with": 446
+  },
+  "into_attack": {
+   "found_with": 0.18904593639575973,
+   "found_without": 0.18176,
+   "n_with": 1132
+  },
+  "to_pawn_attacked": {
+   "found_with": 0.21292775665399238,
+   "found_without": 0.18177265898848272,
+   "n_with": 263
+  },
+  "lands_en_prise": {
+   "found_with": 0.2325,
+   "found_without": 0.1724038183396008,
+   "n_with": 800
+  },
+  "att_by_lesser_after": {
+   "found_with": 0.2291220556745182,
+   "found_without": 0.17810026385224276,
+   "n_with": 467
+  },
+  "offers_material": {
+   "found_with": 0.22197055492638731,
+   "found_without": 0.17368109069353882,
+   "n_with": 883
+  },
+  "creates_threat": {
+   "found_with": 0.20912547528517111,
+   "found_without": 0.1753510140405616,
+   "n_with": 1052
+  },
+  "weakens_own_king": {
+   "found_with": 0.21929824561403508,
+   "found_without": 0.18168279970215934,
+   "n_with": 228
+  },
+  "king_walk": {
+   "found_with": 0.17676767676767677,
+   "found_without": 0.18403547671840353,
+   "n_with": 198
+  },
+  "toward_their_king": {
+   "found_with": 0.1975914362176628,
+   "found_without": 0.16823821339950373,
+   "n_with": 2242
+  },
+  "restricting": {
+   "found_with": 0.20717948717948717,
+   "found_without": 0.17672151127361366,
+   "n_with": 975
+  },
+  "material_down": {
+   "found_with": 0.15841584158415842,
+   "found_without": 0.18873239436619718,
+   "n_with": 707
+  },
+  "endgame": {
+   "found_with": 0.2023681377825619,
+   "found_without": 0.17848557692307693,
+   "n_with": 929
+  },
+  "many_options": {
+   "found_with": 0.19635284139100934,
+   "found_without": 0.16798314902580305,
+   "n_with": 2358
+  },
+  "high_tension": {
+   "found_with": 0.2217741935483871,
+   "found_without": 0.1813419805437765,
+   "n_with": 248
+  }
+ }
+}
