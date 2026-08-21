@@ -15,7 +15,7 @@ python webapp/app.py            # http://127.0.0.1:5055
 - **Concept** (`/concept/<id>`) — four study prototypes with the engine's line, shown
   without commentary (the patterns are easier absorbed than described).
 - **Drill** (`/concept/<id>/drill`) — twelve unseen positions from the same family.
-  Feedback names your move, tells you what share of 1900-rated humans play it, and
+  Feedback names your move, gives Maia's estimate of how many 1900-rated players play it, and
   steps through the engine's line.
 - **Progress** (`/me`) — per-concept solve rates, tied to a six-character code.
 
@@ -28,5 +28,31 @@ and deterministic.
 
 ## Deploying
 
-Any Flask host (Render, Fly, Railway). Set `SECRET_KEY`, put `study.db` on a persistent
-volume, and run behind gunicorn: `gunicorn -w 2 'app:app'`.
+**Live:** https://sg712.pythonanywhere.com (PythonAnywhere free tier — no card, and the
+disk is persistent, so `study.db` survives updates).
+
+Setup there, once: clone the repo into the home directory, `pip3.11 install --user flask
+python-chess`, create a manual-config web app (Python 3.11), and point the WSGI file at
+`webapp/app.py`:
+
+```python
+import os, sys
+os.environ.setdefault("SECRET_KEY", open("/home/sg712/.mu_secret").read().strip())
+sys.path.insert(0, "/home/sg712/machine-unique-chess/webapp")
+from app import app as application
+```
+
+**Shipping an update:** in a PythonAnywhere Bash console,
+
+```bash
+cd ~/machine-unique-chess && git pull && touch /var/www/sg712_pythonanywhere_com_wsgi.py
+```
+
+If the site still serves the old version after ~30s, press **Reload** on the Web tab —
+the touch-reload occasionally doesn't take. Two quirks: the web console swallows the
+first command typed right after the page loads (send a blank line first), and the free
+tier needs a login plus one click of **"Run until 1 month from today"** on the Web tab
+every month, or the site pauses.
+
+Any other Flask host works too (Render, Fly, Railway — `render.yaml` is included): set
+`SECRET_KEY`, put `study.db` on a persistent volume, run behind gunicorn.

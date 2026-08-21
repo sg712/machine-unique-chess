@@ -110,12 +110,12 @@ function showFeedback(r) {
 
   let line = "";
   if (r.correct) {
-    line = `<b>${r.best_san}</b> — played by ${pct(r.p_best)} of humans at 1900. ` +
-           `You are in the minority that sees this.`;
+    line = `<b>${r.best_san}</b> — Maia estimates ${pct(r.p_best)} of 1900-rated players ` +
+           `would play it. You are in the minority that sees this.`;
   } else {
     line = `You played <b>${r.picked_san}</b>` +
-           (r.human_p > 0 ? ` — so does ${pct(r.human_p)} of humans at 1900.` : `.`) +
-           ` The engine plays <b>${r.best_san}</b>, which ${pct(r.p_best)} of humans find` +
+           (r.human_p > 0 ? ` — Maia estimates ${pct(r.human_p)} of 1900-rated players would too.` : `.`) +
+           ` The engine plays <b>${r.best_san}</b>, which Maia gives ${pct(r.p_best)}` +
            (r.cost_cp ? `. The difference is worth ${r.cost_cp} centipawns.` : `.`);
   }
   // Maia says how likely a 1900 is to *play* this move; the difficulty model
@@ -128,7 +128,7 @@ function showFeedback(r) {
   document.getElementById("fbline").innerHTML = line;
 
   document.getElementById("humanbars").innerHTML =
-    '<p class="hb-h">What humans play here</p>' +
+    '<p class="hb-h">What 1900-rated players play here (Maia estimate)</p>' +
     r.human.map(h => {
       const isBest = h.uci === r.best;
       return `<div class="hb${isBest ? ' best' : ''}"><span class="mv">${h.san}</span>` +
