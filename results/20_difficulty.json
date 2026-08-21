@@ -164,16 +164,16 @@
  },
  "part_c_trainer_scores": {
   "per_concept_predicted_find_1900": {
-   "Concept 1": 0.1125,
-   "Concept 2": 0.0722,
-   "Concept 3": 0.099,
-   "Concept 4": 0.0826,
-   "Concept 5": 0.1259,
-   "Concept 6": 0.1118,
-   "Concept 7": 0.1126,
-   "Concept 8": 0.1117
+   "Concept 1": 0.1128,
+   "Concept 2": 0.0901,
+   "Concept 3": 0.1026,
+   "Concept 4": 0.0864,
+   "Concept 5": 0.1325,
+   "Concept 6": 0.1063,
+   "Concept 7": 0.1165,
+   "Concept 8": 0.1316
   },
-  "positions_scored": 128,
+  "positions_scored": 320,
   "positions_unmatched": 0
  }
 }

@@ -76,6 +76,8 @@ BIBLIOGRAPHY.md  annotated reading list
 | `25_top_band_sampler.py` | Extends the ladder to Lichess 2800+ (mover-side sampling) |
 | `26_why_invisible.py` | Equal-stakes contrast: which plain features make a move invisible |
 | `27_other_lenses.py` | HDBSCAN, GMM-BIC, hierarchy, dictionary atoms — all say "continuum" |
+| `28_assign_new_mu.py` | Embeds the later machine-unique positions, assigns each to its nearest group |
+| `29_extend_trainer.py` | Triples the drill pool: 24 new engine-verified positions per concept |
 
 Everything ran on one laptop.
 
@@ -89,7 +91,7 @@ python webapp/app.py           # http://127.0.0.1:5055
 
 Eight groups. Each opens with four study positions showing the engine's move and
 what follows — deliberately without commentary, since the patterns are easier absorbed
-than described — then twelve unseen positions to drill. Feedback names your move, tells
+than described — then thirty-six unseen positions to drill. Feedback names your move, tells
 you what share of 1900-rated humans play it, and steps through the engine's line.
 
 The app serves precomputed positions from `webapp/concepts.json`; no engine runs per
@@ -105,18 +107,20 @@ survive redeploys.
 
 ## The eight groups
 
-Characterised only by measurement. No names, no interpretation.
+Characterised only by measurement. No names, no interpretation. Counts cover all 5,155
+machine-unique positions — the 3,410 found after the clustering were embedded the same
+way and assigned to the nearest group centre (exp 28).
 
 | Group | Positions | Found over the board | Quiet | Avg error | Closest named motifs |
 |---|---|---|---|---|---|
-| Concept 1 | 287 | 16.7% | 81% | −335cp | exposedKing 0.19 · defensiveMove 0.11 |
-| Concept 2 | 204 | 7.8% | 89% | −505cp | sacrifice 0.41 · deflection 0.35 |
-| Concept 3 | 339 | 15.0% | 88% | −212cp | pin 0.27 · clearance 0.25 |
-| Concept 4 | 145 | 9.7% | 85% | −215cp | intermezzo 0.20 · clearance 0.14 |
-| **Concept 5** | 105 | 19.0% | 68% | −507cp | **exposedKing 0.00 · quietMove −0.05 — matches nothing** |
-| Concept 6 | 278 | 18.0% | 94% | −306cp | skewer 0.29 · attraction 0.28 |
-| Concept 7 | 295 | 10.2% | 83% | −414cp | sacrifice 0.42 · attraction 0.41 |
-| Concept 8 | 92 | 18.5% | 86% | −303cp | exposedKing 0.53 · pin 0.30 |
+| Concept 1 | 924 | 29.9% | 85% | −328cp | exposedKing 0.19 · defensiveMove 0.11 |
+| Concept 2 | 444 | 9.5% | 88% | −533cp | sacrifice 0.41 · deflection 0.35 |
+| Concept 3 | 1149 | 23.6% | 89% | −224cp | pin 0.27 · clearance 0.25 |
+| Concept 4 | 431 | 22.3% | 89% | −219cp | intermezzo 0.20 · clearance 0.14 |
+| **Concept 5** | 258 | 26.0% | 77% | −440cp | **exposedKing 0.00 · quietMove -0.05 — matches nothing** |
+| Concept 6 | 829 | 24.1% | 93% | −300cp | skewer 0.29 · attraction 0.28 |
+| Concept 7 | 861 | 20.3% | 85% | −434cp | sacrifice 0.42 · attraction 0.41 |
+| Concept 8 | 259 | 27.8% | 82% | −313cp | exposedKing 0.53 · pin 0.30 |
 
 Between 68% and 94% of these moves are quiet — neither capture nor check. The part of
 chess humans can't see isn't tactics; tactics are what training drills.

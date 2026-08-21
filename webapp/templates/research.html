@@ -74,9 +74,11 @@ wrong-looking moves is precisely what distinguishes a 2800 from a 2400.</p>
 <h2>3 &middot; Grouping them</h2>
 <p>Each position is embedded using the internal representations of <b>Leela Chess Zero</b>
 (layer 10), then clustered into eight groups. The clusters were built on the first 1,745
-qualifying positions; the 2,512 found by later batches have not been assigned to groups,
-because that requires the embedding model rather than anything in this repository. To characterise each group, its direction is
-compared against twelve named tactical motifs built from thousands of tagged Lichess puzzles.</p>
+qualifying positions; the 3,410 found by later batches were embedded the same way and each
+assigned to its nearest group centre &mdash; the same rule k-means uses, which reproduces the
+original labels on the original positions 98.8% of the time. Every group now spans all
+5,155 machine-unique positions. To characterise each group, its direction is compared
+against twelve named tactical motifs built from thousands of tagged Lichess puzzles.</p>
 <p>The groups are deliberately unnamed. Naming them would be the one move this project cannot
 justify: a name asserts that the group is a thing chess vocabulary already covers, and the
 measurements below say that is mostly false. Roughly half of what makes these positions

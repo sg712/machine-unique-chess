@@ -14,7 +14,7 @@ python webapp/app.py            # http://127.0.0.1:5055
   positions, how often real players found them, quiet-move share, average human error.
 - **Concept** (`/concept/<id>`) — four study prototypes with the engine's line, shown
   without commentary (the patterns are easier absorbed than described).
-- **Drill** (`/concept/<id>/drill`) — twelve unseen positions from the same family.
+- **Drill** (`/concept/<id>/drill`) — thirty-six unseen positions from the same family.
   Feedback names your move, gives Maia's estimate of how many 1900-rated players play it, and
   steps through the engine's line.
 - **Progress** (`/me`) — per-concept solve rates, tied to a six-character code.
