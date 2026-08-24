@@ -198,3 +198,6 @@ table.research tr.hl td { background:#8a1f110d; }
 table.research tr.hl td:first-child { box-shadow:inset 2px 0 0 var(--accent); }
 
 .pred { color:var(--muted); font-size:.92em; }
+.board.live { touch-action:none; }
+.board.live .sq { cursor:grab; }
+.pc.drag { transition:none; z-index:5; cursor:grabbing; }

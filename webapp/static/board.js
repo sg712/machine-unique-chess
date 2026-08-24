@@ -29,6 +29,7 @@ export class Board {
     this.sel = null;
     this.els = new Map();
     this.el.classList.add("board");
+    if (this.interactive) this.el.classList.add("live");
     this.el.innerHTML = "";
     this.squares = document.createElement("div");
     this.squares.className = "squares";
@@ -55,6 +56,7 @@ export class Board {
       if (col === 0) d.insertAdjacentHTML("beforeend", `<span class="rk">${r + 1}</span>`);
       if (row === 7) d.insertAdjacentHTML("beforeend", `<span class="fl">${FILES[f]}</span>`);
       d.addEventListener("click", () => this.#click(name));
+      d.addEventListener("pointerdown", (e) => this.#dragStart(name, e));
       this.squares.appendChild(d);
     }
   }
@@ -91,8 +93,53 @@ export class Board {
     return this.legal.filter(m => m.startsWith(sq)).map(m => m.slice(2, 4));
   }
 
+  /** Drag a piece with the pointer; a small movement still counts as a tap. */
+  #dragStart(sq, e) {
+    if (!this.interactive || e.button > 0) return;
+    if (!(this.map[sq] && this.#destsFrom(sq).length)) return;
+    e.preventDefault();
+    const p = this.els.get(sq);
+    const rect = this.layer.getBoundingClientRect();
+    const sz = rect.width / 8;
+    const start = { x: e.clientX, y: e.clientY };
+    let dragging = false;
+    const mv = (ev) => {
+      if (!dragging && Math.hypot(ev.clientX - start.x, ev.clientY - start.y) < 5) return;
+      if (!dragging) {
+        dragging = true;
+        this.sel = sq;
+        this.#paint();
+        p.classList.add("drag");
+      }
+      p.style.transform =
+        `translate(${ev.clientX - rect.left - sz / 2}px, ${ev.clientY - rect.top - sz / 2}px)`;
+    };
+    const up = (ev) => {
+      window.removeEventListener("pointermove", mv);
+      window.removeEventListener("pointerup", up);
+      if (!dragging) return;                       // plain tap: the click handler takes it
+      this.suppressClick = true;                   // eat the ghost click, if one follows —
+      setTimeout(() => { this.suppressClick = false; }, 0);   // but never a real one later
+      p.classList.remove("drag");
+      const dest = document.elementFromPoint(ev.clientX, ev.clientY)
+        ?.closest?.(".sq")?.dataset.sq;
+      if (dest && this.#destsFrom(sq).includes(dest)) {
+        this.move(sq, dest);
+        this.onSelect({ from: sq, to: dest });
+      } else {
+        const [c, r] = this.#coords(sq);
+        p.style.transform = `translate(${c * 100}%, ${r * 100}%)`;
+      }
+      this.sel = null;
+      this.#paint();
+    };
+    window.addEventListener("pointermove", mv);
+    window.addEventListener("pointerup", up);
+  }
+
   #click(sq) {
     if (!this.interactive) return;
+    if (this.suppressClick) { this.suppressClick = false; return; }
     if (this.sel && this.#destsFrom(this.sel).includes(sq)) {
       this.move(this.sel, sq);
       this.onSelect({ from: this.sel, to: sq });
