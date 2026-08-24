@@ -147,9 +147,16 @@ def index():
     previews = {c["id"]: {"fen": c["study"][0]["fen"],
                           "orientation": c["study"][0]["stm"],
                           "best": c["study"][0]["best"]} for c in CONCEPTS}
+    blurbs = {}
+    for c in CONCEPTS:
+        sig = c["signature"]
+        phase = max(sig["phase"], key=sig["phase"].get)
+        piece = max(sig["pieces"], key=sig["pieces"].get)
+        quiet = "quiet " if sig["quiet_share"] >= 0.75 else ""
+        blurbs[c["id"]] = f"Mostly {phase}s; the answer is usually a {quiet}{piece} move."
     return render_template("index.html", code=code, concepts=CONCEPTS,
                            prog=concept_progress(code), totals=totals(),
-                           previews=previews, pieces=piece_svgs())
+                           previews=previews, pieces=piece_svgs(), blurbs=blurbs)
 
 
 @app.route("/concept/<int:cid>")

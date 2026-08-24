@@ -20,7 +20,7 @@ account needed — progress saves itself.</p>
       <span class="nm">{{ c.name }}</span>
       <span class="rate">{{ (c.signature.found_by_real_players * 100)|round(1) }}%</span>
     </div>
-    <p class="gl">{{ c.gloss }}</p>
+    <p class="gl">{{ blurbs[c.id] }}</p>
     <div class="sig">
       <span>{{ c.signature.positions }} positions</span>
       <span>{{ (c.signature.quiet_share * 100)|round(0)|int }}% quiet</span>
