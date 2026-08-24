@@ -15,6 +15,7 @@ import sqlite3
 import time
 
 import chess
+from werkzeug.security import check_password_hash, generate_password_hash
 import chess.svg
 from flask import (Flask, g, jsonify, redirect, render_template, request,
                    session, url_for)
@@ -66,6 +67,9 @@ def init_db():
         code TEXT NOT NULL, concept INTEGER NOT NULL, at REAL,
         PRIMARY KEY (code, concept));
     CREATE INDEX IF NOT EXISTS a_code ON attempt(code, concept);
+    CREATE TABLE IF NOT EXISTS account (
+        email TEXT PRIMARY KEY, pw_hash TEXT NOT NULL,
+        code TEXT UNIQUE NOT NULL, created_at REAL);
     """)
     conn.commit()
     conn.close()
@@ -90,6 +94,19 @@ def ensure_player() -> str:
     session["code"] = code
     session.permanent = True
     return code
+
+
+def current_email():
+    code = session.get("code")
+    if not code:
+        return None
+    row = db().execute("SELECT email FROM account WHERE code=?", (code,)).fetchone()
+    return row["email"] if row else None
+
+
+@app.context_processor
+def inject_account():
+    return {"email": current_email()}
 
 
 def concept_progress(code: str) -> dict:
@@ -261,6 +278,56 @@ def research():
                            v=VALIDATION["cluster"], e=VALIDATION["embed"],
                            d=VALIDATION["difficulty"], lc=VALIDATION["curve"],
                            bv=VALIDATION["bands"])
+
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    error = None
+    if request.method == "POST":
+        email = (request.form.get("email") or "").strip().lower()
+        pw = request.form.get("password") or ""
+        if "@" not in email or "." not in email.split("@")[-1]:
+            error = "That doesn't look like an email address."
+        elif len(pw) < 8:
+            error = "Password needs at least 8 characters."
+        elif db().execute("SELECT 1 FROM account WHERE email=?", (email,)).fetchone():
+            error = "That email is already registered — sign in instead."
+        else:
+            code = ensure_player()
+            # if this browser's progress already belongs to another account,
+            # start the new account on a fresh slate instead of stealing it
+            if db().execute("SELECT 1 FROM account WHERE code=?", (code,)).fetchone():
+                code = secrets.token_hex(3).upper()
+                db().execute("INSERT INTO player(code, created_at) VALUES(?,?)",
+                             (code, time.time()))
+                session["code"] = code
+            db().execute("INSERT INTO account(email, pw_hash, code, created_at) VALUES(?,?,?,?)",
+                         (email, generate_password_hash(pw), code, time.time()))
+            db().commit()
+            session.permanent = True
+            return redirect(url_for("profile"))
+    return render_template("register.html", error=error, code=me())
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    error = None
+    if request.method == "POST":
+        email = (request.form.get("email") or "").strip().lower()
+        pw = request.form.get("password") or ""
+        row = db().execute("SELECT * FROM account WHERE email=?", (email,)).fetchone()
+        if row and check_password_hash(row["pw_hash"], pw):
+            session["code"] = row["code"]
+            session.permanent = True
+            return redirect(url_for("profile"))
+        error = "Wrong email or password."
+    return render_template("login.html", error=error, code=me())
+
+
+@app.route("/logout")
+def logout():
+    session.pop("code", None)
+    return redirect(url_for("index"))
 
 
 @app.route("/claim", methods=["GET", "POST"])

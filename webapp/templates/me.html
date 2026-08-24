@@ -2,7 +2,9 @@
 {% block title %}Your progress{% endblock %}
 {% block body %}
 <h1>Your progress</h1>
-<p class="lede">Player <b>{{ code }}</b> — write this down to pick up on another device.</p>
+{% if email %}<p class="lede">Signed in as <b>{{ email }}</b>.</p>
+{% else %}<p class="lede">Your progress lives in this browser for now —
+<a href="{{ url_for('register') }}">register with an email</a> to keep it anywhere.</p>{% endif %}
 
 {% if tot.n %}
 <p class="bignum">{{ tot.c or 0 }}<span>/{{ tot.n }}</span></p>

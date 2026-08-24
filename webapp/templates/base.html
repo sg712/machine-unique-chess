@@ -12,8 +12,11 @@
     <a class="brand" href="{{ url_for('index') }}">Unnamed Concepts</a>
     <span>
       <a href="{{ url_for('research') }}">The research</a>
-      {% if code %}<a href="{{ url_for('profile') }}">Your progress</a>
-      {% else %}<a href="{{ url_for('claim') }}">Have a code?</a>{% endif %}
+      {% if email %}<a href="{{ url_for('profile') }}">Your progress</a>
+      <a href="{{ url_for('logout') }}">Sign out</a>
+      {% elif code %}<a href="{{ url_for('profile') }}">Your progress</a>
+      <a href="{{ url_for('register') }}">Register</a>
+      {% else %}<a href="{{ url_for('login') }}">Sign in</a>{% endif %}
     </span>
   </div>
   {% block body %}{% endblock %}
