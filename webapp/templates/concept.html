@@ -15,54 +15,186 @@
     {% for m, v in c.signature.top_motifs %}{{ m }} {{ '%.2f'|format(v) }}{% if not loop.last %} &middot; {% endif %}{% endfor %}</span>
 </div>
 
-<h2>Study</h2>
-<p>Four positions from this family, with the engine's move and what follows. There is no
-commentary on purpose — the pattern is easier to absorb than to describe, which is the
-whole reason it has no name. Step through each line, then look at the starting position again.</p>
+<div id="tryStage">
+  <h2>First, you try</h2>
+  <p>Four positions from this family. Pick the move you would play — then see the engine's
+  answer and what follows. Attempting first is the point: the pattern lands harder when
+  you've just missed it.</p>
 
-<div class="protos" id="protos"></div>
+  <div class="stage trybox">
+    <div id="tryboard"></div>
+    <div class="side">
+      <p class="stm" id="trystm"></p>
+      <p class="pickline">Your move: <span id="trypick">&mdash;</span></p>
+      <div class="row" id="tryrow">
+        <button class="btn ghost" id="tryundo" disabled>Take back</button>
+        <button class="btn p" id="trylock" disabled>Lock in</button>
+      </div>
+      <div id="tryfb" style="display:none">
+        <p class="verdict" id="tryverdict"></p>
+        <p id="tryline"></p>
+        <p class="mv" id="trymoves"></p>
+        <div class="row"><button class="btn p" id="trynext">Next position &rarr;</button></div>
+      </div>
+      <div class="tally" id="trytally"></div>
+      <p class="counter" id="trycounter"></p>
+    </div>
+  </div>
+</div>
 
-<form method="post" action="{{ url_for('mark_studied', cid=c.id) }}" class="cta">
-  <button class="btn p" type="submit">I've studied these &rarr; drill {{ c.drill|length }} new positions</button>
-  {% if prog.n %}<span class="small">You've already tried {{ prog.n }} of {{ prog.of }}
-    ({{ prog.correct }} solved).</span>{% endif %}
-</form>
+<div id="studyStage" style="display:none">
+  <h2>Now study them together</h2>
+  <p>The same four positions, side by side, each with the engine's move and what follows.
+  There is no commentary on purpose — the pattern is easier to absorb than to describe,
+  which is the whole reason it has no name. Step through each line, then look at the
+  starting positions again.</p>
+
+  <div class="protos" id="protos"></div>
+
+  <form method="post" action="{{ url_for('mark_studied', cid=c.id) }}" class="cta">
+    <button class="btn p" type="submit">I've studied these &rarr; test on {{ c.drill|length }} new positions</button>
+    {% if prog.n %}<span class="small">You've already tried {{ prog.n }} of {{ prog.of }}
+      ({{ prog.correct }} solved).</span>{% endif %}
+  </form>
+  <p class="small"><a href="#" id="redo">Redo the try round</a></p>
+</div>
 
 <script type="module">
 import { Board } from "{{ url_for('static', filename='board.js') }}";
 const LINES = {{ lines|tojson }};
 const PIECES = {{ pieces|tojson }};
-const wrap = document.getElementById("protos");
+const KEY = "mu_tried_{{ c.id }}";
 
-LINES.forEach((line) => {
-  const box = document.createElement("div");
-  box.className = "proto";
-  const bd = document.createElement("div");
-  const ctl = document.createElement("div");
-  ctl.className = "ctl";
-  ctl.innerHTML = '<button data-d="-1" aria-label="previous">&#9664;</button>' +
-                  '<span class="pos">start</span>' +
-                  '<button data-d="1" aria-label="next">&#9654;</button>';
-  const mv = document.createElement("p");
-  mv.className = "mv";
+// ── stage 2: the study grid (unchanged behaviour) ─────────────────────────────
+function buildStudy() {
+  const wrap = document.getElementById("protos");
+  if (wrap.childElementCount) return;
+  LINES.forEach((line) => {
+    const box = document.createElement("div");
+    box.className = "proto";
+    const bd = document.createElement("div");
+    const ctl = document.createElement("div");
+    ctl.className = "ctl";
+    ctl.innerHTML = '<button data-d="-1" aria-label="previous">&#9664;</button>' +
+                    '<span class="pos">start</span>' +
+                    '<button data-d="1" aria-label="next">&#9654;</button>';
+    const mv = document.createElement("p");
+    mv.className = "mv";
+    mv.innerHTML = line.sans.map((s, k) => `<button data-go="${k + 1}">${s}</button>`).join(" ");
+    box.append(bd, ctl, mv);
+    wrap.appendChild(box);
+    const board = new Board(bd, { pieces: PIECES, orientation: line.orientation });
+    let cur = 0;
+    const show = (n) => {
+      cur = Math.max(0, Math.min(line.frames.length - 1, n));
+      const f = line.frames[cur];
+      board.setPosition(f.fen, f.last);
+      ctl.querySelector(".pos").textContent = cur === 0 ? "start" : line.sans[cur - 1];
+      mv.querySelectorAll("button").forEach((b, k) => b.classList.toggle("cur", k === cur - 1));
+    };
+    ctl.querySelectorAll("button").forEach(b =>
+      b.addEventListener("click", () => show(cur + (+b.dataset.d))));
+    mv.querySelectorAll("button").forEach(b =>
+      b.addEventListener("click", () => show(+b.dataset.go)));
+    show(0);
+  });
+}
+
+function showStudy() {
+  document.getElementById("tryStage").style.display = "none";
+  document.getElementById("studyStage").style.display = "";
+  buildStudy();
+}
+
+// ── stage 1: try each position before seeing the answer ───────────────────────
+const tryEl = document.getElementById("tryboard");
+const tally = document.getElementById("trytally");
+LINES.forEach(() => { const i = document.createElement("i"); tally.appendChild(i); });
+
+let idx = 0, picked = null, board = null;
+const pickEl = document.getElementById("trypick");
+const lock = document.getElementById("trylock");
+const undo = document.getElementById("tryundo");
+const pct = (x) => (x * 100).toFixed(x >= 0.1 ? 0 : 1) + "%";
+
+function loadTry() {
+  const line = LINES[idx];
+  tryEl.innerHTML = "";
+  board = new Board(tryEl, {
+    pieces: PIECES, orientation: line.orientation, interactive: true,
+    onSelect: ({ from, to }) => {
+      picked = from + to;
+      pickEl.textContent = from + " → " + to;
+      lock.disabled = false; undo.disabled = false;
+    },
+  });
+  board.setLegal(line.legal);
+  board.setPosition(line.fen);
+  document.getElementById("trystm").textContent = line.stm + " to move.";
+  document.getElementById("trycounter").textContent = `Position ${idx + 1} of ${LINES.length}`;
+  picked = null; pickEl.innerHTML = "&mdash;";
+  lock.disabled = true; undo.disabled = true;
+  document.getElementById("tryrow").style.display = "flex";
+  document.getElementById("tryfb").style.display = "none";
+}
+
+undo.addEventListener("click", () => {
+  board.setPosition(LINES[idx].fen);
+  picked = null; pickEl.innerHTML = "&mdash;";
+  lock.disabled = true; undo.disabled = true;
+});
+
+lock.addEventListener("click", () => {
+  if (!picked) return;
+  const line = LINES[idx];
+  const hit = picked === line.best;
+  tally.children[idx].classList.add(hit ? "hit" : "done");
+  document.getElementById("tryrow").style.display = "none";
+  const v = document.getElementById("tryverdict");
+  v.textContent = hit ? "You found it." : "Not the engine's move.";
+  v.className = "verdict " + (hit ? "good" : "bad");
+  document.getElementById("tryline").innerHTML =
+    `The engine plays <b>${line.best_san}</b>` +
+    (line.p_best ? ` — Maia gives it ${pct(line.p_best)} at 1900.` : ".") +
+    ` Step through what follows:`;
+
+  // turn the board into a line viewer, starting after the engine's move
+  const mv = document.getElementById("trymoves");
   mv.innerHTML = line.sans.map((s, k) => `<button data-go="${k + 1}">${s}</button>`).join(" ");
-  box.append(bd, ctl, mv);
-  wrap.appendChild(box);
-
-  const board = new Board(bd, { pieces: PIECES, orientation: line.orientation });
-  let cur = 0;
+  let cur = 1;
   const show = (n) => {
     cur = Math.max(0, Math.min(line.frames.length - 1, n));
     const f = line.frames[cur];
     board.setPosition(f.fen, f.last);
-    ctl.querySelector(".pos").textContent = cur === 0 ? "start" : line.sans[cur - 1];
     mv.querySelectorAll("button").forEach((b, k) => b.classList.toggle("cur", k === cur - 1));
   };
-  ctl.querySelectorAll("button").forEach(b =>
-    b.addEventListener("click", () => show(cur + (+b.dataset.d))));
+  board.setLegal([]);
   mv.querySelectorAll("button").forEach(b =>
     b.addEventListener("click", () => show(+b.dataset.go)));
-  show(0);
+  show(1);
+  document.getElementById("tryfb").style.display = "";
+  document.getElementById("trynext").textContent =
+    idx + 1 < LINES.length ? "Next position →" : "Study them together →";
 });
+
+document.getElementById("trynext").addEventListener("click", () => {
+  idx += 1;
+  if (idx >= LINES.length) {
+    localStorage.setItem(KEY, "1");
+    showStudy();
+  } else loadTry();
+});
+
+document.getElementById("redo").addEventListener("click", (e) => {
+  e.preventDefault();
+  localStorage.removeItem(KEY);
+  idx = 0;
+  document.getElementById("studyStage").style.display = "none";
+  document.getElementById("tryStage").style.display = "";
+  tally.querySelectorAll("i").forEach(i => i.className = "");
+  loadTry();
+});
+
+if (localStorage.getItem(KEY)) showStudy(); else loadTry();
 </script>
 {% endblock %}

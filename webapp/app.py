@@ -166,7 +166,14 @@ def concept(cid):
     c = BY_ID[cid]
     code = me()
     p = concept_progress(code)[cid]
-    lines = [frames_of(s["fen"], s["pv"]) for s in c["study"]]
+    lines = []
+    for st in c["study"]:
+        line = frames_of(st["fen"], st["pv"])
+        line.update(board_of(st["fen"]))
+        line["best"] = st["best"]
+        line["best_san"] = st["best_san"]
+        line["p_best"] = st.get("p_best", 0)
+        lines.append(line)
     return render_template("concept.html", c=c, lines=lines, pieces=PIECES,
                            prog=p, code=code)
 
