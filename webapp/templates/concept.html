@@ -155,8 +155,7 @@ lock.addEventListener("click", () => {
   v.className = "verdict " + (hit ? "good" : "bad");
   document.getElementById("tryline").innerHTML =
     `The engine plays <b>${line.best_san}</b>` +
-    (line.p_best ? ` — Maia gives it ${pct(line.p_best)} at 1900.` : ".") +
-    ` Step through what follows:`;
+    (line.p_best ? ` — Maia gives it ${pct(line.p_best)} at 1900.` : ".");
 
   // turn the board into a line viewer, starting after the engine's move
   const mv = document.getElementById("trymoves");

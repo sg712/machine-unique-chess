@@ -201,3 +201,8 @@ table.research tr.hl td:first-child { box-shadow:inset 2px 0 0 var(--accent); }
 .board.live { touch-action:none; }
 .board.live .sq { cursor:grab; }
 .pc.drag { transition:none; z-index:5; cursor:grabbing; }
+.trybox .mv { font-size:.92rem; line-height:1.9; color:var(--faint); }
+.trybox .mv button { font:inherit; border:none; background:none; color:var(--ink);
+  cursor:pointer; padding:.04rem .3rem; font-weight:600; }
+.trybox .mv button:hover { color:var(--accent); }
+.trybox .mv button.cur { background:var(--ink); color:var(--paper); }
