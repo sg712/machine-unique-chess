@@ -2,6 +2,9 @@
 {% block title %}Your progress{% endblock %}
 {% block body %}
 <h1>Your progress</h1>
+{% if bs %}<p class="small">Latest blind-spot test: <b>{{ bs.correct }}/{{ bs.n }}</b>
+ &middot; placed as <b>{{ bs.band }}</b> &middot;
+ <a href="{{ url_for('blindspot_test') }}">retake</a></p>{% endif %}
 {% if email %}<p class="lede">Signed in as <b>{{ email }}</b>.</p>
 {% else %}<p class="lede">Your progress lives in this browser for now —
 <a href="{{ url_for('register') }}">register with an email</a> to keep it anywhere.</p>{% endif %}

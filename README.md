@@ -75,6 +75,7 @@ BIBLIOGRAPHY.md  annotated reading list
 | `24_band_sampler.py` | Band-targeted sampling — evens the dataset to ~20k per band |
 | `25_top_band_sampler.py` | Extends the ladder to Lichess 2800+ (mover-side sampling) |
 | `26_why_invisible.py` | Equal-stakes contrast: which plain features make a move invisible |
+| `29_test_calibration.py` | Difficulty curves per test item at six ratings — powers the site's blind-spot test (ML placement, not raw score) |
 | `27_other_lenses.py` | HDBSCAN, GMM-BIC, hierarchy, dictionary atoms — all say "continuum" |
 | `28_assign_new_mu.py` | Embeds the later machine-unique positions, assigns each to its nearest group |
 | `29_extend_trainer.py` | Triples the drill pool: 24 new engine-verified positions per concept |

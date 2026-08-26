@@ -29,6 +29,7 @@ app.secret_key = os.environ.get("SECRET_KEY", "unnamed-concepts-local-dev")
 
 CONCEPTS = json.load(open(ROOT / "webapp" / "concepts.json"))
 BY_ID = {c["id"]: c for c in CONCEPTS}
+TEST_DATA = json.load(open(ROOT / "webapp" / "test_items.json"))
 VALIDATION = {
     "cluster": json.load(open(ROOT / "results" / "18_validation.json")),
     "embed": json.load(open(ROOT / "results" / "19_embedding_value.json")),
@@ -70,6 +71,10 @@ def init_db():
     CREATE TABLE IF NOT EXISTS account (
         email TEXT PRIMARY KEY, pw_hash TEXT NOT NULL,
         code TEXT UNIQUE NOT NULL, created_at REAL);
+    CREATE TABLE IF NOT EXISTS blindspot (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        code TEXT NOT NULL, at REAL, n INTEGER, correct INTEGER,
+        band TEXT, detail TEXT);
     """)
     conn.commit()
     conn.close()
@@ -268,8 +273,11 @@ def profile():
     tot = db().execute(
         "SELECT COUNT(*) n, SUM(correct) c, AVG(human_p) h FROM attempt WHERE code=?",
         (code,)).fetchone()
+    bs = db().execute("SELECT * FROM blindspot WHERE code=? ORDER BY at DESC LIMIT 1",
+                      (code,)).fetchone()
     return render_template("me.html", code=code, concepts=CONCEPTS, stats=stats,
-                           tot=dict(tot), prog=concept_progress(code))
+                           tot=dict(tot), prog=concept_progress(code),
+                           bs=dict(bs) if bs else None)
 
 
 @app.route("/research")
@@ -278,6 +286,68 @@ def research():
                            v=VALIDATION["cluster"], e=VALIDATION["embed"],
                            d=VALIDATION["difficulty"], lc=VALIDATION["curve"],
                            bv=VALIDATION["bands"])
+
+
+@app.route("/test")
+def blindspot_test():
+    import random
+    cids = [c["id"] for c in CONCEPTS]
+    random.shuffle(cids)
+    picks = cids + random.sample(cids, 12 - len(cids))
+    seen, items = set(), []
+    for cid in picks:
+        c = BY_ID[cid]
+        while True:
+            i = random.randrange(len(c["drill"]))
+            if (cid, i) not in seen:
+                seen.add((cid, i))
+                break
+        items.append(f"{cid}:{i}")
+    session["bs_items"] = items
+    payload = []
+    for key in items:
+        cid, i = (int(x) for x in key.split(":"))
+        pos = BY_ID[cid]["drill"][i]
+        payload.append({**board_of(pos["fen"])})
+    return render_template("test.html", items=payload, pieces=PIECES, code=me())
+
+
+@app.post("/api/blindspot")
+def api_blindspot():
+    keys = session.get("bs_items")
+    picks = (request.get_json(silent=True) or {}).get("picks")
+    if not keys or not isinstance(picks, list) or len(picks) != len(keys):
+        return {"error": "no active test"}, 400
+    import math
+    correct, reveal = 0, []
+    loglik = [0.0] * len(TEST_DATA["band_labels"])
+    for key, picked in zip(keys, picks):
+        cid, i = (int(x) for x in key.split(":"))
+        pos = BY_ID[cid]["drill"][i]
+        hit = picked == pos["best"]
+        correct += int(hit)
+        b = chess.Board(pos["fen"])
+        try:
+            picked_san = b.san(chess.Move.from_uci(picked))
+        except Exception:
+            picked_san = picked
+        reveal.append({"fen": pos["fen"], "best_san": pos["best_san"],
+                       "picked_san": picked_san, "hit": hit,
+                       "concept": BY_ID[cid]["label"], "cid": cid})
+        for bi, pr in enumerate(TEST_DATA["items"][key]):
+            pr = min(max(pr, 0.03), 0.97)
+            loglik[bi] += math.log(pr if hit else 1.0 - pr)
+    best_band = max(range(len(loglik)), key=lambda i: loglik[i])
+    code = ensure_player()
+    db().execute("INSERT INTO blindspot(code, at, n, correct, band, detail) VALUES(?,?,?,?,?,?)",
+                 (code, time.time(), len(keys), correct,
+                  TEST_DATA["band_labels"][best_band], json.dumps({"keys": keys, "picks": picks})))
+    db().commit()
+    session.pop("bs_items", None)
+    return {"n": len(keys), "correct": correct,
+            "band": TEST_DATA["band_labels"][best_band], "band_idx": best_band,
+            "band_labels": TEST_DATA["band_labels"], "staircase": TEST_DATA["staircase"],
+            "reveal": reveal}
 
 
 @app.route("/register", methods=["GET", "POST"])

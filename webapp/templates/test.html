@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block title %}Find your blind spot — Unnamed Concepts{% endblock %}
+{% block body %}
+
+<div id="quiz">
+<h1 class="tight">Find your blind spot</h1>
+<p class="lede">Twelve positions where the engine's move is decisively best and most humans
+never consider it. Play your move on each — no feedback until the end, then your answers
+place you on the rating staircase from the research.</p>
+
+<div class="stage trybox">
+  <div id="bsboard"></div>
+  <div class="side">
+    <p class="stm" id="bsstm"></p>
+    <p class="pickline">Your move: <span id="bspick">&mdash;</span></p>
+    <div class="row">
+      <button class="btn ghost" id="bsundo" disabled>Take back</button>
+      <button class="btn p" id="bslock" disabled>Lock in</button>
+    </div>
+    <div class="tally" id="bstally"></div>
+    <p class="counter" id="bscounter"></p>
+  </div>
+</div>
+</div>
+
+<div id="result" style="display:none">
+<h1 class="tight">Your blind spot</h1>
+<p class="lede" id="verdictline"></p>
+<div class="bars" id="staircase"></div>
+<p class="small">Bars: how often real players in each band found machine-unique moves,
+measured over ~850 positions per band. Your placement is a maximum-likelihood fit of your
+twelve answers against each position's difficulty curve — not a raw percentage.</p>
+<h2>The twelve, revealed</h2>
+<div id="reveal"></div>
+<p class="row" style="margin-top:1.4rem">
+  <button class="btn" id="sharebtn">Copy your result</button>
+  <a class="btn p" href="{{ url_for('index') }}">Study the concepts &rarr;</a>
+  <a class="btn ghost" href="{{ url_for('blindspot_test') }}">Retake</a>
+</p>
+</div>
+
+<script type="module">
+import { Board } from "{{ url_for('static', filename='board.js') }}";
+const ITEMS = {{ items|tojson }};
+const PIECES = {{ pieces|tojson }};
+const picks = [];
+let idx = 0, picked = null, board = null;
+
+const tally = document.getElementById("bstally");
+ITEMS.forEach(() => tally.appendChild(document.createElement("i")));
+const pickEl = document.getElementById("bspick");
+const lock = document.getElementById("bslock");
+const undo = document.getElementById("bsundo");
+const el = document.getElementById("bsboard");
+
+function load() {
+  const p = ITEMS[idx];
+  el.innerHTML = "";
+  board = new Board(el, {
+    pieces: PIECES, orientation: p.orientation, interactive: true,
+    onSelect: ({ from, to }) => {
+      picked = from + to;
+      pickEl.textContent = from + " → " + to;
+      lock.disabled = false; undo.disabled = false;
+    },
+  });
+  board.setLegal(p.legal);
+  board.setPosition(p.fen);
+  document.getElementById("bsstm").textContent = p.stm + " to move.";
+  document.getElementById("bscounter").textContent = `Position ${idx + 1} of ${ITEMS.length}`;
+  picked = null; pickEl.innerHTML = "&mdash;";
+  lock.disabled = true; undo.disabled = true;
+}
+
+undo.addEventListener("click", () => {
+  board.setPosition(ITEMS[idx].fen);
+  picked = null; pickEl.innerHTML = "&mdash;";
+  lock.disabled = true; undo.disabled = true;
+});
+
+lock.addEventListener("click", async () => {
+  if (!picked) return;
+  picks.push(picked);
+  tally.children[idx].classList.add("done");
+  idx += 1;
+  if (idx < ITEMS.length) { load(); return; }
+  const r = await fetch("/api/blindspot", {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ picks }),
+  }).then(r => r.json());
+  showResult(r);
+});
+
+let shareText = "";
+function showResult(r) {
+  document.getElementById("quiz").style.display = "none";
+  document.getElementById("result").style.display = "";
+  const pctYou = Math.round(100 * r.correct / r.n);
+  document.getElementById("verdictline").innerHTML =
+    `You found <b>${r.correct} of ${r.n}</b>. Your answers fit the profile of a ` +
+    `<b>${r.band}</b> player on these positions.`;
+  const wrap = document.getElementById("staircase");
+  r.band_labels.forEach((lab, i) => {
+    const v = Math.round(100 * r.staircase[i]);
+    const row = document.createElement("div");
+    row.className = "bar" + (i === r.band_idx ? " you" : "");
+    row.innerHTML = `<span class="lb">${lab}${i === r.band_idx ? " — you" : ""}</span>` +
+      `<span class="tr"><span class="fl" style="width:${Math.max(v, 2)}%"></span></span>` +
+      `<span class="vl">${v}%</span>`;
+    wrap.appendChild(row);
+  });
+  const rv = document.getElementById("reveal");
+  rv.innerHTML = r.reveal.map((x, k) =>
+    `<p class="small">${k + 1}. ${x.hit
+        ? `<b style="color:var(--good)">Found it</b> — ${x.best_san}`
+        : `You played ${x.picked_san}; the engine plays <b>${x.best_san}</b>`} ` +
+    `&middot; <a href="/concept/${x.cid}">${x.concept}</a></p>`).join("");
+  shareText = `I found ${r.correct}/${r.n} machine-unique chess moves — the moves ` +
+    `engines love and humans never play. Placement: ${r.band}. Try it: sg712.pythonanywhere.com/test`;
+}
+
+document.getElementById("sharebtn").addEventListener("click", async (e) => {
+  try { await navigator.clipboard.writeText(shareText); e.target.textContent = "Copied"; }
+  catch { e.target.textContent = shareText; }
+});
+
+load();
+</script>
+{% endblock %}
