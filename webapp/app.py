@@ -181,6 +181,48 @@ def index():
                            previews=previews, pieces=piece_svgs(), blurbs=blurbs)
 
 
+def curriculum(code=None):
+    """Concepts ordered easiest-first by the difficulty model's predicted find-rate
+    for a 1900 — a measured ordering rather than the arbitrary cluster numbering."""
+    prog = concept_progress(code)
+    rows = []
+    for c in CONCEPTS:
+        pred = c["signature"].get("predicted_find_1900") or 0.1
+        rows.append({"c": c, "pred": pred, "p": prog[c["id"]]})
+    rows.sort(key=lambda r: -r["pred"])
+    for i, r in enumerate(rows, start=1):
+        p = r["p"]
+        r["n"] = i
+        r["tier"] = ("Gentler" if r["pred"] >= 0.116
+                     else "Standard" if r["pred"] >= 0.10 else "Hardest")
+        r["pct"] = round(100 * p["n"] / max(p["of"], 1))
+        r["state"] = ("done" if p["n"] >= p["of"] else
+                      "going" if p["n"] > 0 else
+                      "studied" if p["studied"] else "new")
+        sig = r["c"]["signature"]
+        phase = max(sig["phase"], key=sig["phase"].get)
+        piece = max(sig["pieces"], key=sig["pieces"].get)
+        r["blurb"] = f"Mostly {phase}s · usually a {piece} move"
+    return rows
+
+
+@app.route("/learn")
+def learn():
+    code = me()
+    rows = curriculum(code)
+    nxt = next((r for r in rows if r["state"] != "done"), None)
+    tot = {"solved": sum(r["p"]["correct"] for r in rows),
+           "tried": sum(r["p"]["n"] for r in rows),
+           "of": sum(r["p"]["of"] for r in rows),
+           "done": sum(1 for r in rows if r["state"] == "done"),
+           "started": sum(1 for r in rows if r["state"] != "new")}
+    return render_template("learn.html", rows=rows, nxt=nxt, tot=tot, code=code,
+                           previews={r["c"]["id"]: {
+                               "fen": r["c"]["study"][0]["fen"],
+                               "orientation": r["c"]["study"][0]["stm"]} for r in rows},
+                           pieces=PIECES)
+
+
 @app.route("/concept/<int:cid>")
 def concept(cid):
     if cid not in BY_ID:
@@ -196,8 +238,14 @@ def concept(cid):
         line["best_san"] = st["best_san"]
         line["p_best"] = st.get("p_best", 0)
         lines.append(line)
+    rows = curriculum(code)
+    here = next((r for r in rows if r["c"]["id"] == cid), None)
+    nxt = None
+    if here:
+        i = rows.index(here)
+        nxt = rows[i + 1]["c"] if i + 1 < len(rows) else None
     return render_template("concept.html", c=c, lines=lines, pieces=PIECES,
-                           prog=p, code=code)
+                           prog=p, code=code, here=here, nxt=nxt)
 
 
 @app.post("/concept/<int:cid>/studied")

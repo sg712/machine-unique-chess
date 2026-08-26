@@ -206,3 +206,93 @@ table.research tr.hl td:first-child { box-shadow:inset 2px 0 0 var(--accent); }
   cursor:pointer; padding:.04rem .3rem; font-weight:600; }
 .trybox .mv button:hover { color:var(--accent); }
 .trybox .mv button.cur { background:var(--ink); color:var(--paper); }
+
+/* ── learn hub ──────────────────────────────────────────────────────────── */
+.hero { display:flex; align-items:flex-start; justify-content:space-between; gap:2rem;
+  flex-wrap:wrap; }
+.hero h1 { margin-bottom:.4rem; }
+.hero .lede { max-width:38ch; }
+
+.ring { position:relative; width:84px; height:84px; flex:none; }
+.ring svg { width:100%; height:100%; transform:rotate(-90deg); }
+.ring circle { fill:none; stroke-width:7; }
+.ring .rbg { stroke:var(--hair); }
+.ring .rfg { stroke:var(--accent); stroke-linecap:round; transition:stroke-dasharray .6s ease; }
+.ring .rv { position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-family:var(--mono); font-size:1.15rem; color:var(--ink); }
+.ring .rv i { font-style:normal; font-size:.7rem; color:var(--faint); margin-left:1px; }
+
+.statstrip { display:flex; flex-wrap:wrap; gap:1.4rem; margin:1.6rem 0 1.2rem;
+  padding:.75rem 0; border-top:1px solid var(--hair); border-bottom:1px solid var(--hair);
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--muted); }
+.statstrip b { font-size:.95rem; color:var(--ink); letter-spacing:0; }
+.statstrip .muted { color:var(--faint); }
+
+.uptop { display:flex; align-items:center; gap:1rem; text-decoration:none;
+  background:var(--ink); color:var(--paper); padding:1rem 1.3rem; border-radius:10px;
+  margin:1.4rem 0 1.8rem; transition:transform .15s ease, box-shadow .15s ease; }
+.uptop:hover { transform:translateY(-1px); box-shadow:0 6px 18px #16150f22; }
+.uptop .k { font-family:var(--mono); font-size:.68rem; letter-spacing:.14em;
+  text-transform:uppercase; opacity:.62; }
+.uptop .v { font-size:1.12rem; flex:1; }
+.uptop .go { font-size:1.3rem; opacity:.7; }
+
+.modules { display:flex; flex-direction:column; gap:.6rem; }
+.mod { display:flex; align-items:center; gap:1rem; text-decoration:none; color:inherit;
+  background:#fff; border:1px solid var(--hair); border-radius:12px; padding:.85rem 1rem;
+  transition:border-color .15s ease, transform .15s ease, box-shadow .15s ease; }
+.mod:hover { border-color:var(--rule); transform:translateY(-1px); box-shadow:0 4px 14px #16150f0f; }
+.mod .num { flex:none; width:1.9rem; height:1.9rem; border-radius:50%; display:flex;
+  align-items:center; justify-content:center; font-family:var(--mono); font-size:.8rem;
+  background:var(--lt); color:var(--muted); }
+.mod.done .num { background:var(--good); color:#fff; }
+.mod.going .num, .mod.studied .num { background:var(--ink); color:var(--paper); }
+.mod .thumb { flex:none; width:62px; height:62px; }
+.mod .thumb .board { width:62px; border:none; }
+.mod .thumb .rk, .mod .thumb .fl { display:none; }
+.mod .body { flex:1; min-width:0; display:flex; flex-direction:column; gap:.22rem; }
+.mod .top { display:flex; align-items:baseline; gap:.6rem; }
+.mod .nm { font-size:1.05rem; font-weight:400; }
+.mod .bl { font-size:.86rem; color:var(--muted); }
+.mod .pbar { display:block; height:4px; background:var(--hair); border-radius:2px;
+  overflow:hidden; max-width:22rem; }
+.mod .pbar i { display:block; height:100%; background:var(--ink); border-radius:2px; }
+.mod.done .pbar i { background:var(--good); }
+.mod .st { font-family:var(--mono); font-size:.68rem; letter-spacing:.06em; color:var(--faint); }
+
+.pill { font-family:var(--mono); font-size:.6rem; letter-spacing:.1em; text-transform:uppercase;
+  padding:.16rem .45rem; border-radius:99px; border:1px solid var(--rule); color:var(--muted); }
+.pill.t-gentler { border-color:#1d6b2f55; color:var(--good); }
+.pill.t-hardest { border-color:#8a1f1155; color:var(--accent); }
+
+/* ── tutorial card ──────────────────────────────────────────────────────── */
+.tut { border:1px solid var(--rule); border-radius:12px; padding:1.2rem 1.3rem;
+  background:#fff; margin:1.4rem 0 1.8rem; }
+.tut h3 { font-family:var(--mono); font-size:.7rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--accent); font-weight:400; margin:0 0 .8rem; }
+.tut ol { margin:0; padding-left:0; list-style:none; counter-reset:tut; }
+.tut li { counter-increment:tut; display:flex; gap:.8rem; padding:.5rem 0; align-items:flex-start; }
+.tut li::before { content:counter(tut); flex:none; width:1.5rem; height:1.5rem; border-radius:50%;
+  background:var(--lt); color:var(--muted); font-family:var(--mono); font-size:.72rem;
+  display:flex; align-items:center; justify-content:center; }
+.tut li .tx { display:flex; flex-direction:column; gap:.15rem; }
+.tut li .tx b { font-weight:600; font-size:1rem; }
+.tut li .tx span { font-size:.9rem; color:var(--muted); }
+.crumb { max-width:none; overflow:hidden; }
+.tut .row { margin-top:1rem; }
+.tuthint { font-family:var(--mono); font-size:.68rem; letter-spacing:.08em; color:var(--faint);
+  text-decoration:none; border-bottom:1px dotted var(--rule); }
+.sigdrawer { margin:2rem 0 0; border-top:1px solid var(--hair); padding-top:1rem; }
+.sigdrawer summary { font-family:var(--mono); font-size:.7rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--muted); cursor:pointer; }
+.sigdrawer summary:hover { color:var(--accent); }
+.sigdrawer .sigbar { margin-top:.8rem; }
+.donecard { border:1px solid var(--rule); border-radius:12px; background:#fff;
+  padding:1.6rem 1.5rem; margin:1.4rem 0 2rem; }
+.donecard .k { font-family:var(--mono); font-size:.68rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--good); }
+.donecard .score { font-size:2.8rem; line-height:1.1; margin:.3rem 0 .2rem;
+  font-variant-numeric:tabular-nums; }
+.donecard .score i { font-style:normal; font-size:1.3rem; color:var(--faint); }
+.donecard .lede { font-size:1rem; margin-bottom:1.2rem; }

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Learn — Unnamed Concepts{% endblock %}
+{% block body %}
+
+<div class="hero">
+  <div>
+    <h1 class="tight">Learn the eight patterns</h1>
+    <p class="lede">Ordered easiest to hardest — not by cluster number, but by how often the
+    difficulty model expects a 1900-rated player to find these moves. Work down the list.</p>
+  </div>
+  <div class="ring" aria-hidden="true">
+    {% set pc = (100 * tot.tried / tot.of)|round(0)|int if tot.of else 0 %}
+    <svg viewBox="0 0 80 80">
+      <circle class="rbg" cx="40" cy="40" r="34"/>
+      {% if pc > 0 %}<circle class="rfg" cx="40" cy="40" r="34"
+              stroke-dasharray="{{ (2.136 * pc)|round(1) }} 999"/>{% endif %}
+    </svg>
+    <span class="rv">{{ pc }}<i>%</i></span>
+  </div>
+</div>
+
+<div class="statstrip">
+  <span><b>{{ tot.done }}</b>/8 patterns finished</span>
+  <span><b>{{ tot.tried }}</b>/{{ tot.of }} positions drilled</span>
+  <span><b>{{ tot.solved }}</b> solved</span>
+  {% if not code %}<span class="muted">progress saves in this browser</span>{% endif %}
+</div>
+
+{% if nxt %}
+<a class="uptop" href="{{ url_for('concept', cid=nxt.c.id) }}">
+  <span class="k">{{ 'Continue' if nxt.state != 'new' else 'Start here' }}</span>
+  <span class="v">{{ nxt.n }}. {{ nxt.c.label }}</span>
+  <span class="go">{{ '→' }}</span>
+</a>
+{% else %}
+<p class="note">All eight finished. Try the <a href="{{ url_for('blindspot_test') }}">blind-spot
+test</a> to see where you land now.</p>
+{% endif %}
+
+<div class="modules">
+  {% for r in rows %}
+  <a class="mod {{ r.state }}" href="{{ url_for('concept', cid=r.c.id) }}">
+    <span class="num">{{ r.n }}</span>
+    <span class="thumb" data-cid="{{ r.c.id }}"></span>
+    <span class="body">
+      <span class="top">
+        <b class="nm">{{ r.c.label }}</b>
+        <span class="pill t-{{ r.tier|lower }}">{{ r.tier }}</span>
+      </span>
+      <span class="bl">{{ r.blurb }}</span>
+      <span class="pbar"><i style="width:{{ r.pct }}%"></i></span>
+      <span class="st">
+        {% if r.state == 'done' %}Finished · {{ r.p.correct }}/{{ r.p.of }} solved
+        {% elif r.state == 'going' %}{{ r.p.n }}/{{ r.p.of }} drilled · {{ r.p.correct }} solved
+        {% elif r.state == 'studied' %}Studied · drill not started
+        {% else %}Not started · 4 to try, then {{ r.p.of }} to drill{% endif %}
+      </span>
+    </span>
+  </a>
+  {% endfor %}
+</div>
+
+<p class="small" style="margin-top:1.6rem">Each pattern takes about ten minutes: four positions
+you try cold, the same four with the engine's answers, then {{ rows[0].p.of }} fresh ones to
+drill. <a href="{{ url_for('research') }}">How these were found →</a></p>
+
+<script type="module">
+import { Board } from "{{ url_for('static', filename='board.js') }}";
+const PREV = {{ previews|tojson }};
+const PIECES = {{ pieces|tojson }};
+document.querySelectorAll(".thumb").forEach((el) => {
+  const p = PREV[el.dataset.cid];
+  if (!p) return;
+  const b = new Board(el, { pieces: PIECES, orientation: p.orientation });
+  b.setPosition(p.fen, null);
+});
+</script>
+{% endblock %}

@@ -2,17 +2,46 @@
 {% block title %}{{ c.name }} — Unnamed Concepts{% endblock %}
 {% block body %}
 
-<p class="crumb"><a href="{{ url_for('index') }}">All concepts</a></p>
-<h1>{{ c.name }}</h1>
-<p class="lede">{{ c.gloss }}</p>
+<p class="crumb"><a href="{{ url_for('learn') }}">&larr; All patterns</a>
+  {% if here %}<span style="color:var(--faint)">&nbsp;&middot;&nbsp; {{ here.n }} of 8</span>{% endif %}
+  <a href="#" id="showtut" class="tuthint" style="float:right">how this works</a></p>
 
-<div class="sigbar">
-  <span><b>{{ c.signature.positions }}</b> positions found</span>
-  <span><b>{{ (c.signature.found_by_real_players * 100)|round(1) }}%</b> found over the board</span>
-  <span><b>{{ (c.signature.quiet_share * 100)|round(0)|int }}%</b> quiet moves</span>
-  <span><b>&minus;{{ c.signature.avg_cost_cp }}cp</b> average human error</span>
-  <span class="mo">closest named motifs:
-    {% for m, v in c.signature.top_motifs %}{{ m }} {{ '%.2f'|format(v) }}{% if not loop.last %} &middot; {% endif %}{% endfor %}</span>
+<h1 class="tight">{{ c.name }}
+  {% if here %}<span class="pill t-{{ here.tier|lower }}"
+    style="vertical-align:middle;margin-left:.5rem">{{ here.tier }}</span>{% endif %}</h1>
+{% if here %}<p class="lede">{{ here.blurb }} — found over the board
+  {{ (c.signature.found_by_real_players * 100)|round(0)|int }}% of the time.</p>{% endif %}
+
+{% if request.args.get('done') and prog.n %}
+<div class="donecard" id="doneStage">
+  <span class="k">Pattern complete</span>
+  <p class="score">{{ prog.correct }}<i>/{{ prog.n }}</i></p>
+  <p class="lede">solved on {{ c.name }}
+  {% if prog.n %}&mdash; {{ (100 * prog.correct / prog.n)|round(0)|int }}%, against
+  {{ (c.signature.found_by_real_players * 100)|round(0)|int }}% for the players who faced these
+  positions over the board.{% endif %}</p>
+  <div class="row">
+    {% if nxt %}<a class="btn p" href="{{ url_for('concept', cid=nxt.id) }}">Next pattern:
+      {{ nxt.label }} &rarr;</a>{% else %}
+    <a class="btn p" href="{{ url_for('blindspot_test') }}">All eight done &mdash; take the test &rarr;</a>{% endif %}
+    <a class="btn" href="{{ url_for('learn') }}">Back to all patterns</a>
+    <a class="btn ghost" href="{{ url_for('drill', cid=c.id) }}">Drill again</a>
+  </div>
+</div>
+{% endif %}
+
+<div class="tut" id="tutorial" style="display:none">
+  <h3>What happens in this pattern</h3>
+  <ol>
+    <li><span class="tx"><b>Try four positions cold</b><span>No hints. Most people miss most of them — that is the measurement, not a failure.</span></span></li>
+    <li><span class="tx"><b>See the engine's move on each, right away</b><span>You get the answer while your own guess is still fresh. That contrast is what sticks.</span></span></li>
+    <li><span class="tx"><b>Study all four side by side</b><span>No commentary on purpose — these patterns have no name, so you absorb them by example.</span></span></li>
+    <li><span class="tx"><b>Drill {{ c.drill|length }} positions you have never seen</b><span>Same pattern, new boards. This is where you find out whether it transferred.</span></span></li>
+  </ol>
+  <div class="row">
+    <button class="btn p" id="tutgo">Start &rarr;</button>
+    <span class="small">Takes about ten minutes.</span>
+  </div>
 </div>
 
 <div id="tryStage">
@@ -57,6 +86,19 @@
       ({{ prog.correct }} solved).</span>{% endif %}
   </form>
   <p class="small"><a href="#" id="redo">Redo the try round</a></p>
+
+  <details class="sigdrawer">
+    <summary>The numbers behind this pattern</summary>
+    <p class="small">{{ c.gloss }}</p>
+    <div class="sigbar">
+      <span><b>{{ c.signature.positions }}</b> positions found</span>
+      <span><b>{{ (c.signature.found_by_real_players * 100)|round(1) }}%</b> found over the board</span>
+      <span><b>{{ (c.signature.quiet_share * 100)|round(0)|int }}%</b> quiet moves</span>
+      <span><b>&minus;{{ c.signature.avg_cost_cp }}cp</b> average human error</span>
+      <span class="mo">closest named motifs:
+        {% for m, v in c.signature.top_motifs %}{{ m }} {{ '%.2f'|format(v) }}{% if not loop.last %} &middot; {% endif %}{% endfor %}</span>
+    </div>
+  </details>
 </div>
 
 <script type="module">
@@ -194,6 +236,37 @@ document.getElementById("redo").addEventListener("click", (e) => {
   loadTry();
 });
 
-if (localStorage.getItem(KEY)) showStudy(); else loadTry();
+// ── tutorial: shown once per browser, replayable from the header link ────────
+const TUT = "mu_tut_seen";
+const tut = document.getElementById("tutorial");
+function openTut() {
+  tut.style.display = "";
+  document.getElementById("tryStage").style.display = "none";
+  document.getElementById("studyStage").style.display = "none";
+}
+function closeTut(then) {
+  try { localStorage.setItem(TUT, "1"); } catch (e) {}
+  tut.style.display = "none";
+  then();
+}
+document.getElementById("tutgo").addEventListener("click", () =>
+  closeTut(() => {
+    document.getElementById("tryStage").style.display = "";
+    loadTry();
+  }));
+document.getElementById("showtut").addEventListener("click", (e) => {
+  e.preventDefault();
+  openTut();
+});
+
+let seenTut = true;
+try { seenTut = !!localStorage.getItem(TUT); } catch (e) {}
+
+if (document.getElementById("doneStage")) {
+  document.getElementById("tryStage").style.display = "none";
+  document.getElementById("studyStage").style.display = "none";
+} else if (localStorage.getItem(KEY)) showStudy();
+else if (!seenTut) openTut();
+else loadTry();
 </script>
 {% endblock %}
