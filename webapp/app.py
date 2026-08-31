@@ -1,4 +1,4 @@
-"""Unnamed Concepts — a trainer for chess ideas that have no name.
+"""Machine Unique Chess — a trainer for chess ideas that have no name.
 
 Eight concepts mined from 123,405 real positions: patterns where a strong engine
 is decisively right and essentially no human plays the move. Each concept is
