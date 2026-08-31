@@ -14,7 +14,7 @@ const sndBufs = {};
 try {
   actx = new (window.AudioContext || window.webkitAudioContext)();
   for (const kind of ["move", "capture"]) {
-    fetch(`/static/sound/${kind}.mp3`)
+    fetch(`/static/sound/${kind}.mp3?v=2`)
       .then(r => r.arrayBuffer())
       .then(b => actx.decodeAudioData(b))
       .then(buf => { sndBufs[kind] = buf; })
