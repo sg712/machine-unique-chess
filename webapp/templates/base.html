@@ -10,11 +10,12 @@
 <div class="sheet">
   <div class="masthead">
     <a class="brand" href="{{ url_for('index') }}">Machine Unique Chess</a>
+    {% set ep = request.endpoint %}
     <span>
-      <a href="{{ url_for('learn') }}">Learn</a>
-      <a href="{{ url_for('blindspot_test') }}">Test</a>
-      {% if code %}<a href="{{ url_for('profile') }}">Progress</a>{% endif %}
-      <a href="{{ url_for('research') }}">Research</a>
+      <a href="{{ url_for('learn') }}"{% if ep in ('learn', 'concept', 'drill') %} class="on"{% endif %}>Learn</a>
+      <a href="{{ url_for('blindspot_test') }}"{% if ep == 'blindspot_test' %} class="on"{% endif %}>Test</a>
+      {% if code %}<a href="{{ url_for('profile') }}"{% if ep == 'profile' %} class="on"{% endif %}>Progress</a>{% endif %}
+      <a href="{{ url_for('research') }}"{% if ep == 'research' %} class="on"{% endif %}>Research</a>
       {% if email %}<a href="{{ url_for('logout') }}">Sign out</a>
       {% elif code %}<a href="{{ url_for('register') }}">Register</a>
       {% else %}<a href="{{ url_for('login') }}">Sign in</a>{% endif %}
