@@ -1,7 +1,7 @@
 [
  {
   "id": 0,
-  "name": "Concept 1",
+  "name": "Pattern 1",
   "gloss": "924 positions, mostly middlegame. 85% of the moves are quiet (neither capture nor check) and the piece moved is most often a rook. In the engine's representation this group is closest to exposedKing (0.19), and only weakly. Real players at the board found these moves 29.9% of the time, losing an average of 328 centipawns by choosing otherwise.",
   "signature": {
    "positions": 924,
@@ -2902,11 +2902,11 @@
     "predicted_find_1900": 0.0908
    }
   ],
-  "label": "Concept 1"
+  "label": "Pattern 1"
  },
  {
   "id": 1,
-  "name": "Concept 2",
+  "name": "Pattern 2",
   "gloss": "444 positions, mostly middlegame. 88% of the moves are quiet (neither capture nor check) and the piece moved is most often a queen. In the engine's representation this group is closest to sacrifice (0.41), and only weakly. Real players at the board found these moves 9.5% of the time, losing an average of 533 centipawns by choosing otherwise.",
   "signature": {
    "positions": 444,
@@ -5807,11 +5807,11 @@
     "predicted_find_1900": 0.097
    }
   ],
-  "label": "Concept 2"
+  "label": "Pattern 2"
  },
  {
   "id": 2,
-  "name": "Concept 3",
+  "name": "Pattern 3",
   "gloss": "1149 positions, mostly middlegame. 89% of the moves are quiet (neither capture nor check) and the piece moved is most often a pawn. In the engine's representation this group is closest to pin (0.27), and only weakly. Real players at the board found these moves 23.6% of the time, losing an average of 224 centipawns by choosing otherwise.",
   "signature": {
    "positions": 1149,
@@ -8712,11 +8712,11 @@
     "predicted_find_1900": 0.1404
    }
   ],
-  "label": "Concept 3"
+  "label": "Pattern 3"
  },
  {
   "id": 3,
-  "name": "Concept 4",
+  "name": "Pattern 4",
   "gloss": "431 positions, mostly opening. 89% of the moves are quiet (neither capture nor check) and the piece moved is most often a pawn. In the engine's representation this group is closest to intermezzo (0.20), and only weakly. Real players at the board found these moves 22.3% of the time, losing an average of 219 centipawns by choosing otherwise.",
   "signature": {
    "positions": 431,
@@ -11616,11 +11616,11 @@
     "predicted_find_1900": 0.0696
    }
   ],
-  "label": "Concept 4"
+  "label": "Pattern 4"
  },
  {
   "id": 4,
-  "name": "Concept 5",
+  "name": "Pattern 5",
   "gloss": "258 positions, mostly middlegame. 77% of the moves are quiet (neither capture nor check) and the piece moved is most often a rook. In the engine's representation it has no measurable similarity to any of the twelve named motifs; the closest, exposedKing, sits at 0.00. Real players at the board found these moves 26.0% of the time, losing an average of 440 centipawns by choosing otherwise.",
   "signature": {
    "positions": 258,
@@ -14497,11 +14497,11 @@
     "predicted_find_1900": 0.147
    }
   ],
-  "label": "Concept 5"
+  "label": "Pattern 5"
  },
  {
   "id": 5,
-  "name": "Concept 6",
+  "name": "Pattern 6",
   "gloss": "829 positions, mostly endgame. 93% of the moves are quiet (neither capture nor check) and the piece moved is most often a rook. In the engine's representation this group is closest to skewer (0.29), and only weakly. Real players at the board found these moves 24.1% of the time, losing an average of 300 centipawns by choosing otherwise.",
   "signature": {
    "positions": 829,
@@ -17401,11 +17401,11 @@
     "predicted_find_1900": 0.0824
    }
   ],
-  "label": "Concept 6"
+  "label": "Pattern 6"
  },
  {
   "id": 6,
-  "name": "Concept 7",
+  "name": "Pattern 7",
   "gloss": "861 positions, mostly middlegame. 85% of the moves are quiet (neither capture nor check) and the piece moved is most often a queen. In the engine's representation this group is closest to sacrifice (0.42), and only weakly. Real players at the board found these moves 20.3% of the time, losing an average of 434 centipawns by choosing otherwise.",
   "signature": {
    "positions": 861,
@@ -20306,11 +20306,11 @@
     "predicted_find_1900": 0.186
    }
   ],
-  "label": "Concept 7"
+  "label": "Pattern 7"
  },
  {
   "id": 7,
-  "name": "Concept 8",
+  "name": "Pattern 8",
   "gloss": "259 positions, mostly middlegame. 82% of the moves are quiet (neither capture nor check) and the piece moved is most often a rook. In the engine's representation this group is closest to exposedKing (0.53), and only weakly. Real players at the board found these moves 27.8% of the time, losing an average of 313 centipawns by choosing otherwise.",
   "signature": {
    "positions": 259,
@@ -23199,6 +23199,6 @@
     "predicted_find_1900": 0.1749
    }
   ],
-  "label": "Concept 8"
+  "label": "Pattern 8"
  }
 ]

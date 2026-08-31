@@ -17,9 +17,9 @@ of humans on average{% endif %}.</p>
 <p class="lede">Nothing yet. <a href="{{ url_for('index') }}">Pick a pattern</a> to start.</p>
 {% endif %}
 
-<h2>By concept</h2>
+<h2>By pattern</h2>
 <table>
-<thead><tr><th>Concept</th><th>Studied</th><th>Seen</th><th>Solved</th><th>Rate</th></tr></thead>
+<thead><tr><th>Pattern</th><th>Studied</th><th>Seen</th><th>Solved</th><th>Rate</th></tr></thead>
 <tbody>
 {% for c in concepts %}
 {% set s = stats.get(c.id) %}
