@@ -22,6 +22,27 @@ from flask import (Flask, g, jsonify, redirect, render_template, request,
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 DB = pathlib.Path(os.environ.get("DB_PATH", ROOT / "webapp" / "study.db"))
+DATABASE_URL = os.environ.get("DATABASE_URL")
+if DATABASE_URL:
+    import psycopg
+    from psycopg.rows import dict_row
+
+
+class _PG:
+    """Minimal adapter so the sqlite-style call sites work on Postgres:
+    same execute/commit/close surface, '?' placeholders translated."""
+
+    def __init__(self, conn):
+        self._c = conn
+
+    def execute(self, sql, params=()):
+        return self._c.execute(sql.replace("?", "%s"), params)
+
+    def commit(self):
+        self._c.commit()
+
+    def close(self):
+        self._c.close()
 CODE_RE = re.compile(r"^[A-Z0-9]{6}$")
 
 app = Flask(__name__)
@@ -42,6 +63,9 @@ VALIDATION = {
 # ── storage ───────────────────────────────────────────────────────────────────
 def db():
     if "db" not in g:
+        if DATABASE_URL:
+            g.db = _PG(psycopg.connect(DATABASE_URL, row_factory=dict_row))
+            return g.db
         g.db = sqlite3.connect(DB)
         g.db.row_factory = sqlite3.Row
     return g.db
@@ -53,7 +77,37 @@ def close_db(_):
         conn.close()
 
 
+PG_SCHEMA = """
+    CREATE TABLE IF NOT EXISTS player (
+        code TEXT PRIMARY KEY, name TEXT, rating INTEGER, created_at DOUBLE PRECISION);
+    CREATE TABLE IF NOT EXISTS attempt (
+        id SERIAL PRIMARY KEY,
+        code TEXT NOT NULL, concept INTEGER NOT NULL, idx INTEGER NOT NULL,
+        fen TEXT, picked TEXT, best TEXT, correct INTEGER,
+        human_p DOUBLE PRECISION, seconds DOUBLE PRECISION, created_at DOUBLE PRECISION);
+    CREATE TABLE IF NOT EXISTS studied (
+        code TEXT NOT NULL, concept INTEGER NOT NULL, at DOUBLE PRECISION,
+        PRIMARY KEY (code, concept));
+    CREATE INDEX IF NOT EXISTS a_code ON attempt(code, concept);
+    CREATE TABLE IF NOT EXISTS account (
+        email TEXT PRIMARY KEY, pw_hash TEXT NOT NULL,
+        code TEXT UNIQUE NOT NULL, created_at DOUBLE PRECISION);
+    CREATE TABLE IF NOT EXISTS blindspot (
+        id SERIAL PRIMARY KEY,
+        code TEXT NOT NULL, at DOUBLE PRECISION, n INTEGER, correct INTEGER,
+        band TEXT, detail TEXT);
+"""
+
+
 def init_db():
+    if DATABASE_URL:
+        conn = psycopg.connect(DATABASE_URL)
+        for stmt in PG_SCHEMA.split(";"):
+            if stmt.strip():
+                conn.execute(stmt)
+        conn.commit()
+        conn.close()
+        return
     DB.parent.mkdir(exist_ok=True)
     conn = sqlite3.connect(DB)
     conn.executescript("""
@@ -251,8 +305,13 @@ def concept(cid):
 @app.post("/concept/<int:cid>/studied")
 def mark_studied(cid):
     code = ensure_player()
-    db().execute("INSERT OR REPLACE INTO studied(code, concept, at) VALUES(?,?,?)",
-                 (code, cid, time.time()))
+    if DATABASE_URL:
+        db().execute("INSERT INTO studied(code, concept, at) VALUES(?,?,?) "
+                     "ON CONFLICT (code, concept) DO UPDATE SET at = EXCLUDED.at",
+                     (code, cid, time.time()))
+    else:
+        db().execute("INSERT OR REPLACE INTO studied(code, concept, at) VALUES(?,?,?)",
+                     (code, cid, time.time()))
     db().commit()
     return redirect(url_for("drill", cid=cid))
 
