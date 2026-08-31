@@ -247,8 +247,8 @@ def curriculum(code=None):
     for i, r in enumerate(rows, start=1):
         p = r["p"]
         r["n"] = i
-        r["tier"] = ("Gentler" if r["pred"] >= 0.116
-                     else "Standard" if r["pred"] >= 0.10 else "Hardest")
+        r["tier"] = ("Standard" if r["pred"] >= 0.116
+                     else "Harder" if r["pred"] >= 0.10 else "Hardest")
         r["pct"] = round(100 * p["n"] / max(p["of"], 1))
         r["state"] = ("done" if p["n"] >= p["of"] else
                       "going" if p["n"] > 0 else
@@ -277,7 +277,7 @@ def learn():
                            pieces=PIECES)
 
 
-@app.route("/concept/<int:cid>")
+@app.route("/pattern/<int:cid>")
 def concept(cid):
     if cid not in BY_ID:
         return redirect(url_for("index"))
@@ -302,6 +302,7 @@ def concept(cid):
                            prog=p, code=code, here=here, nxt=nxt)
 
 
+@app.post("/pattern/<int:cid>/studied")
 @app.post("/concept/<int:cid>/studied")
 def mark_studied(cid):
     code = ensure_player()
@@ -316,7 +317,17 @@ def mark_studied(cid):
     return redirect(url_for("drill", cid=cid))
 
 
+@app.route("/concept/<int:cid>")
+def concept_legacy(cid):
+    return redirect(url_for("concept", cid=cid), 301)
+
+
 @app.route("/concept/<int:cid>/drill")
+def drill_legacy(cid):
+    return redirect(url_for("drill", cid=cid), 301)
+
+
+@app.route("/pattern/<int:cid>/drill")
 def drill(cid):
     if cid not in BY_ID:
         return redirect(url_for("index"))

@@ -171,7 +171,7 @@ function showLine(line) {
 
 document.getElementById("next").addEventListener("click", () => {
   if (idx + 1 < POS.length) { idx++; load(); }
-  else window.location = "/concept/" + CID + "?done=1";
+  else window.location = "/pattern/" + CID + "?done=1";
 });
 
 load();

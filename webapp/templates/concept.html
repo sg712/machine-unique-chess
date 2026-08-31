@@ -3,8 +3,7 @@
 {% block body %}
 
 <p class="crumb"><a href="{{ url_for('learn') }}">&larr; All patterns</a>
-  {% if here %}<span style="color:var(--faint)">&nbsp;&middot;&nbsp; {{ here.n }} of 8</span>{% endif %}
-  <a href="#" id="showtut" class="tuthint" style="float:right">how this works</a></p>
+  {% if here %}<span style="color:var(--faint)">&nbsp;&middot;&nbsp; {{ here.n }} of 8</span>{% endif %}</p>
 
 <h1 class="tight">{{ c.name }}
   {% if here %}<span class="pill t-{{ here.tier|lower }}"
@@ -33,10 +32,10 @@
 <div class="tut" id="tutorial" style="display:none">
   <h3>What happens in this pattern</h3>
   <ol>
-    <li><span class="tx"><b>Try four positions cold</b><span>No hints. Most people miss most of them. That is the measurement, not a failure.</span></span></li>
-    <li><span class="tx"><b>See the engine's move on each, right away</b><span>You get the answer while your own guess is still fresh. That contrast is what sticks.</span></span></li>
-    <li><span class="tx"><b>Study all four side by side</b><span>No commentary on purpose. These patterns have no name, so you absorb them by example.</span></span></li>
-    <li><span class="tx"><b>Drill {{ c.drill|length }} positions you have never seen</b><span>Same pattern, new boards. This is where you find out whether it transferred.</span></span></li>
+    <li><span class="tx"><b>Try four positions cold</b></span></li>
+    <li><span class="tx"><b>See the engine's move on each, right away</b></span></li>
+    <li><span class="tx"><b>Study all four side by side</b></span></li>
+    <li><span class="tx"><b>Drill {{ c.drill|length }} you have never seen</b></span></li>
   </ol>
   <div class="row">
     <button class="btn p" id="tutgo">Start &rarr;</button>
@@ -254,11 +253,6 @@ document.getElementById("tutgo").addEventListener("click", () =>
     document.getElementById("tryStage").style.display = "";
     loadTry();
   }));
-document.getElementById("showtut").addEventListener("click", (e) => {
-  e.preventDefault();
-  openTut();
-});
-
 let seenTut = true;
 try { seenTut = !!localStorage.getItem(TUT); } catch (e) {}
 

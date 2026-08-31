@@ -119,7 +119,7 @@ function showResult(r) {
     `<p class="small">${k + 1}. ${x.hit
         ? `<b style="color:var(--good)">Found it</b>: ${x.best_san}`
         : `You played ${x.picked_san}; the engine plays <b>${x.best_san}</b>`} ` +
-    `&middot; <a href="/concept/${x.cid}">${x.concept}</a></p>`).join("");
+    `&middot; <a href="/pattern/${x.cid}">${x.concept}</a></p>`).join("");
   shareText = `I found ${r.correct}/${r.n} machine unique chess moves, the moves ` +
     `engines love and humans never play. Placement: ${r.band}. Try it: machine-unique-chess.com/test`;
 }
