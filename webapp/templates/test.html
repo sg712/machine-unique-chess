@@ -121,7 +121,7 @@ function showResult(r) {
         : `You played ${x.picked_san}; the engine plays <b>${x.best_san}</b>`} ` +
     `&middot; <a href="/concept/${x.cid}">${x.concept}</a></p>`).join("");
   shareText = `I found ${r.correct}/${r.n} machine-unique chess moves — the moves ` +
-    `engines love and humans never play. Placement: ${r.band}. Try it: sg712.pythonanywhere.com/test`;
+    `engines love and humans never play. Placement: ${r.band}. Try it: machine-unique-chess.com/test`;
 }
 
 document.getElementById("sharebtn").addEventListener("click", async (e) => {

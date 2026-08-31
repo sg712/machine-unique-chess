@@ -28,8 +28,9 @@ and deterministic.
 
 ## Deploying
 
-**Live:** https://sg712.pythonanywhere.com (PythonAnywhere free tier — no card, and the
-disk is persistent, so `study.db` survives updates).
+**Live:** https://machine-unique-chess.com — Vercel (serverless, free) + Neon Postgres
+(free). Deploys automatically on every push to main; the old
+sg712.pythonanywhere.com address redirects here.
 
 Setup there, once: clone the repo into the home directory, `pip3.11 install --user flask
 python-chess`, create a manual-config web app (Python 3.11), and point the WSGI file at

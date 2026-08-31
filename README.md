@@ -1,5 +1,8 @@
 # machine-unique chess
 
+**Live at [machine-unique-chess.com](https://machine-unique-chess.com)** — deployed on
+Vercel + Neon Postgres, auto-deploys from this repo.
+
 **Finding chess positions where a strong engine is decisively right and essentially no
 human plays the move — then testing how much structure those positions actually have.**
 
