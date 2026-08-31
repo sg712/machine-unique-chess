@@ -4,43 +4,36 @@
 
 const FILES = "abcdefgh";
 
-/* Move sounds, synthesized on the fly so there is nothing to load.
-   A piece landing is mostly a sharp noise click with a small low thump
-   behind it; that combination reads as wood on wood. Captures land
-   harder and get a second, duller knock right behind the first. */
-let actx = null, noiseBuf = null;
+/* Move sounds: real wood-impact recordings (Kenney impact pack, CC0),
+   fetched and decoded once at page load so playback is instant. The
+   context starts suspended until the browser sees a user gesture, so a
+   capture-phase pointerdown listener resumes it before the first move
+   completes. */
+let actx = null;
+const sndBufs = {};
+try {
+  actx = new (window.AudioContext || window.webkitAudioContext)();
+  for (const kind of ["move", "capture"]) {
+    fetch(`/static/sound/${kind}.mp3`)
+      .then(r => r.arrayBuffer())
+      .then(b => actx.decodeAudioData(b))
+      .then(buf => { sndBufs[kind] = buf; })
+      .catch(() => {});
+  }
+  document.addEventListener("pointerdown", () => {
+    if (actx.state === "suspended") actx.resume();
+  }, { capture: true });
+} catch (e) { /* no audio available: stay silent */ }
+
 function sound(kind) {
   try {
-    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    if (!actx || !sndBufs[kind]) return;
     if (actx.state === "suspended") actx.resume();
-    if (!noiseBuf) {
-      noiseBuf = actx.createBuffer(1, actx.sampleRate * 0.1, actx.sampleRate);
-      const d = noiseBuf.getChannelData(0);
-      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
-    }
-    const t = actx.currentTime;
-    const hit = (at, vol, tone) => {
-      const src = actx.createBufferSource();
-      src.buffer = noiseBuf;
-      const lp = actx.createBiquadFilter();
-      lp.type = "lowpass"; lp.frequency.value = tone; lp.Q.value = 0.9;
-      const g = actx.createGain();
-      g.gain.setValueAtTime(vol, at);
-      g.gain.exponentialRampToValueAtTime(0.001, at + 0.055);
-      src.connect(lp); lp.connect(g); g.connect(actx.destination);
-      src.start(at); src.stop(at + 0.08);
-      const o = actx.createOscillator(), og = actx.createGain();
-      o.type = "triangle";
-      o.frequency.setValueAtTime(150, at);
-      o.frequency.exponentialRampToValueAtTime(72, at + 0.05);
-      og.gain.setValueAtTime(vol * 0.45, at);
-      og.gain.exponentialRampToValueAtTime(0.001, at + 0.07);
-      o.connect(og); og.connect(actx.destination);
-      o.start(at); o.stop(at + 0.09);
-    };
-    if (kind === "capture") { hit(t, 0.9, 1500); hit(t + 0.04, 0.5, 1000); }
-    else hit(t, 0.65, 2100);
-  } catch (e) { /* no audio available: stay silent */ }
+    const src = actx.createBufferSource();
+    src.buffer = sndBufs[kind];
+    src.connect(actx.destination);
+    src.start();
+  } catch (e) { /* stay silent */ }
 }
 
 function parseFen(fen) {

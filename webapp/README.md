@@ -57,3 +57,5 @@ every month, or the site pauses.
 
 Any other Flask host works too (Render, Fly, Railway — `render.yaml` is included): set
 `SECRET_KEY`, put `study.db` on a persistent volume, run behind gunicorn.
+
+Move and capture sounds: "Impact Sounds" by Kenney (kenney.nl), CC0.
