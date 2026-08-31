@@ -5,26 +5,41 @@
 const FILES = "abcdefgh";
 
 /* Move sounds, synthesized on the fly so there is nothing to load.
-   A short pitch-dropping sine reads as a wooden knock; captures get a
-   second, lower knock right behind the first. */
-let actx = null;
+   A piece landing is mostly a sharp noise click with a small low thump
+   behind it; that combination reads as wood on wood. Captures land
+   harder and get a second, duller knock right behind the first. */
+let actx = null, noiseBuf = null;
 function sound(kind) {
   try {
     actx = actx || new (window.AudioContext || window.webkitAudioContext)();
     if (actx.state === "suspended") actx.resume();
+    if (!noiseBuf) {
+      noiseBuf = actx.createBuffer(1, actx.sampleRate * 0.1, actx.sampleRate);
+      const d = noiseBuf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    }
     const t = actx.currentTime;
-    const knock = (at, f0, f1, vol, dur) => {
-      const o = actx.createOscillator(), g = actx.createGain();
-      o.type = "sine";
-      o.frequency.setValueAtTime(f0, at);
-      o.frequency.exponentialRampToValueAtTime(f1, at + dur);
+    const hit = (at, vol, tone) => {
+      const src = actx.createBufferSource();
+      src.buffer = noiseBuf;
+      const lp = actx.createBiquadFilter();
+      lp.type = "lowpass"; lp.frequency.value = tone; lp.Q.value = 0.9;
+      const g = actx.createGain();
       g.gain.setValueAtTime(vol, at);
-      g.gain.exponentialRampToValueAtTime(0.001, at + dur);
-      o.connect(g); g.connect(actx.destination);
-      o.start(at); o.stop(at + dur + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.001, at + 0.055);
+      src.connect(lp); lp.connect(g); g.connect(actx.destination);
+      src.start(at); src.stop(at + 0.08);
+      const o = actx.createOscillator(), og = actx.createGain();
+      o.type = "triangle";
+      o.frequency.setValueAtTime(150, at);
+      o.frequency.exponentialRampToValueAtTime(72, at + 0.05);
+      og.gain.setValueAtTime(vol * 0.45, at);
+      og.gain.exponentialRampToValueAtTime(0.001, at + 0.07);
+      o.connect(og); og.connect(actx.destination);
+      o.start(at); o.stop(at + 0.09);
     };
-    if (kind === "capture") { knock(t, 190, 70, 0.5, 0.1); knock(t + 0.05, 150, 60, 0.35, 0.09); }
-    else knock(t, 240, 95, 0.4, 0.08);
+    if (kind === "capture") { hit(t, 0.9, 1500); hit(t + 0.04, 0.5, 1000); }
+    else hit(t, 0.65, 2100);
   } catch (e) { /* no audio available: stay silent */ }
 }
 
@@ -190,10 +205,13 @@ export class Board {
 
   clearSelection() { this.sel = null; this.#paint(); }
 
-  /** Slide the piece on `from` to `to`, fading any captured piece. */
+  /** Slide the piece on `from` to `to`, fading any captured piece.
+      One move per position: the board locks afterwards until setLegal
+      re-arms it (the Take back handlers do exactly that). */
   move(from, to) {
     const p = this.els.get(from);
     if (!p) return;
+    this.legal = [];
     const taken = this.els.get(to);
     sound(taken ? "capture" : "move");
     if (taken) { taken.classList.add("gone"); setTimeout(() => taken.remove(), 220); }

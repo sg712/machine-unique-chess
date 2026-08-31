@@ -181,6 +181,7 @@ function loadTry() {
 
 undo.addEventListener("click", () => {
   board.setPosition(LINES[idx].fen);
+  board.setLegal(LINES[idx].legal);
   picked = null; pickEl.innerHTML = "&hellip;";
   lock.disabled = true; undo.disabled = true;
 });

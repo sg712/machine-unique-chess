@@ -83,6 +83,7 @@ function load() {
 
 undo.addEventListener("click", () => {
   board.setPosition(POS[idx].fen);
+  board.setLegal(POS[idx].legal);
   picked = null; pickEl.innerHTML = "&hellip;";
   lock.disabled = true; undo.disabled = true;
 });
