@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ c.name }} — Machine Unique Chess{% endblock %}
+{% block title %}{{ c.name }} · Machine Unique Chess{% endblock %}
 {% block body %}
 
 <p class="crumb"><a href="{{ url_for('learn') }}">&larr; All patterns</a>
@@ -9,21 +9,21 @@
 <h1 class="tight">{{ c.name }}
   {% if here %}<span class="pill t-{{ here.tier|lower }}"
     style="vertical-align:middle;margin-left:.5rem">{{ here.tier }}</span>{% endif %}</h1>
-{% if here %}<p class="lede">{{ here.blurb }} — found over the board
+{% if here %}<p class="lede">{{ here.blurb }} · found over the board
   {{ (c.signature.found_by_real_players * 100)|round(0)|int }}% of the time.</p>{% endif %}
 
 {% if request.args.get('done') and prog.n %}
 <div class="donecard" id="doneStage">
   <span class="k">Pattern complete</span>
   <p class="score">{{ prog.correct }}<i>/{{ prog.n }}</i></p>
-  <p class="lede">solved on {{ c.name }}
-  {% if prog.n %}&mdash; {{ (100 * prog.correct / prog.n)|round(0)|int }}%, against
+  <p class="lede">solved on {{ c.name }}{% if prog.n %}:
+  {{ (100 * prog.correct / prog.n)|round(0)|int }}%, against
   {{ (c.signature.found_by_real_players * 100)|round(0)|int }}% for the players who faced these
   positions over the board.{% endif %}</p>
   <div class="row">
     {% if nxt %}<a class="btn p" href="{{ url_for('concept', cid=nxt.id) }}">Next pattern:
       {{ nxt.label }} &rarr;</a>{% else %}
-    <a class="btn p" href="{{ url_for('blindspot_test') }}">All eight done &mdash; take the test &rarr;</a>{% endif %}
+    <a class="btn p" href="{{ url_for('blindspot_test') }}">All eight done: take the test &rarr;</a>{% endif %}
     <a class="btn" href="{{ url_for('learn') }}">Back to all patterns</a>
     <a class="btn ghost" href="{{ url_for('drill', cid=c.id) }}">Drill again</a>
   </div>
@@ -33,9 +33,9 @@
 <div class="tut" id="tutorial" style="display:none">
   <h3>What happens in this pattern</h3>
   <ol>
-    <li><span class="tx"><b>Try four positions cold</b><span>No hints. Most people miss most of them — that is the measurement, not a failure.</span></span></li>
+    <li><span class="tx"><b>Try four positions cold</b><span>No hints. Most people miss most of them. That is the measurement, not a failure.</span></span></li>
     <li><span class="tx"><b>See the engine's move on each, right away</b><span>You get the answer while your own guess is still fresh. That contrast is what sticks.</span></span></li>
-    <li><span class="tx"><b>Study all four side by side</b><span>No commentary on purpose — these patterns have no name, so you absorb them by example.</span></span></li>
+    <li><span class="tx"><b>Study all four side by side</b><span>No commentary on purpose. These patterns have no name, so you absorb them by example.</span></span></li>
     <li><span class="tx"><b>Drill {{ c.drill|length }} positions you have never seen</b><span>Same pattern, new boards. This is where you find out whether it transferred.</span></span></li>
   </ol>
   <div class="row">
@@ -46,7 +46,7 @@
 
 <div id="tryStage">
   <h2>First, you try</h2>
-  <p>Four positions from this family. Pick the move you would play — then see the engine's
+  <p>Four positions from this family. Pick the move you would play, then see the engine's
   answer and what follows. Attempting first is the point: the pattern lands harder when
   you've just missed it.</p>
 
@@ -54,7 +54,7 @@
     <div id="tryboard"></div>
     <div class="side">
       <p class="stm" id="trystm"></p>
-      <p class="pickline">Your move: <span id="trypick">&mdash;</span></p>
+      <p class="pickline">Your move: <span id="trypick">&hellip;</span></p>
       <div class="row" id="tryrow">
         <button class="btn ghost" id="tryundo" disabled>Take back</button>
         <button class="btn p" id="trylock" disabled>Lock in</button>
@@ -74,7 +74,7 @@
 <div id="studyStage" style="display:none">
   <h2>Now study them together</h2>
   <p>The same four positions, side by side, each with the engine's move and what follows.
-  There is no commentary on purpose — the pattern is easier to absorb than to describe,
+  There is no commentary on purpose. The pattern is easier to absorb than to describe,
   which is the whole reason it has no name. Step through each line, then look at the
   starting positions again.</p>
 
@@ -96,7 +96,7 @@
       <span><b>{{ (c.signature.quiet_share * 100)|round(0)|int }}%</b> quiet moves</span>
       <span><b>&minus;{{ c.signature.avg_cost_cp }}cp</b> average human error</span>
       <span class="mo">closest named motifs:
-        {% for m, v in c.signature.top_motifs %}{{ m }} {{ '%.2f'|format(v) }}{% if not loop.last %} &middot; {% endif %}{% endfor %}</span>
+        {% for m, v in c.signature.top_motifs %}{{ m }} {{ '%.2f'|format(v)|replace('-', '&minus;')|safe }}{% if not loop.last %} &middot; {% endif %}{% endfor %}</span>
     </div>
   </details>
 </div>
@@ -174,7 +174,7 @@ function loadTry() {
   board.setPosition(line.fen);
   document.getElementById("trystm").textContent = line.stm + " to move.";
   document.getElementById("trycounter").textContent = `Position ${idx + 1} of ${LINES.length}`;
-  picked = null; pickEl.innerHTML = "&mdash;";
+  picked = null; pickEl.innerHTML = "&hellip;";
   lock.disabled = true; undo.disabled = true;
   document.getElementById("tryrow").style.display = "flex";
   document.getElementById("tryfb").style.display = "none";
@@ -182,7 +182,7 @@ function loadTry() {
 
 undo.addEventListener("click", () => {
   board.setPosition(LINES[idx].fen);
-  picked = null; pickEl.innerHTML = "&mdash;";
+  picked = null; pickEl.innerHTML = "&hellip;";
   lock.disabled = true; undo.disabled = true;
 });
 
@@ -197,7 +197,7 @@ lock.addEventListener("click", () => {
   v.className = "verdict " + (hit ? "good" : "bad");
   document.getElementById("tryline").innerHTML =
     `The engine plays <b>${line.best_san}</b>` +
-    (line.p_best ? ` — Maia gives it ${pct(line.p_best)} at 1900.` : ".");
+    (line.p_best ? `. Maia gives it ${pct(line.p_best)} at 1900.` : ".");
 
   // turn the board into a line viewer, starting after the engine's move
   const mv = document.getElementById("trymoves");

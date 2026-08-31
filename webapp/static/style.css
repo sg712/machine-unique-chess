@@ -29,6 +29,16 @@ b { font-weight:600; font-variant-numeric:tabular-nums; }
 .lede { font-size:1.08rem; line-height:1.6; }
 .small { font-size:.88rem; color:var(--muted); }
 
+.uq { text-decoration:underline; text-decoration-color:var(--accent);
+  text-decoration-thickness:2px; text-underline-offset:.2em; }
+.bigstats { display:flex; gap:2.4rem; flex-wrap:wrap; margin:2rem 0 1.4rem;
+  padding:1.3rem 0; border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); }
+.bigstats .bs { flex:1 1 11rem; min-width:10rem; }
+.bigstats b { display:block; font-size:2.5rem; line-height:1; font-weight:400;
+  letter-spacing:-.02em; color:var(--accent); font-variant-numeric:tabular-nums; }
+.bigstats span { display:block; margin-top:.5rem; font-size:.85rem; line-height:1.5;
+  color:var(--muted); max-width:24ch; }
+
 .btn { display:inline-block; font:inherit; font-size:.95rem; padding:.5rem 1.2rem;
   border:1px solid var(--ink); background:var(--paper); color:var(--ink); cursor:pointer;
   text-decoration:none; }

@@ -118,7 +118,7 @@ export class Board {
       window.removeEventListener("pointermove", mv);
       window.removeEventListener("pointerup", up);
       if (!dragging) return;                       // plain tap: the click handler takes it
-      this.suppressClick = true;                   // eat the ghost click, if one follows —
+      this.suppressClick = true;                   // eat the ghost click, if one follows:
       setTimeout(() => { this.suppressClick = false; }, 0);   // but never a real one later
       p.classList.remove("drag");
       const dest = document.elementFromPoint(ev.clientX, ev.clientY)

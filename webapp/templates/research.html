@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}The research — Machine Unique Chess{% endblock %}
+{% block title %}The research · Machine Unique Chess{% endblock %}
 {% block body %}
 <h1>How these positions were found</h1>
 <p class="lede">Nothing in this trainer came out of a chess book. It came out of a pipeline
@@ -7,48 +7,48 @@ that looks for positions where a strong engine is decisively right and essential
 plays the move. Here is exactly what it does, what it found, and where it falls short.</p>
 
 <h2>1 &middot; Finding disagreement</h2>
-<p>Positions are sampled from public Lichess games &mdash; both club play and games between
+<p>Positions are sampled from public Lichess games, both club play and games between
 2300+ rated players. All ratings on this page are <b>Lichess ratings</b>, whose scale runs
-roughly 200&ndash;400 points above FIDE and reaches past 3000 at the top &mdash; a Lichess 2600
-is a strong expert, not a super-grandmaster, and 2800+ here means the genuine top of the pool. Each is analysed twice: by <b>Stockfish 17.1</b> at depth 16, and by
+roughly 200 to 400 points above FIDE and reaches past 3000 at the top. A Lichess 2600
+is a strong expert, not a super grandmaster, and 2800+ here means the genuine top of the pool. Each is analysed twice: by <b>Stockfish 17.1</b> at depth 16, and by
 <b>Maia</b>, a neural network trained to predict what a human of a given rating actually plays
 rather than what is best.</p>
-<p>A position is <em>machine-unique</em> when the engine's move is decisively better &mdash; at
-least 100 centipawns above the human favourite &mdash; and Maia gives that move under 5%
+<p>A position is <em>machine unique</em> when the engine's move is decisively better (at
+least 100 centipawns above the human favourite) and Maia gives that move under 5%
 probability at <em>every</em> rating from 1100 to 2600. Out of <b>123,405</b> positions analysed,
 <b>5,155</b> qualified, a rate of ~4% that has now held steady across nine separate batches,
 both rating populations, and every rating band. The dataset is deliberately balanced: each of
-the six bands from 1800 to 2800+ contributes 19&ndash;21 thousand positions, so nothing below
+the six bands from 1800 to 2800+ contributes 19 to 21 thousand positions, so nothing below
 is an artefact of where the data happened to be thick.</p>
 <p>In <b>3,956</b> of those the player who was actually at the board also failed to find the
-move. In <b>1,532</b>, that player was rated 2500 or above. With ~850 machine-unique positions
-per band, the find-rate by strength is cleanly measured:</p>
+move. In <b>1,532</b>, that player was rated 2500 or above. With ~850 machine unique positions
+per band, the find rate by strength is cleanly measured:</p>
 <table class="research">
-<thead><tr><th>Mover's rating (Lichess)</th><th>Finds the machine-unique move</th></tr></thead>
+<thead><tr><th>Mover's rating (Lichess)</th><th>Finds the machine unique move</th></tr></thead>
 <tbody>
-<tr><td>1800&ndash;2000</td><td>6.6%</td></tr>
-<tr><td>2000&ndash;2200</td><td>13.0%</td></tr>
-<tr><td>2200&ndash;2400</td><td>15.9%</td></tr>
-<tr><td>2400&ndash;2600</td><td>17.0%</td></tr>
-<tr><td>2600&ndash;2800</td><td>27.4%</td></tr>
+<tr><td>1800 to 2000</td><td>6.6%</td></tr>
+<tr><td>2000 to 2200</td><td>13.0%</td></tr>
+<tr><td>2200 to 2400</td><td>15.9%</td></tr>
+<tr><td>2400 to 2600</td><td>17.0%</td></tr>
+<tr><td>2600 to 2800</td><td>27.4%</td></tr>
 <tr class="hl"><td><b>2800+</b></td><td><b>56.9%</b></td></tr>
 </tbody></table>
-<p>Nearly flat through 2600, then a steep climb &mdash; and at the genuine top of the pool a
-<em>majority</em> of these moves are found. &ldquo;Machine-unique&rdquo; is a statement about
+<p>Nearly flat through 2600, then a steep climb. At the genuine top of the pool a
+<em>majority</em> of these moves are found. &ldquo;Machine unique&rdquo; is a statement about
 everyone below roughly 2800, and about how the rest of us search.</p>
 
 <h2>2 &middot; Blindness, then disbelief</h2>
-<p>Simulated players agree with the engine more often as they get stronger &mdash; on ordinary
-positions. On machine-unique positions the rate at which they <em>play</em> the engine's move
+<p>Simulated players agree with the engine more often as they get stronger, on ordinary
+positions. On machine unique positions the rate at which they <em>play</em> the engine's move
 stays near zero from 1100 all the way to 2600. But the rate at which the move appears anywhere
 in their top five climbs from 29% to 57%.</p>
 <p>Weak players never see the move. Strong players see it and reject it.</p>
 
 <h2>2&frac12; &middot; What makes a move invisible</h2>
-<p>Take two sets of positions with <em>identical stakes</em> &mdash; in both, the engine's move
+<p>Take two sets of positions with <em>identical stakes</em>. In both, the engine's move
 is at least 100 centipawns better than the human favourite. In one set humans see it (Maia
 gives it &ge;30%; real players found 60%); in the other they don't (&le;5% at every rating;
-real players found 18%). What separates them is not depth or subtlety in the abstract &mdash;
+real players found 18%). What separates them is not depth or subtlety in the abstract;
 it is visible in plain chess descriptors. Thirty yes/no features of the move predict which
 group a position belongs to at <b>AUC 0.851</b>, no neural network involved.</p>
 <table class="research">
@@ -56,7 +56,7 @@ group a position belongs to at <b>AUC 0.851</b>, no neural network involved.</p>
 <th>Visible</th></tr></thead>
 <tbody>
 <tr><td>offers material with no visible payoff</td><td>20.5%</td><td>9.2%</td><td>5.4%</td></tr>
-<tr><td>is quiet &mdash; no capture, no check</td><td>87.2%</td><td>79.8%</td><td>49.4%</td></tr>
+<tr><td>is quiet (no capture, no check)</td><td>87.2%</td><td>79.8%</td><td>49.4%</td></tr>
 <tr><td>retreats two or more ranks</td><td>7.8%</td><td>5.9%</td><td>4.5%</td></tr>
 <tr><td>heads for the board edge</td><td>38.9%</td><td>30.9%</td><td>26.4%</td></tr>
 <tr><td>is a capture</td><td>10.9%</td><td>16.3%</td><td>43.4%</td></tr>
@@ -64,25 +64,25 @@ group a position belongs to at <b>AUC 0.851</b>, no neural network involved.</p>
 <tr><td>escapes an attacked square</td><td>10.5%</td><td>17.5%</td><td>26.8%</td></tr>
 <tr><td>creates an immediate threat</td><td>24.8%</td><td>34.3%</td><td>38.4%</td></tr>
 </tbody></table>
-<p>Every one of those trends runs monotonically through the in-between group &mdash; the
+<p>Every one of those trends runs monotonically through the middle column, the
 signature of a real gradient, not a threshold artefact. The reading: the invisible moves are
-the ones that violate the heuristics humans use to order their search &mdash; look at forcing
+the ones that violate the heuristics humans use to order their search. Look at forcing
 moves first, don't hang material, answer threats, play toward the king. The engine has no
-search-order prior to violate. This also explains why the strong find them: checking
-wrong-looking moves is precisely what distinguishes a 2800 from a 2400.</p>
+such prior to violate. This also explains why the strong find them: checking
+wrong looking moves is precisely what distinguishes a 2800 from a 2400.</p>
 
 <h2>3 &middot; Grouping them</h2>
 <p>Each position is embedded using the internal representations of <b>Leela Chess Zero</b>
 (layer 10), then clustered into eight groups. The clusters were built on the first 1,745
 qualifying positions; the 3,410 found by later batches were embedded the same way and each
-assigned to its nearest group centre &mdash; the same rule k-means uses, which reproduces the
+assigned to its nearest group centre, the same rule standard clustering uses, which reproduces the
 original labels on the original positions 98.8% of the time. Every group now spans all
-5,155 machine-unique positions. To characterise each group, its direction is compared
+5,155 machine unique positions. To characterise each group, its direction is compared
 against twelve named tactical motifs built from thousands of tagged Lichess puzzles.</p>
 <p>The groups are deliberately unnamed. Naming them would be the one move this project cannot
 justify: a name asserts that the group is a thing chess vocabulary already covers, and the
 measurements below say that is mostly false. Roughly half of what makes these positions
-machine-only is expressible in known terms (R&sup2; = 0.46) &mdash; a signature of sacrifice
+machine only is expressible in known terms (R&sup2; = 0.46), a signature of sacrifice
 without a combination to justify it. The other half is not expressible at all. One group,
 <a href="/concept/4">Concept 5</a>, has zero or negative similarity to every named motif.</p>
 
@@ -96,12 +96,12 @@ without a combination to justify it. The other half is not expressible at all. O
   <td>{{ (c.signature.found_by_real_players * 100)|round(1) }}%</td>
   <td>{{ (c.signature.quiet_share * 100)|round(0)|int }}%</td>
   <td>&minus;{{ c.signature.avg_cost_cp }}</td>
-  <td class="mo">{% for m, val in c.signature.top_motifs %}{{ m }} {{ '%.2f'|format(val) }}{% if not loop.last %} &middot; {% endif %}{% endfor %}</td></tr>
+  <td class="mo">{% for m, val in c.signature.top_motifs %}{{ m }} {{ '%.2f'|format(val)|replace('-', '&minus;')|safe }}{% if not loop.last %} &middot; {% endif %}{% endfor %}</td></tr>
 {% endfor %}
 </tbody></table>
 
 <p class="small">&ldquo;Quiet&rdquo; means the move is neither a capture nor a check. Across all
-eight groups, between 68% and 94% of these moves are quiet &mdash; the part of chess humans
+eight groups, between 68% and 94% of these moves are quiet. The part of chess humans
 cannot see is not tactics. Tactics are what training drills.</p>
 
 <h2>4 &middot; Is the grouping real?</h2>
@@ -110,8 +110,8 @@ survive contact with a null hypothesis. Three tests, all of which the grouping c
 failed, and one of which it did.</p>
 
 <p><b>The structure exists.</b> Compared against a control built by shuffling each embedding
-dimension independently &mdash; which destroys the structure while preserving the scale and
-spectrum of the data &mdash; the real embeddings separate roughly nine times better. But the
+dimension independently (which destroys the structure while preserving the scale and
+spectrum of the data) the real embeddings separate roughly nine times better. But the
 absolute separation is small. These are soft regions in a continuous space, not sharp
 categories.</p>
 
@@ -124,32 +124,32 @@ categories.</p>
   <td>{{ k }}</td>
   <td>{{ '%.4f'|format(v.silhouette_real[k]) }}</td>
   <td>{{ '%.4f'|format(v.silhouette_null[k]) }}</td>
-  <td>{{ '%+.4f'|format(v.silhouette_real[k] - v.silhouette_null[k]) }}</td></tr>
+  <td>{{ '%+.4f'|format(v.silhouette_real[k] - v.silhouette_null[k])|replace('-', '&minus;')|safe }}</td></tr>
 {% endfor %}
 </tbody></table>
 
 <p><b>Eight is not derivable from the data.</b> The margin over the null is essentially flat
-from k=3 to k=12 &mdash; there is no elbow, no natural number of groups. Resampling 80% of the
-positions twenty-five times, k=6 reproduces itself most reliably (adjusted Rand
+from k=3 to k=12: there is no elbow, no natural number of groups. Resampling 80% of the
+positions 25 times, k=6 reproduces itself most reliably (adjusted Rand
 {{ '%.2f'|format(v.stability['6'].mean_ari) }}), better than k=8
 ({{ '%.2f'|format(v.stability['8'].mean_ari) }}) and far better than k=4
 ({{ '%.2f'|format(v.stability['4'].mean_ari) }}). Eight groups is a teaching decision, not a
 discovery.</p>
 
-<p><b>Four other lenses agree it is soft.</b> A density-based method allowed to answer
-&ldquo;no cluster&rdquo; labels 74&ndash;83% of positions as noise, with small dense cores that
-match the k-means groups; a likelihood criterion (BIC) keeps improving to k=12 with no minimum;
-a hierarchical method at k=8 matches k-means' separation but only partially agrees with its
+<p><b>Four other lenses agree it is soft.</b> A density based method allowed to answer
+&ldquo;no cluster&rdquo; labels 74 to 83% of positions as noise, with small dense cores that
+match the main grouping; a likelihood criterion (BIC) keeps improving to k=12 with no minimum;
+a hierarchical method at k=8 matches the main grouping's separation but only partially agrees with its
 partition (ARI 0.36); sparse dictionary atoms enriched among these positions lean
 sacrifice/clearance. Every method that could say &ldquo;continuum&rdquo; said continuum.</p>
 <p><b>It does predict something outside itself.</b> At k=8, the groups differ in how often real
 players found the move by more than random groupings of the same sizes would
 (p&nbsp;=&nbsp;{{ '%.3f'|format(v.external_validity['8'].p_value) }}). At k=9 the same test
 fails (p&nbsp;=&nbsp;{{ '%.3f'|format(v.external_validity['9'].p_value) }}). So the partition
-carries real information about human difficulty &mdash; but it is the one arrangement that
+carries real information about human difficulty, but it is the one arrangement that
 happened to clear the bar, which is a weaker claim than it first sounds.</p>
 
-<h2>5 &middot; What the representation actually adds &mdash; a correction</h2>
+<h2>5 &middot; What the representation actually adds: a correction</h2>
 <p>An earlier version of this page claimed the engine's internal representation knows
 something about human difficulty that ordinary chess features do not. That claim was
 tested properly and it did not hold. It is left here, corrected, rather than quietly
@@ -157,12 +157,12 @@ deleted.</p>
 
 <p>The question: given a position, how well can you predict whether the player at the board
 actually found the move? Scored by area under the ROC curve, where 0.5 is a coin flip,
-five-fold cross-validation grouped by game so positions from one game never straddle the
+with cross validation in five folds grouped by game so positions from one game never straddle the
 train/test split.</p>
 
-<p>The first pass compared Leela's embedding against surface chess features &mdash; piece,
-phase, quiet, capture, check, cost &mdash; and the embedding won by
-{{ '%+.3f'|format(e.surface_plus_raw_auc - e.surface_auc) }}. But that baseline had no access
+<p>The first pass compared Leela's embedding against surface chess features (piece,
+phase, quiet, capture, check, cost) and the embedding won by
+{{ '%+.3f'|format(e.surface_plus_raw_auc - e.surface_auc)|replace('-', '&minus;')|safe }}. But that baseline had no access
 to <b>Maia</b>, a network trained specifically to predict human moves, or to the engine's own
 evaluation. Against a baseline that has both, the picture reverses.</p>
 
@@ -182,23 +182,23 @@ evaluation. Against a baseline that has both, the picture reverses.</p>
 
 <p>Adding the embedding to a fair baseline <em>costs</em>
 {{ '%.3f'|format(-d.part_a_embedding_vs_maia['_embedding_gain_over_baseline']) }} AUC. That could
-have been a sample-size artefact &mdash; forty extra features against 246 positive cases can
-lose on dimensionality alone &mdash; so the width was swept from forty components down to two.
+have been a sample size artefact (forty extra features against 246 positive cases can
+lose on dimensionality alone) so the width was swept from forty components down to two.
 The decline is monotonic and the best result at <em>any</em> width is
-{{ '%+.3f'|format(d.part_a_embedding_vs_maia['_best_embedding_gain_any_width']) }}:
+{{ '%+.3f'|format(d.part_a_embedding_vs_maia['_best_embedding_gain_any_width'])|replace('-', '&minus;')|safe }}:
 indistinguishable from adding nothing.</p>
 
 <p class="note">So the embedding is <b>redundant</b> for this purpose. Whatever it knows about
-human difficulty, Maia and the engine evaluation already knew. This does not touch section 4
-&mdash; the clusters still beat the shuffled null, and the k=8 result still holds. What falls
+human difficulty, Maia and the engine evaluation already knew. This does not touch
+section 4: the clusters still beat the shuffled null, and the k=8 result still holds. What falls
 is the stronger claim that the representation is a privileged window into what humans cannot
 see. It is a reasonable way to <em>group</em> positions for teaching. It is not a source of
 information nothing else has.</p>
 
 <h2>6 &middot; How hard is this position, actually?</h2>
 <p>The useful half of that experiment. Trained across all
-<b>123,405</b> mined positions
-&mdash; not just the machine-unique ones &mdash; a model predicting whether a human plays the
+<b>123,405</b> mined positions,
+not just the machine unique ones, a model predicting whether a human plays the
 engine's best move reaches <b>AUC
 {{ '%.3f'|format(d.part_b_difficulty_model['everything cheap']['auc']) }}</b>, with a Brier score
 of {{ '%.3f'|format(d.part_b_difficulty_model['_brier']) }} against
@@ -207,7 +207,7 @@ for always guessing the base rate. It is close to calibrated, drifting slightly 
 in the middle of the range.</p>
 
 <table class="research">
-<thead><tr><th>Predicted find-rate</th><th>Actual find-rate</th></tr></thead>
+<thead><tr><th>Predicted find rate</th><th>Actual find rate</th></tr></thead>
 <tbody>
 {% for row in d.part_b_difficulty_model['_calibration'] %}
 <tr><td>{{ '%.1f'|format(row.predicted * 100) }}%</td>
@@ -216,37 +216,37 @@ in the middle of the range.</p>
 </tbody></table>
 
 <p>An earlier version of this section claimed the model <em>underestimates</em>
-machine-unique positions. With the repaired game splits (section 6&frac12; below) that gap
+machine unique positions. With the repaired game splits (section 6&frac12; below) that gap
 disappears: the model predicts a
-{{ '%.1f'|format(d.part_b_difficulty_model['_pred_mu'] * 100) }}% find-rate on them against an
+{{ '%.1f'|format(d.part_b_difficulty_model['_pred_mu'] * 100) }}% find rate on them against an
 actual {{ '%.1f'|format(d.part_b_difficulty_model['_actual_mu'] * 100) }}%. The earlier gap was
 an artefact of a broken evaluation, not a property of the positions.</p>
 
 <h2>6&frac12; &middot; Two audits</h2>
 <p><b>The evaluation had a bug, now fixed.</b> Every elite game carried the same placeholder id,
 so splits that promised &ldquo;positions from one game never straddle train and test&rdquo; were
-treating all {{ '{:,}'.format(29741) }} elite positions as a single game &mdash; one fold owned
+treating all {{ '{:,}'.format(29741) }} elite positions as a single game, with one fold owning
 all of them. Real ids were reconstructed by replaying the source archive. With sound folds the
-fold-to-fold variance fell four-fold and the calibration drift this page previously reported
-vanished. Numbers on this page are post-repair.</p>
-<p><b>More data no longer helps &mdash; except at the top.</b> Holding out
+variance between folds fell to a quarter and the calibration drift this page previously reported
+vanished. Numbers on this page reflect the repair.</p>
+<p><b>More data no longer helps, except at the top.</b> Holding out
 {{ '{:,}'.format(lc.test_n) }} positions and training on growing subsets:
 {% for pt in lc.curve %}{{ '{:,}'.format(pt.train_n) }} &rarr; {{ '%.3f'|format(pt.auc_mean) }}{% if not loop.last %}, {% endif %}{% endfor %}.
-The curve is flat past twenty thousand. But the flatness is a club-position statement &mdash;
-splitting the same held-out set by the rating of the player at the board, a model trained with
-the newest top-band batch beats one trained without it by
-{{ '%+.4f'|format(bv['2800+'].delta_auc) }} AUC at 2800+ and only
-{{ '%+.4f'|format(bv['<2000'].delta_auc) }} below 2000. The new data helped exactly where it
+The curve is flat past twenty thousand. But the flatness is a statement about club positions:
+splitting the same held out set by the rating of the player at the board, a model trained with
+the newest 2800+ batch beats one trained without it by
+{{ '%+.4f'|format(bv['2800+'].delta_auc)|replace('-', '&minus;')|safe }} AUC at 2800+ and only
+{{ '%+.4f'|format(bv['<2000'].delta_auc)|replace('-', '&minus;')|safe }} below 2000. The new data helped exactly where it
 was aimed, and nowhere else.</p>
 
 <p>Every position in this trainer now carries a prediction from that model: how often a
-1900-rated player would find the move. It is shown with the feedback after you answer.</p>
+1900 rated player would find the move. It is shown with the feedback after you answer.</p>
 
 <h2>7 &middot; What this is built on</h2>
 <p>The approach follows Schut et&nbsp;al., <i>PNAS</i> 2025, who mined concepts from AlphaZero
 that do not exist in human play and taught them to four grandmasters using only example
-positions &mdash; no explanations, because none were possible. All four improved. This project
+positions and no explanations, because none were possible. All four improved. This project
 reproduces the idea on open models and turns the result into something anyone can train on.</p>
-<p class="small">Stockfish 17.1 &middot; Maia-2 and Maia-3 (CSSLab, Toronto) &middot;
+<p class="small">Stockfish 17.1 &middot; Maia 2 and Maia 3 (CSSLab, Toronto) &middot;
 Leela Chess Zero &middot; Lichess open database. Every analysis ran on one laptop.</p>
 {% endblock %}

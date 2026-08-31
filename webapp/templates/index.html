@@ -1,15 +1,22 @@
 {% extends "base.html" %}
 {% block body %}
 
-<h1>Magnus Carlsen would lose about 950 of 1,000 games to a chess engine.</h1>
-<p class="lede">Learn to play like an engine, the way the research says it's possible:
-by example, not explanation.</p>
+<h1>Magnus Carlsen would lose about 950 of 1,000 games to Stockfish, a chess engine.</h1>
+<p class="lede">Can we teach the patterns that are <span class="uq">unique</span> to
+chess engines?</p>
 
-<p class="small">Across 123,405 positions from real games, about four in a hundred contain a
-move a strong engine rates decisively best that virtually no human plays, at any rating. Those
-moves cluster into eight patterns with no names — each position below is one of them, from a
-real game. Pick a concept, study four positions, then drill thirty-six you haven't seen. No
-signup needed to play — register with an email when you want your progress everywhere.</p>
+<div class="bigstats">
+  <div class="bs"><b>123,405</b><span>positions from real games, analysed twice: by a
+    strong engine and by a model of human play</span></div>
+  <div class="bs"><b>4 in 100</b><span>contain a move the engine rates decisively best
+    that virtually no human plays, at any rating</span></div>
+  <div class="bs"><b>8</b><span>patterns those moves cluster into. Each card below is one
+    of them, from a real game</span></div>
+</div>
+
+<p class="lede">Pick a pattern, study four positions, then drill 36 you haven't seen.</p>
+<p class="small">No signup needed to play. Register with an email when you want your
+progress everywhere.</p>
 
 <div class="cards">
   {% for c in concepts %}

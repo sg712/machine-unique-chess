@@ -1,4 +1,4 @@
-"""Machine Unique Chess — a trainer for chess ideas that have no name.
+"""Machine Unique Chess, a trainer for chess ideas that have no name.
 
 Eight concepts mined from 123,405 real positions: patterns where a strong engine
 is decisively right and essentially no human plays the move. Each concept is
@@ -143,7 +143,7 @@ def me():
 
 
 def ensure_player() -> str:
-    """Every visitor gets a player row on first action — no signup wall."""
+    """Every visitor gets a player row on first action, no signup wall."""
     code = me()
     if code:
         return code
@@ -237,7 +237,7 @@ def index():
 
 def curriculum(code=None):
     """Concepts ordered easiest-first by the difficulty model's predicted find-rate
-    for a 1900 — a measured ordering rather than the arbitrary cluster numbering."""
+    for a 1900, a measured ordering rather than the arbitrary cluster numbering."""
     prog = concept_progress(code)
     rows = []
     for c in CONCEPTS:
@@ -468,7 +468,7 @@ def register():
         elif len(pw) < 8:
             error = "Password needs at least 8 characters."
         elif db().execute("SELECT 1 FROM account WHERE email=?", (email,)).fetchone():
-            error = "That email is already registered — sign in instead."
+            error = "That email is already registered. Sign in instead."
         else:
             code = ensure_player()
             # if this browser's progress already belongs to another account,

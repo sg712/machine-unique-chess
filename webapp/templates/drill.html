@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Drill — {{ c.name }}{% endblock %}
+{% block title %}Drill · {{ c.name }}{% endblock %}
 {% block body %}
 
 <p class="crumb"><a href="{{ url_for('concept', cid=c.id) }}">{{ c.name }}</a> &middot; drill</p>
@@ -10,7 +10,7 @@
   <div class="side">
     <p class="stm" id="stm"></p>
     <p class="small">Click a piece, then its destination.</p>
-    <p class="pickline" id="pick">&mdash;</p>
+    <p class="pickline" id="pick">&hellip;</p>
     <div class="row">
       <button class="btn" id="undo" disabled>Take back</button>
       <button class="btn p" id="lock" disabled>Play it</button>
@@ -73,7 +73,7 @@ function load() {
   board.setPosition(p.fen);
   document.getElementById("stm").textContent = p.stm + " to move.";
   document.getElementById("counter").textContent = "Position " + (idx + 1) + " of " + POS.length;
-  picked = null; pickEl.innerHTML = "&mdash;";
+  picked = null; pickEl.innerHTML = "&hellip;";
   lock.disabled = true; undo.disabled = true;
   fb.classList.remove("on");
   linebox.classList.remove("on");
@@ -83,7 +83,7 @@ function load() {
 
 undo.addEventListener("click", () => {
   board.setPosition(POS[idx].fen);
-  picked = null; pickEl.innerHTML = "&mdash;";
+  picked = null; pickEl.innerHTML = "&hellip;";
   lock.disabled = true; undo.disabled = true;
 });
 
@@ -110,11 +110,11 @@ function showFeedback(r) {
 
   let line = "";
   if (r.correct) {
-    line = `<b>${r.best_san}</b> — Maia estimates ${pct(r.p_best)} of 1900-rated players ` +
+    line = `<b>${r.best_san}</b>. Maia estimates ${pct(r.p_best)} of 1900 rated players ` +
            `would play it. You are in the minority that sees this.`;
   } else {
     line = `You played <b>${r.picked_san}</b>` +
-           (r.human_p > 0 ? ` — Maia estimates ${pct(r.human_p)} of 1900-rated players would too.` : `.`) +
+           (r.human_p > 0 ? `. Maia estimates ${pct(r.human_p)} of 1900 rated players would too.` : `.`) +
            ` The engine plays <b>${r.best_san}</b>, which Maia gives ${pct(r.p_best)}` +
            (r.cost_cp ? `. The difference is worth ${r.cost_cp} centipawns.` : `.`);
   }
@@ -128,7 +128,7 @@ function showFeedback(r) {
   document.getElementById("fbline").innerHTML = line;
 
   document.getElementById("humanbars").innerHTML =
-    '<p class="hb-h">What 1900-rated players play here (Maia estimate)</p>' +
+    '<p class="hb-h">What 1900 rated players play here (Maia estimate)</p>' +
     r.human.map(h => {
       const isBest = h.uci === r.best;
       return `<div class="hb${isBest ? ' best' : ''}"><span class="mv">${h.san}</span>` +
