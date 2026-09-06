@@ -11,7 +11,7 @@
       "concept": 0,
       "title": "Look beyond the advancing pawn",
       "prompt": "Black has a pawn on a3. Would you push it, or improve another piece first?",
-      "explanation": "Maia's favourite is the direct pawn push ...a2. The engine instead retreats the knight from c5 to b7. Compare how the two continuations handle White's pressure. This is an example of an engine preferring a quiet retreat; it does not establish that all positions in this group share one new concept.",
+      "explanation": "Maia's favourite is the direct pawn push ...a2. The engine instead retreats the knight from c5 to b7, where it protects the bishop on d6. In the engine line, Nxd6 can now be answered by ...Nxd6; after the immediate pawn push, White takes on d6 without that knight recapture. The retreat has a concrete defensive purpose. It does not establish that all positions in this group share one new concept.",
       "primary": {
         "fen": "r3r3/5pk1/3b2pp/1NnP4/2P1p2P/ppP1P3/6P1/RB1R2K1 b - - 1 34",
         "game_id": "DvRUZltt",
@@ -218,7 +218,7 @@
       "concept": 3,
       "title": "Consider the pawn move before the capture",
       "prompt": "The bishop can capture the knight on e5. Is that the move you would choose?",
-      "explanation": "Maia strongly favours ...Bxe5. Stockfish prefers ...g5, a pawn move near Black's own king. The engine's line makes the tactical consequences concrete. A quiet first move can still lead to forcing play, so 'quiet' does not mean 'non-tactical'.",
+      "explanation": "Maia strongly favours ...Bxe5. Stockfish prefers ...g5, which supports Black's pawn on f4. In the alternative line, ...Bxe5 dxe5 ...Rxe5 clears the diagonal for White's bishop to capture on f4. The pawn move changes that tactical detail: a bishop taking on f4 would face ...gxf4. This is one concrete difference to inspect in the continuations, not a complete explanation of the engine evaluation. A quiet move can have a tactical purpose.",
       "primary": {
         "fen": "rnbqr1k1/p1p2pp1/1p1b1n1p/3PN3/2PP1p2/2N5/PP2B1PP/R1BQ1RK1 b - - 1 10",
         "game_id": "3FQi7QTZ",
