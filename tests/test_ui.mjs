@@ -30,6 +30,9 @@ async function setup(html = '<main><div id="board"></div></main>', options = {})
     return mod;
   }
   const board = await getModule('board.js'); await board.evaluate();
+  for (const file of options.modules || []) {
+    const module = await getModule(file); await module.evaluate();
+  }
   if (options.page) {
     const script = [...w.document.querySelectorAll('script[type="module"]')].find(s => s.textContent.trim());
     if (script) {
@@ -50,6 +53,30 @@ function play(document) {
   throw new Error('No selectable legal move');
 }
 const selected = (s, name) => s.document.querySelector(`[data-sq="${name}"]`);
+
+test('research examples reveal, compare, replay and restore without submitting answers', async () => {
+  const s = await setup(pages['/research'], {modules:['research.js']});
+  const positions = [...s.document.querySelectorAll('.research-position')];
+  assert.equal(positions.length, 6);
+  for (const pos of positions) {
+    const original = pos.querySelector('.research-board').innerHTML;
+    const detail = pos.querySelector('.research-reveal');
+    const lines = JSON.parse(pos.querySelector('.research-lines').textContent);
+    detail.open = true; detail.dispatchEvent(new s.w.Event('toggle'));
+    assert.equal(pos.querySelector('.replay-status').textContent, 'Starting position');
+    pos.querySelector('[data-line="human"]').click();
+    assert.equal(pos.querySelector('[data-line="human"]').getAttribute('aria-pressed'), 'true');
+    const next = [...pos.querySelectorAll('.replay-controls button')].find(b=>b.textContent==='Next move');
+    next.click();
+    assert.ok(pos.querySelector('.replay-status').textContent.includes(lines.human.sans[0]));
+    for (let i=0; i<lines.human.sans.length; i++) next.click();
+    assert.equal(next.disabled, true);
+    detail.open = false; detail.dispatchEvent(new s.w.Event('toggle'));
+    assert.equal(pos.querySelector('.research-board').innerHTML, original);
+  }
+  assert.equal(s.fetches.length, 0);
+  s.dom.window.close();
+});
 
 test('keyboard board selects a legal move and locks after selection', async () => {
   const s = await setup(); let move;

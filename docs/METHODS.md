@@ -1,82 +1,113 @@
-# Methods & Data Provenance — unnamed-concepts
+# Methods and data provenance
 
-*Everything we did, where every byte came from, and what was done to it. As of 2026-08-13.*
+Updated 7 September 2026. This document describes the current saved corpus and separates historical experiments from new audits. Quantities are not interchangeable across experiments. Earlier versions are retained in Git history.
 
-## The question
+## Research question and operational definition
 
-Superhuman chess engines hold knowledge that human players don't. Schut et al. (PNAS 2025) proved some of it can be extracted from AlphaZero and taught to grandmasters. AlphaZero is closed. **Can the same phenomena be found, measured, and eventually taught using only open models — on a laptop?**
+Can disagreements between a strong chess engine and a model of human move choice provide useful practice material? Learning effectiveness, the discovery of new human-unknown concepts, and a causal explanation of human search have not been established.
 
----
+For each sampled position, experiment 03 runs Stockfish 17.1 at depth 16 with MultiPV=2. Maia-2 rapid predicts move probabilities at **1100, 1400, 1700 and 2000**, with both player-rating inputs set to the tested level. The most probable Maia move at 2000 is separately evaluated with a root-restricted Stockfish search.
 
-## Data sources (external, all public)
+A selected position satisfies both:
 
-| Source | What | URL | Used in |
-|---|---|---|---|
-| Lichess open database | Full monthly PGN archives of rated games (~30 GB/mo compressed) | database.lichess.org/standard/ | Exp 02 |
-| Lichess Elite database (nikonoel) | Monthly PGNs filtered to 2500+ vs 2300+ rated players | database.nikonoel.fr | Exp 02b |
-| Lichess puzzle database | 4M+ puzzles, each tagged with motif themes (pin, fork, …) | database.lichess.org/lichess_db_puzzle.csv.zst | Exp 07 |
-| Schut et al. paper | 4 concept-prototype positions, transcribed by hand from Figs 8/10/14 (verified: FEN → legal-move check against the paper's lines) | arXiv:2310.16410 | Exp 01, 06 |
-| Stockfish 17.1 | Compiled from the source tree already on this machine (`make ARCH=apple-silicon`) — no quarantined binaries | github.com/official-stockfish | Exp 03+ |
-| Maia-2 | Skill-conditioned human-move model, Elo 1100–2000, rapid weights | pip `maia2`, weights auto-fetched (CSSLab) | Exp 01, 03 |
-| Maia-3 (Chessformer) | Successor; skill conditioning is continuous, trained through 2600+ | github.com/CSSLab/maia3 + HF `UofTCSSLab` | Exp 06 |
-| Leela Chess Zero "LD2" | Open AZ-style network converted to PyTorch by the leela-interp authors (~361 MB, `lc0.onnx`; manual browser download — figshare blocks CLI) | github.com/HumanCompatibleAI/leela-interp | Exp 05, 07, 08 |
-| BT4 network + transcoders | Bigger Leela + pretrained sparse-feature dictionaries (layers 9–11) | storage.lczero.org + HF `JacklE0niden/lc0-BT4-tc` | downloaded, not yet used |
+- `human_cost_cp >= 100`: engine-choice evaluation minus the evaluation of Maia-2's 2000 favourite.
+- `p_max <= 0.05`: maximum probability assigned to the engine move at those four Maia settings.
 
-Everything generated from these lives in `data/` (position samples) and `results/` (experiment outputs). Nothing external was modified; nothing private was used.
+“Machine unique” names this filter. It does not mean no human can find the move, every alternative is bad, or the engine move is uniquely optimal. `engine_margin` records the first-versus-second engine evaluation gap, but is not part of this mining filter. Historical scores convert mate scores to a numeric sentinel, so centipawn analyses require special care around mates. Saved probabilities are rounded; reapplying thresholds to saved CSVs can be affected by rounding at the boundary.
 
-## Environments
+## Sources and sampling
 
-- `unnamed-concepts` (conda, py3.12): maia2, torch 2.8, python-chess, pandas — Maia + Stockfish experiments
-- `leela` (conda, py3.11): leela-interp editable install (zarr<3 pinned; two upstream import bugs patched in our clone), scipy, scikit-learn — Leela latent experiments
-- Stockfish runs as a subprocess (UCI) from either env
+- [Lichess rated-game archives](https://database.lichess.org/): experiment 02 samples games with both players at least 1800 and base time at least 600 seconds, excluding abandoned games. It samples every fourth ply between 14 and 70. The script tries June, May and April 2026 in order; that list is a fallback configuration, not proof all months were consumed.
+- [Lichess Elite Database](https://database.nikonoel.fr/): experiment 02b and later samplers read filtered elite archives. Elite time controls are not necessarily the same as the slower club sample. Saved local archives include September–November 2025. Experiments 24/25 add band-targeted samples; their source-month options are recorded in those scripts.
+- [Lichess puzzle database](https://database.lichess.org/#puzzles): supplies tagged positions for the 12-motif basis, about 150 examples per theme and a 400-position puzzle baseline.
+- [Stockfish](https://github.com/official-stockfish/Stockfish), [Maia-2](https://github.com/CSSLab/maia2), [Maia-3](https://github.com/CSSLab/maia3), and [Leela interpretability tooling](https://github.com/HumanCompatibleAI/leela-interp) supply the engine and model components. Exact local engine hash is recorded for the new audit; historical neural checkpoints are not completely version-pinned in the old outputs.
 
----
+The corpus contains **123,405 positions from nine mining batches**, including **5,155 selected positions** (4.1773%). Rating-band counts range from 20,074 to 21,359 in the consolidated data. The source distribution is constructed, not representative of all chess games. Ratings are the source Lichess ratings; no universal conversion to FIDE is assumed. Time control, date, phase and player differences can confound comparisons.
 
-## Pipeline, experiment by experiment
+Experiment 09 deduplicates full FEN strings and repairs missing elite source-game IDs using experiment 22's reconstruction. Unresolved positions may remain singleton groups. Removing the two FEN move counters reveals **605 duplicate board-state rows** in the current full corpus. Game-level cross-validation does not guarantee separation by player, transposition or time. Exact sampled inputs are identified by SHA-256 in the new output; the historical pipeline lacks a complete immutable archive manifest, which remains a reproducibility limitation.
 
-### Exp 01 — Do simulated humans find AlphaZero's concept moves? (`01_rating_frontier.py`)
-**In:** 4 hand-transcribed Schut positions. **Do:** Maia-2 `inference_each(fen, elo, elo)` for Elo 1100→2000 in steps of 100; record probability of the AZ move and the GM's move. **Out:** `results/01_frontier.csv`. **Result:** AZ moves ≤7% at every level; 2 of 4 *fall* as skill rises. **Caveat:** playing-probability ≠ understanding; 4 positions.
+## Experiment inventory
 
-### Exp 02/02b — Position corpora from real games (`02_build_dataset.py`, `02b_elite_dataset.py`)
-**In:** lichess monthly archive (streamed+decompressed on the fly, never fully downloaded); elite monthly zip. **Do:** keep rapid/classical games, both players ≥1800 (club) / elite file as-is (2500+); sample every 4th ply between plies 14–70. **Out:** `data/positions.csv` (33,808 rows from 3,000 club games), `data/positions_elite.csv` (31,065 rows from 2,500 elite games). Each row: FEN, the move the human actually played, both Elos.
+| Experiment | Actual scope | Evaluation and result source |
+|---|---|---|
+| 01: paper prototypes | 4 transcribed positions | Maia-2 probabilities; `01_frontier.csv`; descriptive examples only |
+| 03/09: mining and consolidation | 123,405 positions; 5,155 selected | Fixed depth-16/100cp/5% definition; `master_all.csv`, `master_machine_unique.csv` |
+| Actual game moves | 5,155 selected; 1,199 exact matches | `played_move == engine_best`; 3,956 nonmatches, including 1,532 from movers rated at least 2500 |
+| 06: Maia-3 ranking | 77 selected + **56 saved controls**, each at five ratings | Top-one/top-five rank at 1100,1500,2000,2300,2600; `06_frontier_2600.csv`. The requested control sample was 60; the saved output has 56. This is not a full-corpus probability filter through 2600. |
+| 05/05b: sparse directions | 30 individual fits; grouped fits on five examples | Leela policy rollouts, pooled residuals, held-out separation; no individual fit generalized; grouped held-out score 0.515 |
+| 07: motif reconstruction | Cached 646 selected / 400 controls, not all 5,155 | 12 directions; mean-direction R² 0.462; per-position means 0.202 / 0.184; `07_composition.json` |
+| 16/18/27: grouping and validation | 1,745 cached selected embeddings | Layer-10, 768-dimensional mean-pooled Leela embeddings; k=8; resampling, shuffled null and alternative clustering methods |
+| 28: assignment | 3,410 later positions | Nearest centre from the original fit; combined group signatures cover 5,155 |
+| 17/29: trainer curation | 32 study + 288 drill positions | Additional depth-18 check, unchanged top move and at least 70cp runner-up gap when curated; this is a stricter subset than the mining corpus |
+| 26: feature contrast | 18,296 rows with gap >=100cp; 7,853 extreme-group rows for classification | 5,155 low-probability, 10,443 intermediate, 2,698 high-probability; 30 binary features; five folds by game; AUC 0.851 |
+| 20B: difficulty | 123,405 positions | Gradient boosting, five folds grouped by game; AUC 0.845, Brier 0.160; `20_difficulty.json` |
+| 30: new descriptive audit | Full corpus threshold sweep; 48 different games for engine check | `30_research_audit.json`, `30_engine_audit.json` |
+| 31: corrected embedding comparison | 1,745 positions / 1,341 games / 246 exact matches | PCA fitted within each training fold; `31_embedding_audit.json` |
+| 32: worked examples | 3 primary + 3 related positions | Deliberately curated; depth 20; each pair from different games; `webapp/research_examples.json` |
+| Proposed learning study | 24-person feasibility pilot | Protocol only in `LEARNING_STUDY.md`; no completed randomized learning result |
 
-### Exp 03 — Machine-unique mining (`03_disagreement_mining.py`)
-**In:** the corpora above. **Do:** per position — Stockfish depth 16 multipv 2 (best move, margin); Maia-2 P(best move) at Elo {1100,1400,1700,2000}; Stockfish eval of the human-favourite move (`root_moves` restricted search) → `human_cost_cp`. **Definition:** position is **machine-unique** iff `human_cost_cp ≥ 100` *and* `max_elo P(engine move) ≤ 0.05`. **Out:** `results/03_disagreements.csv` (+`_b2`, `_elite`), merged into `results/master_all.csv` (16,474 analysed) and `results/master_machine_unique.csv` (**646 positions, 3.9% — rate identical in club and elite games**). **Caveats:** depth-16 truth; the 5%/100cp thresholds are choices (sensitivity unchecked); Maia-2 caps at 2000.
+## Interpreting the observational results
 
-### Real-player check (inline analysis, no script file)
-**Do:** join mined positions back to the games they came from; did the actual human play the engine move? **Result:** club players 7.8% on machine-unique vs ~45% baseline; elite 2500+ players **29.5%** (2600+: 16/34 = 47%) vs 51% baseline. **Finding:** real masters recover roughly a third to half of "machine-only" moves that simulated masters (Maia-3 2600: 2.6%) do not — the simulation-reality gap we call the *calculation gap*; the ~70% they still miss is the hard core.
+Exact agreement is not move quality. In 2,034 of 5,155 selected positions (39.5%), the saved runner-up is **less than 20cp** behind. An alternative can be good even when the real player did not match the first engine move. Full-corpus actual-move losses have not been computed; the new 48-position audit provides a limited comparison only.
 
-### Exp 06 — Frontier to 2600 (`06_frontier_2600.py`)
-**In:** 77 club machine-unique + 60 control positions. **Do:** Maia-3 (79M, CPU) top-1/top-5 at Elo {1100,1500,2000,2300,2600}. **Out:** `results/06_frontier_2600.csv`. **Result:** control top-1 rises 46→68%; machine-unique 0→2.6%. Top-5 rises 29→57% — *strong simulated players increasingly consider the move and still reject it.* **Caveat:** simulated; selection used Maia-2 (bands >2000 are out-of-sample though).
+The feature contrast shares a minimum evaluation gap; it does not match position difficulty, exact gap, phase, rating, time control or batch. Its label comes from Maia, not a direct measurement of thought. “Offers material” is a static attack/value proxy, not an assessment of compensation. The historical feature extractor also uses destination occupancy for captures and can misclassify en passant; no new feature-model rerun is claimed here. Monotonic associations in selected rows do not rule out selection effects.
 
-### Exp 05/05b — Schut's convex optimization on Leela (`05_leela_concepts.py`, `05b_group_mining.py`, `src/concept_mining.py`)
-**In:** 30 highest-cost machine-unique positions. **Do:** for each — Leela policy rollouts (top move line = chosen, 2nd/3rd move lines = subpar, 6 plies); embed every state (layer-10 residual stream, mean-pooled over 64 squares → 768-d); solve the paper's LP `min ‖v‖₁ s.t. v·z⁺ₜ ≥ v·z⁻ₜ + 1` (scipy linprog, split-variable L1; **verified by planting a synthetic concept and recovering it**). Filter: does v separate chosen/subpar on *held-out* positions? **Result:** every LP solves sparse (6–16 active dims); **0/30 generalize** (≈0.5 = chance); grouping 5 positions per LP → in-group 1.00, held-out 0.515. **Reading:** consistent with the paper's 97.6% attrition; with our substitutions the bottleneck is the pooled representation, not the optimizer. **Deviations from the paper:** Leela policy rollouts instead of AZ MCTS; pooled residuals instead of AZ's internal planes; our generalization proxy instead of their student-network teachability filter.
+The motif result reconstructs a population mean direction in a particular embedding basis. Residual variance does not establish new concepts or missing chess vocabulary. In particular, the old `mu.npy` cache has 646 rows; the current larger CSV must not be silently treated as the source of those cached embeddings.
 
-### Exp 07 — Composition test (`07_composition.py`)
-**In:** 12 motif direction-vectors (each = mean Leela embedding of ~150 lichess-puzzle positions tagged with that theme, minus puzzle baseline mean); the 646 machine-unique + 400 control embeddings. **Do:** least-squares reconstruction of the machine-unique mean direction from the motif basis; per-position R² for calibration. **Out:** `results/07_composition.json`. **Result:** global **R² = 0.46**, signature ≈ *+sacrifice +pin +exposedKing −clearance −fork −deflection*; per-position R² ≈ control (0.20 vs 0.18) — the instrument resolves populations, not individual positions. **Reading:** machine-unique play is roughly half-composable from named human motifs ("unnamed chunks"), half off-vocabulary.
+Clustering validation is exploratory. Independent-dimension shuffling destroys correlations and therefore is not a covariance-preserving null. Small absolute silhouettes and disagreement between methods limit claims of natural categories. The k=8 permutation p-value is not the probability that the result is due to luck; several values of k were examined without a multiple-comparison adjustment. A teaching partition can be useful without representing newly discovered concepts, but usefulness still needs a learning study.
 
-### Exp 08 — Pattern families (`08_cluster_families.py`)
-**In:** the 646 embeddings + motif basis + game metadata. **Do:** k-means (k=8, cosine-normalized); per family: quiet-move share, piece/phase mix, nearest motifs, real-found rate; render board gallery. **Out:** `results/08_families.json`, `families.html` (published artifact). **Headlines:** 72–92% of machine-unique moves are **quiet** (no capture, no check); family 5 (endgame king-safety, 20.5% real-found) is the most teachable candidate; family 7 (n=46) is near-orthogonal to *every* named motif — the concentrated alien residue.
+## New engine and threshold audit (experiment 30)
 
----
+Seed 20260907. Shuffle selected positions separately in each of the six rating bands and take eight per band, skipping previously selected source games. Bands have lower-exclusive, upper-inclusive bounds: <=2000, (2000,2200], …, >2800. This is a stratified descriptive sample, not 48 independent draws representative of every chess position.
 
-## Known limitations (the honest list)
+Stockfish 17.1, one thread, 128 MB hash, cleared before every search. Each search targets depth 20 with a three-second time cap. Analyze the unrestricted top two moves, then separately the original engine move, Maia-2's 2000 favourite and the actual played move. Record actual depth, nodes, elapsed engine time, scores and principal variations. **All searches for all 48 positions reached depth 20.**
 
-1. Stockfish depth 16 as ground truth (not exhaustive); thresholds 100cp/5% untested for sensitivity.
-2. Maia models blitz/rapid *recognition*, not calculation — hence the simulation-reality gap at 2600.
-3. Mean-pooled residuals lose square-local structure (probable cause of Exp 05's transfer failure).
-4. Position-level composition claims are beyond this instrument; only population-level claims made.
-5. No causal evidence yet — everything so far is correlational. (Next: activation patching, transcoder features.)
-6. Elite band n is small (34 positions for 2600+ movers).
+- Original top move retained: **35/48**.
+- Four positions include a mate score and are excluded from cp comparisons, but retained in top-move stability counts.
+- Original move still at least 100cp above Maia's favourite: **42/44** numeric cases.
+- Actual played move exactly equals the original answer: **12/44** numeric cases.
+- Actual played move within 20cp of the best score encountered: **14/44** numeric cases.
 
-## Reproduce
+“Best encountered” is the maximum across these finite searches; separately restricted search scores can disagree and do not prove the global optimum. Maia probabilities are not recomputed for changed answers. The gap result and top-move stability answer different questions. No original labels, trainer answers or participant records were overwritten by this audit.
 
+The threshold sweep combines cp gaps 50/100/200 with Maia ceilings 1/2.5/5/10%. Counts span 755–14,584. Exact-match rates span 16.1–29.3% in this grid. These are descriptive selection sensitivities; we have not refitted every cluster or feature association at each threshold.
+
+Rating-band uncertainty uses 1,000 percentile bootstrap samples of source games within each band, retaining all sampled positions per game. It conditions on this corpus and does not cover player dependence, source bias or engine uncertainty. JSON includes numerator, denominator, number of games, intervals and per-batch counts.
+
+## Predictive evaluation and corrections
+
+Experiment 20B's saved metrics use game-grouped folds after the elite-ID repair. The target is the actual player's exact agreement with the saved engine choice. Five-fold standard deviations describe variation among folds, not confidence intervals for a population effect. The old result files are retained as historical outputs, not silently replaced.
+
+Experiment 31 reruns 20A after moving PCA inside the training folds. Surface-category columns are now fixed to a declared chess vocabulary. Scaling and logistic fitting are inside each fold. Full baseline AUC is 0.755; adding 40 embedding components yields 0.732. Widths 2/5/10/20/40 do not improve the full rating-aware baseline. A position-only baseline gains approximately 0.007 at best; it is a different comparison. The width sweep is exploratory and uses the same folds, not nested model selection. These results neither demonstrate unique predictive value nor prove representational redundancy.
+
+The current trainer's 1900 estimates and six-rating test curves are full-corpus refits that include the trainer positions. They are counterfactual model outputs, not independently calibrated human item-response curves or validated ratings. The new research audits do not retrain or replace those live curves. Independent held-out-game calibration and participant responses are still needed.
+
+The sparse-direction experiment adapted [Schut et al.](https://arxiv.org/abs/2310.16410) using Leela policy rollouts instead of AlphaZero MCTS, pooled residuals instead of the same internal representation, and held-out separation instead of their teachability procedure. The failed transfer is reported; no claim of replicating their grandmaster learning result is made.
+
+## Reproduction
+
+The Flask site uses only committed precomputed data and `requirements.txt`. Research needs Python with numpy, pandas, scipy, scikit-learn, python-chess, the relevant neural runtimes, and downloaded model weights. Existing research environments are described by `scripts/setup.sh` and the experiment imports; these environments are not fully lockfile-reproducible.
+
+From the repository root:
+
+```sh
+# Rebuild the master from preserved mining batches and rating sources first:
+python experiments/09_consolidate.py
+
+# Full audit; supports --skip-engine for descriptive tables only.
+# Existing engine rows are cached against input hash, seed and engine settings.
+python experiments/30_research_audit.py
+
+# Rerun embedding comparison without changing trainer difficulty scores:
+OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 python experiments/31_embedding_audit.py
+
+# Curated examples; failure to verify stops the build:
+python experiments/32_research_examples.py
+
+# Regenerate current result summaries from JSON:
+python scripts/render_research_notes.py
 ```
-conda activate unnamed-concepts
-python experiments/02_build_dataset.py --games 3000 --min-elo 1800
-python experiments/03_disagreement_mining.py --limit 2000
-conda activate leela
-python experiments/07_composition.py && python experiments/08_cluster_families.py
-```
 
-Repo: `~/Desktop/Projects/unnamed-concepts` (git, 12 commits). Artifacts: Schut positions (steppable), machine-unique gallery, pattern families.
+`master_all.csv`, raw source archives and embedding caches are omitted from Git because of size. A fresh clone can inspect the committed audit records and run the website, but cannot reproduce the full audit without reconstructing or obtaining those exact inputs. SHA-256 hashes identify the inputs used here; they do not make the omitted files downloadable. Cache row identity beyond the preserved historical ordering is an additional limitation of earlier embedding experiments.
+
+Before a confirmatory study: freeze an archive/checkpoint manifest, separate by game and canonical position (and preferably player/time period), use stronger engine verification, calibrate item curves independently, register the study, then collect participant responses. See [the proposed learning protocol](LEARNING_STUDY.md).

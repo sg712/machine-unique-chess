@@ -1,23 +1,14 @@
-# Bibliography — interpretability of superhuman chess engines
+# Bibliography and research foundations
 
-## Core (the spine of this project)
-- **Schut, Tomašev, McGrath, Hassabis, Paquet, Kim (PNAS 2025)** — *Bridging the human–AI knowledge gap: concept discovery and transfer in AlphaZero.* [arXiv:2310.16410](https://arxiv.org/abs/2310.16410) · `papers/schut2023-concept-discovery-transfer.pdf`
-  Mines machine-unique concept vectors from AZ via convex optimization over MCTS rollouts; filters by teachability (97.6% cut) and novelty (spectral test vs human-game basis); teaches survivors to 4 GMs (2600–2800) via prototype positions only. Improvements: +42/+25/+16/+6 pp. Lead author Lisa Schut: Oxford OATML PhD → DeepMind, ex-Dutch Olympiad player.
-- **McGrath, Kapishnikov, Tomašev, Pearce, Hassabis, Kim, Paquet, Kramnik (PNAS 2022)** — *Acquisition of chess knowledge in AlphaZero.* [arXiv:2111.09259](https://arxiv.org/abs/2111.09259) · `papers/mcgrath2021-acquisition-chess-knowledge.pdf`
-  Probes AZ for ~human concepts; they exist and emerge in human-like order during training.
-- **Jenner, Kapur, Georgiev, Allen, Emmons, Russell (NeurIPS 2024)** — *Evidence of learned look-ahead in a chess-playing neural network.* [arXiv:2406.00877](https://arxiv.org/abs/2406.00877) · `papers/jenner2024-learned-lookahead.pdf` · code: `models/leela-interp/`
-  Leela's policy net represents future moves that causally drive current choices. THE reproducible entry point (open code + open weights).
-- **Follow-ups (2025–26):** *Understanding the learned look-ahead behavior of chess neural networks* ([arXiv:2505.21552](https://arxiv.org/abs/2505.21552)); *The Algorithm Is Not the Behavior* ([arXiv:2508.21380](https://arxiv.org/abs/2508.21380)) — learned priors can override look-ahead.
+Updated 7 September 2026. These sources motivate the project or supply its instruments. Their results are not evidence that this trainer improves chess strength.
 
-## Human skill modeling (the instrument for the frontier question)
-- **Maia-2 (NeurIPS 2024)** — unified skill-aware human-move model, Elo 1100–2000. [arXiv:2409.20553](https://arxiv.org/abs/2409.20553) · `models/maia2-repo/` · pip `maia2`
-- **Maia-3 (2026)** — successor, recommended by CSSLab for new projects. [arXiv:2605.19091](https://arxiv.org/abs/2605.19091) · [HF models](https://huggingface.co/collections/UofTCSSLab/maia3) — TODO: evaluate switching experiment 01 to it.
+- **Schut, Tomašev, McGrath, Hassabis, Paquet and Kim.** *Bridging the Human-AI Knowledge Gap: Concept Discovery and Transfer in AlphaZero.* [Primary paper](https://arxiv.org/abs/2310.16410). The study reports improvements on concept-prototype positions in four grandmasters. Our Leela adaptation changes the representation, rollout procedure and evaluation; it has not replicated the human learning result.
+- **Tang et al.** *Maia-2: A Unified Model for Human-AI Alignment in Chess.* NeurIPS 2024. [Primary paper](https://arxiv.org/abs/2409.20553), [code](https://github.com/CSSLab/maia2). Supplies the skill-conditioned human-move model used by the main mining pipeline. Our four tested rating settings are an experimental choice, not a continuous evaluation of every rating.
+- **CSSLab.** Maia-3. [Official code and model documentation](https://github.com/CSSLab/maia3). Used for the separate top-one/top-five ranking experiment through 2600, not the full 5,155-position filter.
+- **Jenner et al.** *Evidence of Learned Look-Ahead in a Chess-Playing Neural Network.* [Primary paper](https://arxiv.org/abs/2406.00877), [interpretability code](https://github.com/HumanCompatibleAI/leela-interp). Provides background and open tooling for inspecting Leela representations. The present clustering analysis is not an activation-level causal replication.
+- **Stockfish developers.** [Stockfish source](https://github.com/official-stockfish/Stockfish). Version 17.1 is the analysis reference; finite-depth evaluations are estimates, not exhaustive ground truth.
+- **Leela Chess Zero contributors.** [Project](https://lczero.org/). The project uses an open network through the interpretability tooling; historical checkpoint provenance should be made more reproducible before a confirmatory study.
+- **Lichess contributors.** [Game and puzzle databases](https://database.lichess.org/). Public games supply source positions and actual moves; puzzle tags supply the selected motif basis.
+- **Lichess Elite Database.** [Archive](https://database.nikonoel.fr/). Supplies filtered elite games. Its time-control and date distribution differ from the club sample.
 
-## Motivation / efficacy context
-- **Southwick et al. (Psychological Science 2026)** — *Not all practice is created equal* (N=44k chess.com players): lessons + game review ≈ 3.6× improvement/hour vs playing. The practice-material half of this project exists because of this result.
-- **DecodeChess** — the lone commercial "explain the engine" product; translates into existing human vocabulary only. The gap this project targets is precisely what a translator cannot reach.
-
-## Open weights / tooling
-- **Leela Chess Zero** — open AZ reproduction; nets at lczero.org; `leela-interp` ships converted PyTorch policy nets.
-- **Stockfish NNUE** — open weights, but a small eval net + search: useful as ground truth, not as a concept substrate. Local build: `models/stockfish-build/`.
-- **AlphaZero itself: closed.** Everything here reproduces on Leela/Maia or uses the paper's published positions.
+Earlier speculative literature notes and unverified product comparisons are retained in Git history. The current research claims and their limitations are documented in [methods](docs/METHODS.md).

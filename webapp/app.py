@@ -1,8 +1,7 @@
-"""Machine Unique Chess, a trainer for chess ideas that have no name.
+"""Machine Unique Chess: practice engine moves assigned low probability by Maia.
 
-Eight concepts mined from 123,405 real positions: patterns where a strong engine
-is decisively right and essentially no human plays the move. Each concept is
-studied by example, then drilled on fresh positions from the same family.
+Eight exploratory groups drawn from a corpus of 123,405 real positions.
+Learning effectiveness and conceptual novelty have not been established.
 
     python webapp/app.py            # http://127.0.0.1:5055
 """
@@ -63,7 +62,11 @@ VALIDATION = {
     "difficulty": json.load(open(ROOT / "results" / "20_difficulty.json")),
     "curve": json.load(open(ROOT / "results" / "21_learning_curve.json")),
     "bands": json.load(open(ROOT / "results" / "23_band_value.json")),
+    "audit": json.load(open(ROOT / "results" / "30_research_audit.json")),
+    "embedding_audit": json.load(open(ROOT / "results" / "31_embedding_audit.json")),
+    "contrast": json.load(open(ROOT / "results" / "26_why_invisible.json")),
 }
+RESEARCH_EXAMPLES = json.load(open(ROOT / "webapp" / "research_examples.json"))
 
 
 # ── storage ───────────────────────────────────────────────────────────────────
@@ -472,10 +475,25 @@ def profile():
 
 @app.route("/research")
 def research():
+    examples = []
+    for example in RESEARCH_EXAMPLES["examples"]:
+        item = dict(example)
+        for key in ("primary", "related"):
+            pos = dict(example[key])
+            board = chess.Board(pos["fen"])
+            pos["svg"] = chess.svg.board(board, orientation=board.turn,
+                size=360, colors={"square light": "#f2ece0", "square dark": "#b9906b"})
+            pos["stm"] = "White" if board.turn else "Black"
+            pos["line"] = frames_of(pos["fen"], pos["pv"])
+            pos["human_line"] = frames_of(pos["fen"], pos["human"]["pv"])
+            item[key] = pos
+        examples.append(item)
     return render_template("research.html", concepts=CONCEPTS, totals=totals(),
                            v=VALIDATION["cluster"], e=VALIDATION["embed"],
                            d=VALIDATION["difficulty"], lc=VALIDATION["curve"],
-                           bv=VALIDATION["bands"])
+                           bv=VALIDATION["bands"], r=VALIDATION["audit"],
+                           a=VALIDATION["embedding_audit"]["part_a"],
+                           contrast=VALIDATION["contrast"], examples=examples, pieces=PIECES)
 
 
 def test_signer():

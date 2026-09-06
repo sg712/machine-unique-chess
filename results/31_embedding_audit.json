@@ -1,0 +1,112 @@
+{
+  "generated_at": "2026-09-06T18:44:32.595404+00:00",
+  "inputs": {
+    "results/16_mu_families.csv": "b5e71c876e75afa87eb8af7b386d2df6461d9b59e5c71093ad12204aebcf9829",
+    "results/emb_cache/mu_all.npy": "db031c3edbf92dd427393076b6931c7a6da0f3feec9d332fe0790e783d9f4c44"
+  },
+  "part_a": {
+    "surface only": {
+      "auc": 0.587920391549319,
+      "sd": 0.06802849680473899,
+      "n_features": 19
+    },
+    "Maia only": {
+      "auc": 0.5851233377671176,
+      "sd": 0.03312798599941311,
+      "n_features": 6
+    },
+    "engine only": {
+      "auc": 0.6236373945806264,
+      "sd": 0.0324487188055451,
+      "n_features": 3
+    },
+    "embedding only": {
+      "auc": 0.6010825881655164,
+      "sd": 0.03134857886829881,
+      "n_features": 40
+    },
+    "surface + engine": {
+      "auc": 0.6018874265904751,
+      "sd": 0.04425677571987671,
+      "n_features": 22
+    },
+    "surface + engine + Maia": {
+      "auc": 0.6276506686669385,
+      "sd": 0.0395061779935601,
+      "n_features": 28
+    },
+    "surface + engine + Maia + elo": {
+      "auc": 0.755328192477332,
+      "sd": 0.036361075044391865,
+      "n_features": 29
+    },
+    "...+ EMBEDDING": {
+      "auc": 0.7321762931346802,
+      "sd": 0.05203669404477249,
+      "n_features": 69
+    },
+    "_sweep": {
+      "position-only baseline + 2PC": {
+        "auc": 0.6344590000600053,
+        "sd": 0.03678864094045907,
+        "gain": 0.006808331393066802
+      },
+      "+ elo + 2PC": {
+        "auc": 0.7538141110477914,
+        "sd": 0.037088202931861505,
+        "gain": -0.0015140814295405702
+      },
+      "position-only baseline + 5PC": {
+        "auc": 0.6334808861434054,
+        "sd": 0.04295490519072321,
+        "gain": 0.005830217476466837
+      },
+      "+ elo + 5PC": {
+        "auc": 0.7520126614748568,
+        "sd": 0.0360637507858269,
+        "gain": -0.0033155310024751694
+      },
+      "position-only baseline + 10PC": {
+        "auc": 0.6260444558238181,
+        "sd": 0.03999270191674371,
+        "gain": -0.001606212843120458
+      },
+      "+ elo + 10PC": {
+        "auc": 0.7481815639824742,
+        "sd": 0.036106396035841704,
+        "gain": -0.00714662849485781
+      },
+      "position-only baseline + 20PC": {
+        "auc": 0.6332270738405622,
+        "sd": 0.0453327872389591,
+        "gain": 0.0055764051736236775
+      },
+      "+ elo + 20PC": {
+        "auc": 0.7488709375002642,
+        "sd": 0.03682968237027863,
+        "gain": -0.006457254977067728
+      },
+      "position-only baseline + 40PC": {
+        "auc": 0.6243566176321542,
+        "sd": 0.05234448622674787,
+        "gain": -0.0032940510347843066
+      },
+      "+ elo + 40PC": {
+        "auc": 0.7321762931346802,
+        "sd": 0.05203669404477249,
+        "gain": -0.023151899342651716
+      }
+    },
+    "_best_embedding_gain_any_width": 0.006808331393066802,
+    "_embedding_gain_over_baseline": -0.023151899342651716,
+    "_verdict": "Exploratory width sweep; predictive gains do not establish unique knowledge or redundancy.",
+    "_evaluation": {
+      "n": 1745,
+      "positive_n": 246,
+      "games": 1341,
+      "folds": 5,
+      "pca_fit": "training fold only",
+      "width_selection": "exploratory, not nested"
+    }
+  }
+}

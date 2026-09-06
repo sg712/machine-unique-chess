@@ -11,7 +11,7 @@ finding — it is a slower way of asking Maia.
 Part A (n=1,745 machine-unique, cached embeddings): a ladder of feature sets, ending
 with Maia + engine + surface as the strong baseline, then + embedding.
 
-Part B (n=43,603, all mined positions): the usable model. No Leela embedding —
+Part B (all mined positions; current corpus n=123,405): the difficulty model. No Leela embedding —
 just what is cheap to compute — trained to predict whether a human at the board plays
 the engine's best move. This is the scorer the trainer can actually use, so it is
 checked for calibration, not only ranking.
@@ -78,7 +78,9 @@ def move_meta(fen: str, uci: str) -> dict:
 
 def block(df: pd.DataFrame, kind: str) -> np.ndarray:
     if kind == "surface":
-        cat = OneHotEncoder(sparse_output=False, handle_unknown="ignore") \
+        cat = OneHotEncoder(sparse_output=False, handle_unknown="ignore",
+                            categories=[["bishop", "king", "knight", "pawn", "queen", "rook"],
+                                        ["endgame", "middlegame", "opening"]]) \
             .fit_transform(df[["piece", "phase"]].astype(str))
         num = df[SURF_NUM + ["n_legal", "in_check"]].astype(float).to_numpy()
         return np.hstack([cat, num])
@@ -95,15 +97,21 @@ def design(df: pd.DataFrame, kinds: list[str], emb: np.ndarray | None = None) ->
     parts = [block(df, k) for k in kinds if k != "embed"]
     if "embed" in kinds:
         parts.append(emb)
-    return np.hstack(parts)
+    return np.hstack(parts) if parts else np.empty((len(df), 0))
 
 
 # ── evaluation ────────────────────────────────────────────────────────────────
-def cv_score(X, y, groups, model="logit", n_splits=5):
+def cv_score(X, y, groups, model="logit", n_splits=5, embed=None, n_pc=N_PC):
     """Grouped CV by game. Returns mean AUC, sd, and out-of-fold predictions."""
     gkf = GroupKFold(n_splits=n_splits)
     aucs, oof = [], np.zeros(len(y))
     for tr, te in gkf.split(X, y, groups):
+        train, test = X[tr], X[te]
+        if embed is not None:
+            # Held-out positions must not influence the representation transform.
+            pca = PCA(n_components=n_pc, random_state=SEED)
+            train = np.hstack([train, pca.fit_transform(embed[tr])])
+            test = np.hstack([test, pca.transform(embed[te])])
         if model == "logit":
             clf = make_pipeline(StandardScaler(),
                                 LogisticRegression(max_iter=3000, C=0.5))
@@ -111,8 +119,8 @@ def cv_score(X, y, groups, model="logit", n_splits=5):
             clf = HistGradientBoostingClassifier(
                 max_iter=300, learning_rate=0.06, max_leaf_nodes=15,
                 l2_regularization=1.0, random_state=SEED)
-        clf.fit(X[tr], y[tr])
-        p = clf.predict_proba(X[te])[:, 1]
+        clf.fit(train, y[tr])
+        p = clf.predict_proba(test)[:, 1]
         oof[te] = p
         aucs.append(roc_auc_score(y[te], p))
     return float(np.mean(aucs)), float(np.std(aucs)), oof
@@ -138,7 +146,6 @@ def part_a() -> dict:
           f"{mu.game_id.nunique()} distinct games\n")
 
     Zn = Z / (np.linalg.norm(Z, axis=1, keepdims=True) + 1e-9)
-    emb = PCA(n_components=N_PC, random_state=SEED).fit_transform(Zn)
 
     ladder = [
         ("surface only", ["surface"]),
@@ -153,10 +160,11 @@ def part_a() -> dict:
     out = {}
     base_key = "surface + engine + Maia + elo"
     for name, kinds in ladder:
-        X = design(mu, kinds, emb)
-        m, s, _ = cv_score(X, y, groups)
-        out[name.strip()] = {"auc": m, "sd": s, "n_features": X.shape[1]}
-        print(f"  {name:32s} AUC={m:.3f} ± {s:.3f}   ({X.shape[1]} features)")
+        X = design(mu, [k for k in kinds if k != "embed"])
+        m, s, _ = cv_score(X, y, groups, embed=Zn if "embed" in kinds else None)
+        width = X.shape[1] + (N_PC if "embed" in kinds else 0)
+        out[name.strip()] = {"auc": m, "sd": s, "n_features": width}
+        print(f"  {name:32s} AUC={m:.3f} ± {s:.3f}   ({width} features)")
 
     # Fair-comparison sweep: adding 40 PCs to 246 positives can lose on
     # dimensionality alone, which would be a fact about sample size, not about
@@ -165,10 +173,9 @@ def part_a() -> dict:
     print("\n  dimensionality sweep — is the drop just overfitting?")
     sweep = {}
     for npc in (2, 5, 10, 20, 40):
-        e_k = PCA(n_components=npc, random_state=SEED).fit_transform(Zn)
         for tag, kinds in [("position-only baseline", ["surface", "engine", "maia"]),
                            ("+ elo", ["surface", "engine", "maia", "elo"])]:
-            m, s_, _ = cv_score(design(mu, kinds + ["embed"], e_k), y, groups)
+            m, s_, _ = cv_score(design(mu, kinds), y, groups, embed=Zn, n_pc=npc)
             base = out["surface + engine + Maia" if tag == "position-only baseline"
                        else "surface + engine + Maia + elo"]["auc"]
             sweep[f"{tag} + {npc}PC"] = {"auc": m, "sd": s_, "gain": m - base}
@@ -180,11 +187,13 @@ def part_a() -> dict:
 
     gain = out["...+ EMBEDDING"]["auc"] - out[base_key]["auc"]
     print(f"\n  embedding's gain over the full non-embedding baseline: {gain:+.3f}")
-    verdict = ("the embedding survives the Maia control" if best_gain > 0.01 else
-               "the embedding does NOT survive the Maia control at any width")
+    verdict = "Exploratory width sweep; predictive gains do not establish unique knowledge or redundancy."
     print(f"  -> {verdict}")
     out["_embedding_gain_over_baseline"] = gain
     out["_verdict"] = verdict
+    out["_evaluation"] = {"n": len(mu), "positive_n": int(y.sum()),
+                          "games": int(mu.game_id.nunique()), "folds": 5,
+                          "pca_fit": "training fold only", "width_selection": "exploratory, not nested"}
     return out
 
 

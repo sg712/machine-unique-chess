@@ -12,9 +12,9 @@
 <div class="bigstats">
   <div class="bs"><b>123,405</b><span>positions from real games, analysed twice: by a
     strong engine and by a model of human play</span></div>
-  <div class="bs"><b>4 in 100</b><span>contain a move the engine rates decisively best
-    that a model of human play gives under 5% probability at each tested rating</span></div>
-  <div class="bs"><b>8</b><span>patterns those moves cluster into. Each card below is one
+  <div class="bs"><b>4 in 100</b><span>meet the engine–Maia disagreement filter;
+    Maia-2 gives the engine move at most 5% probability at four tested ratings</span></div>
+  <div class="bs"><b>8</b><span>groups chosen for practice. Each card below is one
     of them, from a real game</span></div>
 </div>
 
@@ -35,7 +35,7 @@ progress everywhere. All ratings below are Lichess ratings.</p>
     <div class="sig">
       <span>{{ c.signature.positions }} positions</span>
       <span>{{ (c.signature.quiet_share * 100)|round(0)|int }}% quiet</span>
-      <span>&minus;{{ c.signature.avg_cost_cp }}cp average error</span>
+      <span>{{ c.signature.avg_cost_cp }}cp average gap to Maia's favourite</span>
     </div>
     <div class="foot">
       {% if p.n %}
@@ -64,10 +64,11 @@ document.querySelectorAll(".mini").forEach((el) => {
 actually reached these positions over the board found the engine's move. Lower means fewer found it in the source games.</p>
 
 <h2>Where this comes from</h2>
-<p>Every position was played in a real game. A position qualifies when a strong engine's
-move is decisively better than the alternatives <em>and</em> a neural model of human play
-gives that move under 5% probability at every rating from 1100 to 2600. Of 123,405 positions
-analysed, 5,155 qualified; in 3,956 the player at the board missed it too. This is a model-based definition of rarity: real players rated 2800+ found 56.9% of the qualifying moves.</p>
+<p>Every position comes from a real game. A position qualifies when Stockfish at depth 16
+rates its chosen move at least 100 centipawns above Maia-2's favourite at 2000, while
+Maia-2 assigns the engine move at most 5% probability at 1100, 1400, 1700 and 2000.
+Of 123,405 positions analysed, 5,155 qualified; in 3,956 the player chose a different move.
+Another move can still be good. Exact engine agreement is not the same as move quality.</p>
 <p>The eight groups above come from clustering the first 1,745 of those by how the engine
 represents them internally. <a href="{{ url_for('research') }}">The full method and findings &rarr;</a></p>
 

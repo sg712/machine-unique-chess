@@ -91,7 +91,7 @@
       <span><b>{{ c.signature.positions }}</b> positions found</span>
       <span><b>{{ (c.signature.found_by_real_players * 100)|round(1) }}%</b> found over the board</span>
       <span><b>{{ (c.signature.quiet_share * 100)|round(0)|int }}%</b> quiet moves</span>
-      <span><b>&minus;{{ c.signature.avg_cost_cp }}cp</b> average human error</span>
+      <span><b>{{ c.signature.avg_cost_cp }}cp</b> average gap to Maia's favourite</span>
       <span class="mo">closest named motifs:
         {% for m, v in c.signature.top_motifs %}{{ m }} {{ '%.2f'|format(v)|replace('-', '&minus;')|safe }}{% if not loop.last %} &middot; {% endif %}{% endfor %}</span>
     </div>

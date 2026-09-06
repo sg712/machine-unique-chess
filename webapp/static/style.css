@@ -11,6 +11,21 @@ body { margin:0; background:var(--paper); color:var(--ink); font-family:var(--se
 .sheet { max-width:53rem; margin:0 auto; padding:2.6rem 2rem 6rem; }
 .narrow { max-width:44rem; }
 
+/* Research stays readable as an article; examples reuse the training viewer. */
+.research-article { max-width:70ch; }
+.research-article h3 { font-size:1.25rem; line-height:1.35; margin:1.8rem 0 .7rem; font-weight:600; }
+.research-contents { display:flex; flex-wrap:wrap; gap:.5rem 1.2rem; margin:1.5rem 0 2rem; font-size:1rem; }
+.research-example { padding:1rem 0 1.6rem; border-bottom:1px solid var(--rule); }
+.research-board { width:min(360px,100%); margin:1rem 0; }
+.research-board > svg { width:100%; height:auto; display:block; }
+.research-article details { margin:1rem 0; }
+.research-article summary { cursor:pointer; color:var(--accent); padding:.5rem 0; }
+.research-article details[open] > summary { margin-bottom:.6rem; }
+.research-related { padding-top:.5rem; }
+.research-line-controls { margin-bottom:1rem; }
+.research-article caption { text-align:left; font-size:.95rem; margin-bottom:.6rem; }
+.research-article h2[id] { scroll-margin-top:1rem; }
+
 .masthead { display:flex; justify-content:space-between; align-items:baseline; gap:1rem;
   flex-wrap:wrap; font-family:var(--mono); font-size:.8rem; letter-spacing:.14em;
   text-transform:uppercase; color:var(--accent); border-bottom:1px solid var(--rule);

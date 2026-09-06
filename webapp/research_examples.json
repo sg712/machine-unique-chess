@@ -1,0 +1,632 @@
+{
+  "generated_at": "2026-09-06T18:46:26.974561+00:00",
+  "engine": {
+    "name": "Stockfish 17.1",
+    "author": "the Stockfish developers (see AUTHORS file)"
+  },
+  "concepts_sha256": "64a5b458ce91699295468bb4df2b97f1cf402d4cef2960a0f078afb198177477",
+  "selection": "curated; not part of the random robustness sample",
+  "examples": [
+    {
+      "concept": 0,
+      "title": "Look beyond the advancing pawn",
+      "prompt": "Black has a pawn on a3. Would you push it, or improve another piece first?",
+      "explanation": "Maia's favourite is the direct pawn push ...a2. The engine instead retreats the knight from c5 to b7. Compare how the two continuations handle White's pressure. This is an example of an engine preferring a quiet retreat; it does not establish that all positions in this group share one new concept.",
+      "primary": {
+        "fen": "r3r3/5pk1/3b2pp/1NnP4/2P1p2P/ppP1P3/6P1/RB1R2K1 b - - 1 34",
+        "game_id": "DvRUZltt",
+        "best": "c5b7",
+        "best_san": "Nb7",
+        "pv": [
+          {
+            "uci": "c5b7",
+            "san": "Nb7"
+          },
+          {
+            "uci": "h4h5",
+            "san": "h5"
+          },
+          {
+            "uci": "g6h5",
+            "san": "gxh5"
+          },
+          {
+            "uci": "b5d6",
+            "san": "Nxd6"
+          },
+          {
+            "uci": "b7d6",
+            "san": "Nxd6"
+          },
+          {
+            "uci": "c4c5",
+            "san": "c5"
+          },
+          {
+            "uci": "b3b2",
+            "san": "b2"
+          },
+          {
+            "uci": "a1a2",
+            "san": "Ra2"
+          },
+          {
+            "uci": "d6b5",
+            "san": "Nb5"
+          },
+          {
+            "uci": "d5d6",
+            "san": "d6"
+          }
+        ],
+        "human": {
+          "uci": "a3a2",
+          "san": "a2",
+          "p": 0.391,
+          "pv": [
+            {
+              "uci": "a3a2",
+              "san": "a2"
+            },
+            {
+              "uci": "b5d6",
+              "san": "Nxd6"
+            },
+            {
+              "uci": "e8b8",
+              "san": "Reb8"
+            },
+            {
+              "uci": "d6b5",
+              "san": "Nb5"
+            },
+            {
+              "uci": "a8a4",
+              "san": "Ra4"
+            },
+            {
+              "uci": "d5d6",
+              "san": "d6"
+            },
+            {
+              "uci": "c5d3",
+              "san": "Nd3"
+            },
+            {
+              "uci": "b1d3",
+              "san": "Bxd3"
+            },
+            {
+              "uci": "e4d3",
+              "san": "exd3"
+            },
+            {
+              "uci": "d1d2",
+              "san": "Rd2"
+            }
+          ]
+        },
+        "maia_rating": 1900,
+        "depth": 20,
+        "best_cp": 387,
+        "runner_up_cp": 301,
+        "human_cp": 28
+      },
+      "related": {
+        "fen": "8/p2b3p/1p3k2/1Pp2p2/2P1p2P/P1K3P1/4BP2/8 b - - 0 30",
+        "game_id": "B6HrxGuF",
+        "best": "f5f4",
+        "best_san": "f4",
+        "pv": [
+          {
+            "uci": "f5f4",
+            "san": "f4"
+          },
+          {
+            "uci": "g3f4",
+            "san": "gxf4"
+          },
+          {
+            "uci": "f6f5",
+            "san": "Kf5"
+          },
+          {
+            "uci": "e2f1",
+            "san": "Bf1"
+          },
+          {
+            "uci": "f5f4",
+            "san": "Kxf4"
+          },
+          {
+            "uci": "f1g2",
+            "san": "Bg2"
+          },
+          {
+            "uci": "d7e6",
+            "san": "Be6"
+          },
+          {
+            "uci": "a3a4",
+            "san": "a4"
+          },
+          {
+            "uci": "e6g4",
+            "san": "Bg4"
+          },
+          {
+            "uci": "c3d2",
+            "san": "Kd2"
+          }
+        ],
+        "human": {
+          "uci": "f6e5",
+          "san": "Ke5",
+          "p": 0.6553,
+          "pv": [
+            {
+              "uci": "f6e5",
+              "san": "Ke5"
+            },
+            {
+              "uci": "f2f4",
+              "san": "f4+"
+            },
+            {
+              "uci": "e4f3",
+              "san": "exf3"
+            },
+            {
+              "uci": "e2f3",
+              "san": "Bxf3"
+            },
+            {
+              "uci": "d7e6",
+              "san": "Be6"
+            },
+            {
+              "uci": "c3d3",
+              "san": "Kd3"
+            },
+            {
+              "uci": "h7h6",
+              "san": "h6"
+            },
+            {
+              "uci": "d3c3",
+              "san": "Kc3"
+            },
+            {
+              "uci": "e6f7",
+              "san": "Bf7"
+            },
+            {
+              "uci": "c3d3",
+              "san": "Kd3"
+            }
+          ]
+        },
+        "maia_rating": 1900,
+        "depth": 20,
+        "best_cp": 344,
+        "runner_up_cp": 99,
+        "human_cp": 82,
+        "drill_index": 0
+      }
+    },
+    {
+      "concept": 3,
+      "title": "Consider the pawn move before the capture",
+      "prompt": "The bishop can capture the knight on e5. Is that the move you would choose?",
+      "explanation": "Maia strongly favours ...Bxe5. Stockfish prefers ...g5, a pawn move near Black's own king. The engine's line makes the tactical consequences concrete. A quiet first move can still lead to forcing play, so 'quiet' does not mean 'non-tactical'.",
+      "primary": {
+        "fen": "rnbqr1k1/p1p2pp1/1p1b1n1p/3PN3/2PP1p2/2N5/PP2B1PP/R1BQ1RK1 b - - 1 10",
+        "game_id": "3FQi7QTZ",
+        "best": "g7g5",
+        "best_san": "g5",
+        "pv": [
+          {
+            "uci": "g7g5",
+            "san": "g5"
+          },
+          {
+            "uci": "e2f3",
+            "san": "Bf3"
+          },
+          {
+            "uci": "a7a5",
+            "san": "a5"
+          },
+          {
+            "uci": "b2b3",
+            "san": "b3"
+          },
+          {
+            "uci": "d8e7",
+            "san": "Qe7"
+          },
+          {
+            "uci": "c3b5",
+            "san": "Nb5"
+          },
+          {
+            "uci": "c8f5",
+            "san": "Bf5"
+          },
+          {
+            "uci": "d1d2",
+            "san": "Qd2"
+          },
+          {
+            "uci": "b8d7",
+            "san": "Nbd7"
+          },
+          {
+            "uci": "c1b2",
+            "san": "Bb2"
+          }
+        ],
+        "human": {
+          "uci": "d6e5",
+          "san": "Bxe5",
+          "p": 0.9034,
+          "pv": [
+            {
+              "uci": "d6e5",
+              "san": "Bxe5"
+            },
+            {
+              "uci": "d4e5",
+              "san": "dxe5"
+            },
+            {
+              "uci": "e8e5",
+              "san": "Rxe5"
+            },
+            {
+              "uci": "c1f4",
+              "san": "Bxf4"
+            },
+            {
+              "uci": "e5e8",
+              "san": "Re8"
+            },
+            {
+              "uci": "d1d3",
+              "san": "Qd3"
+            },
+            {
+              "uci": "b8a6",
+              "san": "Na6"
+            },
+            {
+              "uci": "d3g3",
+              "san": "Qg3"
+            },
+            {
+              "uci": "c8f5",
+              "san": "Bf5"
+            },
+            {
+              "uci": "f4h6",
+              "san": "Bxh6"
+            }
+          ]
+        },
+        "maia_rating": 1900,
+        "depth": 20,
+        "best_cp": -118,
+        "runner_up_cp": -206,
+        "human_cp": -270
+      },
+      "related": {
+        "fen": "r1bq1rk1/ppp2ppp/1b1p1n2/1P6/3nP3/P1NP1N2/2PB1PPP/R2QKB1R b KQ - 1 10",
+        "game_id": "G5n9xii3",
+        "best": "f6g4",
+        "best_san": "Ng4",
+        "pv": [
+          {
+            "uci": "f6g4",
+            "san": "Ng4"
+          },
+          {
+            "uci": "h2h3",
+            "san": "h3"
+          },
+          {
+            "uci": "g4f2",
+            "san": "Nxf2"
+          },
+          {
+            "uci": "e1f2",
+            "san": "Kxf2"
+          },
+          {
+            "uci": "d4f3",
+            "san": "Nxf3+"
+          },
+          {
+            "uci": "d2e3",
+            "san": "Be3"
+          },
+          {
+            "uci": "f3h4",
+            "san": "Nh4"
+          },
+          {
+            "uci": "e3b6",
+            "san": "Bxb6"
+          },
+          {
+            "uci": "a7b6",
+            "san": "axb6"
+          },
+          {
+            "uci": "d1d2",
+            "san": "Qd2"
+          }
+        ],
+        "human": {
+          "uci": "c8g4",
+          "san": "Bg4",
+          "p": 0.8992,
+          "pv": [
+            {
+              "uci": "c8g4",
+              "san": "Bg4"
+            },
+            {
+              "uci": "f1e2",
+              "san": "Be2"
+            },
+            {
+              "uci": "d4e2",
+              "san": "Nxe2"
+            },
+            {
+              "uci": "d1e2",
+              "san": "Qxe2"
+            },
+            {
+              "uci": "d6d5",
+              "san": "d5"
+            },
+            {
+              "uci": "h2h3",
+              "san": "h3"
+            },
+            {
+              "uci": "g4f3",
+              "san": "Bxf3"
+            },
+            {
+              "uci": "e2f3",
+              "san": "Qxf3"
+            },
+            {
+              "uci": "f8e8",
+              "san": "Re8"
+            },
+            {
+              "uci": "a1d1",
+              "san": "Rd1"
+            }
+          ]
+        },
+        "maia_rating": 1900,
+        "depth": 20,
+        "best_cp": 231,
+        "runner_up_cp": 80,
+        "human_cp": 10,
+        "drill_index": 0
+      }
+    },
+    {
+      "concept": 5,
+      "title": "A rook move while the knight is attacked",
+      "prompt": "White's f3-pawn attacks the knight on g4. Does Black have to move that knight?",
+      "explanation": "Maia's favourite, ...Nge5, moves the attacked knight. Stockfish chooses ...Rb8, putting the rook on the same file as White's bishop on b6. In the saved continuation, ...Rxb6 follows fxg4. This illustrates a concrete trade-off to calculate, not a general rule to leave pieces attacked.",
+      "primary": {
+        "fen": "r5k1/3Rpp1p/pBnp2p1/8/2P1P1n1/2b2P2/P3B1PP/5RK1 b - - 0 20",
+        "game_id": "4UoYy3I9",
+        "best": "a8b8",
+        "best_san": "Rb8",
+        "pv": [
+          {
+            "uci": "a8b8",
+            "san": "Rb8"
+          },
+          {
+            "uci": "f3g4",
+            "san": "fxg4"
+          },
+          {
+            "uci": "b8b6",
+            "san": "Rxb6"
+          },
+          {
+            "uci": "g1h1",
+            "san": "Kh1"
+          },
+          {
+            "uci": "g8f8",
+            "san": "Kf8"
+          },
+          {
+            "uci": "d7c7",
+            "san": "Rc7"
+          },
+          {
+            "uci": "c3d4",
+            "san": "Bd4"
+          },
+          {
+            "uci": "e2d1",
+            "san": "Bd1"
+          },
+          {
+            "uci": "h7h6",
+            "san": "h6"
+          },
+          {
+            "uci": "c7c8",
+            "san": "Rc8+"
+          }
+        ],
+        "human": {
+          "uci": "g4e5",
+          "san": "Nge5",
+          "p": 0.5348,
+          "pv": [
+            {
+              "uci": "g4e5",
+              "san": "Nge5"
+            },
+            {
+              "uci": "d7b7",
+              "san": "Rb7"
+            },
+            {
+              "uci": "c6d4",
+              "san": "Nd4"
+            },
+            {
+              "uci": "g1f2",
+              "san": "Kf2"
+            },
+            {
+              "uci": "d4e6",
+              "san": "Ne6"
+            },
+            {
+              "uci": "b6e3",
+              "san": "Be3"
+            },
+            {
+              "uci": "e5c6",
+              "san": "Nc6"
+            },
+            {
+              "uci": "f1b1",
+              "san": "Rfb1"
+            },
+            {
+              "uci": "a8c8",
+              "san": "Rc8"
+            },
+            {
+              "uci": "e2d1",
+              "san": "Bd1"
+            }
+          ]
+        },
+        "maia_rating": 1900,
+        "depth": 20,
+        "best_cp": -60,
+        "runner_up_cp": -310,
+        "human_cp": -314
+      },
+      "related": {
+        "fen": "4r1k1/6pp/2pRb3/p1p1nr2/N1P4q/1P3PP1/PQ2B2P/5RK1 b - - 0 24",
+        "game_id": "JtUDJS8K",
+        "best": "f5g5",
+        "best_san": "Rg5",
+        "pv": [
+          {
+            "uci": "f5g5",
+            "san": "Rg5"
+          },
+          {
+            "uci": "g1h1",
+            "san": "Kh1"
+          },
+          {
+            "uci": "h4h3",
+            "san": "Qh3"
+          },
+          {
+            "uci": "f1g1",
+            "san": "Rg1"
+          },
+          {
+            "uci": "h3h5",
+            "san": "Qh5"
+          },
+          {
+            "uci": "b2c3",
+            "san": "Qc3"
+          },
+          {
+            "uci": "e5f7",
+            "san": "Nf7"
+          },
+          {
+            "uci": "d6d3",
+            "san": "Rd3"
+          },
+          {
+            "uci": "g5e5",
+            "san": "Re5"
+          },
+          {
+            "uci": "g3g4",
+            "san": "g4"
+          }
+        ],
+        "human": {
+          "uci": "h4h3",
+          "san": "Qh3",
+          "p": 0.4029,
+          "pv": [
+            {
+              "uci": "h4h3",
+              "san": "Qh3"
+            },
+            {
+              "uci": "b2d2",
+              "san": "Qd2"
+            },
+            {
+              "uci": "h7h5",
+              "san": "h5"
+            },
+            {
+              "uci": "d6d8",
+              "san": "Rd8"
+            },
+            {
+              "uci": "f5f8",
+              "san": "Rff8"
+            },
+            {
+              "uci": "d8e8",
+              "san": "Rxe8"
+            },
+            {
+              "uci": "f8e8",
+              "san": "Rxe8"
+            },
+            {
+              "uci": "a4c5",
+              "san": "Nxc5"
+            },
+            {
+              "uci": "a5a4",
+              "san": "a4"
+            },
+            {
+              "uci": "f1f2",
+              "san": "Rf2"
+            }
+          ]
+        },
+        "maia_rating": 1900,
+        "depth": 20,
+        "best_cp": -115,
+        "runner_up_cp": -202,
+        "human_cp": -263,
+        "drill_index": 0
+      }
+    }
+  ]
+}

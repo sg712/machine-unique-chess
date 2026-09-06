@@ -1,0 +1,5337 @@
+{
+  "settings": {
+    "depth_target": 20,
+    "time_cap_seconds_per_search": 3,
+    "threads": 1,
+    "hash_mb": 128,
+    "clear_hash_each_search": true,
+    "per_band": 8,
+    "binary_sha256": "40fc4996480f2337afd1aabd492a5ebc6c85bb857a7a9e625d4c9d895aeac607",
+    "master_sha256": "2dd81c17c859d700da8749c575f280fccd3a2f2c81b38418d98a26ff5f6275ec",
+    "seed": 20260907
+  },
+  "engine": {
+    "name": "Stockfish 17.1",
+    "author": "the Stockfish developers (see AUTHORS file)"
+  },
+  "positions": [
+    {
+      "fen": "r6r/1kpQ4/p1p4p/4P1pP/3N4/3RP3/qP4P1/3R2K1 b - - 1 28",
+      "game_id": "My9oGifM",
+      "band": "\u22642000",
+      "original_best": "a8b8",
+      "played_move": "a8c8",
+      "human_top_2000": "a2b2",
+      "top": [
+        {
+          "uci": "a8d8",
+          "cp": -840,
+          "mate": null,
+          "depth": 20,
+          "nodes": 477141,
+          "seconds": 0.203,
+          "pv": [
+            "a8d8",
+            "d7c6",
+            "b7b8",
+            "d3a3",
+            "d8d4",
+            "e3d4",
+            "a2b2",
+            "c6c4",
+            "b2b5",
+            "a3b3"
+          ]
+        },
+        {
+          "uci": "a8b8",
+          "cp": -889,
+          "mate": null,
+          "depth": 20,
+          "nodes": 477141,
+          "seconds": 0.203,
+          "pv": [
+            "a8b8",
+            "d3b3",
+            "a2b3",
+            "d4b3",
+            "h8c8",
+            "b3a5",
+            "b7b6",
+            "a5c6",
+            "g5g4",
+            "e5e6"
+          ]
+        }
+      ],
+      "restricted": {
+        "a8b8": {
+          "uci": "a8b8",
+          "cp": -982,
+          "mate": null,
+          "depth": 20,
+          "nodes": 480419,
+          "seconds": 0.191,
+          "pv": [
+            "a8b8",
+            "d3b3",
+            "a2b3",
+            "d4b3",
+            "b7b6",
+            "b3d4",
+            "h8c8",
+            "d1a1",
+            "b6a7",
+            "d4e6"
+          ]
+        },
+        "a2b2": {
+          "uci": "a2b2",
+          "cp": null,
+          "mate": -7,
+          "depth": 20,
+          "nodes": 14186,
+          "seconds": 0.007,
+          "pv": [
+            "a2b2",
+            "d7c6",
+            "b7b8",
+            "d3b3",
+            "b2b3",
+            "d4b3",
+            "a8a7",
+            "b3c5",
+            "b8c8",
+            "c6d7"
+          ]
+        },
+        "a8c8": {
+          "uci": "a8c8",
+          "cp": null,
+          "mate": -17,
+          "depth": 20,
+          "nodes": 154275,
+          "seconds": 0.055,
+          "pv": [
+            "a8c8",
+            "d3b3",
+            "a2b3",
+            "d4b3",
+            "c8d8",
+            "b3a5",
+            "b7b8",
+            "a5c6",
+            "b8b7",
+            "c6d8"
+          ]
+        }
+      },
+      "same_top_move": false,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": true,
+      "original_move_gap_to_maia_cp": null,
+      "played_loss_vs_best_seen_cp": null,
+      "original_loss_vs_best_seen_cp": null
+    },
+    {
+      "fen": "r1b2rk1/2b2ppp/p3pn2/1P1pn3/1P6/2N3QP/2P1N1P1/R3KB1R b KQ - 0 18",
+      "game_id": "NBLusDr8",
+      "band": "\u22642000",
+      "original_best": "c7d6",
+      "played_move": "a8a7",
+      "human_top_2000": "e5d3",
+      "top": [
+        {
+          "uci": "c8b7",
+          "cp": -263,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1851686,
+          "seconds": 1.187,
+          "pv": [
+            "c8b7",
+            "e2d4",
+            "a6b5",
+            "a1a8",
+            "f8a8",
+            "f1e2",
+            "c7b8",
+            "h1f1",
+            "e5c4",
+            "g3f3"
+          ]
+        },
+        {
+          "uci": "c7d6",
+          "cp": -290,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1851686,
+          "seconds": 1.187,
+          "pv": [
+            "c7d6",
+            "e2d4",
+            "d6b4",
+            "e1d1",
+            "b4d6",
+            "g3e3",
+            "e5g6",
+            "d4b3",
+            "c8b7",
+            "b5a6"
+          ]
+        }
+      ],
+      "restricted": {
+        "c7d6": {
+          "uci": "c7d6",
+          "cp": -281,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1048986,
+          "seconds": 0.674,
+          "pv": [
+            "c7d6",
+            "e2d4",
+            "d6b4",
+            "e1d1",
+            "b4d6",
+            "g3e1",
+            "a6a5",
+            "f1e2",
+            "d6c5",
+            "d4f3"
+          ]
+        },
+        "e5d3": {
+          "uci": "e5d3",
+          "cp": -466,
+          "mate": null,
+          "depth": 20,
+          "nodes": 719851,
+          "seconds": 0.351,
+          "pv": [
+            "e5d3",
+            "g3d3",
+            "a6a5",
+            "g2g4",
+            "c8b7",
+            "a1a5",
+            "d5d4",
+            "a5a8",
+            "f8a8",
+            "d3d4"
+          ]
+        },
+        "a8a7": {
+          "uci": "a8a7",
+          "cp": -458,
+          "mate": null,
+          "depth": 20,
+          "nodes": 652133,
+          "seconds": 0.332,
+          "pv": [
+            "a8a7",
+            "b5b6",
+            "c7b6",
+            "g3e5",
+            "a7b7",
+            "g2g4",
+            "b6c7",
+            "e5d4",
+            "e6e5",
+            "d4f2"
+          ]
+        }
+      },
+      "same_top_move": false,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 185,
+      "played_loss_vs_best_seen_cp": 195,
+      "original_loss_vs_best_seen_cp": 18
+    },
+    {
+      "fen": "7r/pp3k1p/5b2/3P4/4BRP1/P5K1/1q5P/8 b - - 4 26",
+      "game_id": "LXhZFsXz",
+      "band": "\u22642000",
+      "original_best": "f7e8",
+      "played_move": "b2a3",
+      "human_top_2000": "b2e5",
+      "top": [
+        {
+          "uci": "f7e7",
+          "cp": 812,
+          "mate": null,
+          "depth": 20,
+          "nodes": 967277,
+          "seconds": 0.361,
+          "pv": [
+            "f7e7",
+            "f4f5",
+            "h8f8",
+            "d5d6",
+            "e7d6",
+            "f5d5",
+            "d6e6",
+            "d5f5",
+            "f6e5",
+            "g3f3"
+          ]
+        },
+        {
+          "uci": "f7e8",
+          "cp": 759,
+          "mate": null,
+          "depth": 20,
+          "nodes": 967277,
+          "seconds": 0.361,
+          "pv": [
+            "f7e8",
+            "f4f5",
+            "h8f8",
+            "d5d6",
+            "f6e5",
+            "g3f3",
+            "f8f5",
+            "e4f5",
+            "e5d6",
+            "f5h7"
+          ]
+        }
+      ],
+      "restricted": {
+        "f7e8": {
+          "uci": "f7e8",
+          "cp": 817,
+          "mate": null,
+          "depth": 20,
+          "nodes": 359116,
+          "seconds": 0.129,
+          "pv": [
+            "f7e8",
+            "f4f6",
+            "b2f6",
+            "e4f5",
+            "f6c3",
+            "g3g2",
+            "e8d8",
+            "a3a4",
+            "c3d2",
+            "g2f1"
+          ]
+        },
+        "b2e5": {
+          "uci": "b2e5",
+          "cp": 690,
+          "mate": null,
+          "depth": 20,
+          "nodes": 246312,
+          "seconds": 0.098,
+          "pv": [
+            "b2e5",
+            "d5d6",
+            "f7e8",
+            "e4b7",
+            "e8d8",
+            "g3f3",
+            "e5c3",
+            "f3g2",
+            "c3b2",
+            "f4f2"
+          ]
+        },
+        "b2a3": {
+          "uci": "b2a3",
+          "cp": 675,
+          "mate": null,
+          "depth": 20,
+          "nodes": 457943,
+          "seconds": 0.179,
+          "pv": [
+            "b2a3",
+            "g3g2",
+            "f7e7",
+            "f4f2",
+            "h8f8",
+            "d5d6",
+            "a3d6",
+            "e4b7",
+            "d6e6",
+            "f2c2"
+          ]
+        }
+      },
+      "same_top_move": false,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 127,
+      "played_loss_vs_best_seen_cp": 142,
+      "original_loss_vs_best_seen_cp": 0
+    },
+    {
+      "fen": "r3k1nr/pbpq1pp1/1pn1p2p/3pP1NQ/3P4/P1PB4/2P2PPP/R1B1K2R b KQkq - 1 10",
+      "game_id": "gCHDM3CA",
+      "band": "\u22642000",
+      "original_best": "c6d8",
+      "played_move": "g7g6",
+      "human_top_2000": "e8c8",
+      "top": [
+        {
+          "uci": "c6d8",
+          "cp": -90,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1318126,
+          "seconds": 1.44,
+          "pv": [
+            "c6d8",
+            "e1g1",
+            "g8e7",
+            "a3a4",
+            "a7a5",
+            "f2f4",
+            "b7a6",
+            "f4f5",
+            "e7f5",
+            "g2g4"
+          ]
+        },
+        {
+          "uci": "e8f8",
+          "cp": -239,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1318126,
+          "seconds": 1.44,
+          "pv": [
+            "e8f8",
+            "g5f7",
+            "d7f7",
+            "d3g6",
+            "g8f6",
+            "g6f7",
+            "f6h5",
+            "f7h5",
+            "f8e7",
+            "h2h4"
+          ]
+        }
+      ],
+      "restricted": {
+        "c6d8": {
+          "uci": "c6d8",
+          "cp": -92,
+          "mate": null,
+          "depth": 20,
+          "nodes": 726073,
+          "seconds": 0.793,
+          "pv": [
+            "c6d8",
+            "e1g1",
+            "g7g6",
+            "h5h3",
+            "d8c6",
+            "a3a4",
+            "c6a5",
+            "f2f4",
+            "e8c8",
+            "g2g4"
+          ]
+        },
+        "e8c8": {
+          "uci": "e8c8",
+          "cp": -349,
+          "mate": null,
+          "depth": 20,
+          "nodes": 709223,
+          "seconds": 0.703,
+          "pv": [
+            "e8c8",
+            "g5f7",
+            "g8e7",
+            "f7h8",
+            "d8h8",
+            "e1g1",
+            "c8b8",
+            "a3a4",
+            "a7a5",
+            "h5f7"
+          ]
+        },
+        "g7g6": {
+          "uci": "g7g6",
+          "cp": -308,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1017574,
+          "seconds": 0.824,
+          "pv": [
+            "g7g6",
+            "d3g6",
+            "f7g6",
+            "h5g6",
+            "e8d8",
+            "g5f7",
+            "d8c8",
+            "f7h8",
+            "g8e7",
+            "g6h7"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 257,
+      "played_loss_vs_best_seen_cp": 218,
+      "original_loss_vs_best_seen_cp": 2
+    },
+    {
+      "fen": "r1b1r1k1/2q2ppp/1p2p1n1/p2pP1B1/8/2P4Q/PPB2PPP/R3R1K1 b - - 0 18",
+      "game_id": "zDlT7cyn",
+      "band": "\u22642000",
+      "original_best": "d5d4",
+      "played_move": "h7h6",
+      "human_top_2000": "h7h6",
+      "top": [
+        {
+          "uci": "d5d4",
+          "cp": -110,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1702959,
+          "seconds": 1.753,
+          "pv": [
+            "d5d4",
+            "a1d1",
+            "d4c3",
+            "b2c3",
+            "c8b7",
+            "e1e3",
+            "c7c6",
+            "h3g4",
+            "a8c8",
+            "d1d4"
+          ]
+        },
+        {
+          "uci": "b6b5",
+          "cp": -178,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1702959,
+          "seconds": 1.753,
+          "pv": [
+            "b6b5",
+            "h3h5",
+            "d5d4",
+            "a1d1",
+            "d4c3",
+            "b2c3",
+            "c7c3",
+            "c2e4",
+            "c8a6",
+            "e1e3"
+          ]
+        }
+      ],
+      "restricted": {
+        "d5d4": {
+          "uci": "d5d4",
+          "cp": -110,
+          "mate": null,
+          "depth": 20,
+          "nodes": 682573,
+          "seconds": 0.732,
+          "pv": [
+            "d5d4",
+            "a1d1",
+            "d4c3",
+            "b2c3",
+            "c8b7",
+            "h3g3",
+            "e8c8",
+            "e1e3",
+            "c7c4",
+            "d1d2"
+          ]
+        },
+        "h7h6": {
+          "uci": "h7h6",
+          "cp": -271,
+          "mate": null,
+          "depth": 20,
+          "nodes": 416958,
+          "seconds": 0.441,
+          "pv": [
+            "h7h6",
+            "g5h6",
+            "d5d4",
+            "h6g5",
+            "c8b7",
+            "c2d3",
+            "d4c3",
+            "a1c1",
+            "a5a4",
+            "c1c3"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 161,
+      "played_loss_vs_best_seen_cp": 161,
+      "original_loss_vs_best_seen_cp": 0
+    },
+    {
+      "fen": "2krr3/p7/2NP1p2/1p1nP1pp/8/2P1BP2/PPBQKP1q/R7 b - - 0 22",
+      "game_id": "TdkxmpjB",
+      "band": "\u22642000",
+      "original_best": "e8e5",
+      "played_move": "e8e5",
+      "human_top_2000": "d5e3",
+      "top": [
+        {
+          "uci": "e8e5",
+          "cp": -502,
+          "mate": null,
+          "depth": 20,
+          "nodes": 466135,
+          "seconds": 0.306,
+          "pv": [
+            "e8e5",
+            "c6e5",
+            "h2e5",
+            "d2d4",
+            "e5d4",
+            "c2f5",
+            "c8b8",
+            "c3d4",
+            "d8d6",
+            "e2f1"
+          ]
+        },
+        {
+          "uci": "d8d6",
+          "cp": -594,
+          "mate": null,
+          "depth": 20,
+          "nodes": 466135,
+          "seconds": 0.306,
+          "pv": [
+            "d8d6",
+            "c2f5",
+            "c8c7",
+            "e5d6",
+            "c7c6",
+            "f5e4",
+            "e8e4",
+            "f3e4",
+            "d5e3",
+            "d2e3"
+          ]
+        }
+      ],
+      "restricted": {
+        "e8e5": {
+          "uci": "e8e5",
+          "cp": -493,
+          "mate": null,
+          "depth": 20,
+          "nodes": 518248,
+          "seconds": 0.457,
+          "pv": [
+            "e8e5",
+            "c6e5",
+            "h2e5",
+            "d2d4",
+            "e5d4",
+            "c2f5",
+            "c8b8",
+            "c3d4",
+            "d8d6",
+            "e2f1"
+          ]
+        },
+        "d5e3": {
+          "uci": "d5e3",
+          "cp": -668,
+          "mate": null,
+          "depth": 20,
+          "nodes": 247899,
+          "seconds": 0.127,
+          "pv": [
+            "d5e3",
+            "d2e3",
+            "h2f4",
+            "c6a7",
+            "c8d7",
+            "e3f4",
+            "g5f4",
+            "c2f5",
+            "e8e6",
+            "a7b5"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 175,
+      "played_loss_vs_best_seen_cp": 0,
+      "original_loss_vs_best_seen_cp": 0
+    },
+    {
+      "fen": "r4r1k/ppp3pp/2b2q2/3B4/8/PN2P3/5PPK/R2Q1R2 b - - 0 20",
+      "game_id": "5Y5rjJ2H",
+      "band": "\u22642000",
+      "original_best": "f6d6",
+      "played_move": "f6e5",
+      "human_top_2000": "a8d8",
+      "top": [
+        {
+          "uci": "f6d6",
+          "cp": 144,
+          "mate": null,
+          "depth": 20,
+          "nodes": 734462,
+          "seconds": 0.745,
+          "pv": [
+            "f6d6",
+            "h2g1",
+            "c6d5",
+            "e3e4",
+            "d5e4",
+            "d1d6",
+            "c7d6",
+            "b3d4",
+            "a7a6",
+            "a1c1"
+          ]
+        },
+        {
+          "uci": "f6e5",
+          "cp": 78,
+          "mate": null,
+          "depth": 20,
+          "nodes": 734462,
+          "seconds": 0.745,
+          "pv": [
+            "f6e5",
+            "f2f4",
+            "e5d5",
+            "d1d5",
+            "c6d5",
+            "b3c5",
+            "b7b6",
+            "c5d7",
+            "f8d8",
+            "d7e5"
+          ]
+        }
+      ],
+      "restricted": {
+        "f6d6": {
+          "uci": "f6d6",
+          "cp": 141,
+          "mate": null,
+          "depth": 20,
+          "nodes": 257255,
+          "seconds": 0.285,
+          "pv": [
+            "f6d6",
+            "h2g1",
+            "c6d5",
+            "e3e4",
+            "d5e4",
+            "d1d6",
+            "c7d6",
+            "b3d4",
+            "h8g8",
+            "f1e1"
+          ]
+        },
+        "a8d8": {
+          "uci": "a8d8",
+          "cp": -6,
+          "mate": null,
+          "depth": 20,
+          "nodes": 298708,
+          "seconds": 0.254,
+          "pv": [
+            "a8d8",
+            "e3e4",
+            "c6b5",
+            "d1c2",
+            "b5f1",
+            "a1f1",
+            "c7c6",
+            "d5c4",
+            "f6h4",
+            "h2g1"
+          ]
+        },
+        "f6e5": {
+          "uci": "f6e5",
+          "cp": 94,
+          "mate": null,
+          "depth": 20,
+          "nodes": 358053,
+          "seconds": 0.378,
+          "pv": [
+            "f6e5",
+            "f2f4",
+            "e5d5",
+            "d1d5",
+            "c6d5",
+            "b3c5",
+            "b7b6",
+            "c5d7",
+            "f8d8",
+            "d7e5"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 147,
+      "played_loss_vs_best_seen_cp": 50,
+      "original_loss_vs_best_seen_cp": 3
+    },
+    {
+      "fen": "r3k1nr/p4ppp/1q2p3/2NpP3/8/4BN2/PP3PbP/R2Q2K1 b kq - 1 14",
+      "game_id": "Jhz7HU1E",
+      "band": "\u22642000",
+      "original_best": "g8e7",
+      "played_move": "g2f3",
+      "human_top_2000": "g2f3",
+      "top": [
+        {
+          "uci": "b6b4",
+          "cp": -214,
+          "mate": null,
+          "depth": 20,
+          "nodes": 886164,
+          "seconds": 0.992,
+          "pv": [
+            "b6b4",
+            "g1g2",
+            "g8e7",
+            "f3d4",
+            "e8g8",
+            "c5d3",
+            "b4b6",
+            "g2h1",
+            "e7g6",
+            "d1g4"
+          ]
+        },
+        {
+          "uci": "g8e7",
+          "cp": -223,
+          "mate": null,
+          "depth": 20,
+          "nodes": 886164,
+          "seconds": 0.992,
+          "pv": [
+            "g8e7",
+            "g1g2",
+            "b6b4",
+            "d1d4",
+            "b4d4",
+            "f3d4",
+            "a7a5",
+            "a2a4",
+            "e8g8",
+            "g2f1"
+          ]
+        }
+      ],
+      "restricted": {
+        "g8e7": {
+          "uci": "g8e7",
+          "cp": -228,
+          "mate": null,
+          "depth": 20,
+          "nodes": 551597,
+          "seconds": 0.642,
+          "pv": [
+            "g8e7",
+            "g1g2",
+            "b6b4",
+            "f3d4",
+            "e8g8",
+            "c5d3",
+            "b4b7",
+            "d1g4",
+            "g8h8",
+            "a1g1"
+          ]
+        },
+        "g2f3": {
+          "uci": "g2f3",
+          "cp": -433,
+          "mate": null,
+          "depth": 20,
+          "nodes": 2317053,
+          "seconds": 2.054,
+          "pv": [
+            "g2f3",
+            "d1a4",
+            "e8e7",
+            "e3g5",
+            "f7f6",
+            "a4d7",
+            "e7f8",
+            "c5e6",
+            "b6e6",
+            "d7e6"
+          ]
+        }
+      },
+      "same_top_move": false,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 205,
+      "played_loss_vs_best_seen_cp": 219,
+      "original_loss_vs_best_seen_cp": 14
+    },
+    {
+      "fen": "r5k1/3Rpp1p/pBnp2p1/8/2P1P1n1/2b2P2/P3B1PP/5RK1 b - - 0 20",
+      "game_id": "4UoYy3I9",
+      "band": "2000\u20132200",
+      "original_best": "a8b8",
+      "played_move": "g4f6",
+      "human_top_2000": "g4e5",
+      "top": [
+        {
+          "uci": "a8b8",
+          "cp": -60,
+          "mate": null,
+          "depth": 20,
+          "nodes": 610395,
+          "seconds": 0.589,
+          "pv": [
+            "a8b8",
+            "f3g4",
+            "b8b6",
+            "g1h1",
+            "g8f8",
+            "d7c7",
+            "c3d4",
+            "e2d1",
+            "h7h6",
+            "c7c8"
+          ]
+        },
+        {
+          "uci": "g4e5",
+          "cp": -310,
+          "mate": null,
+          "depth": 20,
+          "nodes": 610395,
+          "seconds": 0.589,
+          "pv": [
+            "g4e5",
+            "d7b7",
+            "c6d4",
+            "g1f2",
+            "d4e6",
+            "f1b1",
+            "e5c6",
+            "b6e3",
+            "a6a5",
+            "b1b6"
+          ]
+        }
+      ],
+      "restricted": {
+        "a8b8": {
+          "uci": "a8b8",
+          "cp": -45,
+          "mate": null,
+          "depth": 20,
+          "nodes": 388421,
+          "seconds": 0.395,
+          "pv": [
+            "a8b8",
+            "f3g4",
+            "b8b6",
+            "e4e5",
+            "c6e5",
+            "d7e7",
+            "c3d4",
+            "g1h1",
+            "g8f8",
+            "e7c7"
+          ]
+        },
+        "g4e5": {
+          "uci": "g4e5",
+          "cp": -314,
+          "mate": null,
+          "depth": 20,
+          "nodes": 753530,
+          "seconds": 0.771,
+          "pv": [
+            "g4e5",
+            "d7b7",
+            "c6d4",
+            "g1f2",
+            "d4e6",
+            "b6e3",
+            "e5c6",
+            "f1b1",
+            "a8c8",
+            "e2d1"
+          ]
+        },
+        "g4f6": {
+          "uci": "g4f6",
+          "cp": -358,
+          "mate": null,
+          "depth": 20,
+          "nodes": 980513,
+          "seconds": 0.952,
+          "pv": [
+            "g4f6",
+            "d7b7",
+            "a6a5",
+            "f1b1",
+            "g8f8",
+            "g1f1",
+            "c3b4",
+            "b7c7",
+            "c6e5",
+            "b6f2"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 269,
+      "played_loss_vs_best_seen_cp": 313,
+      "original_loss_vs_best_seen_cp": 0
+    },
+    {
+      "fen": "6k1/1bq1rpp1/2p4p/p2Pp2n/8/1P2QN1P/P4PP1/2RR2K1 b - - 0 22",
+      "game_id": "FhOZ93Gz",
+      "band": "2000\u20132200",
+      "original_best": "c7b8",
+      "played_move": "c7b8",
+      "human_top_2000": "h5f4",
+      "top": [
+        {
+          "uci": "c7b8",
+          "cp": -517,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1490425,
+          "seconds": 0.945,
+          "pv": [
+            "c7b8",
+            "d5d6",
+            "e7d7",
+            "f3e5",
+            "d7d6",
+            "e5d7",
+            "d6d1",
+            "c1d1",
+            "b8c8",
+            "e3e7"
+          ]
+        },
+        {
+          "uci": "e7e8",
+          "cp": -549,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1490425,
+          "seconds": 0.945,
+          "pv": [
+            "e7e8",
+            "d5d6",
+            "c7b8",
+            "d6d7",
+            "f7f6",
+            "d7e8b",
+            "b8e8",
+            "c1c4",
+            "c6c5",
+            "e3c5"
+          ]
+        }
+      ],
+      "restricted": {
+        "c7b8": {
+          "uci": "c7b8",
+          "cp": -543,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1451350,
+          "seconds": 1.006,
+          "pv": [
+            "c7b8",
+            "d5d6",
+            "e7d7",
+            "f3e5",
+            "d7d6",
+            "e5d7",
+            "d6d1",
+            "c1d1",
+            "b8c8",
+            "e3e5"
+          ]
+        },
+        "h5f4": {
+          "uci": "h5f4",
+          "cp": -659,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1256290,
+          "seconds": 0.626,
+          "pv": [
+            "h5f4",
+            "d5d6",
+            "c7d7",
+            "d6e7",
+            "d7e7",
+            "e3e5",
+            "f4e6",
+            "g1h1",
+            "c6c5",
+            "e5g3"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 116,
+      "played_loss_vs_best_seen_cp": 26,
+      "original_loss_vs_best_seen_cp": 26
+    },
+    {
+      "fen": "6k1/6pp/4pn2/1R1b2N1/8/1P3P2/2r3PP/6K1 b - - 0 28",
+      "game_id": "ADNyZHJd",
+      "band": "2000\u20132200",
+      "original_best": "g8f8",
+      "played_move": "f6d7",
+      "human_top_2000": "h7h6",
+      "top": [
+        {
+          "uci": "c2c1",
+          "cp": 431,
+          "mate": null,
+          "depth": 20,
+          "nodes": 695099,
+          "seconds": 0.654,
+          "pv": [
+            "c2c1",
+            "g1f2",
+            "c1c2",
+            "f2g3",
+            "g8f8",
+            "g5h3",
+            "c2b2",
+            "h3f4",
+            "b2b3",
+            "b5a5"
+          ]
+        },
+        {
+          "uci": "g8f8",
+          "cp": 420,
+          "mate": null,
+          "depth": 20,
+          "nodes": 695099,
+          "seconds": 0.654,
+          "pv": [
+            "g8f8",
+            "h2h4",
+            "c2c3",
+            "b3b4",
+            "h7h6",
+            "g5h3",
+            "c3c4",
+            "b5b8",
+            "f8e7",
+            "g1h2"
+          ]
+        }
+      ],
+      "restricted": {
+        "g8f8": {
+          "uci": "g8f8",
+          "cp": 440,
+          "mate": null,
+          "depth": 20,
+          "nodes": 312049,
+          "seconds": 0.282,
+          "pv": [
+            "g8f8",
+            "h2h4",
+            "c2c3",
+            "b3b4",
+            "c3c4",
+            "g5h3",
+            "f8e7",
+            "g1h2",
+            "h7h6",
+            "b5a5"
+          ]
+        },
+        "h7h6": {
+          "uci": "h7h6",
+          "cp": null,
+          "mate": -3,
+          "depth": 20,
+          "nodes": 406,
+          "seconds": 0.001,
+          "pv": [
+            "h7h6",
+            "b5b8",
+            "c2c8",
+            "b8c8",
+            "f6e8",
+            "c8e8"
+          ]
+        },
+        "f6d7": {
+          "uci": "f6d7",
+          "cp": 424,
+          "mate": null,
+          "depth": 20,
+          "nodes": 210079,
+          "seconds": 0.2,
+          "pv": [
+            "f6d7",
+            "g5h3",
+            "c2c5",
+            "b5b4",
+            "e6e5",
+            "h3g5",
+            "c5c1",
+            "g1f2",
+            "h7h6",
+            "g5e4"
+          ]
+        }
+      },
+      "same_top_move": false,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": true,
+      "original_move_gap_to_maia_cp": null,
+      "played_loss_vs_best_seen_cp": null,
+      "original_loss_vs_best_seen_cp": null
+    },
+    {
+      "fen": "6k1/pp1q1p1p/1np1pnpb/8/4P3/2PN1PP1/PP2Q1KP/R7 b - - 6 22",
+      "game_id": "Lj45peE3",
+      "band": "2000\u20132200",
+      "original_best": "d7c7",
+      "played_move": "g8f8",
+      "human_top_2000": "b6c4",
+      "top": [
+        {
+          "uci": "d7c7",
+          "cp": 303,
+          "mate": null,
+          "depth": 20,
+          "nodes": 771145,
+          "seconds": 0.874,
+          "pv": [
+            "d7c7",
+            "a2a4",
+            "c6c5",
+            "a4a5",
+            "b6c4",
+            "a5a6",
+            "b7b5",
+            "f3f4",
+            "h6f8",
+            "d3f2"
+          ]
+        },
+        {
+          "uci": "h6f8",
+          "cp": 287,
+          "mate": null,
+          "depth": 20,
+          "nodes": 771145,
+          "seconds": 0.874,
+          "pv": [
+            "h6f8",
+            "a2a4",
+            "d7c7",
+            "a4a5",
+            "b6d7",
+            "b2b4",
+            "a7a6",
+            "c3c4",
+            "d7e5",
+            "a1d1"
+          ]
+        }
+      ],
+      "restricted": {
+        "d7c7": {
+          "uci": "d7c7",
+          "cp": 292,
+          "mate": null,
+          "depth": 20,
+          "nodes": 481631,
+          "seconds": 0.556,
+          "pv": [
+            "d7c7",
+            "b2b4",
+            "b6c4",
+            "a2a4",
+            "b7b6",
+            "f3f4",
+            "e6e5",
+            "d3f2",
+            "b6b5",
+            "a4b5"
+          ]
+        },
+        "b6c4": {
+          "uci": "b6c4",
+          "cp": 106,
+          "mate": null,
+          "depth": 20,
+          "nodes": 357715,
+          "seconds": 0.37,
+          "pv": [
+            "b6c4",
+            "d3c5",
+            "d7d2",
+            "e2d2",
+            "h6d2",
+            "c5b7",
+            "c4b2",
+            "b7a5",
+            "c6c5",
+            "a5b3"
+          ]
+        },
+        "g8f8": {
+          "uci": "g8f8",
+          "cp": 255,
+          "mate": null,
+          "depth": 20,
+          "nodes": 307347,
+          "seconds": 0.352,
+          "pv": [
+            "g8f8",
+            "a2a4",
+            "d7c7",
+            "a4a5",
+            "b6d7",
+            "b2b4",
+            "a7a6",
+            "c3c4",
+            "e6e5",
+            "b4b5"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 186,
+      "played_loss_vs_best_seen_cp": 48,
+      "original_loss_vs_best_seen_cp": 11
+    },
+    {
+      "fen": "2krr3/ppp2ppp/5n2/2qPp3/1bPn4/1PN2B2/P2B1PPP/R2QR1K1 b - - 0 14",
+      "game_id": "KzzPArkG",
+      "band": "2000\u20132200",
+      "original_best": "c8b8",
+      "played_move": "c7c6",
+      "human_top_2000": "e5e4",
+      "top": [
+        {
+          "uci": "c8b8",
+          "cp": 34,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1659331,
+          "seconds": 1.759,
+          "pv": [
+            "c8b8",
+            "g2g3",
+            "c7c6",
+            "a2a3",
+            "b4a3",
+            "c3a4",
+            "c5d6",
+            "d2c3",
+            "c6d5",
+            "c3d4"
+          ]
+        },
+        {
+          "uci": "a7a6",
+          "cp": 31,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1659331,
+          "seconds": 1.759,
+          "pv": [
+            "a7a6",
+            "g2g3",
+            "c5a5",
+            "e1e3",
+            "d4f5",
+            "e3d3",
+            "e5e4",
+            "a2a3",
+            "e4d3",
+            "a3b4"
+          ]
+        }
+      ],
+      "restricted": {
+        "c8b8": {
+          "uci": "c8b8",
+          "cp": 44,
+          "mate": null,
+          "depth": 20,
+          "nodes": 652474,
+          "seconds": 0.722,
+          "pv": [
+            "c8b8",
+            "a2a3",
+            "b4a3",
+            "c3a4",
+            "c5d6",
+            "d2e3",
+            "a3b4",
+            "e3d4",
+            "e5d4",
+            "e1e8"
+          ]
+        },
+        "e5e4": {
+          "uci": "e5e4",
+          "cp": -145,
+          "mate": null,
+          "depth": 20,
+          "nodes": 391408,
+          "seconds": 0.408,
+          "pv": [
+            "e5e4",
+            "c3e4",
+            "b4d2",
+            "d1d2",
+            "d4f3",
+            "g2f3",
+            "f6e4",
+            "e1e4",
+            "e8e6",
+            "a1e1"
+          ]
+        },
+        "c7c6": {
+          "uci": "c7c6",
+          "cp": 5,
+          "mate": null,
+          "depth": 20,
+          "nodes": 495449,
+          "seconds": 0.488,
+          "pv": [
+            "c7c6",
+            "a2a3",
+            "b4a3",
+            "c3a4",
+            "c5d6",
+            "d2c3",
+            "a3b4",
+            "c4c5",
+            "b4c5",
+            "a4c5"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 189,
+      "played_loss_vs_best_seen_cp": 39,
+      "original_loss_vs_best_seen_cp": 0
+    },
+    {
+      "fen": "r4k2/1b3p1p/1ppr2pP/P7/2B5/R3P3/1P2KPP1/7R b - - 0 26",
+      "game_id": "rWfwebq3",
+      "band": "2000\u20132200",
+      "original_best": "c6c5",
+      "played_move": "b6b5",
+      "human_top_2000": "a8a5",
+      "top": [
+        {
+          "uci": "c6c5",
+          "cp": -90,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1359605,
+          "seconds": 1.349,
+          "pv": [
+            "c6c5",
+            "h1a1",
+            "b7g2",
+            "a5b6",
+            "a8a3",
+            "b2a3",
+            "d6b6",
+            "a3a4",
+            "b6b2",
+            "e2d3"
+          ]
+        },
+        {
+          "uci": "b7a6",
+          "cp": -109,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1359605,
+          "seconds": 1.349,
+          "pv": [
+            "b7a6",
+            "c4a6",
+            "a8a6",
+            "b2b4",
+            "f8e7",
+            "g2g4",
+            "g6g5",
+            "f2f4",
+            "d6d5",
+            "h1d1"
+          ]
+        }
+      ],
+      "restricted": {
+        "c6c5": {
+          "uci": "c6c5",
+          "cp": -83,
+          "mate": null,
+          "depth": 20,
+          "nodes": 409194,
+          "seconds": 0.421,
+          "pv": [
+            "c6c5",
+            "a5a6",
+            "b7g2",
+            "h1a1",
+            "g2c6",
+            "a6a7",
+            "b6b5",
+            "a3d3",
+            "d6d3",
+            "c4d3"
+          ]
+        },
+        "a8a5": {
+          "uci": "a8a5",
+          "cp": -262,
+          "mate": null,
+          "depth": 20,
+          "nodes": 493562,
+          "seconds": 0.508,
+          "pv": [
+            "a8a5",
+            "a3a5",
+            "b6a5",
+            "h1a1",
+            "c6c5",
+            "a1a5",
+            "b7g2",
+            "a5c5",
+            "g2h3",
+            "b2b4"
+          ]
+        },
+        "b6b5": {
+          "uci": "b6b5",
+          "cp": -156,
+          "mate": null,
+          "depth": 20,
+          "nodes": 508603,
+          "seconds": 0.524,
+          "pv": [
+            "b6b5",
+            "c4d3",
+            "b5b4",
+            "a3a1",
+            "c6c5",
+            "h1d1",
+            "f8e7",
+            "d3c4",
+            "d6d1",
+            "e2d1"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 179,
+      "played_loss_vs_best_seen_cp": 73,
+      "original_loss_vs_best_seen_cp": 0
+    },
+    {
+      "fen": "2r5/1r1nppk1/6pp/1p6/1RN1PP2/4K1PP/8/1R6 b - - 1 34",
+      "game_id": "6MvoTGWB",
+      "band": "2000\u20132200",
+      "original_best": "b7a7",
+      "played_move": "b7b8",
+      "human_top_2000": "c8c5",
+      "top": [
+        {
+          "uci": "b7a7",
+          "cp": 357,
+          "mate": null,
+          "depth": 20,
+          "nodes": 783380,
+          "seconds": 0.774,
+          "pv": [
+            "b7a7",
+            "c4d2",
+            "c8c3",
+            "e3e2",
+            "c3g3",
+            "b4b5",
+            "g3h3",
+            "b5b7",
+            "h3a3",
+            "b1b5"
+          ]
+        },
+        {
+          "uci": "b7c7",
+          "cp": 343,
+          "mate": null,
+          "depth": 20,
+          "nodes": 783380,
+          "seconds": 0.774,
+          "pv": [
+            "b7c7",
+            "c4e5",
+            "c7c3",
+            "e3d4",
+            "d7e5",
+            "d4e5",
+            "c3g3",
+            "b4b5",
+            "g3h3",
+            "b5b7"
+          ]
+        }
+      ],
+      "restricted": {
+        "b7a7": {
+          "uci": "b7a7",
+          "cp": 342,
+          "mate": null,
+          "depth": 20,
+          "nodes": 410537,
+          "seconds": 0.423,
+          "pv": [
+            "b7a7",
+            "c4d2",
+            "c8c3",
+            "e3e2",
+            "c3g3",
+            "b4b5",
+            "g3h3",
+            "b5b7",
+            "h3a3",
+            "d2c4"
+          ]
+        },
+        "c8c5": {
+          "uci": "c8c5",
+          "cp": 90,
+          "mate": null,
+          "depth": 20,
+          "nodes": 439358,
+          "seconds": 0.45,
+          "pv": [
+            "c8c5",
+            "e3d4",
+            "b7b8",
+            "c4e5",
+            "d7e5",
+            "d4c5",
+            "e5d3",
+            "c5d4",
+            "d3b4",
+            "b1b4"
+          ]
+        },
+        "b7b8": {
+          "uci": "b7b8",
+          "cp": 255,
+          "mate": null,
+          "depth": 20,
+          "nodes": 719526,
+          "seconds": 0.758,
+          "pv": [
+            "b7b8",
+            "c4a5",
+            "b8a8",
+            "b4b5",
+            "c8c3",
+            "e3d4",
+            "c3g3",
+            "b5b3",
+            "g3b3",
+            "a5b3"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 252,
+      "played_loss_vs_best_seen_cp": 102,
+      "original_loss_vs_best_seen_cp": 15
+    },
+    {
+      "fen": "r2q1rk1/1ppbbpp1/5n1p/p7/2PpPP2/P2P1BN1/6PP/R1BQ1RK1 b - - 2 16",
+      "game_id": "tbgtQ5KG",
+      "band": "2000\u20132200",
+      "original_best": "d7c8",
+      "played_move": "d7c6",
+      "human_top_2000": "c7c5",
+      "top": [
+        {
+          "uci": "d7c8",
+          "cp": -170,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1113319,
+          "seconds": 1.255,
+          "pv": [
+            "d7c8",
+            "e4e5",
+            "f6d7",
+            "f3d5",
+            "c7c6",
+            "d5e4",
+            "f8e8",
+            "d1h5",
+            "e7f8",
+            "a3a4"
+          ]
+        },
+        {
+          "uci": "f6h7",
+          "cp": -173,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1113319,
+          "seconds": 1.255,
+          "pv": [
+            "f6h7",
+            "e4e5",
+            "f7f6",
+            "f3b7",
+            "a8b8",
+            "b7d5",
+            "g8h8",
+            "c1d2",
+            "f6e5",
+            "f4e5"
+          ]
+        }
+      ],
+      "restricted": {
+        "d7c8": {
+          "uci": "d7c8",
+          "cp": -162,
+          "mate": null,
+          "depth": 20,
+          "nodes": 376283,
+          "seconds": 0.428,
+          "pv": [
+            "d7c8",
+            "e4e5",
+            "f6d7",
+            "f3e4",
+            "e7h4",
+            "d1f3",
+            "a8a6",
+            "e4d5",
+            "a5a4",
+            "c1d2"
+          ]
+        },
+        "c7c5": {
+          "uci": "c7c5",
+          "cp": -337,
+          "mate": null,
+          "depth": 20,
+          "nodes": 698362,
+          "seconds": 0.749,
+          "pv": [
+            "c7c5",
+            "e4e5",
+            "f6h7",
+            "f3b7",
+            "a8b8",
+            "b7d5",
+            "d7e6",
+            "d5e6",
+            "f7e6",
+            "d1g4"
+          ]
+        },
+        "d7c6": {
+          "uci": "d7c6",
+          "cp": -188,
+          "mate": null,
+          "depth": 20,
+          "nodes": 291882,
+          "seconds": 0.313,
+          "pv": [
+            "d7c6",
+            "e4e5",
+            "c6f3",
+            "d1f3",
+            "f6d7",
+            "g3f5",
+            "a8a6",
+            "c1b2",
+            "d7c5",
+            "b2d4"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 175,
+      "played_loss_vs_best_seen_cp": 26,
+      "original_loss_vs_best_seen_cp": 0
+    },
+    {
+      "fen": "1r4k1/pr3p1p/2p3p1/8/7q/2P1N1R1/PP1QB2P/2KR4 b - - 9 24",
+      "game_id": "Y7orLzHt",
+      "band": "2200\u20132400",
+      "original_best": "b7b2",
+      "played_move": "b7b2",
+      "human_top_2000": "h4h2",
+      "top": [
+        {
+          "uci": "b7b2",
+          "cp": -424,
+          "mate": null,
+          "depth": 20,
+          "nodes": 977238,
+          "seconds": 0.557,
+          "pv": [
+            "b7b2",
+            "d2b2",
+            "b8b2",
+            "c1b2",
+            "h4h2",
+            "g3g2",
+            "h2e5",
+            "e3c4",
+            "e5b5",
+            "b2a1"
+          ]
+        },
+        {
+          "uci": "h4h2",
+          "cp": -528,
+          "mate": null,
+          "depth": 20,
+          "nodes": 977238,
+          "seconds": 0.557,
+          "pv": [
+            "h4h2",
+            "g3g2",
+            "h2h3",
+            "e2g4",
+            "h3h4",
+            "b2b3",
+            "a7a5",
+            "g4e2",
+            "a5a4",
+            "b3b4"
+          ]
+        }
+      ],
+      "restricted": {
+        "b7b2": {
+          "uci": "b7b2",
+          "cp": -431,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1319344,
+          "seconds": 0.835,
+          "pv": [
+            "b7b2",
+            "d2b2",
+            "b8b2",
+            "c1b2",
+            "h4h2",
+            "g3g2",
+            "h2b8",
+            "b2c2",
+            "b8e5",
+            "c2d2"
+          ]
+        },
+        "h4h2": {
+          "uci": "h4h2",
+          "cp": -534,
+          "mate": null,
+          "depth": 20,
+          "nodes": 397272,
+          "seconds": 0.225,
+          "pv": [
+            "h4h2",
+            "g3g2",
+            "h2h3",
+            "e2g4",
+            "h3h4",
+            "b2b3",
+            "h4f6",
+            "g4e2",
+            "a7a5",
+            "e2c4"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 103,
+      "played_loss_vs_best_seen_cp": 7,
+      "original_loss_vs_best_seen_cp": 7
+    },
+    {
+      "fen": "3r2k1/1pp2p1p/7r/pPb1p1pP/P3PqbR/2P2NP1/R3BP2/1Q3K2 b - - 0 32",
+      "game_id": "NlRE1rT5",
+      "band": "2200\u20132400",
+      "original_best": "f4f3",
+      "played_move": "f4f3",
+      "human_top_2000": "f4f6",
+      "top": [
+        {
+          "uci": "f4f3",
+          "cp": 481,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1102702,
+          "seconds": 0.942,
+          "pv": [
+            "f4f3",
+            "e2f3",
+            "g4f3",
+            "h4h2",
+            "h6d6",
+            "a2a1",
+            "d6d1",
+            "b1d1",
+            "f3d1",
+            "a1d1"
+          ]
+        },
+        {
+          "uci": "f4f6",
+          "cp": -274,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1102702,
+          "seconds": 0.942,
+          "pv": [
+            "f4f6",
+            "h4g4",
+            "h6h5",
+            "f1g2",
+            "g8f8",
+            "e2c4",
+            "d8d6",
+            "b1e1",
+            "f6h6",
+            "a2d2"
+          ]
+        }
+      ],
+      "restricted": {
+        "f4f3": {
+          "uci": "f4f3",
+          "cp": 470,
+          "mate": null,
+          "depth": 20,
+          "nodes": 913574,
+          "seconds": 0.756,
+          "pv": [
+            "f4f3",
+            "e2f3",
+            "g4f3",
+            "h4h2",
+            "h6d6",
+            "a2a1",
+            "d6d1",
+            "b1d1",
+            "f3d1",
+            "f2f4"
+          ]
+        },
+        "f4f6": {
+          "uci": "f4f6",
+          "cp": -283,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1320858,
+          "seconds": 1.132,
+          "pv": [
+            "f4f6",
+            "h4g4",
+            "h6h5",
+            "f1g2",
+            "g8f8",
+            "e2c4",
+            "d8d6",
+            "b1e1",
+            "f6h6",
+            "a2d2"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 753,
+      "played_loss_vs_best_seen_cp": 11,
+      "original_loss_vs_best_seen_cp": 11
+    },
+    {
+      "fen": "r3kb1r/1p1bpp2/p2p1p2/q2NnN1p/4P3/1B6/PPP2PPP/R2Q1RK1 b kq - 5 12",
+      "game_id": "e1466",
+      "band": "2200\u20132400",
+      "original_best": "d7c6",
+      "played_move": "a8c8",
+      "human_top_2000": "e7e6",
+      "top": [
+        {
+          "uci": "e8d8",
+          "cp": -115,
+          "mate": null,
+          "depth": 20,
+          "nodes": 2372120,
+          "seconds": 2.714,
+          "pv": [
+            "e8d8",
+            "f5d4",
+            "a8c8",
+            "a2a4",
+            "e7e6",
+            "d5f6",
+            "h5h4",
+            "h2h3",
+            "f8g7",
+            "f6d7"
+          ]
+        },
+        {
+          "uci": "a8c8",
+          "cp": -122,
+          "mate": null,
+          "depth": 20,
+          "nodes": 2372120,
+          "seconds": 2.714,
+          "pv": [
+            "a8c8",
+            "a2a4",
+            "h5h4",
+            "h2h3",
+            "e8d8",
+            "b3a2",
+            "a5c5",
+            "b2b4",
+            "c5a7",
+            "f5e3"
+          ]
+        }
+      ],
+      "restricted": {
+        "d7c6": {
+          "uci": "d7c6",
+          "cp": -112,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1120756,
+          "seconds": 1.273,
+          "pv": [
+            "d7c6",
+            "c2c3",
+            "e5d7",
+            "f5d4",
+            "e7e6",
+            "f1e1",
+            "h5h4",
+            "a2a4",
+            "e8c8",
+            "d5b4"
+          ]
+        },
+        "e7e6": {
+          "uci": "e7e6",
+          "cp": -325,
+          "mate": null,
+          "depth": 20,
+          "nodes": 141992,
+          "seconds": 0.153,
+          "pv": [
+            "e7e6",
+            "d5f6",
+            "e8d8",
+            "f5d6",
+            "f8d6",
+            "d1d6",
+            "a5c7",
+            "d6c7",
+            "d8c7",
+            "f2f4"
+          ]
+        },
+        "a8c8": {
+          "uci": "a8c8",
+          "cp": -137,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1298900,
+          "seconds": 1.487,
+          "pv": [
+            "a8c8",
+            "c2c3",
+            "e8d8",
+            "f5d4",
+            "f8g7",
+            "f2f4",
+            "e5g4",
+            "h2h3",
+            "e7e6",
+            "h3g4"
+          ]
+        }
+      },
+      "same_top_move": false,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 213,
+      "played_loss_vs_best_seen_cp": 25,
+      "original_loss_vs_best_seen_cp": 0
+    },
+    {
+      "fen": "3q1r2/5pk1/6pb/2Qp1n1p/3P4/2P2NP1/6PP/4RNK1 b - - 11 30",
+      "game_id": "J1HYQwGe",
+      "band": "2200\u20132400",
+      "original_best": "d8a8",
+      "played_move": "d8d7",
+      "human_top_2000": "f8e8",
+      "top": [
+        {
+          "uci": "d8a8",
+          "cp": 0,
+          "mate": null,
+          "depth": 20,
+          "nodes": 318856,
+          "seconds": 0.312,
+          "pv": [
+            "d8a8",
+            "h2h3",
+            "f8c8",
+            "c5b4",
+            "c8b8",
+            "b4c5"
+          ]
+        },
+        {
+          "uci": "d8d7",
+          "cp": 0,
+          "mate": null,
+          "depth": 20,
+          "nodes": 318856,
+          "seconds": 0.312,
+          "pv": [
+            "d8d7",
+            "h2h3",
+            "f8c8",
+            "c5a5",
+            "f5e7",
+            "e1b1",
+            "c8c7",
+            "f3e5",
+            "d7c8",
+            "b1b3"
+          ]
+        }
+      ],
+      "restricted": {
+        "d8a8": {
+          "uci": "d8a8",
+          "cp": 0,
+          "mate": null,
+          "depth": 20,
+          "nodes": 364484,
+          "seconds": 0.371,
+          "pv": [
+            "d8a8",
+            "h2h3",
+            "f8c8",
+            "c5b4",
+            "c8b8",
+            "b4c5"
+          ]
+        },
+        "f8e8": {
+          "uci": "f8e8",
+          "cp": -117,
+          "mate": null,
+          "depth": 20,
+          "nodes": 295059,
+          "seconds": 0.295,
+          "pv": [
+            "f8e8",
+            "e1e8",
+            "d8e8",
+            "c5d5",
+            "h6e3",
+            "g1h1",
+            "e3c1",
+            "f3e5",
+            "e8e7",
+            "d5b3"
+          ]
+        },
+        "d8d7": {
+          "uci": "d8d7",
+          "cp": 0,
+          "mate": null,
+          "depth": 20,
+          "nodes": 120036,
+          "seconds": 0.121,
+          "pv": [
+            "d8d7",
+            "h2h3",
+            "f8c8",
+            "c5a5",
+            "f5e7",
+            "f1h2",
+            "d7d6",
+            "h2f1",
+            "d6d7"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 117,
+      "played_loss_vs_best_seen_cp": 0,
+      "original_loss_vs_best_seen_cp": 0
+    },
+    {
+      "fen": "rnb2rk1/pp3ppp/4p3/q7/2PN1Q2/P1PB1R2/6PP/R5K1 b - - 4 16",
+      "game_id": "PYNUY49H",
+      "band": "2200\u20132400",
+      "original_best": "b8c6",
+      "played_move": "e6e5",
+      "human_top_2000": "a5c3",
+      "top": [
+        {
+          "uci": "b8c6",
+          "cp": 87,
+          "mate": null,
+          "depth": 20,
+          "nodes": 2784054,
+          "seconds": 2.646,
+          "pv": [
+            "b8c6",
+            "d4c6",
+            "b7c6",
+            "f4d6",
+            "c8a6",
+            "a1f1",
+            "a8d8",
+            "d6e7",
+            "a5b6",
+            "c4c5"
+          ]
+        },
+        {
+          "uci": "a5c5",
+          "cp": 54,
+          "mate": null,
+          "depth": 20,
+          "nodes": 2784054,
+          "seconds": 2.646,
+          "pv": [
+            "a5c5",
+            "f4h4",
+            "f7f5",
+            "f3h3",
+            "h7h6",
+            "h3g3",
+            "c5e5",
+            "a1d1",
+            "b8c6",
+            "d3c2"
+          ]
+        }
+      ],
+      "restricted": {
+        "b8c6": {
+          "uci": "b8c6",
+          "cp": 55,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1242773,
+          "seconds": 1.157,
+          "pv": [
+            "b8c6",
+            "d3h7",
+            "g8h7",
+            "f3h3",
+            "h7g8",
+            "f4h4",
+            "f7f6",
+            "d4b5",
+            "c6e5",
+            "a1e1"
+          ]
+        },
+        "a5c3": {
+          "uci": "a5c3",
+          "cp": -644,
+          "mate": null,
+          "depth": 20,
+          "nodes": 724620,
+          "seconds": 0.324,
+          "pv": [
+            "a5c3",
+            "d3h7",
+            "g8h7",
+            "f3c3",
+            "e6e5",
+            "f4e5",
+            "b8c6",
+            "d4c6",
+            "b7c6",
+            "c3g3"
+          ]
+        },
+        "e6e5": {
+          "uci": "e6e5",
+          "cp": 59,
+          "mate": null,
+          "depth": 20,
+          "nodes": 675177,
+          "seconds": 0.648,
+          "pv": [
+            "e6e5",
+            "f4h4",
+            "g7g6",
+            "d4f5",
+            "c8f5",
+            "d3f5",
+            "a5d8",
+            "h4h6",
+            "b8d7",
+            "a1f1"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 699,
+      "played_loss_vs_best_seen_cp": 28,
+      "original_loss_vs_best_seen_cp": 32
+    },
+    {
+      "fen": "1r1q1rk1/2pnbppp/4p3/1p6/2bPPB2/5NP1/1PQ2PBP/R3R1K1 b - - 2 16",
+      "game_id": "soFfqTSy",
+      "band": "2200\u20132400",
+      "original_best": "f7f5",
+      "played_move": "e7b4",
+      "human_top_2000": "d7b6",
+      "top": [
+        {
+          "uci": "g7g5",
+          "cp": -251,
+          "mate": null,
+          "depth": 20,
+          "nodes": 919612,
+          "seconds": 0.937,
+          "pv": [
+            "g7g5",
+            "f4e3",
+            "c7c5",
+            "b2b3",
+            "g5g4",
+            "f3h4",
+            "e7h4",
+            "g3h4",
+            "c5d4",
+            "e3d4"
+          ]
+        },
+        {
+          "uci": "f7f5",
+          "cp": -273,
+          "mate": null,
+          "depth": 20,
+          "nodes": 919612,
+          "seconds": 0.938,
+          "pv": [
+            "f7f5",
+            "e4f5",
+            "f8f5",
+            "b2b3",
+            "c4d5",
+            "f4c7",
+            "d8c8",
+            "f3h4",
+            "f5f7",
+            "g2d5"
+          ]
+        }
+      ],
+      "restricted": {
+        "f7f5": {
+          "uci": "f7f5",
+          "cp": -276,
+          "mate": null,
+          "depth": 20,
+          "nodes": 244999,
+          "seconds": 0.267,
+          "pv": [
+            "f7f5",
+            "e4f5",
+            "f8f5",
+            "b2b3",
+            "c4d5",
+            "f4c7",
+            "d8c8",
+            "f3h4",
+            "f5f7",
+            "g2d5"
+          ]
+        },
+        "d7b6": {
+          "uci": "d7b6",
+          "cp": -429,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1841648,
+          "seconds": 1.694,
+          "pv": [
+            "d7b6",
+            "b2b3",
+            "g7g5",
+            "f4e3",
+            "f7f5",
+            "b3c4",
+            "f5f4",
+            "g3f4",
+            "b6c4",
+            "a1d1"
+          ]
+        },
+        "e7b4": {
+          "uci": "e7b4",
+          "cp": -294,
+          "mate": null,
+          "depth": 20,
+          "nodes": 507342,
+          "seconds": 0.524,
+          "pv": [
+            "e7b4",
+            "e1c1",
+            "f7f5",
+            "e4f5",
+            "b4d6",
+            "f5e6",
+            "d6f4",
+            "g3f4",
+            "d7f6",
+            "f4f5"
+          ]
+        }
+      },
+      "same_top_move": false,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 153,
+      "played_loss_vs_best_seen_cp": 43,
+      "original_loss_vs_best_seen_cp": 25
+    },
+    {
+      "fen": "1r2r1k1/2q1Bpp1/Q4n1p/P2b1N2/5b2/2P3P1/5P1P/RN2R1K1 b - - 0 24",
+      "game_id": "WmIwbjTr",
+      "band": "2200\u20132400",
+      "original_best": "d5c4",
+      "played_move": "d5b7",
+      "human_top_2000": "f4e5",
+      "top": [
+        {
+          "uci": "d5c4",
+          "cp": 421,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1204487,
+          "seconds": 0.997,
+          "pv": [
+            "d5c4",
+            "a6c4",
+            "c7c4",
+            "a5a6",
+            "c4d3",
+            "a6a7",
+            "b8a8",
+            "f5d4",
+            "f6g4",
+            "g1g2"
+          ]
+        },
+        {
+          "uci": "d5a8",
+          "cp": 229,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1204487,
+          "seconds": 0.997,
+          "pv": [
+            "d5a8",
+            "g3f4",
+            "c7f4",
+            "f5g3",
+            "f6g4",
+            "a6f1",
+            "g4e5",
+            "b1d2",
+            "e8e7",
+            "e1e3"
+          ]
+        }
+      ],
+      "restricted": {
+        "d5c4": {
+          "uci": "d5c4",
+          "cp": 424,
+          "mate": null,
+          "depth": 20,
+          "nodes": 499344,
+          "seconds": 0.312,
+          "pv": [
+            "d5c4",
+            "a6c4",
+            "c7c4",
+            "b1a3",
+            "c4d3",
+            "e7f6",
+            "d3f5",
+            "f6d4",
+            "f4d2",
+            "e1e8"
+          ]
+        },
+        "f4e5": {
+          "uci": "f4e5",
+          "cp": 0,
+          "mate": null,
+          "depth": 20,
+          "nodes": 899465,
+          "seconds": 0.858,
+          "pv": [
+            "f4e5",
+            "b1d2",
+            "d5a8",
+            "f5h6",
+            "g8h7",
+            "a6d3",
+            "g7g6",
+            "e7f6",
+            "e5f6",
+            "e1e8"
+          ]
+        },
+        "d5b7": {
+          "uci": "d5b7",
+          "cp": 88,
+          "mate": null,
+          "depth": 20,
+          "nodes": 844569,
+          "seconds": 0.797,
+          "pv": [
+            "d5b7",
+            "a6d3",
+            "f6g4",
+            "g3f4",
+            "c7f4",
+            "d3g3",
+            "f4f5",
+            "b1d2",
+            "b8a8",
+            "a5a6"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 424,
+      "played_loss_vs_best_seen_cp": 336,
+      "original_loss_vs_best_seen_cp": 0
+    },
+    {
+      "fen": "2rr2k1/1p2qp2/p3p1p1/2P5/3nP3/1BQ4P/P4RP1/5RK1 b - - 1 28",
+      "game_id": "oFkXEMs7",
+      "band": "2200\u20132400",
+      "original_best": "d8d7",
+      "played_move": "c8c5",
+      "human_top_2000": "c8c5",
+      "top": [
+        {
+          "uci": "d8d7",
+          "cp": 207,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1639922,
+          "seconds": 1.538,
+          "pv": [
+            "d8d7",
+            "c5c6",
+            "c8c6",
+            "c3g3",
+            "c6c5",
+            "e4e5",
+            "e7d8",
+            "g1h2",
+            "g8g7",
+            "g3f4"
+          ]
+        },
+        {
+          "uci": "e7g5",
+          "cp": 180,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1639922,
+          "seconds": 1.538,
+          "pv": [
+            "e7g5",
+            "c3c1",
+            "g5e5",
+            "c1e3",
+            "e5c5",
+            "b3d1",
+            "d8d7",
+            "e3f4",
+            "d4c6",
+            "d1a4"
+          ]
+        }
+      ],
+      "restricted": {
+        "d8d7": {
+          "uci": "d8d7",
+          "cp": 188,
+          "mate": null,
+          "depth": 20,
+          "nodes": 467552,
+          "seconds": 0.439,
+          "pv": [
+            "d8d7",
+            "c3g3",
+            "e7c5",
+            "g1h1",
+            "c5c3",
+            "g3f4",
+            "d4b3",
+            "a2b3",
+            "c3d4",
+            "h3h4"
+          ]
+        },
+        "c8c5": {
+          "uci": "c8c5",
+          "cp": 0,
+          "mate": null,
+          "depth": 20,
+          "nodes": 376217,
+          "seconds": 0.383,
+          "pv": [
+            "c8c5",
+            "c3e3",
+            "f7f5",
+            "e4f5",
+            "c5f5",
+            "f2f5",
+            "g6f5",
+            "e3h6",
+            "d8d6",
+            "f1e1"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 188,
+      "played_loss_vs_best_seen_cp": 207,
+      "original_loss_vs_best_seen_cp": 19
+    },
+    {
+      "fen": "2r5/pp1k1p1b/1r2pp1p/3p4/2qP4/2N2P2/2PKN1PP/QR5R b - - 13 22",
+      "game_id": "e1905",
+      "band": "2400\u20132600",
+      "original_best": "h7c2",
+      "played_move": "h7c2",
+      "human_top_2000": "b6a6",
+      "top": [
+        {
+          "uci": "h7c2",
+          "cp": -221,
+          "mate": null,
+          "depth": 20,
+          "nodes": 721347,
+          "seconds": 0.718,
+          "pv": [
+            "h7c2",
+            "b1b6",
+            "c4d3",
+            "d2e1",
+            "a7b6",
+            "e1f2",
+            "c2b3",
+            "h1c1",
+            "b3c4",
+            "a1b2"
+          ]
+        },
+        {
+          "uci": "d7e8",
+          "cp": -387,
+          "mate": null,
+          "depth": 20,
+          "nodes": 721347,
+          "seconds": 0.718,
+          "pv": [
+            "d7e8",
+            "a1a7",
+            "b6a6",
+            "a7b7",
+            "h7c2",
+            "b7b5",
+            "c4b5",
+            "b1b5",
+            "c2h7",
+            "b5b2"
+          ]
+        }
+      ],
+      "restricted": {
+        "h7c2": {
+          "uci": "h7c2",
+          "cp": -210,
+          "mate": null,
+          "depth": 20,
+          "nodes": 459463,
+          "seconds": 0.506,
+          "pv": [
+            "h7c2",
+            "b1b6",
+            "c4d3",
+            "d2e1",
+            "a7b6",
+            "e1f2",
+            "c2b3",
+            "h1c1",
+            "b3c4",
+            "a1b2"
+          ]
+        },
+        "b6a6": {
+          "uci": "b6a6",
+          "cp": -388,
+          "mate": null,
+          "depth": 20,
+          "nodes": 121551,
+          "seconds": 0.115,
+          "pv": [
+            "b6a6",
+            "b1b7",
+            "d7e8",
+            "a1b2",
+            "e6e5",
+            "b7b8",
+            "a6c6",
+            "b8c8",
+            "c6c8",
+            "h1c1"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 178,
+      "played_loss_vs_best_seen_cp": 0,
+      "original_loss_vs_best_seen_cp": 0
+    },
+    {
+      "fen": "br3r1k/p1pq1pp1/4p2p/n1PnP2P/2p5/P4NR1/1PQ2PP1/2BRKB2 b - - 0 20",
+      "game_id": "e1576",
+      "band": "2400\u20132600",
+      "original_best": "a8c6",
+      "played_move": "d7e7",
+      "human_top_2000": "d7b5",
+      "top": [
+        {
+          "uci": "a8c6",
+          "cp": -39,
+          "mate": null,
+          "depth": 20,
+          "nodes": 2309986,
+          "seconds": 2.42,
+          "pv": [
+            "a8c6",
+            "g3g7",
+            "h8g7",
+            "c2d2",
+            "f8h8",
+            "d2a5",
+            "b8b5",
+            "a5d2",
+            "b5c5",
+            "d2d4"
+          ]
+        },
+        {
+          "uci": "f8g8",
+          "cp": -86,
+          "mate": null,
+          "depth": 20,
+          "nodes": 2309986,
+          "seconds": 2.42,
+          "pv": [
+            "f8g8",
+            "c1d2",
+            "d7b5",
+            "g3g4",
+            "a5c6",
+            "d1b1",
+            "c6a5",
+            "f1e2",
+            "b5c5",
+            "b2b4"
+          ]
+        }
+      ],
+      "restricted": {
+        "a8c6": {
+          "uci": "a8c6",
+          "cp": -50,
+          "mate": null,
+          "depth": 20,
+          "nodes": 791611,
+          "seconds": 0.756,
+          "pv": [
+            "a8c6",
+            "g3g7",
+            "h8g7",
+            "c2d2",
+            "f8h8",
+            "d2a5",
+            "b8b5",
+            "a5d2",
+            "b5c5",
+            "d2d4"
+          ]
+        },
+        "d7b5": {
+          "uci": "d7b5",
+          "cp": -182,
+          "mate": null,
+          "depth": 20,
+          "nodes": 956235,
+          "seconds": 1.003,
+          "pv": [
+            "d7b5",
+            "f3d4",
+            "b5d7",
+            "c2d2",
+            "a5c6",
+            "f1c4",
+            "c6e5",
+            "g3g7",
+            "h8g7",
+            "d2h6"
+          ]
+        },
+        "d7e7": {
+          "uci": "d7e7",
+          "cp": -127,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1792444,
+          "seconds": 1.89,
+          "pv": [
+            "d7e7",
+            "d1d4",
+            "f8g8",
+            "d4g4",
+            "a8c6",
+            "f3d4",
+            "c6d7",
+            "c1d2",
+            "a5b3",
+            "d4b3"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 132,
+      "played_loss_vs_best_seen_cp": 88,
+      "original_loss_vs_best_seen_cp": 11
+    },
+    {
+      "fen": "3r4/4k1pp/8/p1pbN1P1/1p3P1P/P3P3/1P1RK3/8 b - - 1 30",
+      "game_id": "e1750",
+      "band": "2400\u20132600",
+      "original_best": "h7h6",
+      "played_move": "c5c4",
+      "human_top_2000": "e7e6",
+      "top": [
+        {
+          "uci": "a5a4",
+          "cp": -215,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1398977,
+          "seconds": 1.285,
+          "pv": [
+            "a5a4",
+            "d2d1",
+            "g7g6",
+            "d1c1",
+            "b4a3",
+            "b2a3",
+            "d8c8",
+            "e2d3",
+            "d5b3",
+            "e3e4"
+          ]
+        },
+        {
+          "uci": "g7g6",
+          "cp": -227,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1398977,
+          "seconds": 1.285,
+          "pv": [
+            "g7g6",
+            "d2d1",
+            "a5a4",
+            "d1c1",
+            "b4a3",
+            "b2a3",
+            "d8c8",
+            "e2d3",
+            "d5b3",
+            "e3e4"
+          ]
+        }
+      ],
+      "restricted": {
+        "h7h6": {
+          "uci": "h7h6",
+          "cp": -201,
+          "mate": null,
+          "depth": 20,
+          "nodes": 524448,
+          "seconds": 0.486,
+          "pv": [
+            "h7h6",
+            "f4f5",
+            "h6g5",
+            "h4g5",
+            "d8d6",
+            "e5g6",
+            "e7d7",
+            "d2c2",
+            "b4a3",
+            "b2a3"
+          ]
+        },
+        "e7e6": {
+          "uci": "e7e6",
+          "cp": -523,
+          "mate": null,
+          "depth": 20,
+          "nodes": 652279,
+          "seconds": 0.401,
+          "pv": [
+            "e7e6",
+            "e3e4",
+            "c5c4",
+            "a3b4",
+            "a5b4",
+            "e4d5",
+            "d8d5",
+            "e5c4",
+            "d5c5",
+            "d2d4"
+          ]
+        },
+        "c5c4": {
+          "uci": "c5c4",
+          "cp": -281,
+          "mate": null,
+          "depth": 20,
+          "nodes": 323324,
+          "seconds": 0.311,
+          "pv": [
+            "c5c4",
+            "a3b4",
+            "a5b4",
+            "d2d4",
+            "c4c3",
+            "d4b4",
+            "c3c2",
+            "e2d2",
+            "d5b3",
+            "b4d4"
+          ]
+        }
+      },
+      "same_top_move": false,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 322,
+      "played_loss_vs_best_seen_cp": 80,
+      "original_loss_vs_best_seen_cp": 0
+    },
+    {
+      "fen": "r6k/b1p3pp/p1p1Q3/P1P5/1q3p2/8/5P2/2R2RK1 b - - 2 30",
+      "game_id": "e1864",
+      "band": "2400\u20132600",
+      "original_best": "h7h6",
+      "played_move": "f4f3",
+      "human_top_2000": "a7c5",
+      "top": [
+        {
+          "uci": "f4f3",
+          "cp": -57,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1633968,
+          "seconds": 1.631,
+          "pv": [
+            "f4f3",
+            "c1c4",
+            "b4a5",
+            "e6f5",
+            "h7h6",
+            "f1d1",
+            "a8g8",
+            "f5e5",
+            "a5a2",
+            "e5c3"
+          ]
+        },
+        {
+          "uci": "h7h6",
+          "cp": -68,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1633968,
+          "seconds": 1.631,
+          "pv": [
+            "h7h6",
+            "f1e1",
+            "a8f8",
+            "e6e7",
+            "h8g8",
+            "e1e5",
+            "f4f3",
+            "e7e6",
+            "g8h7",
+            "e6c4"
+          ]
+        }
+      ],
+      "restricted": {
+        "h7h6": {
+          "uci": "h7h6",
+          "cp": -72,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1143292,
+          "seconds": 1.113,
+          "pv": [
+            "h7h6",
+            "f1e1",
+            "a8f8",
+            "e6e7",
+            "f8g8",
+            "e1e5",
+            "f4f3",
+            "e7e6",
+            "b4a5",
+            "e5f5"
+          ]
+        },
+        "a7c5": {
+          "uci": "a7c5",
+          "cp": -376,
+          "mate": null,
+          "depth": 20,
+          "nodes": 513899,
+          "seconds": 0.469,
+          "pv": [
+            "a7c5",
+            "e6c6",
+            "c5f2",
+            "f1f2",
+            "a8g8",
+            "c6c3",
+            "b4a4",
+            "c3c7",
+            "f4f3",
+            "f2f3"
+          ]
+        },
+        "f4f3": {
+          "uci": "f4f3",
+          "cp": -72,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1008595,
+          "seconds": 0.976,
+          "pv": [
+            "f4f3",
+            "e6f5",
+            "h8g8",
+            "f1d1",
+            "a8e8",
+            "f5h5",
+            "e8f8",
+            "d1d3",
+            "h7h6",
+            "c1c3"
+          ]
+        }
+      },
+      "same_top_move": false,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 304,
+      "played_loss_vs_best_seen_cp": 15,
+      "original_loss_vs_best_seen_cp": 15
+    },
+    {
+      "fen": "r4rk1/ppb3p1/2p2q1p/2PP1p1b/8/2N2N1P/PP3PP1/R2QR1K1 b - - 0 18",
+      "game_id": "e1583",
+      "band": "2400\u20132600",
+      "original_best": "a8e8",
+      "played_move": "c7a5",
+      "human_top_2000": "a8d8",
+      "top": [
+        {
+          "uci": "a8e8",
+          "cp": -150,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1172845,
+          "seconds": 1.166,
+          "pv": [
+            "a8e8",
+            "d1d3",
+            "h5f3",
+            "d3f3",
+            "c7e5",
+            "d5d6",
+            "e5d4",
+            "e1e8",
+            "f8e8",
+            "c3a4"
+          ]
+        },
+        {
+          "uci": "c7a5",
+          "cp": -153,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1172845,
+          "seconds": 1.166,
+          "pv": [
+            "c7a5",
+            "d5d6",
+            "g8h7",
+            "e1e7",
+            "b7b6",
+            "d1d3",
+            "h5f3",
+            "d3f3",
+            "a5b4",
+            "a1e1"
+          ]
+        }
+      ],
+      "restricted": {
+        "a8e8": {
+          "uci": "a8e8",
+          "cp": -160,
+          "mate": null,
+          "depth": 20,
+          "nodes": 338810,
+          "seconds": 0.339,
+          "pv": [
+            "a8e8",
+            "d1d3",
+            "h5f3",
+            "d3f3",
+            "c7e5",
+            "a1d1",
+            "e5c3",
+            "e1e8",
+            "f8e8",
+            "b2c3"
+          ]
+        },
+        "a8d8": {
+          "uci": "a8d8",
+          "cp": -276,
+          "mate": null,
+          "depth": 20,
+          "nodes": 767719,
+          "seconds": 0.824,
+          "pv": [
+            "a8d8",
+            "d5d6",
+            "g8h7",
+            "d1d4",
+            "c7a5",
+            "d4f6",
+            "f8f6",
+            "f3e5",
+            "f5f4",
+            "e1e4"
+          ]
+        },
+        "c7a5": {
+          "uci": "c7a5",
+          "cp": -184,
+          "mate": null,
+          "depth": 20,
+          "nodes": 709887,
+          "seconds": 0.71,
+          "pv": [
+            "c7a5",
+            "d5d6",
+            "g8h7",
+            "e1e7",
+            "a5b4",
+            "c3a4",
+            "f8e8",
+            "e7e8",
+            "a8e8",
+            "d1d4"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 116,
+      "played_loss_vs_best_seen_cp": 34,
+      "original_loss_vs_best_seen_cp": 10
+    },
+    {
+      "fen": "r6r/pb3qk1/1p1pBp2/2pP4/2PbR2B/8/PP1Q2PP/5R1K b - - 6 24",
+      "game_id": "e85",
+      "band": "2400\u20132600",
+      "original_best": "f7e6",
+      "played_move": "f7h5",
+      "human_top_2000": "f7g6",
+      "top": [
+        {
+          "uci": "f7e6",
+          "cp": -641,
+          "mate": null,
+          "depth": 20,
+          "nodes": 2989891,
+          "seconds": 1.442,
+          "pv": [
+            "f7e6",
+            "e4e6",
+            "h8h4",
+            "e6e7",
+            "g7h8",
+            "d2e1",
+            "h4h6",
+            "e7e8",
+            "a8e8",
+            "e1e8"
+          ]
+        },
+        {
+          "uci": "a8f8",
+          "cp": -705,
+          "mate": null,
+          "depth": 20,
+          "nodes": 2989891,
+          "seconds": 1.442,
+          "pv": [
+            "a8f8",
+            "e6f7",
+            "f8f7",
+            "e4d4",
+            "c5d4",
+            "h4f6",
+            "f7f6",
+            "f1f6",
+            "g7f6",
+            "d2d4"
+          ]
+        }
+      ],
+      "restricted": {
+        "f7e6": {
+          "uci": "f7e6",
+          "cp": -646,
+          "mate": null,
+          "depth": 20,
+          "nodes": 915662,
+          "seconds": 0.377,
+          "pv": [
+            "f7e6",
+            "e4e6",
+            "h8h4",
+            "e6e7",
+            "g7h8",
+            "d2e1",
+            "h4h6",
+            "e7e8",
+            "a8e8",
+            "e1e8"
+          ]
+        },
+        "f7g6": {
+          "uci": "f7g6",
+          "cp": -745,
+          "mate": null,
+          "depth": 20,
+          "nodes": 794775,
+          "seconds": 0.398,
+          "pv": [
+            "f7g6",
+            "e4d4",
+            "a8f8",
+            "d4f4",
+            "h8h5",
+            "h4f6",
+            "g7h7",
+            "e6f5",
+            "h5f5",
+            "f4f5"
+          ]
+        },
+        "f7h5": {
+          "uci": "f7h5",
+          "cp": -771,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1825941,
+          "seconds": 0.873,
+          "pv": [
+            "f7h5",
+            "e4d4",
+            "h8h6",
+            "d4g4",
+            "h5g4",
+            "h4f6",
+            "h6f6",
+            "f1f6",
+            "g4h5",
+            "f6f5"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 99,
+      "played_loss_vs_best_seen_cp": 130,
+      "original_loss_vs_best_seen_cp": 5
+    },
+    {
+      "fen": "r4r2/pp3bkp/2nq4/3Np3/1PB1p3/2P2PP1/P2Q4/2KR3R b - - 1 24",
+      "game_id": "e2493",
+      "band": "2400\u20132600",
+      "original_best": "h7h5",
+      "played_move": "f7d5",
+      "human_top_2000": "e4f3",
+      "top": [
+        {
+          "uci": "h7h5",
+          "cp": -220,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1157850,
+          "seconds": 1.213,
+          "pv": [
+            "h7h5",
+            "f3e4",
+            "d6h6",
+            "d5e3",
+            "f7c4",
+            "e3c4",
+            "f8f2",
+            "d2h6",
+            "g7h6",
+            "g3g4"
+          ]
+        },
+        {
+          "uci": "a8c8",
+          "cp": -229,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1157850,
+          "seconds": 1.213,
+          "pv": [
+            "a8c8",
+            "f3e4",
+            "c6d4",
+            "d2g5",
+            "f7g6",
+            "g5h6",
+            "g7h8",
+            "h1f1",
+            "a7a5",
+            "c1b2"
+          ]
+        }
+      ],
+      "restricted": {
+        "h7h5": {
+          "uci": "h7h5",
+          "cp": -270,
+          "mate": null,
+          "depth": 20,
+          "nodes": 586072,
+          "seconds": 0.661,
+          "pv": [
+            "h7h5",
+            "f3e4",
+            "d6h6",
+            "d2h6",
+            "g7h6",
+            "c4e2",
+            "h6g5",
+            "h1h4",
+            "f7g6",
+            "d1h1"
+          ]
+        },
+        "e4f3": {
+          "uci": "e4f3",
+          "cp": -630,
+          "mate": null,
+          "depth": 20,
+          "nodes": 2231441,
+          "seconds": 1.0,
+          "pv": [
+            "e4f3",
+            "d2g5",
+            "d6g6",
+            "h1h7",
+            "g7h7",
+            "c4d3",
+            "h7g7",
+            "d3g6",
+            "f7g6",
+            "d5c7"
+          ]
+        },
+        "f7d5": {
+          "uci": "f7d5",
+          "cp": -407,
+          "mate": null,
+          "depth": 20,
+          "nodes": 484228,
+          "seconds": 0.494,
+          "pv": [
+            "f7d5",
+            "c4d5",
+            "h7h6",
+            "d5e4",
+            "d6d2",
+            "d1d2",
+            "a8d8",
+            "h1d1",
+            "d8d2",
+            "d1d2"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 360,
+      "played_loss_vs_best_seen_cp": 187,
+      "original_loss_vs_best_seen_cp": 50
+    },
+    {
+      "fen": "rn1qk2r/1bpn1pbp/p3p1pB/1p1pP3/3P4/2NB1P2/PPPQN1PP/R3K2R b KQkq - 2 10",
+      "game_id": "e887",
+      "band": "2400\u20132600",
+      "original_best": "d8h4",
+      "played_move": "d8h4",
+      "human_top_2000": "e8g8",
+      "top": [
+        {
+          "uci": "d8h4",
+          "cp": 409,
+          "mate": null,
+          "depth": 20,
+          "nodes": 977961,
+          "seconds": 0.849,
+          "pv": [
+            "d8h4",
+            "g2g3",
+            "h4h6",
+            "f3f4",
+            "c7c5",
+            "h2h4",
+            "b8c6",
+            "g3g4",
+            "c5d4",
+            "g4g5"
+          ]
+        },
+        {
+          "uci": "g7h6",
+          "cp": 32,
+          "mate": null,
+          "depth": 20,
+          "nodes": 977961,
+          "seconds": 0.849,
+          "pv": [
+            "g7h6",
+            "d2h6",
+            "c7c5",
+            "d4c5",
+            "b8c6",
+            "a2a3",
+            "d7c5",
+            "e1g1",
+            "d8c7",
+            "f3f4"
+          ]
+        }
+      ],
+      "restricted": {
+        "d8h4": {
+          "uci": "d8h4",
+          "cp": 406,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1215384,
+          "seconds": 0.762,
+          "pv": [
+            "d8h4",
+            "g2g3",
+            "h4h6",
+            "f3f4",
+            "c7c5",
+            "h2h4",
+            "c5c4",
+            "g3g4",
+            "c4d3",
+            "g4g5"
+          ]
+        },
+        "e8g8": {
+          "uci": "e8g8",
+          "cp": -244,
+          "mate": null,
+          "depth": 20,
+          "nodes": 350672,
+          "seconds": 0.398,
+          "pv": [
+            "e8g8",
+            "h2h4",
+            "f7f6",
+            "e5f6",
+            "g7h6",
+            "d2h6",
+            "f8f6",
+            "h4h5",
+            "d8f8",
+            "h6e3"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 650,
+      "played_loss_vs_best_seen_cp": 3,
+      "original_loss_vs_best_seen_cp": 3
+    },
+    {
+      "fen": "3r1rk1/bpp1n1p1/p1n5/2PN1b2/1P5p/P6P/1B2NPB1/3RK2R b K - 2 18",
+      "game_id": "T2025-09_368",
+      "band": "2600\u20132800",
+      "original_best": "b7b6",
+      "played_move": "e7d5",
+      "human_top_2000": "e7d5",
+      "top": [
+        {
+          "uci": "b7b6",
+          "cp": -55,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1790809,
+          "seconds": 1.843,
+          "pv": [
+            "b7b6",
+            "h1g1",
+            "g8f7",
+            "c5b6",
+            "c7b6",
+            "d5e3",
+            "d8d1",
+            "e1d1",
+            "f8d8",
+            "d1e1"
+          ]
+        },
+        {
+          "uci": "g8f7",
+          "cp": -71,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1790809,
+          "seconds": 1.843,
+          "pv": [
+            "g8f7",
+            "d5e7",
+            "d8d1",
+            "e1d1",
+            "c6e7",
+            "g2b7",
+            "f8b8",
+            "b7a6",
+            "a7c5",
+            "d1e1"
+          ]
+        }
+      ],
+      "restricted": {
+        "b7b6": {
+          "uci": "b7b6",
+          "cp": -66,
+          "mate": null,
+          "depth": 20,
+          "nodes": 803396,
+          "seconds": 0.838,
+          "pv": [
+            "b7b6",
+            "h1g1",
+            "g8f7",
+            "c5b6",
+            "a7b6",
+            "g2f3",
+            "g7g6",
+            "e2f4",
+            "b6a7",
+            "e1f1"
+          ]
+        },
+        "e7d5": {
+          "uci": "e7d5",
+          "cp": -217,
+          "mate": null,
+          "depth": 20,
+          "nodes": 409553,
+          "seconds": 0.445,
+          "pv": [
+            "e7d5",
+            "g2d5",
+            "g8h7",
+            "h1g1",
+            "g7g6",
+            "d5c6",
+            "d8d1",
+            "e1d1",
+            "b7c6",
+            "e2d4"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 151,
+      "played_loss_vs_best_seen_cp": 162,
+      "original_loss_vs_best_seen_cp": 11
+    },
+    {
+      "fen": "6k1/pB1b2pp/2p1p2q/2P1Pr2/3r4/6Q1/P6P/2RR3K b - - 0 26",
+      "game_id": "e1356",
+      "band": "2600\u20132800",
+      "original_best": "d4d2",
+      "played_move": "h6f4",
+      "human_top_2000": "d4d1",
+      "top": [
+        {
+          "uci": "d4d2",
+          "cp": 337,
+          "mate": null,
+          "depth": 20,
+          "nodes": 831669,
+          "seconds": 0.733,
+          "pv": [
+            "d4d2",
+            "c1b1",
+            "d7e8",
+            "h2h4",
+            "f5h5",
+            "d1d2",
+            "h6d2",
+            "b1g1",
+            "d2d5",
+            "h1h2"
+          ]
+        },
+        {
+          "uci": "d7e8",
+          "cp": 332,
+          "mate": null,
+          "depth": 20,
+          "nodes": 831669,
+          "seconds": 0.733,
+          "pv": [
+            "d7e8",
+            "d1f1",
+            "d4d2",
+            "h2h3",
+            "d2f2",
+            "f1f2",
+            "h6c1",
+            "h1h2",
+            "f5f2",
+            "g3f2"
+          ]
+        }
+      ],
+      "restricted": {
+        "d4d2": {
+          "uci": "d4d2",
+          "cp": 320,
+          "mate": null,
+          "depth": 20,
+          "nodes": 102068,
+          "seconds": 0.084,
+          "pv": [
+            "d4d2",
+            "c1b1",
+            "d2h2",
+            "g3h2",
+            "f5h5",
+            "b1b2",
+            "h5h2",
+            "b2h2",
+            "h6f4",
+            "h2g2"
+          ]
+        },
+        "d4d1": {
+          "uci": "d4d1",
+          "cp": 205,
+          "mate": null,
+          "depth": 20,
+          "nodes": 406138,
+          "seconds": 0.395,
+          "pv": [
+            "d4d1",
+            "c1d1",
+            "d7e8",
+            "d1g1",
+            "g8f8",
+            "a2a4",
+            "a7a5",
+            "b7a6",
+            "e8h5",
+            "a6f1"
+          ]
+        },
+        "h6f4": {
+          "uci": "h6f4",
+          "cp": 188,
+          "mate": null,
+          "depth": 20,
+          "nodes": 275672,
+          "seconds": 0.278,
+          "pv": [
+            "h6f4",
+            "g3f4",
+            "f5f4",
+            "d1d4",
+            "f4d4",
+            "c1c3",
+            "d4d5",
+            "c3a3",
+            "d5e5",
+            "a3a7"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 115,
+      "played_loss_vs_best_seen_cp": 149,
+      "original_loss_vs_best_seen_cp": 17
+    },
+    {
+      "fen": "3r2k1/pb3ppp/1p1qp3/8/3P1n2/1B2N2P/PP1Q1PP1/2R3K1 b - - 5 22",
+      "game_id": "E2025-10_658",
+      "band": "2600\u20132800",
+      "original_best": "d6e7",
+      "played_move": "h7h5",
+      "human_top_2000": "d6d4",
+      "top": [
+        {
+          "uci": "d6e7",
+          "cp": 199,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1610325,
+          "seconds": 1.701,
+          "pv": [
+            "d6e7",
+            "d4d5",
+            "e6d5",
+            "g1h2",
+            "f4e6",
+            "c1d1",
+            "d5d4",
+            "b3e6",
+            "f7e6",
+            "h2g1"
+          ]
+        },
+        {
+          "uci": "g7g6",
+          "cp": 133,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1610325,
+          "seconds": 1.701,
+          "pv": [
+            "g7g6",
+            "h3h4",
+            "d6d4",
+            "d2d4",
+            "f4e2",
+            "g1f1",
+            "e2d4",
+            "c1c7",
+            "b7a6",
+            "f1e1"
+          ]
+        }
+      ],
+      "restricted": {
+        "d6e7": {
+          "uci": "d6e7",
+          "cp": 179,
+          "mate": null,
+          "depth": 20,
+          "nodes": 600019,
+          "seconds": 0.609,
+          "pv": [
+            "d6e7",
+            "d4d5",
+            "e6d5",
+            "d2c2",
+            "e7g5",
+            "g1h2",
+            "f4e6",
+            "c1d1",
+            "g7g6",
+            "c2d2"
+          ]
+        },
+        "d6d4": {
+          "uci": "d6d4",
+          "cp": 38,
+          "mate": null,
+          "depth": 20,
+          "nodes": 299308,
+          "seconds": 0.329,
+          "pv": [
+            "d6d4",
+            "d2d4",
+            "f4e2",
+            "g1f1",
+            "e2d4",
+            "c1c7",
+            "d8b8",
+            "b3c4",
+            "a7a6",
+            "f2f4"
+          ]
+        },
+        "h7h5": {
+          "uci": "h7h5",
+          "cp": 124,
+          "mate": null,
+          "depth": 20,
+          "nodes": 385221,
+          "seconds": 0.424,
+          "pv": [
+            "h7h5",
+            "h3h4",
+            "g7g6",
+            "b3c4",
+            "d6d4",
+            "d2d4",
+            "d8d4",
+            "g2g3",
+            "f4d3",
+            "c1d1"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 141,
+      "played_loss_vs_best_seen_cp": 75,
+      "original_loss_vs_best_seen_cp": 20
+    },
+    {
+      "fen": "r4rk1/4p3/1q2N1p1/3PP3/1P2b3/1P3p2/p2Q4/K1R4R b - - 0 30",
+      "game_id": "e1534",
+      "band": "2600\u20132800",
+      "original_best": "a8c8",
+      "played_move": "b6b8",
+      "human_top_2000": "f8f5",
+      "top": [
+        {
+          "uci": "e4d5",
+          "cp": -753,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1665198,
+          "seconds": 0.78,
+          "pv": [
+            "e4d5",
+            "d2d5",
+            "a8e8",
+            "h1h6",
+            "e8d8",
+            "e6d8",
+            "g8g7",
+            "d8e6",
+            "b6e6",
+            "d5e6"
+          ]
+        },
+        {
+          "uci": "b6g1",
+          "cp": -783,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1665198,
+          "seconds": 0.78,
+          "pv": [
+            "b6g1",
+            "c1g1",
+            "g8f7",
+            "d2h6",
+            "a8c8",
+            "h6g7",
+            "f7e8",
+            "g7f8",
+            "e8d7",
+            "e6c5"
+          ]
+        }
+      ],
+      "restricted": {
+        "a8c8": {
+          "uci": "a8c8",
+          "cp": -796,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1321657,
+          "seconds": 0.523,
+          "pv": [
+            "a8c8",
+            "h1h8",
+            "g8f7",
+            "h8h7",
+            "f7e8",
+            "c1c8",
+            "e8d7",
+            "c8f8",
+            "b6g1",
+            "a1a2"
+          ]
+        },
+        "f8f5": {
+          "uci": "f8f5",
+          "cp": null,
+          "mate": -18,
+          "depth": 20,
+          "nodes": 28248,
+          "seconds": 0.012,
+          "pv": [
+            "f8f5",
+            "d2h6",
+            "g8f7",
+            "h6g7",
+            "f7e8",
+            "g7g6",
+            "e8d7",
+            "e6f8",
+            "f5f8",
+            "g6b6"
+          ]
+        },
+        "b6b8": {
+          "uci": "b6b8",
+          "cp": -1185,
+          "mate": null,
+          "depth": 20,
+          "nodes": 899270,
+          "seconds": 0.362,
+          "pv": [
+            "b6b8",
+            "d2h2",
+            "g8f7",
+            "h2h7",
+            "f7e8",
+            "h7g7",
+            "b8e5",
+            "g7e5",
+            "f8g8",
+            "e5e4"
+          ]
+        }
+      },
+      "same_top_move": false,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": true,
+      "original_move_gap_to_maia_cp": null,
+      "played_loss_vs_best_seen_cp": null,
+      "original_loss_vs_best_seen_cp": null
+    },
+    {
+      "fen": "r1b1rq2/pp2Bp2/3P2kb/P3p2p/4N2R/8/1PP1Q1PP/6K1 b - - 5 26",
+      "game_id": "E2025-10_626",
+      "band": "2600\u20132800",
+      "original_best": "h6e3",
+      "played_move": "e8e7",
+      "human_top_2000": "e8e7",
+      "top": [
+        {
+          "uci": "h6e3",
+          "cp": -615,
+          "mate": null,
+          "depth": 20,
+          "nodes": 2733869,
+          "seconds": 1.843,
+          "pv": [
+            "h6e3",
+            "e2e3",
+            "f8h6",
+            "e7g5",
+            "h6g7",
+            "e3g3",
+            "c8g4",
+            "g5f6",
+            "g7h6",
+            "h2h3"
+          ]
+        },
+        {
+          "uci": "c8g4",
+          "cp": -616,
+          "mate": null,
+          "depth": 20,
+          "nodes": 2733869,
+          "seconds": 1.843,
+          "pv": [
+            "c8g4",
+            "h4g4",
+            "h5g4",
+            "e2g4",
+            "g6h7",
+            "e4f6",
+            "h7h8",
+            "e7f8",
+            "e8f8",
+            "h2h4"
+          ]
+        }
+      ],
+      "restricted": {
+        "h6e3": {
+          "uci": "h6e3",
+          "cp": -582,
+          "mate": null,
+          "depth": 20,
+          "nodes": 2487021,
+          "seconds": 1.958,
+          "pv": [
+            "h6e3",
+            "e2e3",
+            "f8h6",
+            "e7g5",
+            "h6f8",
+            "e3g3",
+            "c8g4",
+            "h2h3",
+            "f7f5",
+            "h3g4"
+          ]
+        },
+        "e8e7": {
+          "uci": "e8e7",
+          "cp": null,
+          "mate": -6,
+          "depth": 20,
+          "nodes": 3430,
+          "seconds": 0.002,
+          "pv": [
+            "e8e7",
+            "e2h5",
+            "g6h7",
+            "e4f6",
+            "h7h8",
+            "d6e7",
+            "c8f5",
+            "e7f8q",
+            "a8f8",
+            "h5h6"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": true,
+      "original_move_gap_to_maia_cp": null,
+      "played_loss_vs_best_seen_cp": null,
+      "original_loss_vs_best_seen_cp": null
+    },
+    {
+      "fen": "r1bq1r1k/ppp3bp/3p1Pp1/3Nn3/2n1P3/4B3/P3N1BP/1Q1R1RK1 b - - 0 18",
+      "game_id": "E2025-10_936",
+      "band": "2600\u20132800",
+      "original_best": "f8f6",
+      "played_move": "g7f6",
+      "human_top_2000": "g7f6",
+      "top": [
+        {
+          "uci": "f8f6",
+          "cp": 414,
+          "mate": null,
+          "depth": 20,
+          "nodes": 969469,
+          "seconds": 0.718,
+          "pv": [
+            "f8f6",
+            "f1f6",
+            "c4e3",
+            "f6d6",
+            "c7d6",
+            "d5e3",
+            "g7h6",
+            "e3d5",
+            "c8g4",
+            "b1b7"
+          ]
+        },
+        {
+          "uci": "g7f6",
+          "cp": 280,
+          "mate": null,
+          "depth": 20,
+          "nodes": 969469,
+          "seconds": 0.718,
+          "pv": [
+            "g7f6",
+            "f1f6",
+            "f8f6",
+            "e3d4",
+            "f6f7",
+            "d1f1",
+            "f7f1",
+            "b1f1",
+            "c7c6",
+            "f1f7"
+          ]
+        }
+      ],
+      "restricted": {
+        "f8f6": {
+          "uci": "f8f6",
+          "cp": 390,
+          "mate": null,
+          "depth": 20,
+          "nodes": 302257,
+          "seconds": 0.223,
+          "pv": [
+            "f8f6",
+            "f1f6",
+            "c4e3",
+            "f6d6",
+            "d8g5",
+            "d6d8",
+            "g5d8",
+            "d5e3",
+            "d8g5",
+            "e2f4"
+          ]
+        },
+        "g7f6": {
+          "uci": "g7f6",
+          "cp": 259,
+          "mate": null,
+          "depth": 20,
+          "nodes": 377009,
+          "seconds": 0.319,
+          "pv": [
+            "g7f6",
+            "f1f6",
+            "f8f6",
+            "e3g5",
+            "f6f1",
+            "d1f1",
+            "d8g5",
+            "f1f8",
+            "h8g7",
+            "b1f1"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 131,
+      "played_loss_vs_best_seen_cp": 155,
+      "original_loss_vs_best_seen_cp": 24
+    },
+    {
+      "fen": "r1b3k1/ppR2ppp/3n1q2/3Pr3/3N4/1Q1B4/P4PPP/5RK1 b - - 7 20",
+      "game_id": "T2025-09_66",
+      "band": "2600\u20132800",
+      "original_best": "g7g6",
+      "played_move": "g7g6",
+      "human_top_2000": "b7b6",
+      "top": [
+        {
+          "uci": "c8g4",
+          "cp": 16,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1174645,
+          "seconds": 1.27,
+          "pv": [
+            "c8g4",
+            "d4b5",
+            "e5h5",
+            "b3a3",
+            "h5d5",
+            "b5d6",
+            "f6d6",
+            "a3d6",
+            "d5d6",
+            "d3e4"
+          ]
+        },
+        {
+          "uci": "g7g6",
+          "cp": 14,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1174645,
+          "seconds": 1.27,
+          "pv": [
+            "g7g6",
+            "d4b5",
+            "d6e8",
+            "c7c1",
+            "c8d7",
+            "b5c7",
+            "a8b8",
+            "c7e8",
+            "d7e8",
+            "c1e1"
+          ]
+        }
+      ],
+      "restricted": {
+        "g7g6": {
+          "uci": "g7g6",
+          "cp": 11,
+          "mate": null,
+          "depth": 20,
+          "nodes": 830160,
+          "seconds": 0.907,
+          "pv": [
+            "g7g6",
+            "f1c1",
+            "c8g4",
+            "d4c2",
+            "a8e8",
+            "c2e3",
+            "h7h5",
+            "b3b4",
+            "g8g7",
+            "h2h3"
+          ]
+        },
+        "b7b6": {
+          "uci": "b7b6",
+          "cp": -97,
+          "mate": null,
+          "depth": 20,
+          "nodes": 484584,
+          "seconds": 0.51,
+          "pv": [
+            "b7b6",
+            "d4c6",
+            "e5e8",
+            "c7a7",
+            "a8a7",
+            "c6a7",
+            "c8d7",
+            "a7c6",
+            "h7h5",
+            "b3b4"
+          ]
+        }
+      },
+      "same_top_move": false,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 108,
+      "played_loss_vs_best_seen_cp": 5,
+      "original_loss_vs_best_seen_cp": 5
+    },
+    {
+      "fen": "rqb1kb1r/pp1ppppp/2n5/1N2P3/3p1Bn1/5N2/PPP1QPPP/R3KB1R b KQkq - 3 8",
+      "game_id": "E2025-10_1004",
+      "band": "2600\u20132800",
+      "original_best": "f7f6",
+      "played_move": "f7f6",
+      "human_top_2000": "a7a6",
+      "top": [
+        {
+          "uci": "f7f6",
+          "cp": -62,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1426419,
+          "seconds": 1.55,
+          "pv": [
+            "f7f6",
+            "b5d4",
+            "g4e5",
+            "f3e5",
+            "c6e5",
+            "e1c1",
+            "e5d3",
+            "d1d3",
+            "b8f4",
+            "c1b1"
+          ]
+        },
+        {
+          "uci": "d4d3",
+          "cp": -130,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1426419,
+          "seconds": 1.55,
+          "pv": [
+            "d4d3",
+            "c2d3",
+            "e7e6",
+            "g2g3",
+            "a7a6",
+            "b5c3",
+            "h7h5",
+            "f1g2",
+            "d7d5",
+            "e1g1"
+          ]
+        }
+      ],
+      "restricted": {
+        "f7f6": {
+          "uci": "f7f6",
+          "cp": -79,
+          "mate": null,
+          "depth": 20,
+          "nodes": 610463,
+          "seconds": 0.638,
+          "pv": [
+            "f7f6",
+            "b5d4",
+            "c6d4",
+            "f3d4",
+            "g4e5",
+            "e1c1",
+            "e7e6",
+            "f4g3",
+            "a7a6",
+            "d4f3"
+          ]
+        },
+        "a7a6": {
+          "uci": "a7a6",
+          "cp": -164,
+          "mate": null,
+          "depth": 20,
+          "nodes": 381046,
+          "seconds": 0.431,
+          "pv": [
+            "a7a6",
+            "b5d4",
+            "g4f6",
+            "f4g3",
+            "f6h5",
+            "e5e6",
+            "h5g3",
+            "e6f7",
+            "e8f7",
+            "h2g3"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 85,
+      "played_loss_vs_best_seen_cp": 17,
+      "original_loss_vs_best_seen_cp": 17
+    },
+    {
+      "fen": "3qb2r/1p2k1b1/2p1nn1p/1PPp1pp1/3Pp2P/1QN1P1P1/1B1KBPN1/7R b - - 4 22",
+      "game_id": "e1307",
+      "band": ">2800",
+      "original_best": "e8d7",
+      "played_move": "f6g4",
+      "human_top_2000": "g5g4",
+      "top": [
+        {
+          "uci": "e8d7",
+          "cp": -39,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1154444,
+          "seconds": 1.233,
+          "pv": [
+            "e8d7",
+            "h1a1",
+            "d8b8",
+            "d2c2",
+            "f5f4",
+            "g3f4",
+            "g5f4",
+            "g2f4",
+            "e6f4",
+            "e3f4"
+          ]
+        },
+        {
+          "uci": "f5f4",
+          "cp": -46,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1154444,
+          "seconds": 1.233,
+          "pv": [
+            "f5f4",
+            "g3f4",
+            "g5f4",
+            "g2f4",
+            "e6f4",
+            "e3f4",
+            "d8c7",
+            "d2c2",
+            "e8d7",
+            "h1a1"
+          ]
+        }
+      ],
+      "restricted": {
+        "e8d7": {
+          "uci": "e8d7",
+          "cp": -32,
+          "mate": null,
+          "depth": 20,
+          "nodes": 520839,
+          "seconds": 0.551,
+          "pv": [
+            "e8d7",
+            "h1a1",
+            "d8b8",
+            "d2c2",
+            "f5f4",
+            "g3f4",
+            "g5f4",
+            "g2f4",
+            "e6f4",
+            "e3f4"
+          ]
+        },
+        "g5g4": {
+          "uci": "g5g4",
+          "cp": -204,
+          "mate": null,
+          "depth": 20,
+          "nodes": 387963,
+          "seconds": 0.451,
+          "pv": [
+            "g5g4",
+            "h1a1",
+            "e7f7",
+            "a1a7",
+            "d8b8",
+            "b3a4",
+            "e8d7",
+            "a4a5",
+            "h8c8",
+            "d2e1"
+          ]
+        },
+        "f6g4": {
+          "uci": "f6g4",
+          "cp": -119,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1966399,
+          "seconds": 2.121,
+          "pv": [
+            "f6g4",
+            "h1a1",
+            "e7f6",
+            "e2g4",
+            "f5g4",
+            "a1a7",
+            "d8b8",
+            "b3a2",
+            "e8d7",
+            "b5c6"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 172,
+      "played_loss_vs_best_seen_cp": 87,
+      "original_loss_vs_best_seen_cp": 0
+    },
+    {
+      "fen": "4r1k1/2q2ppp/8/2bp4/3N4/2P1PQP1/1P5P/5RK1 b - - 2 24",
+      "game_id": "e764",
+      "band": ">2800",
+      "original_best": "g7g6",
+      "played_move": "g7g6",
+      "human_top_2000": "c7e5",
+      "top": [
+        {
+          "uci": "g7g6",
+          "cp": -1,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1562225,
+          "seconds": 1.53,
+          "pv": [
+            "g7g6",
+            "g1g2",
+            "c7d7",
+            "b2b4",
+            "c5b6",
+            "f3f6",
+            "b6d4",
+            "f6d4",
+            "e8e4",
+            "d4b6"
+          ]
+        },
+        {
+          "uci": "e8e4",
+          "cp": -17,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1562225,
+          "seconds": 1.53,
+          "pv": [
+            "e8e4",
+            "b2b4",
+            "c5b6",
+            "g1g2",
+            "g7g6",
+            "d4b5",
+            "c7d7",
+            "b5d6",
+            "e4e3",
+            "f3d5"
+          ]
+        }
+      ],
+      "restricted": {
+        "g7g6": {
+          "uci": "g7g6",
+          "cp": -18,
+          "mate": null,
+          "depth": 20,
+          "nodes": 450647,
+          "seconds": 0.475,
+          "pv": [
+            "g7g6",
+            "b2b4",
+            "c5b6",
+            "g1g2",
+            "e8e4",
+            "d4b5",
+            "c7d7",
+            "b5d6",
+            "e4e3",
+            "f3d5"
+          ]
+        },
+        "c7e5": {
+          "uci": "c7e5",
+          "cp": -339,
+          "mate": null,
+          "depth": 20,
+          "nodes": 269136,
+          "seconds": 0.257,
+          "pv": [
+            "c7e5",
+            "b2b4",
+            "c5d6",
+            "f3f7",
+            "g8h8",
+            "f1f3",
+            "h7h6",
+            "f7f5",
+            "h8g8",
+            "g1f2"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 321,
+      "played_loss_vs_best_seen_cp": 17,
+      "original_loss_vs_best_seen_cp": 17
+    },
+    {
+      "fen": "2r5/7k/1q3bp1/p3R2p/P2B1p2/1P3P1P/2r2QP1/4R2K b - - 0 34",
+      "game_id": "T2025-09_1294",
+      "band": ">2800",
+      "original_best": "b6b4",
+      "played_move": "b6d8",
+      "human_top_2000": "c2f2",
+      "top": [
+        {
+          "uci": "b6d6",
+          "cp": 183,
+          "mate": null,
+          "depth": 20,
+          "nodes": 614360,
+          "seconds": 0.53,
+          "pv": [
+            "b6d6",
+            "f2g1",
+            "f6e5",
+            "d4e5",
+            "d6d2",
+            "h1h2",
+            "h7g8",
+            "e1e4",
+            "d2f2",
+            "g1f2"
+          ]
+        },
+        {
+          "uci": "b6d8",
+          "cp": 172,
+          "mate": null,
+          "depth": 20,
+          "nodes": 614360,
+          "seconds": 0.53,
+          "pv": [
+            "b6d8",
+            "f2g1",
+            "f6e5",
+            "d4e5",
+            "d8d2",
+            "h1h2",
+            "h7g8",
+            "e1e4",
+            "d2f2",
+            "g1f2"
+          ]
+        }
+      ],
+      "restricted": {
+        "b6b4": {
+          "uci": "b6b4",
+          "cp": 150,
+          "mate": null,
+          "depth": 20,
+          "nodes": 330785,
+          "seconds": 0.297,
+          "pv": [
+            "b6b4",
+            "f2g1",
+            "f6e5",
+            "d4e5",
+            "b4d2",
+            "h1h2",
+            "h7g8",
+            "g1f1",
+            "d2f2",
+            "f1f2"
+          ]
+        },
+        "c2f2": {
+          "uci": "c2f2",
+          "cp": -30,
+          "mate": null,
+          "depth": 20,
+          "nodes": 394173,
+          "seconds": 0.371,
+          "pv": [
+            "c2f2",
+            "d4b6",
+            "f6e5",
+            "b6f2",
+            "e5d6",
+            "e1d1",
+            "d6b4",
+            "h3h4",
+            "h7g8",
+            "h1h2"
+          ]
+        },
+        "b6d8": {
+          "uci": "b6d8",
+          "cp": 203,
+          "mate": null,
+          "depth": 20,
+          "nodes": 495928,
+          "seconds": 0.445,
+          "pv": [
+            "b6d8",
+            "f2g1",
+            "f6e5",
+            "d4e5",
+            "d8d2",
+            "h1h2",
+            "h7g8",
+            "g1f1",
+            "g6g5",
+            "e1d1"
+          ]
+        }
+      },
+      "same_top_move": false,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 180,
+      "played_loss_vs_best_seen_cp": 0,
+      "original_loss_vs_best_seen_cp": 53
+    },
+    {
+      "fen": "3r2k1/1p1n3p/p1b1p1p1/8/4P3/PNP4P/2P2BP1/3R2K1 b - - 0 24",
+      "game_id": "T2025-09_1659",
+      "band": ">2800",
+      "original_best": "d8c8",
+      "played_move": "c6e4",
+      "human_top_2000": "c6e4",
+      "top": [
+        {
+          "uci": "d8c8",
+          "cp": -52,
+          "mate": null,
+          "depth": 20,
+          "nodes": 796586,
+          "seconds": 0.817,
+          "pv": [
+            "d8c8",
+            "b3a5",
+            "d7f6",
+            "f2d4",
+            "f6e4",
+            "d1e1",
+            "e4g3",
+            "e1e6",
+            "g8f7",
+            "e6e3"
+          ]
+        },
+        {
+          "uci": "d8f8",
+          "cp": -93,
+          "mate": null,
+          "depth": 20,
+          "nodes": 796586,
+          "seconds": 0.817,
+          "pv": [
+            "d8f8",
+            "b3a5",
+            "d7f6",
+            "a5c6",
+            "b7c6",
+            "f2c5",
+            "f8b8",
+            "c5d4",
+            "b8d8",
+            "d1e1"
+          ]
+        }
+      ],
+      "restricted": {
+        "d8c8": {
+          "uci": "d8c8",
+          "cp": -45,
+          "mate": null,
+          "depth": 20,
+          "nodes": 156662,
+          "seconds": 0.155,
+          "pv": [
+            "d8c8",
+            "b3a5",
+            "d7f6",
+            "e4e5",
+            "f6e4",
+            "f2e1",
+            "c6a4",
+            "a5b7",
+            "e4c3",
+            "d1d6"
+          ]
+        },
+        "c6e4": {
+          "uci": "c6e4",
+          "cp": -253,
+          "mate": null,
+          "depth": 20,
+          "nodes": 850433,
+          "seconds": 0.933,
+          "pv": [
+            "c6e4",
+            "b3c5",
+            "e4c6",
+            "f2h4",
+            "h7h5",
+            "c3c4",
+            "d7c5",
+            "d1d8",
+            "g8f7",
+            "d8h8"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 208,
+      "played_loss_vs_best_seen_cp": 208,
+      "original_loss_vs_best_seen_cp": 0
+    },
+    {
+      "fen": "4rrk1/5p2/p2b3p/1p1Q1bp1/3P4/2P1R1Pq/PP1B1P1P/RN4K1 b - - 2 20",
+      "game_id": "T2025-09_897",
+      "band": ">2800",
+      "original_best": "e8e6",
+      "played_move": "e8e6",
+      "human_top_2000": "e8e3",
+      "top": [
+        {
+          "uci": "e8e6",
+          "cp": 16,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1205002,
+          "seconds": 1.137,
+          "pv": [
+            "e8e6",
+            "c3c4",
+            "b5b4",
+            "c4c5",
+            "d6c7",
+            "d5g2",
+            "h3h5",
+            "d2b4",
+            "f5h3",
+            "g2f3"
+          ]
+        },
+        {
+          "uci": "d6f4",
+          "cp": 0,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1205002,
+          "seconds": 1.137,
+          "pv": [
+            "d6f4",
+            "g3f4",
+            "e8e3",
+            "f2e3",
+            "h3g4",
+            "d5g2",
+            "g4d1",
+            "g2f1",
+            "d1g4"
+          ]
+        }
+      ],
+      "restricted": {
+        "e8e6": {
+          "uci": "e8e6",
+          "cp": 20,
+          "mate": null,
+          "depth": 20,
+          "nodes": 785223,
+          "seconds": 0.719,
+          "pv": [
+            "e8e6",
+            "c3c4",
+            "b5b4",
+            "c4c5",
+            "d6c7",
+            "d5g2",
+            "h3h5",
+            "d2b4",
+            "e6e3",
+            "f2e3"
+          ]
+        },
+        "e8e3": {
+          "uci": "e8e3",
+          "cp": -167,
+          "mate": null,
+          "depth": 20,
+          "nodes": 717273,
+          "seconds": 0.751,
+          "pv": [
+            "e8e3",
+            "d2e3",
+            "f8e8",
+            "b1d2",
+            "d6f8",
+            "a2a4",
+            "b5a4",
+            "a1a4",
+            "h3h5",
+            "a4a1"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 187,
+      "played_loss_vs_best_seen_cp": 0,
+      "original_loss_vs_best_seen_cp": 0
+    },
+    {
+      "fen": "r1b1k2r/pp1p1ppp/1q1Bp1n1/3n4/4N3/6P1/PP2PPBP/R2Q1RK1 b kq - 7 14",
+      "game_id": "E2025-10_984",
+      "band": ">2800",
+      "original_best": "b6d8",
+      "played_move": "f7f5",
+      "human_top_2000": "g6e7",
+      "top": [
+        {
+          "uci": "d5e7",
+          "cp": -338,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1005431,
+          "seconds": 1.156,
+          "pv": [
+            "d5e7",
+            "d6c5",
+            "b6d8",
+            "e4d6",
+            "e8f8",
+            "h2h4",
+            "h7h5",
+            "b2b4",
+            "f8g8",
+            "a2a4"
+          ]
+        },
+        {
+          "uci": "b6d8",
+          "cp": -345,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1005431,
+          "seconds": 1.156,
+          "pv": [
+            "b6d8",
+            "d6c5",
+            "d5e7",
+            "e4d6",
+            "e8f8",
+            "h2h4",
+            "h7h5",
+            "a1c1",
+            "a7a5",
+            "d1d3"
+          ]
+        }
+      ],
+      "restricted": {
+        "b6d8": {
+          "uci": "b6d8",
+          "cp": -370,
+          "mate": null,
+          "depth": 20,
+          "nodes": 581734,
+          "seconds": 0.682,
+          "pv": [
+            "b6d8",
+            "d6c5",
+            "d5e7",
+            "e4d6",
+            "e8f8",
+            "d1a4",
+            "f8g8",
+            "f1d1",
+            "g6e5",
+            "f2f4"
+          ]
+        },
+        "g6e7": {
+          "uci": "g6e7",
+          "cp": -484,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1340998,
+          "seconds": 1.34,
+          "pv": [
+            "g6e7",
+            "d6c5",
+            "b6b2",
+            "e4d6",
+            "e8f8",
+            "e2e4",
+            "d5f6",
+            "a1c1",
+            "b7b6",
+            "e4e5"
+          ]
+        },
+        "f7f5": {
+          "uci": "f7f5",
+          "cp": -453,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1078953,
+          "seconds": 0.901,
+          "pv": [
+            "f7f5",
+            "d6c5",
+            "f5e4",
+            "c5b6",
+            "d5b6",
+            "g2e4",
+            "d7d5",
+            "e4g6",
+            "h7g6",
+            "a2a4"
+          ]
+        }
+      },
+      "same_top_move": false,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 114,
+      "played_loss_vs_best_seen_cp": 115,
+      "original_loss_vs_best_seen_cp": 32
+    },
+    {
+      "fen": "4q2k/2r1Ppp1/pR2p2b/1b1pP2p/3B3P/2P3P1/P3NK2/1Q6 b - - 8 32",
+      "game_id": "T2025-09_1301",
+      "band": ">2800",
+      "original_best": "h8g8",
+      "played_move": "h8g8",
+      "human_top_2000": "c7e7",
+      "top": [
+        {
+          "uci": "h8g8",
+          "cp": -54,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1742812,
+          "seconds": 1.676,
+          "pv": [
+            "h8g8",
+            "e2g1",
+            "g7g6",
+            "a2a4",
+            "b5a4",
+            "b1b4",
+            "a4b5",
+            "d4c5",
+            "c7c6",
+            "b6b7"
+          ]
+        },
+        {
+          "uci": "c7c8",
+          "cp": -77,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1742812,
+          "seconds": 1.676,
+          "pv": [
+            "c7c8",
+            "b1b4",
+            "b5e2",
+            "f2e2",
+            "a6a5",
+            "b4a3",
+            "e8d7",
+            "e2f1",
+            "c8e8",
+            "d4c5"
+          ]
+        }
+      ],
+      "restricted": {
+        "h8g8": {
+          "uci": "h8g8",
+          "cp": -59,
+          "mate": null,
+          "depth": 20,
+          "nodes": 444578,
+          "seconds": 0.443,
+          "pv": [
+            "h8g8",
+            "a2a3",
+            "g8h8",
+            "a3a4",
+            "b5a4",
+            "b1b4",
+            "c7c4",
+            "b4d6",
+            "c4c8",
+            "b6a6"
+          ]
+        },
+        "c7e7": {
+          "uci": "c7e7",
+          "cp": -181,
+          "mate": null,
+          "depth": 20,
+          "nodes": 352242,
+          "seconds": 0.3,
+          "pv": [
+            "c7e7",
+            "a2a4",
+            "b5e2",
+            "b6b8",
+            "e2g4",
+            "d4c5",
+            "g4f5",
+            "c5e7",
+            "f5b1",
+            "b8e8"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 122,
+      "played_loss_vs_best_seen_cp": 5,
+      "original_loss_vs_best_seen_cp": 5
+    },
+    {
+      "fen": "r2q1rk1/1p2p1b1/p3p1pp/8/nP2pBB1/P3P2P/2P2PP1/R2Q1RK1 b - - 1 16",
+      "game_id": "T2025-09_1179",
+      "band": ">2800",
+      "original_best": "g8f7",
+      "played_move": "g8f7",
+      "human_top_2000": "g7a1",
+      "top": [
+        {
+          "uci": "g8f7",
+          "cp": 109,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1404441,
+          "seconds": 1.497,
+          "pv": [
+            "g8f7",
+            "a1c1",
+            "a4c3",
+            "d1e1",
+            "d8c8",
+            "f4h2",
+            "f7g8",
+            "g4e2",
+            "a6a5",
+            "f2f3"
+          ]
+        },
+        {
+          "uci": "d8c8",
+          "cp": 48,
+          "mate": null,
+          "depth": 20,
+          "nodes": 1404441,
+          "seconds": 1.497,
+          "pv": [
+            "d8c8",
+            "c2c3",
+            "a4c3",
+            "d1b3",
+            "g8h7",
+            "g1h2",
+            "a6a5",
+            "b4a5",
+            "a8a5",
+            "g4e6"
+          ]
+        }
+      ],
+      "restricted": {
+        "g8f7": {
+          "uci": "g8f7",
+          "cp": 125,
+          "mate": null,
+          "depth": 20,
+          "nodes": 980801,
+          "seconds": 1.027,
+          "pv": [
+            "g8f7",
+            "a1c1",
+            "a4c3",
+            "d1e1",
+            "d8c8",
+            "g4e2",
+            "f7g8",
+            "f4g3",
+            "a6a5",
+            "f2f3"
+          ]
+        },
+        "g7a1": {
+          "uci": "g7a1",
+          "cp": -129,
+          "mate": null,
+          "depth": 20,
+          "nodes": 648242,
+          "seconds": 0.666,
+          "pv": [
+            "g7a1",
+            "d1a1",
+            "g8h7",
+            "c2c4",
+            "d8c8",
+            "c4c5",
+            "c8c6",
+            "a1e5",
+            "a8d8",
+            "g4e6"
+          ]
+        }
+      },
+      "same_top_move": true,
+      "all_searches_reached_target": true,
+      "minimum_depth": 20,
+      "mate_in_search": false,
+      "original_move_gap_to_maia_cp": 254,
+      "played_loss_vs_best_seen_cp": 0,
+      "original_loss_vs_best_seen_cp": 0
+    }
+  ]
+}
