@@ -4,10 +4,10 @@
 <div class="narrow">
 <h1 class="tight">Create an account</h1>
 <p class="lede">Any progress you've already made in this browser comes with you.</p>
-{% if error %}<p class="err">{{ error }}</p>{% endif %}
+{% if error %}<p class="err" role="alert">{{ error }}</p>{% endif %}
 <form method="post">
   <label for="email">Email</label>
-  <input type="email" id="email" name="email" required autocomplete="email">
+  <input type="email" id="email" name="email" required autocomplete="email" value="{{ request.form.get('email', '') }}">
   <label for="password">Password <span style="text-transform:none;letter-spacing:0">(8+ characters)</span></label>
   <input type="password" id="password" name="password" required minlength="8"
          autocomplete="new-password">

@@ -51,16 +51,15 @@ test</a> to see where you land now.</p>
         {% if r.state == 'done' %}Finished · {{ r.p.correct }}/{{ r.p.of }} solved
         {% elif r.state == 'going' %}{{ r.p.n }}/{{ r.p.of }} drilled · {{ r.p.correct }} solved
         {% elif r.state == 'studied' %}Studied · drill not started
-        {% else %}Not started · 4 to try, then {{ r.p.of }} to drill{% endif %}
+        {% else %}Not started · 4 examples · {{ r.p.of }} to practice in short sessions{% endif %}
       </span>
     </span>
   </a>
   {% endfor %}
 </div>
 
-<p class="small" style="margin-top:1.6rem">Each pattern takes about ten minutes: four positions
-you try cold, the same four with the engine's answers, then {{ rows[0].p.of }} fresh ones to
-drill. <a href="{{ url_for('research') }}">How these were found →</a></p>
+<p class="small" style="margin-top:1.6rem">Try four positions, study the engine's answers, then practice in sessions of five.
+Each pattern has {{ rows[0].p.of }} practice positions. Stop whenever you like; your progress saves. <a href="{{ url_for('research') }}">How these were found →</a></p>
 
 <script type="module">
 import { Board } from "{{ url_for('static', filename='board.js') }}";

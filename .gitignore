@@ -27,3 +27,7 @@ results/03_disagreements_b*.csv
 results/03_elite_b*.csv
 results/03_bands_*.csv
 results/03_elite_bands*.csv
+
+# local development and review outputs
+node_modules/
+.impeccable/

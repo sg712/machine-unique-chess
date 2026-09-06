@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Find your blind spot · Machine Unique Chess{% endblock %}
+{% block body %}
+<h1>Find your blind spot</h1>
+<p class="lede">Try twelve positions selected for moves that engines favor and a model of human play rarely chooses.</p>
+<p>You will see the answers after the last position, with a replay for each. Your result is a rough comparison with Lichess rating bands on these positions, not a chess rating.</p>
+{% if error %}<p class="err" role="alert">{{ error }}</p>{% endif %}
+<p>Your answers save on this device as you go. You can return to the same test for up to seven days.</p>
+<div class="row">
+  <a class="btn p" href="{{ url_for('blindspot_test', new=1) }}">Start twelve positions</a>
+  <a class="btn" id="resume-test" hidden>Resume saved test</a>
+  <a class="btn ghost" href="{{ url_for('learn') }}">Learn first</a>
+</div>
+<script type="module">
+import { storage } from "{{ url_for('static', filename='training.js') }}";
+const saved = storage.get('mu_latest_test');
+if (saved && Date.now() - saved.at < 7 * 86400000 && typeof saved.token === 'string') {
+  const link = document.getElementById('resume-test');
+  link.href = '/test?attempt=' + encodeURIComponent(saved.token); link.hidden = false;
+}
+</script>
+{% endblock %}

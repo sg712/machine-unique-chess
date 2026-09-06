@@ -24,7 +24,7 @@ so nothing below is an accident of where the data happened to be thick.</p>
 <p>In <b>3,956</b> of those the player who was actually at the board also failed to find the
 move. In <b>1,532</b>, that player was rated 2500 or above. With ~850 machine unique positions
 per band, the find rate by strength is cleanly measured:</p>
-<table class="research">
+<div class="table-scroll" role="region" aria-label="Scrollable data table" tabindex="0"><table class="research">
 <thead><tr><th>Mover's rating (Lichess)</th><th>Finds the machine unique move</th></tr></thead>
 <tbody>
 <tr><td>1800 to 2000</td><td>6.6%</td></tr>
@@ -33,7 +33,7 @@ per band, the find rate by strength is cleanly measured:</p>
 <tr><td>2400 to 2600</td><td>17.0%</td></tr>
 <tr><td>2600 to 2800</td><td>27.4%</td></tr>
 <tr class="hl"><td><b>2800+</b></td><td><b>56.9%</b></td></tr>
-</tbody></table>
+</tbody></table></div>
 <p>The rate is nearly flat through 2600, then climbs steeply. Players at the very top find a
 <em>majority</em> of these moves. So &ldquo;machine unique&rdquo; really describes everyone
 below roughly 2800, and how the rest of us search.</p>
@@ -53,7 +53,7 @@ real players found 18%). What separates them is not depth or subtlety in the abs
 it is visible in plain chess descriptors. Thirty yes/no features of the move predict which
 group a position belongs to at <b>AUC 0.851</b>, where 0.5 is a coin flip and 1.0 is a
 perfect score. No neural network involved.</p>
-<table class="research">
+<div class="table-scroll" role="region" aria-label="Scrollable data table" tabindex="0"><table class="research">
 <thead><tr><th>The engine's move&hellip;</th><th>Invisible</th><th>In between</th>
 <th>Visible</th></tr></thead>
 <tbody>
@@ -65,7 +65,7 @@ perfect score. No neural network involved.</p>
 <tr><td>gives check</td><td>3.9%</td><td>5.5%</td><td>11.3%</td></tr>
 <tr><td>escapes an attacked square</td><td>10.5%</td><td>17.5%</td><td>26.8%</td></tr>
 <tr><td>creates an immediate threat</td><td>24.8%</td><td>34.3%</td><td>38.4%</td></tr>
-</tbody></table>
+</tbody></table></div>
 <p>Every row moves in one steady direction across the three columns. That is what a real
 gradient looks like, not a cutoff artefact. The reading: the invisible moves are the ones
 that break the rules of thumb humans use to order their search. Look at forcing moves first,
@@ -89,7 +89,7 @@ the half they do explain looks like sacrifice without a combination to justify i
 half is not expressible in known terms at all. One group, <a href="/pattern/4">Pattern 5</a>,
 has zero or negative similarity to every named motif.</p>
 
-<table class="research">
+<div class="table-scroll" role="region" aria-label="Scrollable data table" tabindex="0"><table class="research">
 <thead><tr><th>Group</th><th>Positions</th><th>Found over the board</th><th>Quiet</th>
 <th>Avg error (cp)</th><th>Closest named motifs</th></tr></thead>
 <tbody>
@@ -101,7 +101,7 @@ has zero or negative similarity to every named motif.</p>
   <td>&minus;{{ c.signature.avg_cost_cp }}</td>
   <td class="mo">{% for m, val in c.signature.top_motifs %}{{ m }} {{ '%.2f'|format(val)|replace('-', '&minus;')|safe }}{% if not loop.last %} &middot; {% endif %}{% endfor %}</td></tr>
 {% endfor %}
-</tbody></table>
+</tbody></table></div>
 
 <p class="small">&ldquo;Quiet&rdquo; means the move is neither a capture nor a check. Across all
 eight groups, between 68% and 94% of these moves are quiet. The part of chess humans
@@ -118,7 +118,7 @@ roughly nine times better, measured by silhouette score, a standard number for h
 points split into clusters. But the absolute separation is small. These are soft regions in
 a continuous space, not sharp categories.</p>
 
-<table class="research">
+<div class="table-scroll" role="region" aria-label="Scrollable data table" tabindex="0"><table class="research">
 <thead><tr><th>Groups (k)</th><th>Silhouette, real</th><th>Silhouette, shuffled null</th>
 <th>Margin</th></tr></thead>
 <tbody>
@@ -129,7 +129,7 @@ a continuous space, not sharp categories.</p>
   <td>{{ '%.4f'|format(v.silhouette_null[k]) }}</td>
   <td>{{ '%+.4f'|format(v.silhouette_real[k] - v.silhouette_null[k])|replace('-', '&minus;')|safe }}</td></tr>
 {% endfor %}
-</tbody></table>
+</tbody></table></div>
 
 <p><b>Eight is not derivable from the data.</b> The margin over the shuffled control is
 essentially flat from k=3 to k=12: no elbow, no natural number of groups. Resampling 80% of
@@ -172,7 +172,7 @@ phase, quiet, capture, check, cost) and the embedding won by
 to <b>Maia</b>, a network trained specifically to predict human moves, or to the engine's own
 evaluation. Against a baseline that has both, the picture reverses.</p>
 
-<table class="research">
+<div class="table-scroll" role="region" aria-label="Scrollable data table" tabindex="0"><table class="research">
 <thead><tr><th>What the model sees</th><th>AUC</th></tr></thead>
 <tbody>
 <tr><td>Maia's probabilities alone</td><td>{{ '%.3f'|format(d.part_a_embedding_vs_maia['Maia only']['auc']) }}</td></tr>
@@ -184,7 +184,7 @@ evaluation. Against a baseline that has both, the picture reverses.</p>
     <td><b>{{ '%.3f'|format(d.part_a_embedding_vs_maia['surface + engine + Maia + elo']['auc']) }}</b></td></tr>
 <tr><td>&nbsp;&nbsp;&hellip; and the Leela embedding on top</td>
     <td>{{ '%.3f'|format(d.part_a_embedding_vs_maia['...+ EMBEDDING']['auc']) }}</td></tr>
-</tbody></table>
+</tbody></table></div>
 
 <p>Adding the embedding to a fair baseline <em>costs</em>
 {{ '%.3f'|format(-d.part_a_embedding_vs_maia['_embedding_gain_over_baseline']) }} AUC. That could
@@ -212,14 +212,14 @@ is {{ '%.3f'|format(d.part_b_difficulty_model['_brier']) }} against
 for always guessing the average. It is close to honest about its own uncertainty, drifting
 slightly overconfident in the middle of the range.</p>
 
-<table class="research">
+<div class="table-scroll" role="region" aria-label="Scrollable data table" tabindex="0"><table class="research">
 <thead><tr><th>Predicted find rate</th><th>Actual find rate</th></tr></thead>
 <tbody>
 {% for row in d.part_b_difficulty_model['_calibration'] %}
 <tr><td>{{ '%.1f'|format(row.predicted * 100) }}%</td>
     <td>{{ '%.1f'|format(row.actual * 100) }}%</td></tr>
 {% endfor %}
-</tbody></table>
+</tbody></table></div>
 
 <p>An earlier version of this section claimed the model <em>underestimates</em>
 machine unique positions. With the repaired game splits (section 6&frac12; below) that gap

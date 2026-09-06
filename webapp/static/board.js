@@ -9,6 +9,20 @@ const FILES = "abcdefgh";
    context starts suspended until the browser sees a user gesture, so a
    capture-phase pointerdown listener resumes it before the first move
    completes. */
+let muted = false;
+try { muted = localStorage.getItem('mu_sound_muted') === '1'; } catch {}
+const soundButton = document.getElementById('sound-toggle');
+function updateSoundButton() {
+  if (!soundButton) return;
+  soundButton.textContent = muted ? 'Sound off' : 'Sound on';
+  soundButton.setAttribute('aria-pressed', String(!muted));
+}
+soundButton?.addEventListener('click', () => {
+  muted = !muted;
+  try { localStorage.setItem('mu_sound_muted', muted ? '1' : '0'); } catch {}
+  updateSoundButton();
+});
+updateSoundButton();
 let actx = null;
 const sndBufs = {};
 try {
@@ -27,7 +41,7 @@ try {
 
 function sound(kind) {
   try {
-    if (!actx || !sndBufs[kind]) return;
+    if (muted || !actx || !sndBufs[kind]) return;
     if (actx.state === "suspended") actx.resume();
     const src = actx.createBufferSource();
     src.buffer = sndBufs[kind];
@@ -63,12 +77,21 @@ export class Board {
     this.el.classList.add("board");
     if (this.interactive) this.el.classList.add("live");
     this.el.innerHTML = "";
+    this.el.setAttribute('role', this.interactive ? 'group' : 'img');
+    this.el.setAttribute('aria-label', this.interactive
+      ? 'Chessboard. Use arrow keys to explore, Enter to select a piece and destination, Escape to cancel.'
+      : 'Chess position');
     this.squares = document.createElement("div");
     this.squares.className = "squares";
     this.layer = document.createElement("div");
     this.layer.className = "pieces";
+    this.layer.setAttribute("aria-hidden", "true");
     this.el.append(this.squares, this.layer);
     this.#buildSquares();
+    this.announcement = document.createElement('span');
+    this.announcement.className = 'sr-only';
+    this.announcement.setAttribute('aria-live', 'polite');
+    this.el.append(this.announcement);
   }
 
   #coords(sq) {
@@ -82,7 +105,24 @@ export class Board {
       const f = this.orientation === "w" ? col : 7 - col;
       const r = this.orientation === "w" ? 7 - row : row;
       const name = FILES[f] + (r + 1);
-      const d = document.createElement("div");
+      const d = document.createElement(this.interactive ? "button" : "div");
+      if (this.interactive) {
+        d.type = 'button'; d.tabIndex = i === 0 ? 0 : -1;
+        d.addEventListener('keydown', e => {
+          const delta = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -8, ArrowDown: 8 }[e.key];
+          if (delta !== undefined) {
+            e.preventDefault();
+            const target = Math.max(0, Math.min(63, i + delta));
+            this.squares.querySelectorAll('.sq').forEach((sq, j) => sq.tabIndex = j === target ? 0 : -1);
+            this.squares.children[target].focus();
+          } else if (e.key === 'Escape') {
+            this.clearSelection(); this.announcement.textContent = 'Selection cleared.';
+          }
+        });
+        d.addEventListener('focus', () => {
+          this.squares.querySelectorAll('.sq').forEach(sq => sq.tabIndex = sq === d ? 0 : -1);
+        });
+      } else { d.setAttribute('aria-hidden', 'true'); }
       d.className = "sq " + ((f + r) % 2 ? "light" : "dark");
       d.dataset.sq = name;
       if (col === 0) d.insertAdjacentHTML("beforeend", `<span class="rk">${r + 1}</span>`);
@@ -110,6 +150,7 @@ export class Board {
       }
     }
     this.clearSelection();
+    this.#labels();
   }
 
   #place(sq, sym) {
@@ -124,6 +165,43 @@ export class Board {
   }
 
   setLegal(list) { this.legal = list || []; }
+
+  #labels() {
+    const names = { k: 'king', q: 'queen', r: 'rook', b: 'bishop', n: 'knight', p: 'pawn' };
+    const description = [];
+    this.squares.querySelectorAll('.sq').forEach(sq => {
+      const piece = this.map?.[sq.dataset.sq];
+      const label = piece ? `${piece === piece.toUpperCase() ? 'White' : 'Black'} ${names[piece.toLowerCase()]}` : 'empty';
+      sq.setAttribute('aria-label', `${sq.dataset.sq}, ${label}`);
+      if (this.interactive) sq.setAttribute('aria-pressed', String(sq.dataset.sq === this.sel));
+      if (piece) description.push(`${label} on ${sq.dataset.sq}`);
+    });
+    if (!this.interactive) this.el.setAttribute('aria-label', description.join(', '));
+  }
+
+  #choose(from, to) {
+    const options = this.legal.filter(m => m.startsWith(from + to));
+    if (options.some(m => m.length === 5)) {
+      const [col, row] = this.#coords(from);
+      this.els.get(from).style.transform = `translate(${col * 100}%, ${row * 100}%)`;
+      const picker = document.createElement('div');
+      picker.className = 'promotion-picker';
+      picker.setAttribute('role', 'group'); picker.setAttribute('aria-label', 'Choose a promotion piece');
+      for (const uci of options) {
+        const b = document.createElement('button'); b.type = 'button'; b.className = 'btn';
+        b.textContent = { q: 'Queen', r: 'Rook', b: 'Bishop', n: 'Knight' }[uci[4]];
+        b.addEventListener('click', () => {
+          picker.remove(); this.move(from, to, uci[4]); this.onSelect({ from, to, uci });
+          this.squares.querySelector(`[data-sq="${to}"]`).focus();
+        }); picker.append(b);
+      }
+      const cancel = document.createElement('button'); cancel.type = 'button'; cancel.className = 'btn ghost'; cancel.textContent = 'Cancel';
+      cancel.addEventListener('click', () => { picker.remove(); this.clearSelection(); this.squares.querySelector(`[data-sq="${from}"]`).focus(); });
+      picker.append(cancel); this.el.append(picker); picker.querySelector('button').focus();
+      return;
+    }
+    this.move(from, to); this.onSelect({ from, to, uci: from + to });
+  }
 
   #destsFrom(sq) {
     return this.legal.filter(m => m.startsWith(sq)).map(m => m.slice(2, 4));
@@ -153,6 +231,7 @@ export class Board {
     const up = (ev) => {
       window.removeEventListener("pointermove", mv);
       window.removeEventListener("pointerup", up);
+      window.removeEventListener("pointercancel", cancel);
       if (!dragging) return;                       // plain tap: the click handler takes it
       this.suppressClick = true;                   // eat the ghost click, if one follows:
       setTimeout(() => { this.suppressClick = false; }, 0);   // but never a real one later
@@ -160,8 +239,7 @@ export class Board {
       const dest = document.elementFromPoint(ev.clientX, ev.clientY)
         ?.closest?.(".sq")?.dataset.sq;
       if (dest && this.#destsFrom(sq).includes(dest)) {
-        this.move(sq, dest);
-        this.onSelect({ from: sq, to: dest });
+        this.#choose(sq, dest);
       } else {
         const [c, r] = this.#coords(sq);
         p.style.transform = `translate(${c * 100}%, ${r * 100}%)`;
@@ -169,16 +247,25 @@ export class Board {
       this.sel = null;
       this.#paint();
     };
+    const cancel = () => {
+      window.removeEventListener("pointermove", mv);
+      window.removeEventListener("pointerup", up);
+      window.removeEventListener("pointercancel", cancel);
+      p.classList.remove("drag");
+      const [col, row] = this.#coords(sq);
+      p.style.transform = `translate(${col * 100}%, ${row * 100}%)`;
+      this.clearSelection();
+    };
     window.addEventListener("pointermove", mv);
     window.addEventListener("pointerup", up);
+    window.addEventListener("pointercancel", cancel);
   }
 
   #click(sq) {
     if (!this.interactive) return;
     if (this.suppressClick) { this.suppressClick = false; return; }
     if (this.sel && this.#destsFrom(this.sel).includes(sq)) {
-      this.move(this.sel, sq);
-      this.onSelect({ from: this.sel, to: sq });
+      this.#choose(this.sel, sq);
       this.sel = null;
       this.#paint();
       return;
@@ -189,7 +276,9 @@ export class Board {
 
   #paint() {
     this.squares.querySelectorAll(".sq").forEach(s => s.classList.remove("sel", "dot"));
+    this.#labels();
     if (!this.sel) return;
+    this.announcement.textContent = `${this.sel} selected. Choose a highlighted destination.`;
     this.squares.querySelector(`[data-sq="${this.sel}"]`)?.classList.add("sel");
     for (const d of this.#destsFrom(this.sel)) {
       this.squares.querySelector(`[data-sq="${d}"]`)?.classList.add("dot");
@@ -201,7 +290,7 @@ export class Board {
   /** Slide the piece on `from` to `to`, fading any captured piece.
       One move per position: the board locks afterwards until setLegal
       re-arms it (the Take back handlers do exactly that). */
-  move(from, to) {
+  move(from, to, promotion = null) {
     const p = this.els.get(from);
     if (!p) return;
     this.legal = [];
@@ -213,8 +302,27 @@ export class Board {
     p.dataset.sq = to;
     this.els.delete(from);
     this.els.set(to, p);
-    this.map[to] = this.map[from];
+    const symbol = this.map[from];
+    // Castling and en passant must also be reflected in the preview board.
+    if (symbol?.toLowerCase() === 'k' && Math.abs(FILES.indexOf(to[0]) - FILES.indexOf(from[0])) === 2) {
+      const rookFrom = (to[0] === 'g' ? 'h' : 'a') + from[1];
+      const rookTo = (to[0] === 'g' ? 'f' : 'd') + from[1];
+      const rook = this.els.get(rookFrom);
+      if (rook) {
+        const [rc, rr] = this.#coords(rookTo); rook.style.transform = `translate(${rc * 100}%, ${rr * 100}%)`;
+        rook.dataset.sq = rookTo; this.els.delete(rookFrom); this.els.set(rookTo, rook);
+        this.map[rookTo] = this.map[rookFrom]; delete this.map[rookFrom];
+      }
+    }
+    if (symbol?.toLowerCase() === 'p' && from[0] !== to[0] && !taken) {
+      const captured = to[0] + from[1]; this.els.get(captured)?.remove();
+      this.els.delete(captured); delete this.map[captured];
+    }
+    this.map[to] = promotion ? (symbol === symbol.toUpperCase() ? promotion.toUpperCase() : promotion) : symbol;
+    if (promotion) p.innerHTML = `<svg viewBox="0 0 45 45">${this.pieces[this.map[to]] || ''}</svg>`;
     delete this.map[from];
+    this.#labels();
+    this.announcement.textContent = `${from} to ${to}${promotion ? ', promoted' : ''}. Move selected.`;
     this.squares.querySelectorAll(".sq").forEach(s => s.classList.remove("last"));
     this.squares.querySelector(`[data-sq="${from}"]`)?.classList.add("last");
     this.squares.querySelector(`[data-sq="${to}"]`)?.classList.add("last");

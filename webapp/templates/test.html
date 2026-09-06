@@ -1,135 +1,139 @@
 {% extends "base.html" %}
 {% block title %}Find your blind spot · Machine Unique Chess{% endblock %}
 {% block body %}
-
 <div id="quiz">
-<h1 class="tight">Find your blind spot</h1>
-<p class="lede">Twelve positions where the engine's move is decisively best and most humans
-never consider it. Play your move on each. No feedback until the end, when your answers
-place you on the rating staircase from the research.</p>
-
-<div class="stage trybox">
-  <div id="bsboard"></div>
+<h1 class="tight" id="test-heading">Find your blind spot</h1>
+<p class="lede">Play your move on each position. Explore the answers after all twelve.</p>
+<p class="small" id="local-status">Your answers save on this device. Return using the Test page or this link.</p>
+<div class="stage">
+  <div class="board-column"><div id="bsboard"></div><p class="board-help">Click or drag a piece. Keyboard: arrow keys, then Enter to select.</p></div>
   <div class="side">
     <p class="stm" id="bsstm"></p>
-    <p class="pickline">Your move: <span id="bspick">&hellip;</span></p>
+    <p class="pickline" id="bspick" aria-live="polite">Choose your move.</p>
     <div class="row">
       <button class="btn ghost" id="bsundo" disabled>Take back</button>
-      <button class="btn p" id="bslock" disabled>Lock in</button>
+      <button class="btn p" id="bslock" disabled>Save and continue</button>
     </div>
-    <div class="tally" id="bstally"></div>
+    <div class="tally" id="bstally" aria-hidden="true"></div>
     <p class="counter" id="bscounter"></p>
+    <button class="btn ghost" id="bsback" disabled>Previous position</button>
+    <p id="submit-status" role="status"></p>
+    <p id="submit-error" class="err" role="alert"></p>
+    <button class="btn p" id="retry-test" hidden>Retry saving result</button>
   </div>
 </div>
 </div>
-
-<div id="result" style="display:none">
-<h1 class="tight">Your blind spot</h1>
+<section id="result" hidden>
+<h1 class="tight" id="result-heading" tabindex="-1">Your blind spot</h1>
 <p class="lede" id="verdictline"></p>
+<p><strong>A rough Lichess comparison on these twelve positions, not your chess rating.</strong> The selected positions and prior practice affect this estimate.</p>
 <div class="bars" id="staircase"></div>
-<p class="small">Bars: how often real players in each band found machine unique moves,
-measured over ~850 positions per band. Your placement is a maximum likelihood fit of your
-twelve answers against each position's difficulty curve, not a raw percentage, so finding
-three hard ones beats finding three easy ones.</p>
-<p class="small">One caveat, since the whole project is built on stating them: these twelve are
-drawn from the trainer's drill sets, which are easier than the machine unique pool at large
-(the model puts a 1900 rated player at 11% on them versus 6.6% across all such positions).
-Placement therefore runs generous. Read it as a rough band, not a rating.</p>
-<h2>The twelve, revealed</h2>
+<details class="sigdrawer"><summary>How this comparison works</summary>
+<p class="small">The highlighted band is the closest fit to your answers using each position's difficulty curve. The bars show how often real players found machine unique moves across the broader research pool, not their predicted score on your particular test.</p>
+<p class="small">The trainer's drill positions are easier than the full machine unique pool, so this estimate can be generous. Studying these positions before testing also changes what the result measures.</p>
+</details>
+<h2>Revisit the twelve positions</h2>
+<p>Open a position to compare your move with the engine's line.</p>
 <div id="reveal"></div>
-<p class="row" style="margin-top:1.4rem">
+<p class="row result-actions">
   <button class="btn" id="sharebtn">Copy your result</button>
-  <a class="btn p" href="{{ url_for('index') }}">Study the patterns &rarr;</a>
-  <a class="btn ghost" href="{{ url_for('blindspot_test') }}">Retake</a>
+  <a class="btn p" href="{{ url_for('learn') }}">Study the patterns</a>
+  <a class="btn ghost" href="{{ url_for('blindspot_test', new=1) }}">New test</a>
 </p>
-</div>
-
+<p id="share-status" role="status"></p>
+</section>
 <script type="module">
 import { Board } from "{{ url_for('static', filename='board.js') }}";
-const ITEMS = {{ items|tojson }};
-const PIECES = {{ pieces|tojson }};
-const picks = [];
-let idx = 0, picked = null, board = null;
-
-const tally = document.getElementById("bstally");
-ITEMS.forEach(() => tally.appendChild(document.createElement("i")));
-const pickEl = document.getElementById("bspick");
-const lock = document.getElementById("bslock");
-const undo = document.getElementById("bsundo");
-const el = document.getElementById("bsboard");
-
+import { postJSON, replay, storage, focusHeading } from "{{ url_for('static', filename='training.js') }}";
+const ITEMS = {{ items|tojson }}, PIECES = {{ pieces|tojson }};
+const TOKEN = {{ token|tojson }}, KEY = 'mu_test_' + {{ attempt_id|tojson }};
+let saved = storage.get(KEY);
+let picks = Array.isArray(saved?.picks) ? saved.picks : [];
+if (picks.length > ITEMS.length || picks.some((p, i) => !ITEMS[i].legal.includes(p))) picks = [];
+let idx = Math.min(picks.length, ITEMS.length - 1), picked = null, board, pending = false, shareText = '';
+let submitting = picks.length === ITEMS.length;
+const lock = document.getElementById('bslock'), undo = document.getElementById('bsundo');
+const back = document.getElementById('bsback'), retry = document.getElementById('retry-test');
+const error = document.getElementById('submit-error'), status = document.getElementById('submit-status');
+const holder = document.getElementById('bsboard'), pickEl = document.getElementById('bspick');
+const tally = document.getElementById('bstally'); ITEMS.forEach(() => tally.append(document.createElement('i')));
+function persist(result = null) {
+  if (!storage.set(KEY, { picks, result })) document.getElementById('local-status').textContent = 'This browser cannot save a draft. Keep this tab open until you finish.';
+  if (result) {
+    if (storage.get('mu_latest_test')?.token === TOKEN) storage.remove('mu_latest_test');
+  } else storage.set('mu_latest_test', { token: TOKEN, at: Date.now() });
+}
 function load() {
-  const p = ITEMS[idx];
-  el.innerHTML = "";
-  board = new Board(el, {
-    pieces: PIECES, orientation: p.orientation, interactive: true,
-    onSelect: ({ from, to }) => {
-      picked = from + to;
-      pickEl.textContent = from + " → " + to;
-      lock.disabled = false; undo.disabled = false;
-    },
-  });
-  board.setLegal(p.legal);
-  board.setPosition(p.fen);
-  document.getElementById("bsstm").textContent = p.stm + " to move.";
-  document.getElementById("bscounter").textContent = `Position ${idx + 1} of ${ITEMS.length}`;
-  picked = null; pickEl.innerHTML = "&hellip;";
-  lock.disabled = true; undo.disabled = true;
+  const p = ITEMS[idx]; holder.replaceChildren();
+  board = new Board(holder, { pieces: PIECES, orientation: p.orientation, interactive: true,
+    onSelect: ({ from, to, uci }) => {
+      picked = uci; pickEl.textContent = `${from} → ${to}`; lock.disabled = false; undo.disabled = false;
+    } });
+  board.setLegal(p.legal); board.setPosition(p.fen); picked = picks[idx] || null;
+  if (picked) board.move(picked.slice(0,2), picked.slice(2,4), picked[4]);
+  pickEl.textContent = picked ? `Your saved move: ${picked}` : 'Choose your move.';
+  document.getElementById('bsstm').textContent = p.stm + ' to move.';
+  document.getElementById('bscounter').textContent = `Position ${idx + 1} of ${ITEMS.length}`;
+  lock.textContent = idx === ITEMS.length - 1 ? 'Save and see result' : 'Save and continue';
+  lock.disabled = !picked || submitting; undo.disabled = !picked || submitting; back.disabled = idx === 0 || submitting;
+  if (submitting) board.setLegal([]);
+  Array.from(tally.children).forEach((t, i) => t.className = i < picks.length ? 'done' : '');
 }
-
-undo.addEventListener("click", () => {
-  board.setPosition(ITEMS[idx].fen);
-  board.setLegal(ITEMS[idx].legal);
-  picked = null; pickEl.innerHTML = "&hellip;";
-  lock.disabled = true; undo.disabled = true;
+undo.addEventListener('click', () => {
+  if (pending || submitting) return;
+  picked = null; board.setPosition(ITEMS[idx].fen); board.setLegal(ITEMS[idx].legal);
+  pickEl.textContent = 'Choose your move.'; lock.disabled = true; undo.disabled = true;
 });
-
-lock.addEventListener("click", async () => {
-  if (!picked) return;
-  picks.push(picked);
-  tally.children[idx].classList.add("done");
-  idx += 1;
-  if (idx < ITEMS.length) { load(); return; }
-  const r = await fetch("/api/blindspot", {
-    method: "POST", headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ picks }),
-  }).then(r => r.json());
-  showResult(r);
+back.addEventListener('click', () => { if (idx > 0 && !pending && !submitting) { idx--; load(); } });
+lock.addEventListener('click', () => {
+  if (!picked || pending || submitting) return;
+  picks[idx] = picked; persist();
+  if (idx < ITEMS.length - 1) { idx++; load(); }
+  else { submitting = true; submit(); }
 });
-
-let shareText = "";
+async function submit() {
+  if (pending) return;
+  pending = true; lock.disabled = true; undo.disabled = true; back.disabled = true; retry.hidden = true;
+  board.setLegal([]); status.textContent = 'Saving your result…'; error.textContent = '';
+  try {
+    const result = await postJSON('/api/blindspot', { attempt: TOKEN, picks });
+    persist(result); showResult(result);
+  } catch (e) { error.textContent = e.message; status.textContent = ''; retry.hidden = false; }
+  finally { pending = false; }
+}
+retry.addEventListener('click', submit);
 function showResult(r) {
-  document.getElementById("quiz").style.display = "none";
-  document.getElementById("result").style.display = "";
-  const pctYou = Math.round(100 * r.correct / r.n);
-  document.getElementById("verdictline").innerHTML =
-    `You found <b>${r.correct} of ${r.n}</b>. Your answers fit the profile of a ` +
-    `<b>${r.band}</b> player on these positions.`;
-  const wrap = document.getElementById("staircase");
-  r.band_labels.forEach((lab, i) => {
-    const v = Math.round(100 * r.staircase[i]);
-    const row = document.createElement("div");
-    row.className = "bar" + (i === r.band_idx ? " you" : "");
-    row.innerHTML = `<span class="lb">${lab}${i === r.band_idx ? " · you" : ""}</span>` +
-      `<span class="tr"><span class="fl" style="width:${Math.max(v, 2)}%"></span></span>` +
-      `<span class="vl">${v}%</span>`;
-    wrap.appendChild(row);
+  document.getElementById('quiz').hidden = true; document.getElementById('result').hidden = false;
+  document.getElementById('verdictline').textContent = `You found ${r.correct} of ${r.n} engine moves. Closest comparison band: ${r.band}.`;
+  const bars = document.getElementById('staircase'); bars.replaceChildren();
+  r.band_labels.forEach((label, i) => {
+    const row = document.createElement('div'); row.className = 'bar' + (i === r.band_idx ? ' you' : '');
+    const lb = document.createElement('span'); lb.className = 'lb'; lb.textContent = label + (i === r.band_idx ? ' · closest fit' : '');
+    const track = document.createElement('span'); track.className = 'tr'; track.setAttribute('aria-hidden', 'true');
+    const fill = document.createElement('span'); fill.className = 'fl'; fill.style.width = Math.round(r.staircase[i] * 100) + '%'; track.append(fill);
+    const value = document.createElement('span'); value.className = 'vl'; value.textContent = Math.round(r.staircase[i] * 100) + '%';
+    row.append(lb, track, value); bars.append(row);
   });
-  const rv = document.getElementById("reveal");
-  rv.innerHTML = r.reveal.map((x, k) =>
-    `<p class="small">${k + 1}. ${x.hit
-        ? `<b style="color:var(--good)">Found it</b>: ${x.best_san}`
-        : `You played ${x.picked_san}; the engine plays <b>${x.best_san}</b>`} ` +
-    `&middot; <a href="/pattern/${x.cid}">${x.concept}</a></p>`).join("");
-  shareText = `I found ${r.correct}/${r.n} machine unique chess moves, the moves ` +
-    `engines love and humans never play. Placement: ${r.band}. Try it: machine-unique-chess.com/test`;
+  const revealed = document.getElementById('reveal'); revealed.replaceChildren();
+  r.reveal.forEach((item, i) => {
+    const detail = document.createElement('details'); detail.className = 'position-review';
+    const summary = document.createElement('summary');
+    summary.textContent = `${i + 1}. ${item.hit ? 'Found it' : 'Revisit'} · ${item.concept} · you: ${item.picked_san}, engine: ${item.best_san}`;
+    const viewer = document.createElement('div'); viewer.className = 'replay';
+    const link = document.createElement('a'); link.href = '/pattern/' + item.cid; link.textContent = 'Study ' + item.concept;
+    detail.append(summary, viewer, link); revealed.append(detail);
+    let built = false; detail.addEventListener('toggle', () => { if (detail.open && !built) { replay(viewer, item.line, PIECES, item.picked); built = true; } });
+  });
+  shareText = `I found ${r.correct}/${r.n} engine moves on Machine Unique Chess. Rough comparison on these positions: Lichess ${r.band} (not a chess rating). Try it: https://www.machine-unique-chess.com/test`;
+  focusHeading(document.getElementById('result-heading'));
 }
-
-document.getElementById("sharebtn").addEventListener("click", async (e) => {
-  try { await navigator.clipboard.writeText(shareText); e.target.textContent = "Copied"; }
-  catch { e.target.textContent = shareText; }
+document.getElementById('sharebtn').addEventListener('click', async () => {
+  const shareStatus = document.getElementById('share-status');
+  try { await navigator.clipboard.writeText(shareText); shareStatus.textContent = 'Result copied.'; }
+  catch { shareStatus.textContent = shareText; }
 });
-
 load();
+if (saved?.result && saved.result.n === ITEMS.length && Array.isArray(saved.result.reveal)) showResult(saved.result);
+else { persist(); if (submitting) submit(); }
 </script>
 {% endblock %}

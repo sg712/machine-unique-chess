@@ -3,7 +3,7 @@
 {% block body %}
 <h1>Your progress</h1>
 {% if bs %}<p class="small">Latest blind spot test: <b>{{ bs.correct }}/{{ bs.n }}</b>
- &middot; placed as <b>{{ bs.band }}</b> &middot;
+ &middot; rough Lichess comparison: <b>{{ bs.band }}</b> (not a chess rating) &middot;
  <a href="{{ url_for('blindspot_test') }}">retake</a></p>{% endif %}
 {% if email %}<p class="lede">Signed in as <b>{{ email }}</b>.</p>
 {% else %}<p class="lede">Your progress lives in this browser for now.
@@ -11,14 +11,14 @@
 
 {% if tot.n %}
 <p class="bignum">{{ tot.c or 0 }}<span>/{{ tot.n }}</span></p>
-<p>positions solved{% if tot.h %} · your moves are played by {{ (tot.h * 100)|round(1) }}%
+<p>successful attempts{% if tot.h %} · your moves are played by {{ (tot.h * 100)|round(1) }}%
 of humans on average{% endif %}.</p>
 {% else %}
 <p class="lede">Nothing yet. <a href="{{ url_for('index') }}">Pick a pattern</a> to start.</p>
 {% endif %}
 
 <h2>By pattern</h2>
-<table>
+<div class="table-scroll" role="region" aria-label="Scrollable data table" tabindex="0"><table>
 <thead><tr><th>Pattern</th><th>Studied</th><th>Seen</th><th>Solved</th><th>Rate</th></tr></thead>
 <tbody>
 {% for c in concepts %}
@@ -32,5 +32,5 @@ of humans on average{% endif %}.</p>
 </tr>
 {% endfor %}
 </tbody>
-</table>
+</table></div>
 {% endblock %}

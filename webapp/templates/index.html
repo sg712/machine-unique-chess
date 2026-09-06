@@ -1,22 +1,26 @@
 {% extends "base.html" %}
 {% block body %}
 
-<h1>Magnus Carlsen would lose about 950 of 1,000 games to Stockfish, a chess engine.</h1>
-<p class="lede">Can we teach the patterns that are <span class="uq">unique</span> to
-chess engines?</p>
+<h1>See the moves you would normally dismiss.</h1>
+<p class="lede">Practice the surprising moves chess engines favor, through real positions and examples you can replay.</p>
+<div class="row home-actions">
+  <a class="btn p" href="{{ url_for('concept', cid=nxt.c.id) }}">{{ 'Continue learning' if nxt.state != 'new' else 'Try your first position' }}</a>
+  <a class="btn ghost" href="{{ url_for('blindspot_test') }}">Find your blind spot</a>
+</div>
+<p class="small">No signup needed. Start with four examples, then practice five positions at a time.</p>
 
 <div class="bigstats">
   <div class="bs"><b>123,405</b><span>positions from real games, analysed twice: by a
     strong engine and by a model of human play</span></div>
   <div class="bs"><b>4 in 100</b><span>contain a move the engine rates decisively best
-    that virtually no human plays, at any rating</span></div>
+    that a model of human play gives under 5% probability at each tested rating</span></div>
   <div class="bs"><b>8</b><span>patterns those moves cluster into. Each card below is one
     of them, from a real game</span></div>
 </div>
 
-<p class="lede">Pick a pattern, study four positions, then drill 36 you haven't seen.</p>
+<p class="lede">Browse all eight patterns. Each has four study examples and 36 practice positions.</p>
 <p class="small">No signup needed to play. Register with an email when you want your
-progress everywhere.</p>
+progress everywhere. All ratings below are Lichess ratings.</p>
 
 <div class="cards">
   {% for c in concepts %}
@@ -25,7 +29,7 @@ progress everywhere.</p>
     <div class="mini" data-cid="{{ c.id }}"></div>
     <div class="ct">
       <span class="nm">{{ c.name }}</span>
-      <span class="rate">{{ (c.signature.found_by_real_players * 100)|round(1) }}%</span>
+      <span class="rate"><span class="rate-label">Found by players</span> {{ (c.signature.found_by_real_players * 100)|round(1) }}%</span>
     </div>
     <p class="gl">{{ blurbs[c.id] }}</p>
     <div class="sig">
@@ -57,13 +61,13 @@ document.querySelectorAll(".mini").forEach((el) => {
 </script>
 
 <p class="small" style="margin-top:1.4rem">The percentage is how often players who
-actually reached these positions over the board found the engine's move. Lower is harder.</p>
+actually reached these positions over the board found the engine's move. Lower means fewer found it in the source games.</p>
 
 <h2>Where this comes from</h2>
 <p>Every position was played in a real game. A position qualifies when a strong engine's
 move is decisively better than the alternatives <em>and</em> a neural model of human play
 gives that move under 5% probability at every rating from 1100 to 2600. Of 123,405 positions
-analysed, 5,155 qualified; in 3,956 the player at the board missed it too.</p>
+analysed, 5,155 qualified; in 3,956 the player at the board missed it too. This is a model-based definition of rarity: real players rated 2800+ found 56.9% of the qualifying moves.</p>
 <p>The eight groups above come from clustering the first 1,745 of those by how the engine
 represents them internally. <a href="{{ url_for('research') }}">The full method and findings &rarr;</a></p>
 

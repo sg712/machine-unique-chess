@@ -13,11 +13,12 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 <div class="sheet">
   <div class="masthead">
     <a class="brand" href="{{ url_for('index') }}">Machine Unique Chess</a>
     {% set ep = request.endpoint %}
-    <span>
+    <nav aria-label="Main navigation">
       <a href="{{ url_for('learn') }}"{% if ep in ('learn', 'concept', 'drill') %} class="on"{% endif %}>Learn</a>
       <a href="{{ url_for('blindspot_test') }}"{% if ep == 'blindspot_test' %} class="on"{% endif %}>Test</a>
       {% if code %}<a href="{{ url_for('profile') }}"{% if ep == 'profile' %} class="on"{% endif %}>Progress</a>{% endif %}
@@ -25,9 +26,12 @@
       {% if email %}<a href="{{ url_for('logout') }}">Sign out</a>
       {% elif code %}<a href="{{ url_for('register') }}">Register</a>
       {% else %}<a href="{{ url_for('login') }}">Sign in</a>{% endif %}
-    </span>
+    </nav>
+    <button type="button" class="sound-toggle" id="sound-toggle" aria-pressed="true">Sound on</button>
   </div>
-  {% block body %}{% endblock %}
+  <main id="main" tabindex="-1">{% block body %}{% endblock %}</main>
+  <noscript><p class="note">The interactive chessboards need JavaScript. You can still read the research and browse the patterns.</p></noscript>
 </div>
+<script type="module" src="{{ url_for('static', filename='board.js') }}"></script>
 </body>
 </html>

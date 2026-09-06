@@ -1,180 +1,140 @@
 {% extends "base.html" %}
-{% block title %}Drill · {{ c.name }}{% endblock %}
+{% block title %}Practice · {{ c.name }}{% endblock %}
 {% block body %}
-
-<p class="crumb"><a href="{{ url_for('concept', cid=c.id) }}">{{ c.name }}</a> &middot; drill</p>
-<h1 class="tight">Find the move</h1>
-
-<div class="stage">
-  <div id="board"></div>
-  <div class="side">
-    <p class="stm" id="stm"></p>
-    <p class="small">Click a piece, then its destination.</p>
-    <p class="pickline" id="pick">&hellip;</p>
-    <div class="row">
-      <button class="btn" id="undo" disabled>Take back</button>
-      <button class="btn p" id="lock" disabled>Play it</button>
+<p class="crumb"><a href="{{ url_for('concept', cid=c.id) }}">{{ c.name }}</a> · {{ 'Review missed positions' if mode == 'missed' else 'Practice' }}</p>
+<h1 class="tight" id="practice-title">Five positions at a time</h1>
+<p class="lede">Find the move, explore the engine's answer, then take a break or keep going.</p>
+{% if positions %}
+<div id="practice">
+  <div class="stage">
+    <div class="board-column"><div id="board"></div><p class="board-help">Click or drag a piece. Keyboard: arrow keys, then Enter to select.</p></div>
+    <div class="side">
+      <p class="stm" id="stm"></p>
+      <p class="pickline" id="pick" aria-live="polite">Choose your move.</p>
+      <div class="row" id="answer-controls">
+        <button class="btn ghost" id="undo" disabled>Take back</button>
+        <button class="btn p" id="lock" disabled>Check move</button>
+      </div>
+      <p id="save-status" role="status"></p>
+      <p id="save-error" class="err" role="alert"></p>
+      <div class="tally" id="tally" aria-hidden="true"></div>
+      <p class="counter" id="counter"></p>
     </div>
-
-    <div id="fb" class="fb">
-      <p class="verdict" id="verdict"></p>
-      <p class="fbline" id="fbline"></p>
-      <div class="humanbars" id="humanbars"></div>
-      <button class="btn p" id="next">Next position</button>
-    </div>
-
-    <div class="tally" id="tally"></div>
-    <div class="counter" id="counter"></div>
   </div>
+  <section id="feedback" hidden>
+    <h2 id="verdict" tabindex="-1"></h2>
+    <p id="comparison"></p>
+    <div id="replay" class="replay"></div>
+    <p class="reflection">Before moving on: which candidate did you dismiss? Compare your choice with what the engine does next.</p>
+    <details class="sigdrawer"><summary>What the models predict</summary><div id="model-stats"></div></details>
+    <button class="btn p" id="next">Next position</button>
+  </section>
 </div>
-
-<div id="linebox" class="linebox">
-  <p class="lb-h">The engine's line</p>
-  <div id="lineboard"></div>
-  <div class="ctl" id="lctl">
-    <button data-d="-1">&#9664;</button><span class="pos">start</span><button data-d="1">&#9654;</button>
+<section id="session-done" hidden>
+  <h2 id="session-title" tabindex="-1">Session complete</h2>
+  <p class="score" id="session-score"></p>
+  <p id="session-copy"></p>
+  <div class="row">
+    <button class="btn p" id="continue">Continue with five more</button>
+    <a class="btn" href="{{ url_for('drill', cid=c.id, mode='missed') }}">Review missed positions</a>
+    <a class="btn ghost" href="{{ url_for('learn') }}">Finish for now</a>
   </div>
-  <p class="mv" id="lmoves"></p>
-</div>
-
+</section>
 <script type="module">
 import { Board } from "{{ url_for('static', filename='board.js') }}";
-const POS = {{ positions|tojson }};
-const PIECES = {{ pieces|tojson }};
-const CID = {{ c.id }};
-let idx = {{ start }}, picked = null, t0 = Date.now(), board = null, lineBoard = null;
-
-const el = document.getElementById("board");
-const pickEl = document.getElementById("pick");
-const lock = document.getElementById("lock");
-const undo = document.getElementById("undo");
-const fb = document.getElementById("fb");
-const tally = document.getElementById("tally");
-const linebox = document.getElementById("linebox");
-
-POS.forEach((_, i) => {
-  const b = document.createElement("i");
-  if (i < idx) b.classList.add("done");
-  tally.appendChild(b);
-});
-
+import { postJSON, replay, storage, focusHeading } from "{{ url_for('static', filename='training.js') }}";
+const POS = {{ positions|tojson }}, PIECES = {{ pieces|tojson }}, CID = {{ c.id }};
+const el = document.getElementById('board'), lock = document.getElementById('lock'), undo = document.getElementById('undo');
+const pickEl = document.getElementById('pick'), feedback = document.getElementById('feedback');
+const error = document.getElementById('save-error'), status = document.getElementById('save-status');
+const STORAGE_KEY = 'mu_pending_drill_' + CID + '_' + {{ mode|tojson }};
+let idx = 0, board, picked = null, pending = false, answered = false, requestId;
+let started = Date.now(), sessionCount = 0, sessionHits = 0;
+const tally = document.getElementById('tally');
 function load() {
-  const p = POS[idx];
-  el.innerHTML = "";
-  board = new Board(el, {
-    pieces: PIECES, orientation: p.orientation, interactive: true,
-    onSelect: ({ from, to }) => {
-      picked = from + to;
-      pickEl.textContent = from + " → " + to;
+  el.replaceChildren(); picked = null; answered = false; started = Date.now();
+  requestId = crypto.randomUUID();
+  board = new Board(el, { pieces: PIECES, orientation: POS[idx].orientation, interactive: true,
+    onSelect: ({ from, to, uci }) => {
+      picked = uci; pickEl.textContent = `${from} → ${to}${uci[4] ? ' · promotion' : ''}`;
       lock.disabled = false; undo.disabled = false;
-    },
-  });
-  board.setLegal(p.legal);
-  board.setPosition(p.fen);
-  document.getElementById("stm").textContent = p.stm + " to move.";
-  document.getElementById("counter").textContent = "Position " + (idx + 1) + " of " + POS.length;
-  picked = null; pickEl.innerHTML = "&hellip;";
-  lock.disabled = true; undo.disabled = true;
-  fb.classList.remove("on");
-  linebox.classList.remove("on");
-  document.querySelector(".row").style.display = "flex";
-  t0 = Date.now();
-}
-
-undo.addEventListener("click", () => {
-  board.setPosition(POS[idx].fen);
-  board.setLegal(POS[idx].legal);
-  picked = null; pickEl.innerHTML = "&hellip;";
-  lock.disabled = true; undo.disabled = true;
-});
-
-lock.addEventListener("click", async () => {
-  if (!picked) return;
-  lock.disabled = true; undo.disabled = true;
-  const r = await fetch("/api/answer", {
-    method: "POST", headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ concept: CID, idx, picked,
-                           seconds: Math.round((Date.now() - t0) / 100) / 10 }),
-  }).then(r => r.json());
-  showFeedback(r);
-});
-
-function pct(x) { return (x * 100).toFixed(x >= 0.1 ? 0 : 1) + "%"; }
-
-function showFeedback(r) {
-  document.querySelector(".row").style.display = "none";
-  tally.children[idx].classList.add(r.correct ? "hit" : "done");
-
-  const v = document.getElementById("verdict");
-  v.textContent = r.correct ? "You found it." : "Not the engine's move.";
-  v.className = "verdict " + (r.correct ? "good" : "bad");
-
-  let line = "";
-  if (r.correct) {
-    line = `<b>${r.best_san}</b>. Maia estimates ${pct(r.p_best)} of 1900 rated players ` +
-           `would play it. You are in the minority that sees this.`;
-  } else {
-    line = `You played <b>${r.picked_san}</b>` +
-           (r.human_p > 0 ? `. Maia estimates ${pct(r.human_p)} of 1900 rated players would too.` : `.`) +
-           ` The engine plays <b>${r.best_san}</b>, which Maia gives ${pct(r.p_best)}` +
-           (r.cost_cp ? `. The difference is worth ${r.cost_cp} centipawns.` : `.`);
+      storage.set(STORAGE_KEY, { position: POS[idx].idx, picked, requestId });
+    } });
+  board.setLegal(POS[idx].legal); board.setPosition(POS[idx].fen);
+  const saved = storage.get(STORAGE_KEY);
+  if (saved?.position === POS[idx].idx && POS[idx].legal.includes(saved.picked)) {
+    picked = saved.picked; requestId = saved.requestId;
+    board.move(picked.slice(0, 2), picked.slice(2, 4), picked[4]);
   }
-  // Maia says how likely a 1900 is to *play* this move; the difficulty model
-  // (exp 20) estimates how likely they are to *find* it, trained on 123,405 real
-  // decisions rather than on move imitation. Two different estimates, both shown.
-  if (r.predicted != null) {
-    line += ` <span class="pred">A difficulty model trained on 123,405 real ` +
-            `decisions puts the chance a 1900 finds it at ${pct(r.predicted)}.</span>`;
-  }
-  document.getElementById("fbline").innerHTML = line;
-
-  document.getElementById("humanbars").innerHTML =
-    '<p class="hb-h">What 1900 rated players play here (Maia estimate)</p>' +
-    r.human.map(h => {
-      const isBest = h.uci === r.best;
-      return `<div class="hb${isBest ? ' best' : ''}"><span class="mv">${h.san}</span>` +
-             `<span class="tr"><span class="fl" style="width:${Math.max(h.p * 100, 1)}%"></span></span>` +
-             `<span class="vl">${pct(h.p)}</span></div>`;
-    }).join("") +
-    (r.human.some(h => h.uci === r.best) ? "" :
-      `<div class="hb best"><span class="mv">${r.best_san}</span>` +
-      `<span class="tr"><span class="fl" style="width:${Math.max(r.p_best * 100, 1)}%"></span></span>` +
-      `<span class="vl">${pct(r.p_best)}</span></div>`);
-
-  fb.classList.add("on");
-  showLine(r.line);
+  pickEl.textContent = picked ? `Your saved move: ${picked}` : 'Choose your move.';
+  document.getElementById('stm').textContent = POS[idx].stm + ' to move.';
+  document.getElementById('counter').textContent = `This session: ${sessionCount + 1} of ${Math.min(5, sessionCount + POS.length - idx)} · ${POS.length - idx} positions remaining`;
+  lock.disabled = !picked; undo.disabled = !picked; lock.textContent = 'Check move';
+  error.textContent = ''; status.textContent = '';
+  feedback.hidden = true; document.getElementById('answer-controls').hidden = false;
 }
-
-function showLine(line) {
-  const holder = document.getElementById("lineboard");
-  holder.innerHTML = "";
-  lineBoard = new Board(holder, { pieces: PIECES, orientation: line.orientation });
-  const lmoves = document.getElementById("lmoves");
-  lmoves.innerHTML = line.sans.map((s, k) => `<button data-go="${k + 1}">${s}</button>`).join(" ");
-  const ctl = document.getElementById("lctl");
-  let cur = 0;
-  const show = (n) => {
-    cur = Math.max(0, Math.min(line.frames.length - 1, n));
-    const f = line.frames[cur];
-    lineBoard.setPosition(f.fen, f.last);
-    ctl.querySelector(".pos").textContent = cur === 0 ? "start" : line.sans[cur - 1];
-    lmoves.querySelectorAll("button").forEach((b, k) => b.classList.toggle("cur", k === cur - 1));
-  };
-  ctl.querySelectorAll("button").forEach(b => {
-    b.onclick = () => show(cur + (+b.dataset.d));
-  });
-  lmoves.querySelectorAll("button").forEach(b => {
-    b.onclick = () => show(+b.dataset.go);
-  });
-  show(1);
-  linebox.classList.add("on");
-}
-
-document.getElementById("next").addEventListener("click", () => {
-  if (idx + 1 < POS.length) { idx++; load(); }
-  else window.location = "/pattern/" + CID + "?done=1";
+undo.addEventListener('click', () => {
+  if (pending || answered) return;
+  storage.remove(STORAGE_KEY); picked = null; requestId = crypto.randomUUID();
+  board.setPosition(POS[idx].fen); board.setLegal(POS[idx].legal);
+  pickEl.textContent = 'Choose your move.'; lock.disabled = true; undo.disabled = true;
 });
-
+lock.addEventListener('click', async () => {
+  if (!picked || pending || answered) return;
+  pending = true; lock.disabled = true; undo.disabled = true;
+  status.textContent = 'Saving your answer…'; error.textContent = '';
+  try {
+    const result = await postJSON('/api/answer', { concept: CID, idx: POS[idx].idx, picked,
+      request_id: requestId, seconds: Math.min(86400, Math.round((Date.now() - started) / 1000)) });
+    answered = true; storage.remove(STORAGE_KEY); sessionCount++; sessionHits += Number(result.correct);
+    const mark = document.createElement('i'); mark.className = result.correct ? 'hit' : 'done'; tally.append(mark);
+    status.textContent = 'Answer saved.'; document.getElementById('answer-controls').hidden = true;
+    const verdict = document.getElementById('verdict');
+    verdict.textContent = result.correct ? 'You found it.' : 'Explore the engine’s move.';
+    verdict.className = result.correct ? 'verdict good' : 'verdict';
+    document.getElementById('comparison').textContent = `You played ${result.picked_san}. The engine plays ${result.best_san}.`;
+    replay(document.getElementById('replay'), result.line, PIECES, picked);
+    const stats = document.getElementById('model-stats'); stats.replaceChildren();
+    const p = document.createElement('p'); p.className = 'small';
+    p.textContent = `Maia, a model of human moves, gives the engine's choice a ${(result.p_best * 100).toFixed(1)}% chance of being played by a 1900 Lichess player.`; stats.append(p);
+    if (result.predicted != null) {
+      const q = document.createElement('p'); q.className = 'small';
+      q.textContent = `A separate difficulty model estimates that ${(result.predicted * 100).toFixed(1)}% of 1900 Lichess players would find it. These are model estimates, not your rating.`; stats.append(q);
+    }
+    document.getElementById('next').textContent = sessionCount === 5 || idx === POS.length - 1 ? 'Finish this session' : 'Next position';
+    feedback.hidden = false; focusHeading(verdict);
+  } catch (e) {
+    error.textContent = e.message; status.textContent = ''; lock.textContent = 'Retry saving';
+    lock.disabled = false;
+    // Keep the submitted answer fixed until retry: a timed-out request may already be saved.
+  } finally { pending = false; }
+});
+document.getElementById('next').addEventListener('click', () => {
+  if (!answered) return;
+  idx++;
+  if (sessionCount === 5 || idx === POS.length) {
+    document.getElementById('practice').hidden = true; document.getElementById('session-done').hidden = false;
+    document.getElementById('session-score').textContent = `${sessionHits} / ${sessionCount}`;
+    document.getElementById('session-copy').textContent = 'engine moves found in this session. Your progress is saved.';
+    document.getElementById('continue').hidden = idx === POS.length;
+    focusHeading(document.getElementById('session-title'));
+  } else load();
+});
+document.getElementById('continue').addEventListener('click', () => {
+  sessionCount = 0; sessionHits = 0; tally.replaceChildren();
+  document.getElementById('session-done').hidden = true; document.getElementById('practice').hidden = false;
+  load(); focusHeading(document.getElementById('practice-title'));
+});
+const saved = storage.get(STORAGE_KEY);
+if (saved) { const resume = POS.findIndex(p => p.idx === saved.position); if (resume >= 0) idx = resume; }
 load();
 </script>
+{% else %}
+<p class="lede">{{ 'No missed positions to review. Try a practice session first, or revisit the whole pattern.' if mode == 'missed' else 'You have tried every position in this pattern. Revisit them or choose your next pattern.' }}</p>
+<div class="row">
+  <a class="btn p" href="{{ url_for('drill', cid=c.id, mode='restart') }}">Practice from the beginning</a>
+  {% if mode != 'missed' %}<a class="btn" href="{{ url_for('drill', cid=c.id, mode='missed') }}">Review missed positions</a>{% endif %}
+  <a class="btn ghost" href="{{ url_for('learn') }}">All patterns</a>
+</div>
+{% endif %}
 {% endblock %}

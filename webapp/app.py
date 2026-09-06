@@ -7,6 +7,8 @@ studied by example, then drilled on fresh positions from the same family.
     python webapp/app.py            # http://127.0.0.1:5055
 """
 import json
+import hashlib
+import math
 import os
 import pathlib
 import re
@@ -19,6 +21,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import chess.svg
 from flask import (Flask, g, jsonify, redirect, render_template, request,
                    session, url_for)
+from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 DB = pathlib.Path(os.environ.get("DB_PATH", ROOT / "webapp" / "study.db"))
@@ -47,6 +50,9 @@ CODE_RE = re.compile(r"^[A-Z0-9]{6}$")
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "unnamed-concepts-local-dev")
+app.config.update(SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE="Lax",
+                  SESSION_COOKIE_SECURE=bool(os.environ.get("VERCEL")),
+                  MAX_CONTENT_LENGTH=64 * 1024)
 
 CONCEPTS = json.load(open(ROOT / "webapp" / "concepts.json"))
 BY_ID = {c["id"]: c for c in CONCEPTS}
@@ -105,12 +111,18 @@ def init_db():
         for stmt in PG_SCHEMA.split(";"):
             if stmt.strip():
                 conn.execute(stmt)
+        conn.execute("""CREATE TABLE IF NOT EXISTS submission (
+            id TEXT PRIMARY KEY, code TEXT NOT NULL, payload_hash TEXT NOT NULL,
+            response TEXT NOT NULL)""")
         conn.commit()
         conn.close()
         return
     DB.parent.mkdir(exist_ok=True)
     conn = sqlite3.connect(DB)
     conn.executescript("""
+    CREATE TABLE IF NOT EXISTS submission (
+        id TEXT PRIMARY KEY, code TEXT NOT NULL, payload_hash TEXT NOT NULL,
+        response TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS player (
         code TEXT PRIMARY KEY, name TEXT, rating INTEGER, created_at REAL);
     CREATE TABLE IF NOT EXISTS attempt (
@@ -138,6 +150,10 @@ def me():
     code = session.get("code")
     if not code:
         return None
+    account = db().execute("SELECT email FROM account WHERE code=?", (code,)).fetchone()
+    # A legacy recovery cookie proves possession of a code, not account ownership.
+    if account and session.get("authenticated_code") != code:
+        return None
     row = db().execute("SELECT * FROM player WHERE code=?", (code,)).fetchone()
     return code if row else None
 
@@ -156,7 +172,7 @@ def ensure_player() -> str:
 
 
 def current_email():
-    code = session.get("code")
+    code = me()
     if not code:
         return None
     row = db().execute("SELECT email FROM account WHERE code=?", (code,)).fetchone()
@@ -176,7 +192,8 @@ def concept_progress(code: str) -> dict:
                 for c in CONCEPTS}
     st = {r["concept"] for r in db().execute("SELECT concept FROM studied WHERE code=?", (code,))}
     rows = db().execute(
-        """SELECT concept, COUNT(DISTINCT idx) n, SUM(correct) c FROM attempt
+        """SELECT concept, COUNT(DISTINCT idx) n,
+           COUNT(DISTINCT CASE WHEN correct=1 THEN idx END) c FROM attempt
            WHERE code=? GROUP BY concept""", (code,)).fetchall()
     agg = {r["concept"]: (r["n"], r["c"] or 0) for r in rows}
     for c in CONCEPTS:
@@ -230,7 +247,9 @@ def index():
         piece = max(sig["pieces"], key=sig["pieces"].get)
         quiet = "quiet " if sig["quiet_share"] >= 0.75 else ""
         blurbs[c["id"]] = f"Mostly {phase}s; the answer is usually a {quiet}{piece} move."
-    return render_template("index.html", code=code, concepts=CONCEPTS,
+    rows = curriculum(code)
+    nxt = next((r for r in rows if r["state"] != "done"), rows[0])
+    return render_template("index.html", code=code, concepts=CONCEPTS, nxt=nxt,
                            prog=concept_progress(code), totals=totals(),
                            previews=previews, pieces=piece_svgs(), blurbs=blurbs)
 
@@ -305,6 +324,8 @@ def concept(cid):
 @app.post("/pattern/<int:cid>/studied")
 @app.post("/concept/<int:cid>/studied")
 def mark_studied(cid):
+    if cid not in BY_ID:
+        return {"error": "Choose an existing pattern."}, 404
     code = ensure_player()
     if DATABASE_URL:
         db().execute("INSERT INTO studied(code, concept, at) VALUES(?,?,?) "
@@ -332,28 +353,79 @@ def drill(cid):
     if cid not in BY_ID:
         return redirect(url_for("index"))
     c = BY_ID[cid]
-    code = me()
-    done = 0
+    code = ensure_player()
+    seen, solved = set(), set()
     if code:
-        r = db().execute("SELECT COUNT(DISTINCT idx) n FROM attempt WHERE code=? AND concept=?",
-                         (code, cid)).fetchone()
-        done = r["n"]
-    positions = []
-    for i, d in enumerate(c["drill"]):
-        positions.append({**board_of(d["fen"]), "idx": i})
+        for r in db().execute("SELECT idx, MAX(correct) correct FROM attempt WHERE code=? AND concept=? GROUP BY idx",
+                              (code, cid)).fetchall():
+            seen.add(r["idx"])
+            if r["correct"]:
+                solved.add(r["idx"])
+    mode = request.args.get("mode", "continue")
+    if mode not in ("continue", "restart", "missed"):
+        mode = "continue"
+    order = list(range(len(c["drill"])))
+    if mode == "missed":
+        order = sorted(seen - solved)
+    elif mode == "continue":
+        order = [i for i in order if i not in seen]
+    positions = [{**board_of(c["drill"][i]["fen"]), "idx": i} for i in order]
     return render_template("drill.html", c=c, positions=positions, pieces=PIECES,
-                           start=min(done, len(positions) - 1), code=code)
+                           mode=mode, code=code)
+
+
+def legal_pick(fen, picked):
+    if not isinstance(picked, str) or len(picked) not in (4, 5):
+        return False
+    try:
+        return chess.Move.from_uci(picked) in chess.Board(fen).legal_moves
+    except ValueError:
+        return False
+
+
+def reserve_submission(key, code, payload):
+    """Reserve the write in the same transaction as its effects, so retries are safe."""
+    digest = hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
+    inserted = db().execute(
+        "INSERT INTO submission(id,code,payload_hash,response) VALUES(?,?,?,?) "
+        "ON CONFLICT (id) DO NOTHING RETURNING id", (key, code, digest, "")).fetchone()
+    if inserted:
+        return None
+    existing = db().execute("SELECT * FROM submission WHERE id=?", (key,)).fetchone()
+    if existing["code"] != code or existing["payload_hash"] != digest:
+        return jsonify(error="This answer was already saved differently. Reload to continue."), 409
+    return jsonify(json.loads(existing["response"]))
+
+
+def finish_submission(key, result):
+    db().execute("UPDATE submission SET response=? WHERE id=?", (json.dumps(result), key))
+    db().commit()
+    return jsonify(result)
 
 
 @app.post("/api/answer")
 def api_answer():
-    code = ensure_player()
-    d = request.get_json(force=True)
-    cid, idx = int(d.get("concept", -1)), int(d.get("idx", -1))
-    if cid not in BY_ID or not 0 <= idx < len(BY_ID[cid]["drill"]):
-        return jsonify(error="bad position"), 400
+    d = request.get_json(silent=True)
+    if not isinstance(d, dict):
+        return jsonify(error="Choose a move before saving your answer."), 400
+    cid, idx = d.get("concept"), d.get("idx")
+    if type(cid) is not int or type(idx) is not int or cid not in BY_ID or not 0 <= idx < len(BY_ID[cid]["drill"]):
+        return jsonify(error="That position is unavailable. Reload to continue."), 400
     pos = BY_ID[cid]["drill"][idx]
-    picked = str(d.get("picked", ""))[:5]
+    picked = d.get("picked")
+    if not legal_pick(pos["fen"], picked):
+        return jsonify(error="Choose a legal move on the board."), 400
+    seconds = d.get("seconds", 0)
+    if type(seconds) not in (int, float) or not math.isfinite(seconds) or not 0 <= seconds <= 86400:
+        return jsonify(error="The answer time is invalid. Reload to continue."), 400
+    key = d.get("request_id")
+    if not isinstance(key, str) or not re.fullmatch(r"[a-f0-9-]{32,36}", key):
+        return jsonify(error="Reload this practice session before saving."), 400
+    code = ensure_player()
+    key = "drill:" + key
+    cached = reserve_submission(key, code, {"concept": cid, "idx": idx, "picked": picked})
+    if cached is not None:
+        return cached
     b = chess.Board(pos["fen"])
 
     hp = next((h["p"] for h in pos["human"] if h["uci"] == picked), 0.0)
@@ -362,20 +434,20 @@ def api_answer():
         """INSERT INTO attempt(code,concept,idx,fen,picked,best,correct,human_p,seconds,created_at)
            VALUES(?,?,?,?,?,?,?,?,?,?)""",
         (code, cid, idx, pos["fen"], picked, pos["best"], int(correct), hp,
-         float(d.get("seconds", 0)), time.time()))
-    db().commit()
+         seconds, time.time()))
 
     try:
         picked_san = b.san(chess.Move.from_uci(picked))
     except Exception:
         picked_san = picked
-    return jsonify(
+    result = dict(
         correct=correct, best=pos["best"], best_san=pos["best_san"],
         picked_san=picked_san, human_p=hp, p_best=pos["p_best"],
-        cost_cp=pos["cost_cp"], gap_cp=pos["gap_cp"],
+        model_move_cost_cp=pos["cost_cp"], gap_cp=pos["gap_cp"],
         predicted=pos.get("predicted_find_1900"),
         human=pos["human"][:3], line=frames_of(pos["fen"], pos["pv"]),
     )
+    return finish_submission(key, result)
 
 
 @app.route("/me")
@@ -406,66 +478,99 @@ def research():
                            bv=VALIDATION["bands"])
 
 
+def test_signer():
+    return URLSafeTimedSerializer(app.secret_key, salt="blindspot-v2")
+
+
+def read_test(token):
+    try:
+        data = test_signer().loads(token, max_age=7 * 86400)
+        if not isinstance(data, dict) or not isinstance(data.get("id"), str):
+            return None
+        keys = data.get("items")
+        if not isinstance(keys, list) or len(keys) != 12 or len(set(keys)) != 12:
+            return None
+        if not all(k in TEST_DATA["items"] for k in keys):
+            return None
+        return data
+    except (BadSignature, SignatureExpired, TypeError, ValueError):
+        return None
+
+
 @app.route("/test")
 def blindspot_test():
     import random
-    cids = [c["id"] for c in CONCEPTS]
-    random.shuffle(cids)
-    picks = cids + random.sample(cids, 12 - len(cids))
-    seen, items = set(), []
-    for cid in picks:
-        c = BY_ID[cid]
-        while True:
-            i = random.randrange(len(c["drill"]))
-            if (cid, i) not in seen:
-                seen.add((cid, i))
-                break
-        items.append(f"{cid}:{i}")
-    session["bs_items"] = items
+    token = request.args.get("attempt")
+    if not token and request.args.get("new") != "1":
+        return render_template("test_start.html", code=me(), error=None)
+    if not token:
+        cids = list(BY_ID)
+        random.shuffle(cids)
+        picks = cids + random.sample(cids, 4)
+        keys = []
+        for cid in picks:
+            remaining = [f"{cid}:{i}" for i in range(len(BY_ID[cid]["drill"]))
+                         if f"{cid}:{i}" not in keys]
+            keys.append(random.choice(remaining))
+        token = test_signer().dumps({"id": secrets.token_hex(16), "items": keys})
+        return redirect(url_for("blindspot_test", attempt=token))
+    attempt = read_test(token)
+    if attempt is None:
+        return render_template("test_start.html", code=me(),
+                               error="This test link has expired or is invalid. Start a fresh test."), 400
     payload = []
-    for key in items:
-        cid, i = (int(x) for x in key.split(":"))
-        pos = BY_ID[cid]["drill"][i]
-        payload.append({**board_of(pos["fen"])})
-    return render_template("test.html", items=payload, pieces=PIECES, code=me())
+    for key in attempt["items"]:
+        cid, i = map(int, key.split(":"))
+        payload.append(board_of(BY_ID[cid]["drill"][i]["fen"]))
+    return render_template("test.html", items=payload, pieces=PIECES,
+                           token=token, attempt_id=attempt["id"], code=ensure_player())
 
 
 @app.post("/api/blindspot")
 def api_blindspot():
-    keys = session.get("bs_items")
-    picks = (request.get_json(silent=True) or {}).get("picks")
-    if not keys or not isinstance(picks, list) or len(picks) != len(keys):
-        return {"error": "no active test"}, 400
-    import math
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return {"error": "No test answers were received."}, 400
+    attempt = read_test(data.get("attempt"))
+    picks = data.get("picks")
+    if attempt is None:
+        return {"error": "This test link has expired. Start a fresh test."}, 400
+    keys = attempt["items"]
+    if not isinstance(picks, list) or len(picks) != len(keys):
+        return {"error": "Answer all twelve positions before saving your result."}, 400
+    for key, picked in zip(keys, picks):
+        cid, i = map(int, key.split(":"))
+        if not legal_pick(BY_ID[cid]["drill"][i]["fen"], picked):
+            return {"error": "One answer is not a legal move. Return to that position and choose again."}, 400
+    code = ensure_player()
+    receipt = "test:" + attempt["id"]
+    cached = reserve_submission(receipt, code, {"picks": picks})
+    if cached is not None:
+        return cached
     correct, reveal = 0, []
     loglik = [0.0] * len(TEST_DATA["band_labels"])
     for key, picked in zip(keys, picks):
-        cid, i = (int(x) for x in key.split(":"))
+        cid, i = map(int, key.split(":"))
         pos = BY_ID[cid]["drill"][i]
         hit = picked == pos["best"]
         correct += int(hit)
         b = chess.Board(pos["fen"])
-        try:
-            picked_san = b.san(chess.Move.from_uci(picked))
-        except Exception:
-            picked_san = picked
         reveal.append({"fen": pos["fen"], "best_san": pos["best_san"],
-                       "picked_san": picked_san, "hit": hit,
-                       "concept": BY_ID[cid]["label"], "cid": cid})
+                       "picked_san": b.san(chess.Move.from_uci(picked)), "hit": hit,
+                       "picked": picked, "concept": BY_ID[cid]["label"], "cid": cid,
+                       "line": frames_of(pos["fen"], pos["pv"])})
         for bi, pr in enumerate(TEST_DATA["items"][key]):
             pr = min(max(pr, 0.03), 0.97)
             loglik[bi] += math.log(pr if hit else 1.0 - pr)
     best_band = max(range(len(loglik)), key=lambda i: loglik[i])
-    code = ensure_player()
     db().execute("INSERT INTO blindspot(code, at, n, correct, band, detail) VALUES(?,?,?,?,?,?)",
                  (code, time.time(), len(keys), correct,
                   TEST_DATA["band_labels"][best_band], json.dumps({"keys": keys, "picks": picks})))
-    db().commit()
-    session.pop("bs_items", None)
-    return {"n": len(keys), "correct": correct,
-            "band": TEST_DATA["band_labels"][best_band], "band_idx": best_band,
-            "band_labels": TEST_DATA["band_labels"], "staircase": TEST_DATA["staircase"],
-            "reveal": reveal}
+    return finish_submission(receipt, {
+        "n": len(keys), "correct": correct,
+        "band": TEST_DATA["band_labels"][best_band], "band_idx": best_band,
+        "band_labels": TEST_DATA["band_labels"], "staircase": TEST_DATA["staircase"],
+        "reveal": reveal})
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -492,6 +597,7 @@ def register():
             db().execute("INSERT INTO account(email, pw_hash, code, created_at) VALUES(?,?,?,?)",
                          (email, generate_password_hash(pw), code, time.time()))
             db().commit()
+            session["authenticated_code"] = code
             session.permanent = True
             return redirect(url_for("profile"))
     return render_template("register.html", error=error, code=me())
@@ -506,6 +612,7 @@ def login():
         row = db().execute("SELECT * FROM account WHERE email=?", (email,)).fetchone()
         if row and check_password_hash(row["pw_hash"], pw):
             session["code"] = row["code"]
+            session["authenticated_code"] = row["code"]
             session.permanent = True
             return redirect(url_for("profile"))
         error = "Wrong email or password."
@@ -514,7 +621,7 @@ def login():
 
 @app.route("/logout")
 def logout():
-    session.pop("code", None)
+    session.clear()
     return redirect(url_for("index"))
 
 
@@ -524,6 +631,10 @@ def claim():
         resume = (request.form.get("resume") or "").strip().upper()
         if CODE_RE.match(resume) and db().execute(
                 "SELECT 1 FROM player WHERE code=?", (resume,)).fetchone():
+            if db().execute("SELECT 1 FROM account WHERE code=?", (resume,)).fetchone():
+                return render_template("claim.html", code=me(),
+                    error="This progress is linked to an email account. Sign in with your email and password."), 403
+            session.pop("authenticated_code", None)
             session["code"] = resume
             session.permanent = True
             return redirect(url_for("profile"))
