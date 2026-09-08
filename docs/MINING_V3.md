@@ -1,8 +1,8 @@
 # Version 3: adding the missing White positions
 
-8 September 2026. **The collection and source audits are complete; the full first-pass analysis is not yet complete.** This expansion preserves the historical files and gives both actual sides to move the same fresh screening procedure. The [dataset audit](../results/mining_v3_dataset.json) and [source audit](../results/mining_v3_provenance.json) identify the completed collection. Screening results will be published only after every batch finishes. Candidate counts are separate from accepted puzzles and human learning results.
+8 September 2026 UTC; completed 9 September in India. **The collection, source audits and full first-pass analysis are complete.** This expansion preserves the historical files and gives both actual sides to move the same fresh screening procedure. The [dataset audit](../results/mining_v3_dataset.json), [source audit](../results/mining_v3_provenance.json) and [screening results](../results/mining_v3_summary.json) identify the completed work. Candidate counts are separate from accepted puzzles and human learning results.
 
-The run was paused when the host reached 2% battery. Stage checkpoints had recorded 192,000 engine observations and 210,176 policy observations out of 248,810. Completed outputs remain saved for resumption with the same inputs and settings; these partial counts are not final screening results.
+The run briefly paused when the host reached 2% battery, then resumed after AC power was connected. Completed outputs were checked and reused with the same inputs and settings. Both stages finished all 248,810 observations.
 
 ## What the counts mean
 
@@ -73,6 +73,20 @@ The selected IDs are frozen in a private manifest: 45,326 observations per colou
 
 New teaching items still require exhaustive legal-root evaluation, stable acceptable moves at higher depths, explanations and chess review. The version-2 learning protocol and its incomplete private material bank remain separate.
 
+## Completed first-pass results
+
+All 248,810 observations completed both stages. The provisional rule selected 4,353 observations, representing 4,345 distinct canonical board states. None is marked as a newly deep-verified puzzle.
+
+| Sample | White observations | White candidates | Black observations | Black candidates |
+|---|---:|---:|---:|---:|
+| Complete accounting | 124,405 | 2,106 | 124,405 | 2,247 |
+| Recovered games without BOT tags | 124,405 | 2,106 | 106,420 | 1,834 |
+| Frozen matched subset | 45,326 | 736 | 45,326 | 734 |
+
+In the matched subset, the candidate rate rounds to 1.62% for each colour. This is a descriptive result within the constructed archive sample; it does not establish population equivalence or a human learning effect. The complete Black accounting also includes 412 candidates from BOT-tagged games and one from the 54 unresolved-source observations. Candidate counts describe this screening rule, not the earlier version-1 selection rule, and should not be added to the old 5,155 as if every item were new.
+
+The retained top and root searches both have median depth 10. Only 6,677 observations had every legal root examined in this first pass, and 8,642 contained a mate-valued retained score. Mean unscored Maia-2000 policy mass was 5.35% where reported. The summary verifies all 62 stage outputs and their identities, settings and hashes, along with the frozen matched-subset manifest. The engine evaluated 15,314,967,755 nodes in total; that amount of computation does not replace deeper candidate validation.
+
 ## Reproduce
 
 Use the existing research environment with python-chess, PyTorch, the pinned Maia sources/weights and Stockfish 18. Raw source games, full policies, engine outputs and potential assessment positions remain local under ignored version-3 directories. Public files contain aggregate counts and fingerprints.
@@ -87,4 +101,4 @@ python scripts/mining_v3_run.py --input data/mining_v3/positions.jsonl \
 python scripts/mining_v3_summary.py
 ```
 
-The runner freezes 8,192-row input shards and overlaps model inference with engine scoring. Each stage has checked input/output hashes and completion counts. A resumed run rejects changed inputs or scorer settings. Public summaries require every shard to be complete and every record to match; a started job is not reported as a completed screen.
+The runner freezes 8,192-row input shards and overlaps model inference with engine scoring. Each stage has checked input/output hashes and completion counts. A resumed run rejects changed inputs or scorer settings. Public summaries require every shard to be complete and every record to match; a started job is not reported as a completed screen. The completed run contains 31 input shards and 62 completed analysis stages.

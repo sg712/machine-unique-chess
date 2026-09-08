@@ -1,0 +1,1237 @@
+{
+  "schema_version": 3,
+  "complete": true,
+  "created_at": "2026-09-08T19:36:04.871862+00:00",
+  "screened_n": 248810,
+  "deeply_verified_n": 0,
+  "status": "Completed first-pass screen; candidates are not validated puzzles or human learning results.",
+  "counts": {
+    "exhaustive_roots_n": 6677,
+    "mate_in_scored_roots_n": 8642,
+    "candidates_n": 4353
+  },
+  "candidate_unique_canonical_states": 4345,
+  "groups": [
+    {
+      "group": "all",
+      "side": "black",
+      "n": 124405,
+      "screen_candidates_n": 2247,
+      "competitive_numeric_n": 89453,
+      "source_move_matches_engine_leader_n": 57718
+    },
+    {
+      "group": "all",
+      "side": "white",
+      "n": 124405,
+      "screen_candidates_n": 2106,
+      "competitive_numeric_n": 85531,
+      "source_move_matches_engine_leader_n": 55343
+    },
+    {
+      "group": "bot_tagged",
+      "side": "black",
+      "n": 17931,
+      "screen_candidates_n": 412,
+      "competitive_numeric_n": 15565,
+      "source_move_matches_engine_leader_n": 10701
+    },
+    {
+      "group": "cohort/club",
+      "side": "black",
+      "n": 62054,
+      "screen_candidates_n": 1016,
+      "competitive_numeric_n": 40422,
+      "source_move_matches_engine_leader_n": 26294
+    },
+    {
+      "group": "cohort/club",
+      "side": "white",
+      "n": 62054,
+      "screen_candidates_n": 958,
+      "competitive_numeric_n": 39633,
+      "source_move_matches_engine_leader_n": 25850
+    },
+    {
+      "group": "cohort/elite",
+      "side": "black",
+      "n": 62351,
+      "screen_candidates_n": 1231,
+      "competitive_numeric_n": 49031,
+      "source_move_matches_engine_leader_n": 31424
+    },
+    {
+      "group": "cohort/elite",
+      "side": "white",
+      "n": 62351,
+      "screen_candidates_n": 1148,
+      "competitive_numeric_n": 45898,
+      "source_move_matches_engine_leader_n": 29493
+    },
+    {
+      "group": "matched_human",
+      "side": "black",
+      "n": 45326,
+      "screen_candidates_n": 734,
+      "competitive_numeric_n": 29853,
+      "source_move_matches_engine_leader_n": 19512
+    },
+    {
+      "group": "matched_human",
+      "side": "white",
+      "n": 45326,
+      "screen_candidates_n": 736,
+      "competitive_numeric_n": 29589,
+      "source_move_matches_engine_leader_n": 19185
+    },
+    {
+      "group": "no_bot_tag",
+      "side": "black",
+      "n": 106420,
+      "screen_candidates_n": 1834,
+      "competitive_numeric_n": 73834,
+      "source_move_matches_engine_leader_n": 46997
+    },
+    {
+      "group": "no_bot_tag",
+      "side": "white",
+      "n": 124405,
+      "screen_candidates_n": 2106,
+      "competitive_numeric_n": 85531,
+      "source_move_matches_engine_leader_n": 55343
+    },
+    {
+      "group": "unknown",
+      "side": "black",
+      "n": 54,
+      "screen_candidates_n": 1,
+      "competitive_numeric_n": 54,
+      "source_move_matches_engine_leader_n": 20
+    }
+  ],
+  "matched_human": {
+    "n": 90652,
+    "per_side": 45326,
+    "cells": [
+      {
+        "cohort": "club",
+        "rating_band": "1800_1999",
+        "phase": "endgame",
+        "time_class": "classical",
+        "month": "2026-06",
+        "per_side": 45
+      },
+      {
+        "cohort": "club",
+        "rating_band": "1800_1999",
+        "phase": "endgame",
+        "time_class": "rapid",
+        "month": "2026-06",
+        "per_side": 1577
+      },
+      {
+        "cohort": "club",
+        "rating_band": "1800_1999",
+        "phase": "middlegame",
+        "time_class": "classical",
+        "month": "2026-06",
+        "per_side": 487
+      },
+      {
+        "cohort": "club",
+        "rating_band": "1800_1999",
+        "phase": "middlegame",
+        "time_class": "rapid",
+        "month": "2026-06",
+        "per_side": 15478
+      },
+      {
+        "cohort": "club",
+        "rating_band": "1800_1999",
+        "phase": "opening",
+        "time_class": "classical",
+        "month": "2026-06",
+        "per_side": 108
+      },
+      {
+        "cohort": "club",
+        "rating_band": "1800_1999",
+        "phase": "opening",
+        "time_class": "rapid",
+        "month": "2026-06",
+        "per_side": 3592
+      },
+      {
+        "cohort": "club",
+        "rating_band": "2000_2199",
+        "phase": "endgame",
+        "time_class": "classical",
+        "month": "2026-06",
+        "per_side": 34
+      },
+      {
+        "cohort": "club",
+        "rating_band": "2000_2199",
+        "phase": "endgame",
+        "time_class": "rapid",
+        "month": "2026-06",
+        "per_side": 714
+      },
+      {
+        "cohort": "club",
+        "rating_band": "2000_2199",
+        "phase": "middlegame",
+        "time_class": "classical",
+        "month": "2026-06",
+        "per_side": 192
+      },
+      {
+        "cohort": "club",
+        "rating_band": "2000_2199",
+        "phase": "middlegame",
+        "time_class": "rapid",
+        "month": "2026-06",
+        "per_side": 6967
+      },
+      {
+        "cohort": "club",
+        "rating_band": "2000_2199",
+        "phase": "opening",
+        "time_class": "classical",
+        "month": "2026-06",
+        "per_side": 52
+      },
+      {
+        "cohort": "club",
+        "rating_band": "2000_2199",
+        "phase": "opening",
+        "time_class": "rapid",
+        "month": "2026-06",
+        "per_side": 1600
+      },
+      {
+        "cohort": "club",
+        "rating_band": "2200_2399",
+        "phase": "endgame",
+        "time_class": "classical",
+        "month": "2026-06",
+        "per_side": 17
+      },
+      {
+        "cohort": "club",
+        "rating_band": "2200_2399",
+        "phase": "endgame",
+        "time_class": "rapid",
+        "month": "2026-06",
+        "per_side": 162
+      },
+      {
+        "cohort": "club",
+        "rating_band": "2200_2399",
+        "phase": "middlegame",
+        "time_class": "classical",
+        "month": "2026-06",
+        "per_side": 62
+      },
+      {
+        "cohort": "club",
+        "rating_band": "2200_2399",
+        "phase": "middlegame",
+        "time_class": "rapid",
+        "month": "2026-06",
+        "per_side": 1610
+      },
+      {
+        "cohort": "club",
+        "rating_band": "2200_2399",
+        "phase": "opening",
+        "time_class": "classical",
+        "month": "2026-06",
+        "per_side": 16
+      },
+      {
+        "cohort": "club",
+        "rating_band": "2200_2399",
+        "phase": "opening",
+        "time_class": "rapid",
+        "month": "2026-06",
+        "per_side": 329
+      },
+      {
+        "cohort": "club",
+        "rating_band": "2400_2599",
+        "phase": "endgame",
+        "time_class": "rapid",
+        "month": "2026-06",
+        "per_side": 36
+      },
+      {
+        "cohort": "club",
+        "rating_band": "2400_2599",
+        "phase": "middlegame",
+        "time_class": "rapid",
+        "month": "2026-06",
+        "per_side": 215
+      },
+      {
+        "cohort": "club",
+        "rating_band": "2400_2599",
+        "phase": "opening",
+        "time_class": "rapid",
+        "month": "2026-06",
+        "per_side": 42
+      },
+      {
+        "cohort": "club",
+        "rating_band": "2600_2799",
+        "phase": "endgame",
+        "time_class": "rapid",
+        "month": "2026-06",
+        "per_side": 1
+      },
+      {
+        "cohort": "club",
+        "rating_band": "2600_2799",
+        "phase": "middlegame",
+        "time_class": "rapid",
+        "month": "2026-06",
+        "per_side": 36
+      },
+      {
+        "cohort": "club",
+        "rating_band": "2600_2799",
+        "phase": "opening",
+        "time_class": "rapid",
+        "month": "2026-06",
+        "per_side": 6
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2200_2399",
+        "phase": "endgame",
+        "time_class": "blitz",
+        "month": "2025-09",
+        "per_side": 9
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2200_2399",
+        "phase": "endgame",
+        "time_class": "blitz",
+        "month": "2025-10",
+        "per_side": 15
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2200_2399",
+        "phase": "endgame",
+        "time_class": "blitz",
+        "month": "2025-11",
+        "per_side": 13
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2200_2399",
+        "phase": "endgame",
+        "time_class": "rapid",
+        "month": "2025-09",
+        "per_side": 2
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2200_2399",
+        "phase": "middlegame",
+        "time_class": "blitz",
+        "month": "2025-09",
+        "per_side": 13
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2200_2399",
+        "phase": "middlegame",
+        "time_class": "blitz",
+        "month": "2025-10",
+        "per_side": 10
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2200_2399",
+        "phase": "middlegame",
+        "time_class": "blitz",
+        "month": "2025-11",
+        "per_side": 16
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2200_2399",
+        "phase": "middlegame",
+        "time_class": "rapid",
+        "month": "2025-09",
+        "per_side": 1
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2200_2399",
+        "phase": "middlegame",
+        "time_class": "rapid",
+        "month": "2025-11",
+        "per_side": 1
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2200_2399",
+        "phase": "opening",
+        "time_class": "blitz",
+        "month": "2025-09",
+        "per_side": 13
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2200_2399",
+        "phase": "opening",
+        "time_class": "blitz",
+        "month": "2025-10",
+        "per_side": 10
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2200_2399",
+        "phase": "opening",
+        "time_class": "blitz",
+        "month": "2025-11",
+        "per_side": 11
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2200_2399",
+        "phase": "opening",
+        "time_class": "rapid",
+        "month": "2025-10",
+        "per_side": 1
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2400_2599",
+        "phase": "endgame",
+        "time_class": "blitz",
+        "month": "2025-09",
+        "per_side": 12
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2400_2599",
+        "phase": "endgame",
+        "time_class": "blitz",
+        "month": "2025-10",
+        "per_side": 14
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2400_2599",
+        "phase": "endgame",
+        "time_class": "blitz",
+        "month": "2025-11",
+        "per_side": 13
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2400_2599",
+        "phase": "endgame",
+        "time_class": "rapid",
+        "month": "2025-11",
+        "per_side": 1
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2400_2599",
+        "phase": "middlegame",
+        "time_class": "blitz",
+        "month": "2025-09",
+        "per_side": 12
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2400_2599",
+        "phase": "middlegame",
+        "time_class": "blitz",
+        "month": "2025-10",
+        "per_side": 8
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2400_2599",
+        "phase": "middlegame",
+        "time_class": "blitz",
+        "month": "2025-11",
+        "per_side": 19
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2400_2599",
+        "phase": "middlegame",
+        "time_class": "rapid",
+        "month": "2025-10",
+        "per_side": 1
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2400_2599",
+        "phase": "middlegame",
+        "time_class": "rapid",
+        "month": "2025-11",
+        "per_side": 1
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2400_2599",
+        "phase": "opening",
+        "time_class": "blitz",
+        "month": "2025-09",
+        "per_side": 13
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2400_2599",
+        "phase": "opening",
+        "time_class": "blitz",
+        "month": "2025-10",
+        "per_side": 17
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2400_2599",
+        "phase": "opening",
+        "time_class": "blitz",
+        "month": "2025-11",
+        "per_side": 12
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2400_2599",
+        "phase": "opening",
+        "time_class": "rapid",
+        "month": "2025-10",
+        "per_side": 1
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2400_2599",
+        "phase": "opening",
+        "time_class": "rapid",
+        "month": "2025-11",
+        "per_side": 1
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2600_2799",
+        "phase": "endgame",
+        "time_class": "blitz",
+        "month": "2025-09",
+        "per_side": 473
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2600_2799",
+        "phase": "endgame",
+        "time_class": "blitz",
+        "month": "2025-10",
+        "per_side": 15
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2600_2799",
+        "phase": "endgame",
+        "time_class": "blitz",
+        "month": "2025-11",
+        "per_side": 12
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2600_2799",
+        "phase": "endgame",
+        "time_class": "rapid",
+        "month": "2025-09",
+        "per_side": 22
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2600_2799",
+        "phase": "middlegame",
+        "time_class": "blitz",
+        "month": "2025-09",
+        "per_side": 4498
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2600_2799",
+        "phase": "middlegame",
+        "time_class": "blitz",
+        "month": "2025-10",
+        "per_side": 13
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2600_2799",
+        "phase": "middlegame",
+        "time_class": "blitz",
+        "month": "2025-11",
+        "per_side": 15
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2600_2799",
+        "phase": "middlegame",
+        "time_class": "rapid",
+        "month": "2025-09",
+        "per_side": 132
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2600_2799",
+        "phase": "opening",
+        "time_class": "blitz",
+        "month": "2025-09",
+        "per_side": 865
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2600_2799",
+        "phase": "opening",
+        "time_class": "blitz",
+        "month": "2025-10",
+        "per_side": 17
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2600_2799",
+        "phase": "opening",
+        "time_class": "blitz",
+        "month": "2025-11",
+        "per_side": 13
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2600_2799",
+        "phase": "opening",
+        "time_class": "rapid",
+        "month": "2025-09",
+        "per_side": 23
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2800_plus",
+        "phase": "endgame",
+        "time_class": "blitz",
+        "month": "2025-09",
+        "per_side": 384
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2800_plus",
+        "phase": "endgame",
+        "time_class": "blitz",
+        "month": "2025-10",
+        "per_side": 17
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2800_plus",
+        "phase": "endgame",
+        "time_class": "blitz",
+        "month": "2025-11",
+        "per_side": 11
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2800_plus",
+        "phase": "endgame",
+        "time_class": "rapid",
+        "month": "2025-09",
+        "per_side": 2
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2800_plus",
+        "phase": "middlegame",
+        "time_class": "blitz",
+        "month": "2025-09",
+        "per_side": 4306
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2800_plus",
+        "phase": "middlegame",
+        "time_class": "blitz",
+        "month": "2025-10",
+        "per_side": 17
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2800_plus",
+        "phase": "middlegame",
+        "time_class": "blitz",
+        "month": "2025-11",
+        "per_side": 11
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2800_plus",
+        "phase": "middlegame",
+        "time_class": "rapid",
+        "month": "2025-09",
+        "per_side": 45
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2800_plus",
+        "phase": "opening",
+        "time_class": "blitz",
+        "month": "2025-09",
+        "per_side": 780
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2800_plus",
+        "phase": "opening",
+        "time_class": "blitz",
+        "month": "2025-10",
+        "per_side": 16
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2800_plus",
+        "phase": "opening",
+        "time_class": "blitz",
+        "month": "2025-11",
+        "per_side": 12
+      },
+      {
+        "cohort": "elite",
+        "rating_band": "2800_plus",
+        "phase": "opening",
+        "time_class": "rapid",
+        "month": "2025-09",
+        "per_side": 9
+      }
+    ],
+    "selection_provenance": {
+      "status": "verified_frozen_manifest",
+      "manifest_sha256": "1df78cecedf28bc6e0db66c96a7009dbf02142910469161638aace9080d81914",
+      "metadata_sha256": "178d577a33bf5ede9a7c964d00ab98786f814f78d9d3902fcd4760b8800d6e27",
+      "created_at": "2026-09-08T17:57:24.023636+00:00",
+      "selected_ids_sha256": "549e49fb7173f5bc3e0c5a9c8e0f2ed486c90b356467018e73ccc15320fc877a",
+      "implementation": {
+        "functions_sha256": {
+          "matched_human_ids": "9c189b7c5f914f67cbb412f631bdc3c564e10b2df4ed0f608a5b324fbdffd41f",
+          "read_matching_metadata": "ed7080e096f03c695b2e35870304f39fde80b7fde0694edfc9d9a67970b0d554",
+          "source_month": "49f4dda6e184368f6dc893a247e9827358b67346a7076ecf97662ba3d6102af3",
+          "bot_status": "66ef57f217db53f585232541577bc6f4a79c44997d2d9b94b658ba419728e1a7",
+          "canonical_fen": "991f2ba2ad3812d1eeb8ed40bd0ad885ae661b5a21dbf3cf5fae84ce01006883",
+          "rating_band": "a65bf37a2be91fcf319f40103addb94118edb7a63ba3ee832d006aa66ed77c07",
+          "verify_record": "2752c50dac3b7cbc43eead46908f42c6d03c94ad50ba395d13292a500e20e343",
+          "time_class": "248e8475b754c968741193b9c5f6794ef73a6713dd2c9f5a47b4f00835d9396f",
+          "read_rows": "bcbbcda6f746bf1d0738ecd1dddecf0d892622b0dbb87a62628d9d807a42de92"
+        },
+        "python_chess_version": "1.11.2"
+      },
+      "timing_note": "The metadata-only matching rule preceded this freeze. This ID manifest records its creation time and available screening progress; it is not a preregistration before any outcome access.",
+      "screening_state_at_freeze": {
+        "complete": false,
+        "input_n": 248810,
+        "engine_completed_n": 24576,
+        "policy_completed_n": 40960,
+        "run_manifest_sha256": "b89a7888e2e724bb7b424720c37f4426a47d9fc3546e9187cb03cd5e0651029a"
+      }
+    },
+    "selection": "Deterministic metadata-only selection; unique canonical states; equal colours within cohort, rating band, phase, time class and source month; only recovered games without BOT tags. Freeze timing and screening progress are recorded in selection_provenance.",
+    "rating_bands": [
+      "under_1800",
+      "1800_1999",
+      "2000_2199",
+      "2200_2399",
+      "2400_2599",
+      "2600_2799",
+      "2800_plus"
+    ],
+    "note": "Descriptive archive comparison, not a fresh held-out or population-representative sample."
+  },
+  "quality": {
+    "top_search_depth": {
+      "n": 741681,
+      "min": 4,
+      "median": 10,
+      "max": 245,
+      "mean": 10.209404042978045
+    },
+    "root_search_depth": {
+      "n": 1575129,
+      "min": 5,
+      "median": 10,
+      "max": 245,
+      "mean": 11.26703527139682
+    },
+    "unscored_mass_at_2000": {
+      "n": 247118,
+      "min": 0.0,
+      "median": 0.05345173628302291,
+      "max": 0.37550711166113615,
+      "mean": 0.0535156004537485
+    },
+    "search_nodes_total": 15314967755,
+    "search_records_n": 2316810,
+    "previous_exact_iteration_used_n": 1213085
+  },
+  "engine_settings": {
+    "engine_sha256": "bc0cac905ecdf2147fe22055c733bcd999b1e3f7c399fbaf7fb9055786563590",
+    "scorer_sha256": "7c479d7524ff32d83fb8d10f489bcd6259e8c3276601b04b5eab5a86eec7b903",
+    "v2_helpers_sha256": "a358695ef91a0588a037decad6b445680db2f3ded5c8ff08980368a4ccc45b70",
+    "io_sha256": "6554f179e417260e6a736997c65c5460cbb1f73043c8b41fdf8a646adfdbb070",
+    "top_nodes": 30000,
+    "root_nodes": 5000,
+    "max_human": 10,
+    "coverage": 0.85,
+    "board_context": "fen_only",
+    "engine_threads": 1,
+    "hash_mb": 32,
+    "clear_hash_each_search": true,
+    "node_budget_interpretation": "UCI node stopping target; slight overshoot possible"
+  },
+  "policy_model": {
+    "model": "Maia3-5M",
+    "source_url": "https://github.com/CSSLab/maia3",
+    "source_commit": "1e13597c42d4858b7cfd7cfdae01e297263364b2",
+    "source_files_sha256": {
+      "__init__.py": "ea764cbfa2c4532e6dffedfebdb561cfaafd165b106cf91e6e61ada2b605afa2",
+      "__main__.py": "6114a9d0148b0a46c12b5dc17c29111263afb5c7ab7ab6497e43e76577f8cef1",
+      "cache.py": "0103021ae6133e4d6c6b81c54ad4a740cfc6ced092942a77a1fa02b9324f795f",
+      "dataset.py": "86259e2d11c2f68f3f6faac446906f311ef78a8dd18396bc286736be768806b3",
+      "model_registry.py": "50b555088586afeef167e996c6b686b6285a8aee7c86154ef8effa3d30950f58",
+      "models.py": "9172bfd41e770baef734f472c6506e7615aa3f4b3f4227f41e9cf35e6ef0be0c",
+      "presets.py": "0bea5aa2a115c69a6290637de33f051dbc8c531b14177679bdd366000bc4ed06",
+      "uci.py": "38dc83f6c74ce1e0bce7ad9f0769e474e41c674051cf3a4ca586334106e4c4a2",
+      "utils.py": "17fa2c9ccd5a46e52446422aebbedcb5d67353353166ecaa7c40d4cb68417388"
+    },
+    "weights_repo": "UofTCSSLab/Maia3-5M",
+    "weights_revision": "b6559de2398d7140b985f28fd2c19fb5e47ddabe",
+    "weights_filename": "maia3-5m.pt",
+    "weights_sha256": "ba14208b2992d85502f5fb501934abf6aaaeb355e9f3fdf90e326911f562524f",
+    "device": "cpu",
+    "threads": 2,
+    "batch_size": 128,
+    "torch_version": "2.8.0",
+    "precision": "float32",
+    "amp": false,
+    "history_length_including_current": 8,
+    "history_order": "chronological; each board tokenized from its own side to move",
+    "short_history_padding": "repeat earliest available position on the left",
+    "fen_only_padding": "repeat current position eight times",
+    "include_time_info": false,
+    "clk_ponder": 0.0,
+    "rating_conditioning": "self and opponent both set to the requested rating",
+    "policy": "temperature-one softmax of raw move logits over every legal move",
+    "top_k": null,
+    "top_p": 1.0
+  },
+  "definition": {
+    "ratings": [
+      1700,
+      2000
+    ],
+    "evaluation_range_cp": [
+      -200,
+      200
+    ],
+    "acceptable_tolerance_cp": 20,
+    "max_good_mass_upper_each": 0.1,
+    "min_capped_regret_lower_each_cp": 50,
+    "regret_cap_cp": 300
+  },
+  "input_sha256": {
+    "metadata": "178d577a33bf5ede9a7c964d00ab98786f814f78d9d3902fcd4760b8800d6e27",
+    "frozen_scoring_snapshot": "178d577a33bf5ede9a7c964d00ab98786f814f78d9d3902fcd4760b8800d6e27",
+    "run": "fd0d009715270481889765fe402be0f8b1928222352f17356f4438a1ddfef58d",
+    "shards": "a95c321e2741dbae89232f4af47d0f5548cf652a6401294b91a5b2b4ab729c01"
+  },
+  "output_hashes": [
+    {
+      "shard": 0,
+      "stage": "policy",
+      "output_sha256": "efd08bc212c7b2a40eb1f1ae8761fa4064781ee16b76f0a13430171cef58bb03",
+      "manifest_sha256": "26a35caf22fbe0e1f0e1aa8828197fb0ead91ec5f0ae25da30cb3d71286d4498"
+    },
+    {
+      "shard": 0,
+      "stage": "engine",
+      "output_sha256": "90a7f270589ce7d7af18d40b114498fd01572d5169d2b591494122cde58748d9",
+      "manifest_sha256": "85d7bf3094953a7c4871e62db075762f4f305976e4ac070b36e3ac28b7c83b79"
+    },
+    {
+      "shard": 1,
+      "stage": "policy",
+      "output_sha256": "6c2d14c430038bd15f36545faab432344fa5c4aa76fce4ae80c60c7860c84f3c",
+      "manifest_sha256": "b106d67afaf6e6033d82eb594df4cfb783e5c4eb0ce94300304b853972e4eb7b"
+    },
+    {
+      "shard": 1,
+      "stage": "engine",
+      "output_sha256": "44c6e62c9fa4d2156b4a3615f54374a2bc8188d93807db7427923b96ebba08b5",
+      "manifest_sha256": "8b46959401b4632261757926c9fe247f3dde6fc019c33fea466a488f67fb11b6"
+    },
+    {
+      "shard": 2,
+      "stage": "policy",
+      "output_sha256": "183100eef7877bba0429dd09977a50e540766fe505290096146f604aedf4898e",
+      "manifest_sha256": "3aa167146566c41ab1bc275a9b8dfd93e78057c559b3ae3f694b03ada988dbef"
+    },
+    {
+      "shard": 2,
+      "stage": "engine",
+      "output_sha256": "df941181cd5f1cbacb029540307f4ded9642a2decb9b897363c9a1b1da6cf156",
+      "manifest_sha256": "5b0d4684d9aab5085c1fa8d83ec039c4569607bc18648ff11826d3d6792654a7"
+    },
+    {
+      "shard": 3,
+      "stage": "policy",
+      "output_sha256": "8b702101f8c77586f2a4bf06fbf2c03147340b9db6ed2272820cd22eee24ce2f",
+      "manifest_sha256": "2e3029dc237e12d90ac42ce2382133b6a6b2843964646686c2978f2640e7a91b"
+    },
+    {
+      "shard": 3,
+      "stage": "engine",
+      "output_sha256": "02dca2f5dae380777442ad8bcbe7a936e76281d080085d8fb5b9a1a359c798b4",
+      "manifest_sha256": "51d483252428178a28ec2b7d26a4c0519c3d60d086e5e72e9416552698eba113"
+    },
+    {
+      "shard": 4,
+      "stage": "policy",
+      "output_sha256": "f5440abf3102c0da39d07831b07d545ecf2419e93507c9b0dde48c085c549eb6",
+      "manifest_sha256": "8aaf6889310dcc701f412694f9c5b5245aae4ce9a1d92b2dc8d0fcabcb3a79a6"
+    },
+    {
+      "shard": 4,
+      "stage": "engine",
+      "output_sha256": "046ac79f6bcf9cf87201521410c8e471cde51516b17c2e6f4779c1e703eea06c",
+      "manifest_sha256": "dfed49ca63cabd08815f3b97e3526f22071b2adcf96fa49a619847264cdcbd6d"
+    },
+    {
+      "shard": 5,
+      "stage": "policy",
+      "output_sha256": "d98a6618c5a1b5054ab351513358218e516d590804aba386e0aacd058435fc56",
+      "manifest_sha256": "11de561c0b0f6513040f678dde98153b49bee42ae5576a9dd838044c397acad1"
+    },
+    {
+      "shard": 5,
+      "stage": "engine",
+      "output_sha256": "d2eb1bfaec35a489a82feeb4a3f8632a5e12865b7b3e038cdbbbdcdfba63ea1a",
+      "manifest_sha256": "60063ca8e74f0fe3530c9ed24f49a9dd28ba981138cec0c095059854996a8256"
+    },
+    {
+      "shard": 6,
+      "stage": "policy",
+      "output_sha256": "0fe7e6f0bbb1b2159ed8a64de8b885b4c73b315d34932765d5d26a706c2da52a",
+      "manifest_sha256": "f33edcb665244dc674dfa8c6ef19c9af86e9c5d61117fb874ba14a2facbc5574"
+    },
+    {
+      "shard": 6,
+      "stage": "engine",
+      "output_sha256": "5aa2100760f8c24c8e11d4a7b3315b6a27bb7471db70fda900a29ebed8022ae6",
+      "manifest_sha256": "39ec318aac7bbe6030b885ce51a4a3bae3eef68a1c3e0514b95c76f43ea46562"
+    },
+    {
+      "shard": 7,
+      "stage": "policy",
+      "output_sha256": "a6513359939ee8b0d89f103c1611cae8274a1fb5a40ae43583a802a3e7c74647",
+      "manifest_sha256": "e49aa5f3aa02f78c74602fdc43cc53e7ba630993910e3bae817ffd74cdbbd7ff"
+    },
+    {
+      "shard": 7,
+      "stage": "engine",
+      "output_sha256": "3392f6d81640e1d9363eba8feaa185e16c3553d2607b27f0c1ca31dd408e6187",
+      "manifest_sha256": "77ceb70aa1d0c14e30f892ddba8fe0d013041ef6ac872c5942b39be4937d001e"
+    },
+    {
+      "shard": 8,
+      "stage": "policy",
+      "output_sha256": "62e745845a4b1a9cd46aea2b61f7fd705f7dc08b44da49e1a965a288a45be8f5",
+      "manifest_sha256": "e861aa13c069b54a15c4b0c910115b681b238c7218b5914bf69a5999ec0bf6de"
+    },
+    {
+      "shard": 8,
+      "stage": "engine",
+      "output_sha256": "88218755c067337acd709717fe354c72fcbced1828d3b5e4a7241c2458c1332f",
+      "manifest_sha256": "0c783ab81f57d35d4b41ddd65dd8c0cbf526c8638d6763ae466eea41d23b28a8"
+    },
+    {
+      "shard": 9,
+      "stage": "policy",
+      "output_sha256": "e5f5566e555a4599dd1a610cd3f0b0d7698be1df59083e9d4fed57648140f6f4",
+      "manifest_sha256": "53643606e11edce48cc1cc66da96239ff4566aba95d06caeab67c4dd26adfb0c"
+    },
+    {
+      "shard": 9,
+      "stage": "engine",
+      "output_sha256": "cb1961bb441d5d163fc435041b33f026a7442c6cfc096b10cb18163311565bfb",
+      "manifest_sha256": "5ac344dbb3fb5e1966d65a773db8d3177bb10a6246692f0eeb312b850aee8b16"
+    },
+    {
+      "shard": 10,
+      "stage": "policy",
+      "output_sha256": "bcea0a497ae915c75d06baea9420ef08dc94f6c5e34e4c8804cb32066f706e1b",
+      "manifest_sha256": "f4a0a9410c527ef68b12cc970d0b5da37423c54fb83dcca3a894a766bd8df943"
+    },
+    {
+      "shard": 10,
+      "stage": "engine",
+      "output_sha256": "b49571593033c78914d4584b6aa301f4856f4c4eb28aac06f3860f33075d2829",
+      "manifest_sha256": "e77dca0c9486751173dffa6cb5df5d7dd30e3a17fd85b0692465191ffed2ecaf"
+    },
+    {
+      "shard": 11,
+      "stage": "policy",
+      "output_sha256": "df9304ba52a14b9c9baa43fef3f384e3ce4dfef9ee24b2ee74e0c7aee0e2ba01",
+      "manifest_sha256": "5c640820ee5d11d75299eb4b4639b73019dffce8e5d5eb03e7a0c564de4d03f4"
+    },
+    {
+      "shard": 11,
+      "stage": "engine",
+      "output_sha256": "1b3337d430de1e4e3b2f14038d22d2e124d80edd408b837d2288e46a00872188",
+      "manifest_sha256": "62948d2b87d31a0ae69fee4f8cf0704a865e24a2ba4af627f045f7384e965386"
+    },
+    {
+      "shard": 12,
+      "stage": "policy",
+      "output_sha256": "1218b7f71be9c36131cb3b447caf14a089984150141d8e06fcd322ec1e1a2367",
+      "manifest_sha256": "21a864b203198808b7d46d6d87d5125de5ef37c1b605f65fddceee6253ca2ba3"
+    },
+    {
+      "shard": 12,
+      "stage": "engine",
+      "output_sha256": "3c7708f55722a627f300e8af43efa1d81317f28c6eed3883f929f6d35f31e4ff",
+      "manifest_sha256": "03fe6b06218a976dc48a827579b1f9f2a6af33f18b126c765eb8d709ec8346dd"
+    },
+    {
+      "shard": 13,
+      "stage": "policy",
+      "output_sha256": "506a05ad029b6c37d0895f7441423494b34129c9fbb3ddcd29c67022f63c9e96",
+      "manifest_sha256": "ce2d9bf1fd78fc31ee3cca9f7b8234c72838851159ae09add66d21a90023de13"
+    },
+    {
+      "shard": 13,
+      "stage": "engine",
+      "output_sha256": "6818791cef5652c6995fbe58d32b44c1c34a881eaef08dae7365bf106a1b6a9f",
+      "manifest_sha256": "c3e59b09df3b068d0831fcd21e2385967e05a4a7d81feaeaf33ac5a70c072435"
+    },
+    {
+      "shard": 14,
+      "stage": "policy",
+      "output_sha256": "0909018889acc8d73fe621e1ba2f671dc5cfe4b26f337e04154f25f685a3eedb",
+      "manifest_sha256": "3e6e2dd09ed5e3d0088baf64e45442ffc26a5595682a95efdd4f33f68c7a48f7"
+    },
+    {
+      "shard": 14,
+      "stage": "engine",
+      "output_sha256": "5c3223fa281187441b7efbf99a922fc526f666c5601665d764c0659bdd909e66",
+      "manifest_sha256": "8b050f273fc5d69e9890e090003db90dc8e3852d3650996f5420532e2f189209"
+    },
+    {
+      "shard": 15,
+      "stage": "policy",
+      "output_sha256": "529569e50cdadb26a6c2856d696aa93183ac0d2f88d6e9ba04de1610f965a82c",
+      "manifest_sha256": "8217fe755e426b1193081af6b92a6131b0c87d22046e5f44d270bf698c8ef26c"
+    },
+    {
+      "shard": 15,
+      "stage": "engine",
+      "output_sha256": "a960c0b640b49862d90e264b35c03ba7cd6eb5301495169445052b785e639e7a",
+      "manifest_sha256": "55fa50c634c53c46a777fd0dcc5d494b7338845c08310b750d87ee99862957b8"
+    },
+    {
+      "shard": 16,
+      "stage": "policy",
+      "output_sha256": "53447398ded8bc38503058214397c03d0719e2f23aa5587989c13ad72aa1f3cf",
+      "manifest_sha256": "0a1d5df98446c8644ba7719e06478c45d36cca9162cc5a694e40f1011fb61dc5"
+    },
+    {
+      "shard": 16,
+      "stage": "engine",
+      "output_sha256": "df539d212800cafbb8ea66d0e1e77ac97fecdfc0cc4e20a704baa854443a2258",
+      "manifest_sha256": "66995a7954c6e4e3354332a8cea31d3f70061b395d76989f124cd06580b23e54"
+    },
+    {
+      "shard": 17,
+      "stage": "policy",
+      "output_sha256": "8ad6f689e7189b08e78dfeddef5bd429278b63cdec1de9a01f9dbb750fad389b",
+      "manifest_sha256": "227f71c9cf4d43bd991fbf5633f8d093152e9cec3f0c53a94462dc5127def1fc"
+    },
+    {
+      "shard": 17,
+      "stage": "engine",
+      "output_sha256": "c22256af15e836ac6e87d69eb3937749cde1ff93c72d0dbea45f187bd0def7e5",
+      "manifest_sha256": "b769cb4daaf8826d9d4896aa1bfb7e6501bf94b7211c207764911503d3b3fa37"
+    },
+    {
+      "shard": 18,
+      "stage": "policy",
+      "output_sha256": "1dc7f512081fce7e2e77c3982635af9250f80c812c163b20364159ba78370cf6",
+      "manifest_sha256": "660959dd5ad29ecbbe20fe6e630bb5a97dbb3f5630b87d0efcdae3644b812363"
+    },
+    {
+      "shard": 18,
+      "stage": "engine",
+      "output_sha256": "c617dae9b4b2d40a8b8a9fafcc8c1aa7331f31e509aee4eff86c43d989ec6a7f",
+      "manifest_sha256": "be81d52673e0f330a9f518a65aa6bb04afb625edefacf5bedc058d2312f8d34f"
+    },
+    {
+      "shard": 19,
+      "stage": "policy",
+      "output_sha256": "3904879f4120cbbdca55793ce2791dcb27167570643817e939e6fedcdb3346d7",
+      "manifest_sha256": "54ef7b12f142ee35ff90e9f5ac8a413a7961fff1a5c4a4167808437bb080cc64"
+    },
+    {
+      "shard": 19,
+      "stage": "engine",
+      "output_sha256": "c9fc43dd93a972a47ba79f6924adc5eeb0a8d43db7831e831ccc92e60539e7f7",
+      "manifest_sha256": "9f8fc9a3d2daaf49d278c0ef408df1ecbaba17bbf24ea021f2da3b1a734074aa"
+    },
+    {
+      "shard": 20,
+      "stage": "policy",
+      "output_sha256": "b3d037537d12e9b4664392c1f277d12fd0344cca800d18e0f34a86373a5b00ea",
+      "manifest_sha256": "0aaef353ac2c4639582cbd637ea894a7b1475d77cf63d9b7957bf6a310bb7d7c"
+    },
+    {
+      "shard": 20,
+      "stage": "engine",
+      "output_sha256": "a672f95f27093d80e9a445990f46e35deaea1ae3c363228c6d49940776014d19",
+      "manifest_sha256": "51344c632e2be17fc8c0111b95291348008a76c42f58e9e615116f4259680e49"
+    },
+    {
+      "shard": 21,
+      "stage": "policy",
+      "output_sha256": "90cd775382755fbd7a71caf7d1bcee6dc5d42c81115da9d6217d78c6d42f7eb3",
+      "manifest_sha256": "df939a8189d0f3c24cf925206458edfa1e167782fc753707f69af8d7eaffb7fb"
+    },
+    {
+      "shard": 21,
+      "stage": "engine",
+      "output_sha256": "504054bba8a9a4e7f9a4427fbf2044ef894c2537cda622a39e25bb570efc1f74",
+      "manifest_sha256": "d4b063ed7becff3275bbebf125bd2b2960bef4e3eda6920119211b265a750e7b"
+    },
+    {
+      "shard": 22,
+      "stage": "policy",
+      "output_sha256": "5adc2a89f8b220f853679ffc7a973c3bea1a8e4be96c18ef4f8da656cb16ae9b",
+      "manifest_sha256": "ad72577049c16751f17f85dd6dc776746a4c67e9336ecc44d4295ba43ce68353"
+    },
+    {
+      "shard": 22,
+      "stage": "engine",
+      "output_sha256": "f3298a3b453ea2e38ac9c3d8747c8644eb8d7666605a167b44868092e2477fac",
+      "manifest_sha256": "fe32324d6e13c01aa89ba9881cecb18e939847b33c31366a940a32fb069e5a87"
+    },
+    {
+      "shard": 23,
+      "stage": "policy",
+      "output_sha256": "30f95fa673a74e9c7398666ca06a4a4e5d924dbf4d7658af9bcc59f6a4983dab",
+      "manifest_sha256": "7fbc05cf3df60569421c2af65ba9b50a5c167f1376730c02d0f29c1a5de901f2"
+    },
+    {
+      "shard": 23,
+      "stage": "engine",
+      "output_sha256": "2c297c3d2803096f83513e7ffdcc632467d75f603c03dc4218be8291680b7140",
+      "manifest_sha256": "c68ccd96c9ca10aeed1b91f02c7850349fb07e8c46d23141cdcde29c1277d731"
+    },
+    {
+      "shard": 24,
+      "stage": "policy",
+      "output_sha256": "4b6530370dad6bd6f7c8d9d59a89edd5c9968c192fb9f66e53a1e93ef4a88762",
+      "manifest_sha256": "3bc1266bdf5b094585423da2eab3c6ece540d3d642569457da6b45bd84ed7a33"
+    },
+    {
+      "shard": 24,
+      "stage": "engine",
+      "output_sha256": "e3b386f39d39d14185cb5ab8c339c91e51f73e02d465e7e31f57ba2c7dfa944b",
+      "manifest_sha256": "e2ec190bf6f7a1c3a8c8961e7c06525478af1406989067f61b4d5c0e44729ea8"
+    },
+    {
+      "shard": 25,
+      "stage": "policy",
+      "output_sha256": "5c7f0707679d47fcc4476f0757cdef5b625a9a41f74a86ba92770ec58b9729db",
+      "manifest_sha256": "98b562dd917d94aa1c1c02f826cdb7c9abf18d916afbe01bd70e496b3ef3cf19"
+    },
+    {
+      "shard": 25,
+      "stage": "engine",
+      "output_sha256": "ad2e2de9ffe4dad1b8f5c3e6c5f756af1e85202d1dc7102c249d66fbac14143e",
+      "manifest_sha256": "3d0489803acc2e3c89d9179bdcfeb019729ae98a7d8ca7dfa17ec3359995b27f"
+    },
+    {
+      "shard": 26,
+      "stage": "policy",
+      "output_sha256": "64e2aae2bd01a097961acedb8445d980b307467cbe8310d942f7a4ae850501f3",
+      "manifest_sha256": "07dce59735123ae7b2a2c2eb85e02e23ab4cd71015e13f9afd0547e86ec891fc"
+    },
+    {
+      "shard": 26,
+      "stage": "engine",
+      "output_sha256": "4542976471d8bf01e5702ccc640ef5bd06a774dca90cd40bf7a29642ec9cfaa6",
+      "manifest_sha256": "bc4251774971421093453944557bd92aab329552cc392ff8c34c2123b8d503a2"
+    },
+    {
+      "shard": 27,
+      "stage": "policy",
+      "output_sha256": "cdd9c1b85d45bb1cc6fc9102cfb2616e8e73e6a7163439409d4b2461fe80b7db",
+      "manifest_sha256": "b9c4e6dc6d8f94e7b581f14210018b345c819994cc5c028b4154240690317ffd"
+    },
+    {
+      "shard": 27,
+      "stage": "engine",
+      "output_sha256": "b8eaba09cc6c2fd79b330b8c756d25b7b0886bf64ff60a61e88417af1594537a",
+      "manifest_sha256": "e2d643d8043caa710e4a390446259a80cb2300e4641cd0a0672e883d026e5dbd"
+    },
+    {
+      "shard": 28,
+      "stage": "policy",
+      "output_sha256": "ea581a350d0debe0f2e26f5b01f40d8a1f83fefdea9597ce29acd95e9565853b",
+      "manifest_sha256": "cf4c9349db49ac26761ab8bec05edb8f5e72001ed2e80ce516171b1f2ef5dd27"
+    },
+    {
+      "shard": 28,
+      "stage": "engine",
+      "output_sha256": "5ba646c252000decd3b571c7a91143ac407c9519f26a065452fb3895d04ea851",
+      "manifest_sha256": "9130852f7556a2d156c1790c9f5d48978ab6adb7817ea4409cf941bace320d28"
+    },
+    {
+      "shard": 29,
+      "stage": "policy",
+      "output_sha256": "12364c157536ab981aba138763b14ed2d2d82f96097fac20aae84f522d7e935f",
+      "manifest_sha256": "ed1329f847e51234092d9faacc21005000ac6184a626ca04a3f0f875616b059a"
+    },
+    {
+      "shard": 29,
+      "stage": "engine",
+      "output_sha256": "66abc1dac2e7c0f62fea080eb32092915f2b07a493bac5c789d2bcc599ab51a7",
+      "manifest_sha256": "00b2aed82fe369a54b9d4bba29434bb31472a105253b2c1412c22437e052d2ae"
+    },
+    {
+      "shard": 30,
+      "stage": "policy",
+      "output_sha256": "f3ab745fdc519a916a7c1fbd808ce6d5acb16d83fbdaef9f5f28eb9e04dabe5e",
+      "manifest_sha256": "9e1a6d63b4dc884255e1fa107edada2b2671b2b3c7330358d22ea8be46850254"
+    },
+    {
+      "shard": 30,
+      "stage": "engine",
+      "output_sha256": "6969f3b78c9da72e8ac36e404b484451f345ae9f8c73ef1f56368c3f83870f77",
+      "manifest_sha256": "701a83f46c826e4693a237bf6c48ed76731e60851e7ecd49ae388bb8c52feefe"
+    }
+  ],
+  "limitations": [
+    "Fixed-node searches are shallow and uneven in achieved depth; finite-search bounds are not proofs of chess values.",
+    "Historical and bot-tagged observations remain in the complete accounting; human-game comparisons exclude bot-tagged and unknown-source games.",
+    "Existing observations have informed development. Reassigned source-game hashes do not create fresh test data.",
+    "No history or clock inputs enter the common primary policy/engine condition.",
+    "Maia probabilities are model predictions, not calibrated independent puzzle responses.",
+    "Acceptable-move and regret gates define a provisional shortlist. Stable exhaustive analysis and chess review are still required."
+  ]
+}

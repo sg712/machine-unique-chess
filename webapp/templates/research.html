@@ -279,6 +279,7 @@ related, so the number of rows is larger than the number of independent examples
 Stockfish 18 and Maia-3 analysis. The models receive the current board, without prior moves or clocks,
 because those details could not be recovered for every original position.</p>
 <p>The screen produced <b>{{ '{:,}'.format(mining_v3.counts.candidates_n) }} candidate observations</b>.
+They cover {{ '{:,}'.format(mining_v3.candidate_unique_canonical_states) }} distinct board states.
 It uses a fixed search budget and leaves unexamined moves explicit. These candidates have not passed
 the deeper, all-move checks used to accept a new puzzle.</p>
 <p>For a closer comparison, I also selected {{ '{:,}'.format(mining_v3.matched_human.per_side) }}
