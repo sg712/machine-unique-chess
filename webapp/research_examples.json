@@ -4,7 +4,7 @@
     "name": "Stockfish 17.1",
     "author": "the Stockfish developers (see AUTHORS file)"
   },
-  "concepts_sha256": "64a5b458ce91699295468bb4df2b97f1cf402d4cef2960a0f078afb198177477",
+  "concepts_sha256": "1e736d4eba05a71b5e9729c8a068713b200b2b5eec13ae71a3f58e0a13213e59",
   "selection": "curated; not part of the random robustness sample",
   "examples": [
     {
@@ -218,7 +218,7 @@
       "concept": 3,
       "title": "Consider the pawn move before the capture",
       "prompt": "The bishop can capture the knight on e5. Is that the move you would choose?",
-      "explanation": "Maia strongly favours ...Bxe5. Stockfish prefers ...g5, which supports Black's pawn on f4. In the alternative line, ...Bxe5 dxe5 ...Rxe5 clears the diagonal for White's bishop to capture on f4. The pawn move changes that tactical detail: a bishop taking on f4 would face ...gxf4. This is one concrete difference to inspect in the continuations, not a complete explanation of the engine evaluation. A quiet move can have a tactical purpose.",
+      "explanation": "Maia strongly favours ...Bxe5. Stockfish prefers ...g5, which supports Black's pawn on f4. In the alternative line, ...Bxe5 dxe5 ...Rxe5 Bxf4 lets White take the undefended f4-pawn. The pawn move changes that tactical detail: a bishop taking on f4 would face ...gxf4. This is one concrete difference to inspect in the continuations, not a complete explanation of the engine evaluation. A quiet move can have a tactical purpose.",
       "primary": {
         "fen": "rnbqr1k1/p1p2pp1/1p1b1n1p/3PN3/2PP1p2/2N5/PP2B1PP/R1BQ1RK1 b - - 1 10",
         "game_id": "3FQi7QTZ",
@@ -628,5 +628,7 @@
         "drill_index": 0
       }
     }
-  ]
+  ],
+  "previous_concepts_sha256": "64a5b458ce91699295468bb4df2b97f1cf402d4cef2960a0f078afb198177477",
+  "source_update": "2026-09-08: replaced an unrelated study position (1:1); all six illustrated positions and their analyses are unchanged."
 }

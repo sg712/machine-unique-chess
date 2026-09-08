@@ -44,7 +44,6 @@ are labels, not difficulty levels; <a href="{{ url_for('learn') }}">Learn</a> su
     <div class="mini" data-cid="{{ c.id }}" aria-hidden="true"></div>
     <div class="pattern-copy">
       <h3>{{ c.name }}</h3>
-      <p>{{ blurbs[c.id] }}</p>
       <span class="small">{% if p.n %}{{ p.correct }}/{{ p.n }} solved
       {% elif p.studied %}Examples studied · ready to practice
       {% else %}4 examples · 36 practice positions{% endif %}</span>

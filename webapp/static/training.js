@@ -32,7 +32,7 @@ export function focusHeading(element) {
 }
 
 // One viewer for study feedback, drill feedback, and test review.
-export function replay(holder, line, pieces, picked = null) {
+export function replay(holder, line, pieces, picked = null, label = 'Engine line') {
   holder.replaceChildren();
   const boardEl = document.createElement('div');
   const controls = document.createElement('div');
@@ -69,7 +69,7 @@ export function replay(holder, line, pieces, picked = null) {
   function show(n) {
     current = Math.max(0, Math.min(line.frames.length - 1, n));
     const frame = line.frames[current]; board.setPosition(frame.fen, frame.last);
-    status.textContent = current ? `Engine line, move ${current}: ${line.sans[current - 1]}` : 'Starting position';
+    status.textContent = current ? `${label}, move ${current}: ${line.sans[current - 1]}` : 'Starting position';
     previous.disabled = current === 0; next.disabled = current === line.frames.length - 1;
     moves.querySelectorAll('button').forEach((b, i) => {
       if (i === current - 1) b.setAttribute('aria-current', 'step');

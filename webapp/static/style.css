@@ -94,18 +94,20 @@ label { display:block; font-family:var(--sans); font-size:.9rem;
 .counter { font-family:var(--mono); font-size:.8rem; letter-spacing:.1em; color:var(--faint); }
 
 /* ── study ─────────────────────────────────────────────────────────────── */
-.protos { display:flex; flex-wrap:wrap; gap:2rem; margin-top:1.4rem; }
-.proto { width:min(300px,100%); }
-.proto .board { width:100%; }
-.proto .ctl { display:flex; align-items:center; justify-content:center; gap:.8rem;
-  margin:.5rem 0 .3rem; font-family:var(--mono); font-size:.8rem; }
-.proto .ctl button { font:inherit; border:1px solid var(--rule); background:var(--paper);
-  color:var(--accent); cursor:pointer; padding:.1rem .55rem; }
-.proto .pos { color:var(--faint); min-width:6.5rem; text-align:center; }
-.proto .mv { font-size:.86rem; line-height:1.9; }
-.proto .mv button { font:inherit; border:none; background:none; color:var(--ink);
-  cursor:pointer; padding:.04rem .22rem; font-weight:600; }
-.proto .mv button.cur { background:var(--ink); color:var(--paper); }
+.protos { margin-top:1.4rem; }
+.study-example { border-top:1px solid var(--rule); padding:1.6rem 0; }
+.study-layout { display:grid; grid-template-columns:minmax(0,360px) minmax(0,1fr); gap:1.5rem 2rem; align-items:start; }
+.study-layout .replay { margin-top:.8rem; }
+.study-layout .board { width:100%; }
+.study-line-choice { display:grid; gap:.3rem; font: .9rem var(--sans); }
+.study-line-choice select { width:100%; min-width:0; font:inherit; color:var(--ink); background:var(--paper); border:1px solid var(--rule); padding:.55rem .4rem; }
+.study-explanation p:first-child { margin-top:0; }
+.study-explanation h4 { margin:1.4rem 0 .4rem; font-size:1rem; }
+.study-notice { border-top:1px solid var(--rule); padding-top:1rem; font-style:italic; }
+@media (max-width:700px) {
+  .study-layout { grid-template-columns:minmax(0,1fr); gap:.5rem; }
+  .study-layout .board { max-width:360px; }
+}
 
 /* ── tables & bars ─────────────────────────────────────────────────────── */
 table { border-collapse:collapse; font-size:.9rem; width:100%; max-width:38rem; margin:.6rem 0 1.4rem; }

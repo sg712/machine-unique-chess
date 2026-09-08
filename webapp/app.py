@@ -67,6 +67,7 @@ VALIDATION = {
     "contrast": json.load(open(ROOT / "results" / "26_why_invisible.json")),
 }
 RESEARCH_EXAMPLES = json.load(open(ROOT / "webapp" / "research_examples.json"))
+STUDY_NOTES = {n["id"]: n for n in json.load(open(ROOT / "webapp" / "study_notes.json"))["items"]}
 
 
 # ── storage ───────────────────────────────────────────────────────────────────
@@ -236,6 +237,13 @@ def frames_of(fen: str, pv: list) -> dict:
     return out
 
 
+def study_line(note, key):
+    # Keep the replay focused, including every move cited by the explanation.
+    last_claim = max((claim["ply"] for claim in note.get("claims", [])
+                      if claim["line"] == key), default=0)
+    return frames_of(note["fen"], note[key]["pv"][:max(12, last_claim)])
+
+
 # ── pages ─────────────────────────────────────────────────────────────────────
 @app.route("/")
 def index():
@@ -243,13 +251,6 @@ def index():
     previews = {c["id"]: {"fen": c["study"][0]["fen"],
                           "orientation": c["study"][0]["stm"],
                           "best": c["study"][0]["best"]} for c in CONCEPTS}
-    blurbs = {}
-    for c in CONCEPTS:
-        sig = c["signature"]
-        phase = max(sig["phase"], key=sig["phase"].get)
-        piece = max(sig["pieces"], key=sig["pieces"].get)
-        quiet = "quiet " if sig["quiet_share"] >= 0.75 else ""
-        blurbs[c["id"]] = f"Mostly {phase}s; the answer is usually a {quiet}{piece} move."
     rows = curriculum(code)
     nxt = next((r for r in rows if r["state"] != "done"), rows[0])
     featured = RESEARCH_EXAMPLES["examples"][0]["primary"]
@@ -258,7 +259,7 @@ def index():
         colors={"square light": "#f2ece0", "square dark": "#b9906b"})
     return render_template("index.html", code=code, concepts=CONCEPTS, nxt=nxt,
                            prog=concept_progress(code), totals=totals(),
-                           previews=previews, pieces=piece_svgs(), blurbs=blurbs,
+                           previews=previews, pieces=piece_svgs(),
                            featured=featured, featured_board=featured_board)
 
 
@@ -280,10 +281,6 @@ def curriculum(code=None):
         r["state"] = ("done" if p["n"] >= p["of"] else
                       "going" if p["n"] > 0 else
                       "studied" if p["studied"] else "new")
-        sig = r["c"]["signature"]
-        phase = max(sig["phase"], key=sig["phase"].get)
-        piece = max(sig["pieces"], key=sig["pieces"].get)
-        r["blurb"] = f"Mostly {phase}s · usually a {piece} move"
     return rows
 
 
@@ -312,8 +309,16 @@ def concept(cid):
     code = me()
     p = concept_progress(code)[cid]
     lines = []
-    for st in c["study"]:
-        line = frames_of(st["fen"], st["pv"])
+    for index, st in enumerate(c["study"]):
+        note = STUDY_NOTES[f"{cid}:{index}"]
+        if (note["fen"], note["best"]) != (st["fen"], st["best"]):
+            raise ValueError("Study explanation does not match the position")
+        line = study_line(note, "engine")
+        line["note"] = {key: note[key] for key in ("title", "why", "alternative", "notice")}
+        line["comparison"] = study_line(note, "comparison")
+        line["comparison"]["san"] = note["comparison"]["san"]
+        line["variations"] = [{"label": v["label"], **frames_of(st["fen"], v["pv"])}
+                              for v in note.get("variations", [])]
         line.update(board_of(st["fen"]))
         line["best"] = st["best"]
         line["best_san"] = st["best_san"]

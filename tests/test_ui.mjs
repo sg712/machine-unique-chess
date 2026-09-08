@@ -163,3 +163,36 @@ test('quiz saves drafts, resumes on reload, and guards final duplicate submissio
   assert.equal(t.fetches.length,2);assert.deepEqual(t.fetches[0].payload,t.fetches[1].payload);
   t.dom.window.close();
 });
+
+
+test('all study explanations stay hidden until checked and comparison lines replay', async () => {
+  for (let cid = 0; cid < 8; cid++) {
+    const s = await setup(pages[`/pattern/${cid}`], {page:true});
+    s.document.getElementById('tutgo').click();
+    for (let index = 0; index < 4; index++) {
+      assert.equal(s.document.querySelector('#try-replay .study-explanation'), null);
+      play(s.document); s.document.getElementById('trylock').click();
+      const holder = s.document.getElementById('try-replay');
+      assert.ok(holder.querySelector('.study-explanation').textContent.length > 150);
+      const select = holder.querySelector('select');
+      const engineMove = holder.querySelector('.replay-moves button').textContent;
+      select.value = '1'; select.dispatchEvent(new s.w.Event('change'));
+      assert.match(holder.querySelector('.replay-status').textContent, /Comparison line/);
+      const alternativeMove = holder.querySelector('.replay-moves button').textContent;
+      assert.notEqual(engineMove, alternativeMove);
+      assert.ok(select.options[1].textContent.includes(alternativeMove));
+      for (let variant = 2; variant < select.options.length; variant++) {
+        select.value = String(variant); select.dispatchEvent(new s.w.Event('change'));
+        assert.match(holder.querySelector('.replay-status').textContent, /Side variation/);
+      }
+      select.value = '0'; select.dispatchEvent(new s.w.Event('change'));
+      assert.equal(holder.querySelector('.replay-moves button').textContent, engineMove);
+      s.document.getElementById('trynext').click();
+    }
+    assert.equal(s.document.getElementById('studyStage').style.display, '');
+    assert.equal(s.document.querySelectorAll('#protos .study-explanation').length, 4);
+    s.document.getElementById('redo').click();
+    assert.equal(s.document.querySelector('#try-replay .study-explanation'), null);
+    s.dom.window.close();
+  }
+});

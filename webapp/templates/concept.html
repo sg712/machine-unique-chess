@@ -8,7 +8,6 @@
 <h1 class="tight">{{ c.name }}
   {% if here %}<span class="pill t-{{ here.tier|lower }}"
     style="vertical-align:middle;margin-left:.5rem">{{ here.tier }}</span>{% endif %}</h1>
-{% if here %}<p class="lede">{{ here.blurb }}.</p>{% endif %}
 
 {% if request.args.get('done') and prog.n >= prog.of %}
 <div class="donecard" id="doneStage">
@@ -28,7 +27,7 @@
 
 <div class="tut" id="tutorial" style="display:none">
   <h3>Before you start</h3>
-  <p>Try four positions without hints. After each move, you can replay the engine’s answer.
+  <p>Try four positions without hints. After each move, read why the answer works and compare it with another candidate.
   Then you’ll compare the four examples and practice on new positions.</p>
   <div class="row">
     <button class="btn p" id="tutgo">Start &rarr;</button>
@@ -38,7 +37,7 @@
 
 <div id="tryStage">
   <h2>Try the four examples</h2>
-  <p>Choose the move you would play in a game. You can check the answer and replay the line after each position.</p>
+  <p>Choose the move you would play in a game. After checking your move, you can read the explanation and replay both continuations.</p>
 
   <div class="stage trybox">
     <div id="tryboard"></div>
@@ -52,7 +51,7 @@
       <div id="tryfb" style="display:none">
         <p class="verdict" id="tryverdict" role="status"></p>
         <p id="tryline"></p>
-        <p class="reflection">Replay the continuation. What does the engine’s move make possible?</p>
+        <p class="small">The comparison move is Maia’s top prediction for a 1900-rated player.</p>
       </div>
       <div class="tally" id="trytally"></div>
       <p class="counter" id="trycounter"></p>
@@ -65,7 +64,8 @@
 <div id="studyStage" style="display:none">
   <h2>Compare the four positions</h2>
   <p>These are the positions you just played. Step through the lines and look for similarities.
-  The groups came from the engine’s internal representations; they won’t always share one clear tactical idea.</p>
+  The groups came from the engine’s internal representations; they won’t always share one clear tactical idea.
+  Each comparison uses Maia’s top prediction for a 1900-rated player.</p>
 
   <div class="protos" id="protos"></div>
 
@@ -95,41 +95,19 @@
 import { Board } from "{{ url_for('static', filename='board.js') }}";
 const LINES = {{ lines|tojson }};
 const PIECES = {{ pieces|tojson }};
-import { replay, storage, focusHeading } from "{{ url_for('static', filename='training.js') }}";
+import { studyReplay } from "{{ url_for('static', filename='study.js') }}";
+import { storage, focusHeading } from "{{ url_for('static', filename='training.js') }}";
 const KEY = "mu_tried_{{ c.id }}";
 
-// ── stage 2: the study grid (unchanged behaviour) ─────────────────────────────
+// Build explanations only after the four attempts.
 function buildStudy() {
   const wrap = document.getElementById("protos");
   if (wrap.childElementCount) return;
-  LINES.forEach((line) => {
-    const box = document.createElement("div");
-    box.className = "proto";
-    const bd = document.createElement("div");
-    const ctl = document.createElement("div");
-    ctl.className = "ctl";
-    ctl.innerHTML = '<button data-d="-1" aria-label="previous">&#9664;</button>' +
-                    '<span class="pos">start</span>' +
-                    '<button data-d="1" aria-label="next">&#9654;</button>';
-    const mv = document.createElement("p");
-    mv.className = "mv";
-    mv.innerHTML = line.sans.map((s, k) => `<button data-go="${k + 1}">${s}</button>`).join(" ");
-    box.append(bd, ctl, mv);
+  LINES.forEach((line, index) => {
+    const box = document.createElement("article");
+    box.className = "study-example";
     wrap.appendChild(box);
-    const board = new Board(bd, { pieces: PIECES, orientation: line.orientation });
-    let cur = 0;
-    const show = (n) => {
-      cur = Math.max(0, Math.min(line.frames.length - 1, n));
-      const f = line.frames[cur];
-      board.setPosition(f.fen, f.last);
-      ctl.querySelector(".pos").textContent = cur === 0 ? "start" : line.sans[cur - 1];
-      mv.querySelectorAll("button").forEach((b, k) => b.classList.toggle("cur", k === cur - 1));
-    };
-    ctl.querySelectorAll("button").forEach(b =>
-      b.addEventListener("click", () => show(cur + (+b.dataset.d))));
-    mv.querySelectorAll("button").forEach(b =>
-      b.addEventListener("click", () => show(+b.dataset.go)));
-    show(0);
+    studyReplay(box, line, PIECES, null, `Example ${index + 1}`);
   });
 }
 
@@ -191,7 +169,7 @@ lock.addEventListener("click", () => {
   document.getElementById("tryline").textContent = `The engine plays ${line.best_san}. Use the board below to follow the line.`;
 
   board.setLegal([]);
-  replay(document.getElementById('try-replay'), line, PIECES, picked);
+  studyReplay(document.getElementById('try-replay'), line, PIECES, picked);
   document.getElementById("tryfb").style.display = "";
   document.getElementById("try-next-controls").hidden = false;
   focusHeading(document.getElementById("tryverdict"));

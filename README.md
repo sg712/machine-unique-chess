@@ -27,6 +27,8 @@ python -m pip install -r requirements.txt
 python webapp/app.py
 ```
 
+All 32 study examples have authored explanations, a replay of Maia’s preferred alternative, and checked tactical branches where needed. These notes live in `webapp/study_notes.json` with Stockfish search records; tests verify their position mapping and legal lines. The September 2026 review retired one unstable study answer and replaced it with an unused position from the same source group (see `results/34_study_corrections.json`). All 288 drill slots retain their original indices. These teaching checks are separate from the random research audit and are not evidence of learning gains.
+
 The Flask application serves precomputed data, with no engine or neural inference per request. Without `DATABASE_URL` it uses local SQLite; production uses Neon Postgres and a configured `SECRET_KEY`. See [webapp/README.md](webapp/README.md).
 
 ## Reproduce the research

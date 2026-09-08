@@ -3012,75 +3012,151 @@
     "predicted_find_1900": 0.117
    },
    {
-    "fen": "rq5k/4r1pp/3pB3/2p5/4PP2/PpQ5/1P4RP/2K3R1 b - - 1 30",
-    "best": "d6d5",
-    "best_san": "d5",
+    "fen": "r2q1kr1/2p2p1p/p1Qb1B2/2np1N2/8/1P1B1P2/P2P2PP/R4RK1 b - - 0 22",
+    "best": "d8b8",
+    "best_san": "Qb8",
     "pv": [
      {
-      "uci": "d6d5",
-      "san": "d5"
+      "uci": "d8b8",
+      "san": "Qb8"
      },
      {
-      "uci": "e6d5",
-      "san": "Bxd5"
+      "uci": "c6d5",
+      "san": "Qxd5"
      },
      {
-      "uci": "b8f4",
-      "san": "Qxf4+"
+      "uci": "c7c6",
+      "san": "c6"
      },
      {
-      "uci": "c3d2",
-      "san": "Qd2"
+      "uci": "d5d6",
+      "san": "Qxd6+"
      },
      {
-      "uci": "a8f8",
-      "san": "Rf8"
+      "uci": "b8d6",
+      "san": "Qxd6"
      },
      {
-      "uci": "d2f4",
-      "san": "Qxf4"
+      "uci": "f5d6",
+      "san": "Nxd6"
+     },
+     {
+      "uci": "c5d3",
+      "san": "Nxd3"
+     },
+     {
+      "uci": "g1h1",
+      "san": "Kh1"
+     },
+     {
+      "uci": "a6a5",
+      "san": "a5"
+     },
+     {
+      "uci": "d6e4",
+      "san": "Ne4"
+     },
+     {
+      "uci": "a8e8",
+      "san": "Re8"
+     },
+     {
+      "uci": "f6g5",
+      "san": "Bg5"
+     },
+     {
+      "uci": "e8e6",
+      "san": "Re6"
+     },
+     {
+      "uci": "g5e3",
+      "san": "Be3"
+     },
+     {
+      "uci": "f8e8",
+      "san": "Ke8"
+     },
+     {
+      "uci": "e4f2",
+      "san": "Nf2"
+     },
+     {
+      "uci": "d3b4",
+      "san": "Nb4"
+     },
+     {
+      "uci": "a1d1",
+      "san": "Rad1"
+     },
+     {
+      "uci": "b4c2",
+      "san": "Nc2"
+     },
+     {
+      "uci": "g2g4",
+      "san": "g4"
+     },
+     {
+      "uci": "e6e3",
+      "san": "Rxe3"
+     },
+     {
+      "uci": "d2e3",
+      "san": "dxe3"
+     },
+     {
+      "uci": "c2e3",
+      "san": "Nxe3"
+     },
+     {
+      "uci": "f2e4",
+      "san": "Ne4"
+     },
+     {
+      "uci": "g8g6",
+      "san": "Rg6"
      }
     ],
-    "gap_cp": 97,
-    "cost_cp": 109,
+    "gap_cp": 86,
+    "cost_cp": 340,
     "stm": "black",
     "human": [
      {
-      "uci": "b8f8",
-      "san": "Qf8",
-      "p": 0.3812
+      "uci": "d6h2",
+      "san": "Bxh2+",
+      "p": 0.5608
      },
      {
-      "uci": "b8b7",
-      "san": "Qb7",
-      "p": 0.2592
+      "uci": "d8f6",
+      "san": "Qxf6",
+      "p": 0.3412
      },
      {
-      "uci": "a8a7",
-      "san": "Raa7",
-      "p": 0.1285
+      "uci": "g8g2",
+      "san": "Rxg2+",
+      "p": 0.0492
      },
      {
-      "uci": "b8c7",
-      "san": "Qc7",
-      "p": 0.1048
+      "uci": "c5d3",
+      "san": "Nxd3",
+      "p": 0.0135
      },
      {
-      "uci": "b8g8",
-      "san": "Qg8",
-      "p": 0.0502
+      "uci": "d8c8",
+      "san": "Qc8",
+      "p": 0.0108
      },
      {
-      "uci": "e7e6",
-      "san": "Rxe6",
-      "p": 0.0225
+      "uci": "d8b8",
+      "san": "Qb8",
+      "p": 0.0087
      }
     ],
-    "p_best": 0.0103,
+    "p_best": 0.0087,
     "quiet": true,
-    "piece": "pawn",
+    "piece": "queen",
     "phase": "middlegame",
-    "predicted_find_1900": 0.0703
+    "predicted_find_1900": 0.0778
    },
    {
     "fen": "6r1/1pQ3Bk/p3p1pP/3pPn2/1P1P4/P7/5PK1/3R4 b - - 0 30",

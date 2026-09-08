@@ -37,7 +37,6 @@ the <a href="{{ url_for('blindspot_test') }}">twelve-position test</a>.</p>
         <b class="nm">{{ r.c.label }}</b>
         <span class="pill t-{{ r.tier|lower }}">{{ r.tier }}</span>
       </span>
-      <span class="bl">{{ r.blurb }}</span>
       <span class="pbar"><i style="width:{{ r.pct }}%"></i></span>
       <span class="st">
         {% if r.state == 'done' %}Finished · {{ r.p.correct }}/{{ r.p.of }} solved

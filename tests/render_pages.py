@@ -15,6 +15,7 @@ with tempfile.TemporaryDirectory(prefix='muc-dom-fixtures-') as tmp:
     target = client.get('/test?new=1').location
     pages = {route: client.get(route).get_data(as_text=True)
              for route in ['/', '/learn', '/pattern/0', '/pattern/0/drill', '/test', '/register', '/research']}
+    pages.update({f'/pattern/{i}': client.get(f'/pattern/{i}').get_data(as_text=True) for i in range(8)})
     pages['quiz'] = client.get(target).get_data(as_text=True)
     pages['quiz_url'] = target
     print(json.dumps(pages))
