@@ -1,6 +1,6 @@
 # Methods and data provenance
 
-Updated 8 September 2026. This document separates the historical corpus from new audits. Quantities are not interchangeable across experiments. Earlier versions are retained in Git history. The new balanced pilot is documented in [Version 2](MINING_V2.md).
+Updated 8 September 2026. This document separates the historical corpus from new audits. Quantities are not interchangeable across experiments. Earlier versions are retained in Git history. The balanced pilot is documented in [Version 2](MINING_V2.md); the full 248,810-observation expansion and source corrections are in [Version 3](MINING_V3.md).
 
 ## Research question and operational definition
 
@@ -50,7 +50,7 @@ Experiment 09 deduplicates full FEN strings and repairs missing elite source-gam
 
 ## Interpreting the observational results
 
-Exact agreement is not move quality. In 2,034 of 5,155 selected positions (39.5%), the saved runner-up is **less than 20cp** behind. An alternative can be good even when the real player did not match the first engine move. Full-corpus actual-move losses have not been computed; the new 48-position audit provides a limited comparison only.
+Exact agreement is not move quality. In 2,034 of 5,155 selected positions (39.5%), the saved runner-up is **less than 20cp** behind. A recorded alternative can be good even when it does not match the first engine move. The historical source games include bot accounts, so these agreement rates do not measure human performance alone. Full-corpus actual-move losses were not computed in version 1; the 48-position depth audit provides a limited comparison.
 
 The feature contrast shares a minimum evaluation gap; it does not match position difficulty, exact gap, phase, rating, time control or batch. Its label comes from Maia, not a direct measurement of thought. “Offers material” is a static attack/value proxy, not an assessment of compensation. The historical feature extractor also uses destination occupancy for captures and can misclassify en passant; no new feature-model rerun is claimed here. Monotonic associations in selected rows do not rule out selection effects.
 
@@ -78,7 +78,7 @@ Rating-band uncertainty uses 1,000 percentile bootstrap samples of source games 
 
 ## Predictive evaluation and corrections
 
-Experiment 20B's saved metrics use game-grouped folds after the elite-ID repair. The target is the actual player's exact agreement with the saved engine choice. Five-fold standard deviations describe variation among folds, not confidence intervals for a population effect. The old result files are retained as historical outputs, not silently replaced.
+Experiment 20B's saved metrics use game-grouped folds after the elite-ID repair. The target is exact agreement between the recorded move and the saved engine choice. Recovered source games include bot accounts, especially in the highest rating bands; this evaluation therefore does not establish accuracy for human players alone. Five-fold standard deviations describe variation among folds, not confidence intervals for a population effect. The old result files are retained as historical outputs, not silently replaced.
 
 Experiment 31 reruns 20A after moving PCA inside the training folds. Surface-category columns are now fixed to a declared chess vocabulary. Scaling and logistic fitting are inside each fold. Full baseline AUC is 0.755; adding 40 embedding components yields 0.732. Widths 2/5/10/20/40 do not improve the full rating-aware baseline. A position-only baseline gains approximately 0.007 at best; it is a different comparison. The width sweep is exploratory and uses the same folds, not nested model selection. These results neither demonstrate unique predictive value nor prove representational redundancy.
 

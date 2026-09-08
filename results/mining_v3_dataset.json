@@ -1,0 +1,650 @@
+{
+  "schema_version": 3,
+  "assembled_at": "2026-09-08T17:41:06.736065+00:00",
+  "complete": true,
+  "record_count": 248810,
+  "sides": {
+    "black": 124405,
+    "white": 124405
+  },
+  "origins": {
+    "historical_or_pilot_black": 124405,
+    "pilot_white": 1000,
+    "new_white": 123405
+  },
+  "cohort_cells": {
+    "black/club": 62054,
+    "black/elite": 62351,
+    "white/elite": 62351,
+    "white/club": 62054
+  },
+  "new_white_supplements": {
+    "cached_game_additional_white_plies": 95,
+    "elite_archive_slow_game": 143
+  },
+  "distinct_recorded_game_ids": 18339,
+  "canonical_duplicate_rows": {
+    "black": 886,
+    "white": 0
+  },
+  "unique_canonical_states": {
+    "black": 123519,
+    "white": 124405
+  },
+  "canonical_states_crossing_hash_splits": 135,
+  "history_available": {
+    "black": 124351,
+    "white": 124405
+  },
+  "mover_clock_available": {
+    "black": 62054,
+    "white": 61911
+  },
+  "bot_metadata": {
+    "black/False": 106420,
+    "black/True": 17931,
+    "black/None": 54,
+    "white/False": 124405
+  },
+  "analysis_roles": {
+    "prior_development": 158974,
+    "pilot_train": 2008,
+    "public_exposed": 3857,
+    "pilot_validation": 619,
+    "pilot_test": 649,
+    "new_train": 49302,
+    "new_test": 17240,
+    "new_validation": 16161
+  },
+  "time_controls": {
+    "black": {
+      "600+0": 51470,
+      "1800+0": 758,
+      "600+5": 7806,
+      "1500+0": 374,
+      "900+10": 1409,
+      "900+5": 174,
+      "600+10": 238,
+      "1800+2": 334,
+      "720+3": 13,
+      "1200+10": 49,
+      "600+2": 1110,
+      "1800+20": 63,
+      "900+15": 100,
+      "600+3": 556,
+      "900+0": 323,
+      "1500+10": 28,
+      "1800+15": 72,
+      "600+1": 642,
+      "1500+2": 14,
+      "900+30": 26,
+      "1800+10": 236,
+      "900+1": 120,
+      "900+2": 120,
+      "600+6": 11,
+      "2700+10": 13,
+      "900+14": 10,
+      "1200+5": 14,
+      "720+10": 1,
+      "3600+30": 39,
+      "1500+1": 61,
+      "1200+7": 1,
+      "2400+10": 28,
+      "2700+45": 10,
+      "10800+180": 3,
+      "1500+5": 14,
+      "840+15": 14,
+      "600+15": 56,
+      "180+0": 40343,
+      "180+2": 9412,
+      "480+1": 282,
+      "180+1": 1814,
+      "unknown": 54,
+      "300+1": 270,
+      "30+8": 13,
+      "900+3": 213,
+      "120+3": 159,
+      "15+5": 23,
+      "300+5": 417,
+      "300+2": 492,
+      "300+10": 138,
+      "300+3": 502,
+      "180+5": 147,
+      "60+10": 284,
+      "480+0": 260,
+      "60+3": 217,
+      "420+0": 251,
+      "180+3": 204,
+      "30+4": 13,
+      "480+2": 62,
+      "180+10": 366,
+      "300+0": 1119,
+      "60+4": 26,
+      "60+5": 155,
+      "45+5": 14,
+      "90+3": 56,
+      "120+2": 144,
+      "60+7": 14,
+      "15+8": 14,
+      "300+15": 81,
+      "1200+8": 146,
+      "60+20": 11,
+      "120+10": 36,
+      "30+5": 48,
+      "120+6": 14,
+      "120+5": 60,
+      "480+3": 13,
+      "45+4": 12,
+      "45+6": 14,
+      "240+0": 25,
+      "1800+30": 51,
+      "480+5": 22,
+      "0+5": 12,
+      "600+30": 28,
+      "60+30": 13,
+      "1800+1": 31
+    },
+    "white": {
+      "180+0": 54110,
+      "180+2": 6440,
+      "600+0": 51154,
+      "300+0": 400,
+      "600+5": 7728,
+      "480+0": 165,
+      "600+2": 109,
+      "900+10": 1292,
+      "600+3": 249,
+      "1800+0": 1009,
+      "900+0": 444,
+      "1500+0": 412,
+      "900+15": 134,
+      "180+1": 70,
+      "420+3": 28,
+      "300+5": 16,
+      "300+3": 15,
+      "300+2": 30,
+      "0+6": 12,
+      "900+14": 10,
+      "1200+5": 15,
+      "3600+30": 39,
+      "1200+10": 45,
+      "1800+20": 81,
+      "1200+7": 1,
+      "900+5": 22,
+      "2400+10": 39,
+      "600+10": 29,
+      "2700+45": 17,
+      "10800+180": 3,
+      "1500+5": 15,
+      "840+15": 17,
+      "600+15": 15,
+      "1800+10": 8,
+      "1200+8": 12,
+      "3600+10": 26,
+      "1500+3": 46,
+      "1800+5": 7,
+      "840+0": 15,
+      "2700+30": 8,
+      "1500+2": 14,
+      "7200+60": 13,
+      "1800+30": 31,
+      "1200+0": 12,
+      "900+30": 14,
+      "1800+1": 15,
+      "720+3": 2,
+      "600+1": 2,
+      "900+3": 15
+    }
+  },
+  "matching_cells": [
+    {
+      "side": "black",
+      "cohort": "club",
+      "rating_band": "1800_1999",
+      "phase": "endgame",
+      "n": 1657
+    },
+    {
+      "side": "black",
+      "cohort": "club",
+      "rating_band": "1800_1999",
+      "phase": "middlegame",
+      "n": 16094
+    },
+    {
+      "side": "black",
+      "cohort": "club",
+      "rating_band": "1800_1999",
+      "phase": "opening",
+      "n": 3771
+    },
+    {
+      "side": "black",
+      "cohort": "club",
+      "rating_band": "2000_2199",
+      "phase": "endgame",
+      "n": 1684
+    },
+    {
+      "side": "black",
+      "cohort": "club",
+      "rating_band": "2000_2199",
+      "phase": "middlegame",
+      "n": 15505
+    },
+    {
+      "side": "black",
+      "cohort": "club",
+      "rating_band": "2000_2199",
+      "phase": "opening",
+      "n": 3600
+    },
+    {
+      "side": "black",
+      "cohort": "club",
+      "rating_band": "2200_2399",
+      "phase": "endgame",
+      "n": 1544
+    },
+    {
+      "side": "black",
+      "cohort": "club",
+      "rating_band": "2200_2399",
+      "phase": "middlegame",
+      "n": 14453
+    },
+    {
+      "side": "black",
+      "cohort": "club",
+      "rating_band": "2200_2399",
+      "phase": "opening",
+      "n": 3149
+    },
+    {
+      "side": "black",
+      "cohort": "club",
+      "rating_band": "2400_2599",
+      "phase": "endgame",
+      "n": 38
+    },
+    {
+      "side": "black",
+      "cohort": "club",
+      "rating_band": "2400_2599",
+      "phase": "middlegame",
+      "n": 244
+    },
+    {
+      "side": "black",
+      "cohort": "club",
+      "rating_band": "2400_2599",
+      "phase": "opening",
+      "n": 51
+    },
+    {
+      "side": "black",
+      "cohort": "club",
+      "rating_band": "2600_2799",
+      "phase": "endgame",
+      "n": 6
+    },
+    {
+      "side": "black",
+      "cohort": "club",
+      "rating_band": "2600_2799",
+      "phase": "middlegame",
+      "n": 97
+    },
+    {
+      "side": "black",
+      "cohort": "club",
+      "rating_band": "2600_2799",
+      "phase": "opening",
+      "n": 18
+    },
+    {
+      "side": "black",
+      "cohort": "club",
+      "rating_band": "2800_plus",
+      "phase": "endgame",
+      "n": 7
+    },
+    {
+      "side": "black",
+      "cohort": "club",
+      "rating_band": "2800_plus",
+      "phase": "middlegame",
+      "n": 115
+    },
+    {
+      "side": "black",
+      "cohort": "club",
+      "rating_band": "2800_plus",
+      "phase": "opening",
+      "n": 21
+    },
+    {
+      "side": "black",
+      "cohort": "elite",
+      "rating_band": "2200_2399",
+      "phase": "endgame",
+      "n": 191
+    },
+    {
+      "side": "black",
+      "cohort": "elite",
+      "rating_band": "2200_2399",
+      "phase": "middlegame",
+      "n": 1524
+    },
+    {
+      "side": "black",
+      "cohort": "elite",
+      "rating_band": "2200_2399",
+      "phase": "opening",
+      "n": 330
+    },
+    {
+      "side": "black",
+      "cohort": "elite",
+      "rating_band": "2400_2599",
+      "phase": "endgame",
+      "n": 1452
+    },
+    {
+      "side": "black",
+      "cohort": "elite",
+      "rating_band": "2400_2599",
+      "phase": "middlegame",
+      "n": 15438
+    },
+    {
+      "side": "black",
+      "cohort": "elite",
+      "rating_band": "2400_2599",
+      "phase": "opening",
+      "n": 3012
+    },
+    {
+      "side": "black",
+      "cohort": "elite",
+      "rating_band": "2600_2799",
+      "phase": "endgame",
+      "n": 1541
+    },
+    {
+      "side": "black",
+      "cohort": "elite",
+      "rating_band": "2600_2799",
+      "phase": "middlegame",
+      "n": 15774
+    },
+    {
+      "side": "black",
+      "cohort": "elite",
+      "rating_band": "2600_2799",
+      "phase": "opening",
+      "n": 2941
+    },
+    {
+      "side": "black",
+      "cohort": "elite",
+      "rating_band": "2800_plus",
+      "phase": "endgame",
+      "n": 1519
+    },
+    {
+      "side": "black",
+      "cohort": "elite",
+      "rating_band": "2800_plus",
+      "phase": "middlegame",
+      "n": 16381
+    },
+    {
+      "side": "black",
+      "cohort": "elite",
+      "rating_band": "2800_plus",
+      "phase": "opening",
+      "n": 2248
+    },
+    {
+      "side": "white",
+      "cohort": "club",
+      "rating_band": "1800_1999",
+      "phase": "endgame",
+      "n": 1643
+    },
+    {
+      "side": "white",
+      "cohort": "club",
+      "rating_band": "1800_1999",
+      "phase": "middlegame",
+      "n": 16107
+    },
+    {
+      "side": "white",
+      "cohort": "club",
+      "rating_band": "1800_1999",
+      "phase": "opening",
+      "n": 3783
+    },
+    {
+      "side": "white",
+      "cohort": "club",
+      "rating_band": "2000_2199",
+      "phase": "endgame",
+      "n": 1697
+    },
+    {
+      "side": "white",
+      "cohort": "club",
+      "rating_band": "2000_2199",
+      "phase": "middlegame",
+      "n": 15496
+    },
+    {
+      "side": "white",
+      "cohort": "club",
+      "rating_band": "2000_2199",
+      "phase": "opening",
+      "n": 3595
+    },
+    {
+      "side": "white",
+      "cohort": "club",
+      "rating_band": "2200_2399",
+      "phase": "endgame",
+      "n": 1542
+    },
+    {
+      "side": "white",
+      "cohort": "club",
+      "rating_band": "2200_2399",
+      "phase": "middlegame",
+      "n": 14449
+    },
+    {
+      "side": "white",
+      "cohort": "club",
+      "rating_band": "2200_2399",
+      "phase": "opening",
+      "n": 3142
+    },
+    {
+      "side": "white",
+      "cohort": "club",
+      "rating_band": "2400_2599",
+      "phase": "endgame",
+      "n": 37
+    },
+    {
+      "side": "white",
+      "cohort": "club",
+      "rating_band": "2400_2599",
+      "phase": "middlegame",
+      "n": 246
+    },
+    {
+      "side": "white",
+      "cohort": "club",
+      "rating_band": "2400_2599",
+      "phase": "opening",
+      "n": 55
+    },
+    {
+      "side": "white",
+      "cohort": "club",
+      "rating_band": "2600_2799",
+      "phase": "endgame",
+      "n": 5
+    },
+    {
+      "side": "white",
+      "cohort": "club",
+      "rating_band": "2600_2799",
+      "phase": "middlegame",
+      "n": 96
+    },
+    {
+      "side": "white",
+      "cohort": "club",
+      "rating_band": "2600_2799",
+      "phase": "opening",
+      "n": 18
+    },
+    {
+      "side": "white",
+      "cohort": "club",
+      "rating_band": "2800_plus",
+      "phase": "endgame",
+      "n": 7
+    },
+    {
+      "side": "white",
+      "cohort": "club",
+      "rating_band": "2800_plus",
+      "phase": "middlegame",
+      "n": 115
+    },
+    {
+      "side": "white",
+      "cohort": "club",
+      "rating_band": "2800_plus",
+      "phase": "opening",
+      "n": 21
+    },
+    {
+      "side": "white",
+      "cohort": "elite",
+      "rating_band": "2200_2399",
+      "phase": "endgame",
+      "n": 190
+    },
+    {
+      "side": "white",
+      "cohort": "elite",
+      "rating_band": "2200_2399",
+      "phase": "middlegame",
+      "n": 1524
+    },
+    {
+      "side": "white",
+      "cohort": "elite",
+      "rating_band": "2200_2399",
+      "phase": "opening",
+      "n": 330
+    },
+    {
+      "side": "white",
+      "cohort": "elite",
+      "rating_band": "2400_2599",
+      "phase": "endgame",
+      "n": 1450
+    },
+    {
+      "side": "white",
+      "cohort": "elite",
+      "rating_band": "2400_2599",
+      "phase": "middlegame",
+      "n": 15437
+    },
+    {
+      "side": "white",
+      "cohort": "elite",
+      "rating_band": "2400_2599",
+      "phase": "opening",
+      "n": 3012
+    },
+    {
+      "side": "white",
+      "cohort": "elite",
+      "rating_band": "2600_2799",
+      "phase": "endgame",
+      "n": 1540
+    },
+    {
+      "side": "white",
+      "cohort": "elite",
+      "rating_band": "2600_2799",
+      "phase": "middlegame",
+      "n": 15773
+    },
+    {
+      "side": "white",
+      "cohort": "elite",
+      "rating_band": "2600_2799",
+      "phase": "opening",
+      "n": 2941
+    },
+    {
+      "side": "white",
+      "cohort": "elite",
+      "rating_band": "2800_plus",
+      "phase": "endgame",
+      "n": 1521
+    },
+    {
+      "side": "white",
+      "cohort": "elite",
+      "rating_band": "2800_plus",
+      "phase": "middlegame",
+      "n": 16381
+    },
+    {
+      "side": "white",
+      "cohort": "elite",
+      "rating_band": "2800_plus",
+      "phase": "opening",
+      "n": 2252
+    }
+  ],
+  "historical_vs_new_white_matching": {
+    "exact": true,
+    "cell_differences": [],
+    "note": "White quotas use the source profile available at selection. Later recovered rating corrections may leave small cell differences; the older pilot also has its own distribution."
+  },
+  "input_sha256": {
+    "data/mining_v3/black.jsonl": "f747a65b6392b36c287f7dadf536f86f203d33460fe1a3d1fef52cc0429aea13",
+    "data/mining_v2/positions.jsonl": "d5d166f9587b4800bd28a0cd740f176bad0579875bc99a32895b4584b0d0b197",
+    "data/mining_v3/white_new.jsonl": "7f5437550da17b5842629e5506b83e8037d74128593d652a23fd7e0f41a2770e"
+  },
+  "positions_sha256": "178d577a33bf5ede9a7c964d00ab98786f814f78d9d3902fcd4760b8800d6e27",
+  "exclusions": {
+    "input_sha256": {
+      "webapp/concepts.json": "1e736d4eba05a71b5e9729c8a068713b200b2b5eec13ae71a3f58e0a13213e59",
+      "webapp/research_examples.json": "85da02ebc829c5bea6c7d3c50d341770ac341bed318d9e096f722e933ff23341",
+      "results/master_all.csv": "2dd81c17c859d700da8749c575f280fccd3a2f2c81b38418d98a26ff5f6275ec"
+    },
+    "canonical_positions": 320,
+    "game_ids": 311,
+    "matching_master_rows": 320
+  },
+  "limitations": [
+    "Balanced observation counts do not imply independent positions or equal unique-state counts.",
+    "Historical records and their related games have already informed development; a hash split does not make them fresh held-out data.",
+    "Game identities may remain unresolved, and distinct recorded IDs may refer to the same game.",
+    "New White sampling matches specified cohort/rating/phase cells; missing clocks and time controls remain missing.",
+    "This is a constructed archive sample, not representative of all human chess.",
+    "Dataset completion does not mean every row has completed fresh engine/model analysis or qualifies as a puzzle."
+  ]
+}

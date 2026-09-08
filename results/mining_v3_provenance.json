@@ -1,0 +1,367 @@
+{
+  "historical": {
+    "rows": 123405,
+    "known_bot_game": 17931,
+    "known_bot_mover": 17917,
+    "known_bot_opponent": 17875,
+    "known_human_game": 105420,
+    "source_unknown": 54,
+    "rating_corrected": 207,
+    "source_games_with_bots": 1507
+  },
+  "selected_5155": {
+    "rows": 5155,
+    "known_bot_game": 886,
+    "known_bot_mover": 886,
+    "known_bot_opponent": 885,
+    "known_human_game": 4266,
+    "source_unknown": 3,
+    "rating_corrected": 8,
+    "source_games_with_bots": 602
+  },
+  "public_trainer": {
+    "rows": 320,
+    "known_bot_game": 38,
+    "known_bot_mover": 38,
+    "known_bot_opponent": 38,
+    "known_human_game": 282,
+    "source_unknown": 0,
+    "rating_corrected": 0,
+    "source_games_with_bots": 36
+  },
+  "public_drill": {
+    "rows": 288,
+    "known_bot_game": 36,
+    "known_bot_mover": 36,
+    "known_bot_opponent": 36,
+    "known_human_game": 252,
+    "source_unknown": 0,
+    "rating_corrected": 0,
+    "source_games_with_bots": 34
+  },
+  "public_study": {
+    "rows": 32,
+    "known_bot_game": 2,
+    "known_bot_mover": 2,
+    "known_bot_opponent": 2,
+    "known_human_game": 30,
+    "source_unknown": 0,
+    "rating_corrected": 0,
+    "source_games_with_bots": 2
+  },
+  "research_examples": {
+    "rows": 6,
+    "known_bot_game": 0,
+    "known_bot_mover": 0,
+    "known_bot_opponent": 0,
+    "known_human_game": 6,
+    "source_unknown": 0,
+    "rating_corrected": 0,
+    "source_games_with_bots": 0
+  },
+  "selected_find_rate_by_source": [
+    {
+      "rating_bin": "1800_1999",
+      "source_status": "bot",
+      "selected": 4,
+      "found": 1,
+      "exact_historical_best_rate": 0.25
+    },
+    {
+      "rating_bin": "1800_1999",
+      "source_status": "human",
+      "selected": 827,
+      "found": 54,
+      "exact_historical_best_rate": 0.06529625151148731
+    },
+    {
+      "rating_bin": "2000_2199",
+      "source_status": "bot",
+      "selected": 6,
+      "found": 1,
+      "exact_historical_best_rate": 0.16666666666666666
+    },
+    {
+      "rating_bin": "2000_2199",
+      "source_status": "human",
+      "selected": 836,
+      "found": 109,
+      "exact_historical_best_rate": 0.1303827751196172
+    },
+    {
+      "rating_bin": "2200_2399",
+      "source_status": "bot",
+      "selected": 36,
+      "found": 14,
+      "exact_historical_best_rate": 0.3888888888888889
+    },
+    {
+      "rating_bin": "2200_2399",
+      "source_status": "human",
+      "selected": 792,
+      "found": 117,
+      "exact_historical_best_rate": 0.14772727272727273
+    },
+    {
+      "rating_bin": "2400_2599",
+      "source_status": "bot",
+      "selected": 51,
+      "found": 13,
+      "exact_historical_best_rate": 0.2549019607843137
+    },
+    {
+      "rating_bin": "2400_2599",
+      "source_status": "human",
+      "selected": 799,
+      "found": 132,
+      "exact_historical_best_rate": 0.16520650813516896
+    },
+    {
+      "rating_bin": "2400_2599",
+      "source_status": "unknown",
+      "selected": 1,
+      "found": 1,
+      "exact_historical_best_rate": 1.0
+    },
+    {
+      "rating_bin": "2600_2799",
+      "source_status": "bot",
+      "selected": 146,
+      "found": 95,
+      "exact_historical_best_rate": 0.6506849315068494
+    },
+    {
+      "rating_bin": "2600_2799",
+      "source_status": "human",
+      "selected": 753,
+      "found": 149,
+      "exact_historical_best_rate": 0.19787516600265603
+    },
+    {
+      "rating_bin": "2800_plus",
+      "source_status": "bot",
+      "selected": 643,
+      "found": 459,
+      "exact_historical_best_rate": 0.713841368584759
+    },
+    {
+      "rating_bin": "2800_plus",
+      "source_status": "human",
+      "selected": 259,
+      "found": 53,
+      "exact_historical_best_rate": 0.20463320463320464
+    },
+    {
+      "rating_bin": "2800_plus",
+      "source_status": "unknown",
+      "selected": 2,
+      "found": 1,
+      "exact_historical_best_rate": 0.5
+    }
+  ],
+  "selected_find_rate_legacy_band_boundaries": [
+    {
+      "rating_bin": "(2000,2200]",
+      "source_status": "bot",
+      "selected": 6,
+      "found": 1,
+      "exact_historical_best_rate": 0.16666666666666666
+    },
+    {
+      "rating_bin": "(2000,2200]",
+      "source_status": "human",
+      "selected": 841,
+      "found": 109,
+      "exact_historical_best_rate": 0.12960760998810938
+    },
+    {
+      "rating_bin": "(2200,2400]",
+      "source_status": "bot",
+      "selected": 36,
+      "found": 14,
+      "exact_historical_best_rate": 0.3888888888888889
+    },
+    {
+      "rating_bin": "(2200,2400]",
+      "source_status": "human",
+      "selected": 786,
+      "found": 117,
+      "exact_historical_best_rate": 0.14885496183206107
+    },
+    {
+      "rating_bin": "(2400,2600]",
+      "source_status": "bot",
+      "selected": 51,
+      "found": 13,
+      "exact_historical_best_rate": 0.2549019607843137
+    },
+    {
+      "rating_bin": "(2400,2600]",
+      "source_status": "human",
+      "selected": 804,
+      "found": 132,
+      "exact_historical_best_rate": 0.16417910447761194
+    },
+    {
+      "rating_bin": "(2400,2600]",
+      "source_status": "unknown",
+      "selected": 1,
+      "found": 1,
+      "exact_historical_best_rate": 1.0
+    },
+    {
+      "rating_bin": "(2600,2800]",
+      "source_status": "bot",
+      "selected": 153,
+      "found": 99,
+      "exact_historical_best_rate": 0.6470588235294118
+    },
+    {
+      "rating_bin": "(2600,2800]",
+      "source_status": "human",
+      "selected": 750,
+      "found": 149,
+      "exact_historical_best_rate": 0.19866666666666666
+    },
+    {
+      "rating_bin": "<=2000",
+      "source_status": "bot",
+      "selected": 4,
+      "found": 1,
+      "exact_historical_best_rate": 0.25
+    },
+    {
+      "rating_bin": "<=2000",
+      "source_status": "human",
+      "selected": 828,
+      "found": 54,
+      "exact_historical_best_rate": 0.06521739130434782
+    },
+    {
+      "rating_bin": ">2800",
+      "source_status": "bot",
+      "selected": 636,
+      "found": 455,
+      "exact_historical_best_rate": 0.7154088050314465
+    },
+    {
+      "rating_bin": ">2800",
+      "source_status": "human",
+      "selected": 257,
+      "found": 53,
+      "exact_historical_best_rate": 0.20622568093385213
+    },
+    {
+      "rating_bin": ">2800",
+      "source_status": "unknown",
+      "selected": 2,
+      "found": 1,
+      "exact_historical_best_rate": 0.5
+    }
+  ],
+  "historical_source_counts_by_rating_bin": [
+    {
+      "rating_bin": "1800_1999",
+      "source_status": "bot",
+      "positions": 82,
+      "rating_corrected": 0
+    },
+    {
+      "rating_bin": "1800_1999",
+      "source_status": "human",
+      "positions": 21141,
+      "rating_corrected": 12
+    },
+    {
+      "rating_bin": "2000_2199",
+      "source_status": "bot",
+      "positions": 97,
+      "rating_corrected": 1
+    },
+    {
+      "rating_bin": "2000_2199",
+      "source_status": "human",
+      "positions": 20550,
+      "rating_corrected": 17
+    },
+    {
+      "rating_bin": "2200_2399",
+      "source_status": "bot",
+      "positions": 837,
+      "rating_corrected": 0
+    },
+    {
+      "rating_bin": "2200_2399",
+      "source_status": "human",
+      "positions": 20190,
+      "rating_corrected": 24
+    },
+    {
+      "rating_bin": "2400_2599",
+      "source_status": "bot",
+      "positions": 824,
+      "rating_corrected": 4
+    },
+    {
+      "rating_bin": "2400_2599",
+      "source_status": "human",
+      "positions": 19253,
+      "rating_corrected": 34
+    },
+    {
+      "rating_bin": "2400_2599",
+      "source_status": "unknown",
+      "positions": 10,
+      "rating_corrected": 0
+    },
+    {
+      "rating_bin": "2600_2799",
+      "source_status": "bot",
+      "positions": 2354,
+      "rating_corrected": 25
+    },
+    {
+      "rating_bin": "2600_2799",
+      "source_status": "human",
+      "positions": 17892,
+      "rating_corrected": 6
+    },
+    {
+      "rating_bin": "2600_2799",
+      "source_status": "unknown",
+      "positions": 1,
+      "rating_corrected": 0
+    },
+    {
+      "rating_bin": "2800_plus",
+      "source_status": "bot",
+      "positions": 13737,
+      "rating_corrected": 84
+    },
+    {
+      "rating_bin": "2800_plus",
+      "source_status": "human",
+      "positions": 6394,
+      "rating_corrected": 0
+    },
+    {
+      "rating_bin": "2800_plus",
+      "source_status": "unknown",
+      "positions": 43,
+      "rating_corrected": 0
+    }
+  ],
+  "input_sha256": {
+    "black.jsonl": "f747a65b6392b36c287f7dadf536f86f203d33460fe1a3d1fef52cc0429aea13",
+    "concepts.json": "1e736d4eba05a71b5e9729c8a068713b200b2b5eec13ae71a3f58e0a13213e59",
+    "research_examples.json": "85da02ebc829c5bea6c7d3c50d341770ac341bed318d9e096f722e933ff23341"
+  },
+  "schema_version": 3,
+  "scope": "Recovered source metadata for the preserved historical corpus; exact-match outcomes retain historical engine answers.",
+  "limitations": [
+    "BOT status means the PGN carries an explicit BOT title; no tag is not an independent account audit.",
+    "The 54 unresolved historical source rows remain unknown, not human.",
+    "Source ratings replace documented erroneous FEN-only joins; historical outputs are preserved separately.",
+    "Historical agreement and model scores include bot accounts and do not establish human-only or independent puzzle performance."
+  ]
+}

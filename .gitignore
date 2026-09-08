@@ -36,3 +36,7 @@ node_modules/
 # Reproducible scripts and aggregate results/mining_v2_summary.json are public.
 data/mining_v2/
 results/mining_v2/
+
+# Version-3 full-corpus expansion: source games and per-position research outputs.
+data/mining_v3/
+results/mining_v3/

@@ -32,7 +32,9 @@ I don’t yet know whether practicing these positions improves play in new ones;
 that needs a controlled study.</p>
 <nav class="research-contents" aria-label="Research sections">
   <a href="#examples">Worked examples</a><a href="#method">Selection method</a>
-  <a href="#findings">Findings</a><a href="#new-mining">New mining run</a><a href="#robustness">Robustness checks</a>
+  <a href="#findings">Findings</a><a href="#new-mining">2,000-position pilot</a>
+  {% if mining_v3_dataset and mining_v3_dataset.complete %}<a href="#full-expansion">Full colour expansion</a>{% endif %}
+  <a href="#robustness">Robustness checks</a>
   <a href="#learning">Learning study</a><a href="#reproduce">Methods and data</a>
 </nav>
 
@@ -74,6 +76,15 @@ I haven’t converted them to FIDE ratings.</p>
 corpus are Black to move. Sampling every fourth ply before a move always landed on Black’s turn.
 I’ve fixed the samplers and kept the old results identified as version 1. The new run below
 includes both sides; the original figures and trainer still describe the earlier collection.</p>
+{% if mining_v3_provenance %}
+<p class="note"><b>Some of the original games were played by bots.</b> Recovering the source games
+identified BOT tags in {{ '{:,}'.format(mining_v3_provenance.historical.known_bot_game) }} original
+positions, including {{ mining_v3_provenance.selected_5155.known_bot_game }} of the 5,155 selected
+positions and {{ mining_v3_provenance.public_trainer.known_bot_game }} trainer positions.
+The historical agreement rates below mix human and bot accounts. They cannot be read as human
+success rates, especially in the highest rating bands.
+<a href="https://github.com/sg712/machine-unique-chess/blob/main/results/mining_v3_provenance.json">Source audit</a></p>
+{% endif %}
 <p class="note">The criterion compares the engine move with one model favourite. It does
 not require a unique good move. In <b>{{ '{:,}'.format(r.near_alternatives[1].n) }} positions
 ({{ '%.1f'|format(r.near_alternatives[1].rate * 100) }}%)</b>, the saved runner-up is less than
@@ -82,17 +93,30 @@ not require a unique good move. In <b>{{ '{:,}'.format(r.near_alternatives[1].n)
 also had to retain the engine move at depth 18 with a runner-up gap of at least 70 centipawns.
 That extra check does not apply to every position in the research corpus.</p>
 
-<h2 id="findings">What the players actually played</h2>
-<p>Players chose the exact engine move in {{ '{:,}'.format(r.exact_matches) }} of the selected
-positions. They played something else in {{ '{:,}'.format(r.hard_core_n) }} cases, including
-{{ '{:,}'.format(r.missed_by_2500_plus) }} with a player rated at least 2500.
+<h2 id="findings">What was played in the source games</h2>
+<p>The recorded move matched the exact engine choice in {{ '{:,}'.format(r.exact_matches) }} selected
+positions. Another move was recorded in {{ '{:,}'.format(r.hard_core_n) }} cases, including
+{{ '{:,}'.format(r.missed_by_2500_plus) }} with the moving account rated at least 2500.
 The data calls those nonmatches the “hard core.” Some alternative moves were good too,
 so these counts alone don’t tell us how well someone played or understood the position.</p>
 <div class="table-scroll" role="region" aria-label="Exact agreement by Lichess rating" tabindex="0">
-<table class="research"><caption>Exact agreement with the depth-16 engine choice</caption>
+<table class="research"><caption>Historical source-game agreement, including bot accounts</caption>
 <thead><tr><th scope="col">Lichess rating</th><th scope="col">Positions</th><th scope="col">Matches</th><th scope="col">Rate</th><th scope="col">95% interval</th></tr></thead>
 <tbody>{% for band in r.bands %}<tr><td>{{ band.label }}</td><td>{{ band.n }}</td><td>{{ band.exact_n }}</td>
 <td>{{ '%.1f'|format(band.exact_rate * 100) }}%</td><td>{{ '%.1f'|format(band.ci[0] * 100) }}–{{ '%.1f'|format(band.ci[1] * 100) }}%</td></tr>{% endfor %}</tbody></table></div>
+{% if mining_v3_provenance %}
+{% set highest = mining_v3_provenance.selected_find_rate_legacy_band_boundaries | selectattr('rating_bin', 'equalto', '>2800') | list %}
+{% set high_human = highest | selectattr('source_status', 'equalto', 'human') | list %}
+{% set high_bot = highest | selectattr('source_status', 'equalto', 'bot') | list %}
+{% if high_human and high_bot %}
+<p>Separating the sources changes the picture. Above 2800, the recorded move matched the old
+engine choice in <b>{{ high_human[0].found }}/{{ high_human[0].selected }}
+({{ '%.1f'|format(high_human[0].exact_historical_best_rate * 100) }}%)</b> selected positions
+from recovered games without BOT tags, compared with <b>{{ high_bot[0].found }}/{{ high_bot[0].selected }}
+({{ '%.1f'|format(high_bot[0].exact_historical_best_rate * 100) }}%)</b> in bot-tagged games.
+This uses recovered ratings and historical answers; it remains a selected archive comparison.</p>
+{% endif %}
+{% endif %}
 <p class="small">Confidence intervals use 1,000 bootstrap resamples of source games within each band.
 They do not account for repeated players or systematic differences between datasets.
 Rating bands exclude their lower bound and include their upper bound, except the first band.</p>
@@ -196,18 +220,21 @@ After that result, I used the representations to organise practice groups. I don
 
 <h3>How much to trust the test score</h3>
 <p>The saved difficulty model reaches AUC {{ '%.3f'|format(d.part_b_difficulty_model['everything cheap'].auc) }}
-and Brier score {{ '%.3f'|format(d.part_b_difficulty_model._brier) }} across the full corpus,
-with five folds grouped by game. It predicts exact agreement with the engine in source games.</p>
+and Brier score {{ '%.3f'|format(d.part_b_difficulty_model._brier) }} across the original corpus,
+with five folds grouped by game. It predicts exact agreement with the engine in source games.
+Those data include bot accounts, so this score does not establish performance on human players alone.</p>
 <p>The trainer's fixed-rating estimates and test placement use a refit on the full corpus,
 including trainer positions. Those item curves have not been calibrated against independent
 participant responses. A website practice session differs from playing under a game clock;
 the displayed placement is exploratory, not a measured Lichess or FIDE rating.</p>
 
-<h2 id="new-mining">A new run with both sides</h2>
-<p>I sampled <b>{{ '{:,}'.format(mining_v2.sample.n) }} new positions from
+<h2 id="new-mining">The 2,000-position pilot</h2>
+<p>The earlier pilot contains <b>{{ '{:,}'.format(mining_v2.sample.n) }} positions from
 {{ '{:,}'.format(mining_v2.sample.games) }} games</b>, evenly split between White and Black.
 Half come from slower club games and half from elite archives. I saved the preceding moves
-for every position, along with available clocks, and separated source games before selection.</p>
+for every position, along with available clocks, and separated source games before selection.
+Later recovery found that 281 Black pilot states already occurred in the historical corpus;
+the expanded audit records that earlier development exposure.</p>
 <p>This time I’m asking how likely the model is to choose <em>any</em> acceptable move,
 and how much its likely choices lose. A rare first choice isn’t enough if a common alternative
 is just as good. Stockfish 18 screens the positions; Maia-3 supplies complete move probabilities
@@ -235,6 +262,45 @@ the current model. The sample separates games and selected board states, not pla
 <a href="https://github.com/sg712/machine-unique-chess/blob/main/docs/MINING_V2.md">New methods</a> ·
 <a href="https://github.com/sg712/machine-unique-chess/blob/main/results/mining_v2_summary.json">Counts, thresholds and hashes</a></p>
 
+{% if mining_v3_dataset and mining_v3_dataset.complete %}
+<h2 id="full-expansion">Filling in the White side</h2>
+<p>I added <b>{{ '{:,}'.format(mining_v3_dataset.origins.new_white) }} real White-to-move positions</b>.
+With the original collection and the earlier pilot, the expanded file now has
+<b>{{ '{:,}'.format(mining_v3_dataset.sides.white) }} White and
+{{ '{:,}'.format(mining_v3_dataset.sides.black) }} Black observations</b>.
+The new White sample follows the corrected Black sample's rating-band and game-phase counts
+within the slower-game and elite groups.</p>
+<p>These are counts of saved observations. The Black side contains
+{{ mining_v3_dataset.canonical_duplicate_rows.black }} repeated board states, retained to keep the
+original records traceable. The White states are distinct. Positions from the same game are also
+related, so the number of rows is larger than the number of independent examples.</p>
+{% if mining_v3 and mining_v3.complete %}
+<p>All <b>{{ '{:,}'.format(mining_v3.screened_n) }} observations</b> have now had the same first-pass
+Stockfish 18 and Maia-3 analysis. The models receive the current board, without prior moves or clocks,
+because those details could not be recovered for every original position.</p>
+<p>The screen produced <b>{{ '{:,}'.format(mining_v3.counts.candidates_n) }} candidate observations</b>.
+It uses a fixed search budget and leaves unexamined moves explicit. These candidates have not passed
+the deeper, all-move checks used to accept a new puzzle.</p>
+<p>For a closer comparison, I also selected {{ '{:,}'.format(mining_v3.matched_human.per_side) }}
+positions per colour from recovered games without BOT tags. Each group has the same counts by
+rating band, game phase, time-control class and source month, with repeated states removed.
+This remains a comparison of selected archive games; it does not measure learning or puzzle-solving ability.</p>
+{% else %}
+<p>The full engine-and-model analysis is running. The completed collection counts above are
+separate from screening results, which will be reported after every batch has finished.</p>
+{% endif %}
+<p>The new sample includes {{ mining_v3_dataset.new_white_supplements.cached_game_additional_white_plies }}
+additional White turns from cached June games and
+{{ mining_v3_dataset.new_white_supplements.elite_archive_slow_game }} slower-game positions from
+the 2025 elite archives. Their sources are labelled; the full collection is not exactly matched by month or time control.</p>
+<p class="small">Some source histories remain unresolved. Previously used games retain their
+development history; assigning a new split does not turn them into fresh test data.
+<a href="https://github.com/sg712/machine-unique-chess/blob/main/docs/MINING_V3.md">Expansion methods</a> ·
+<a href="https://github.com/sg712/machine-unique-chess/blob/main/results/mining_v3_dataset.json">Dataset counts</a>
+{% if mining_v3 and mining_v3.complete %} ·
+<a href="https://github.com/sg712/machine-unique-chess/blob/main/results/mining_v3_summary.json">Screening results</a>{% endif %}</p>
+{% endif %}
+
 <h2 id="learning">Does practicing these positions help?</h2>
 <p><b>I haven’t run a controlled learning study yet.</b> The proposed experiment compares
 grouped and shuffled practice using the same positions, explanations and practice time.
@@ -255,7 +321,10 @@ Ordinary site use is not automatically enrolled in the study.</p>
 <table class="research"><caption>Each result has its own sample and evaluation</caption>
 <thead><tr><th scope="col">Analysis</th><th scope="col">Sample</th><th scope="col">Method / output</th></tr></thead><tbody>
 <tr><td>Mining</td><td>123,405 → 5,155</td><td>Stockfish depth 16; Maia-2 at four settings through 2000</td></tr>
-<tr><td>Version-2 pilot</td><td>{{ '{:,}'.format(mining_v2.sample.n) }} new positions</td><td>Equal sides; Stockfish 18 screening; complete Maia-3 policies with real history</td></tr>
+<tr><td>Version-2 pilot</td><td>{{ '{:,}'.format(mining_v2.sample.n) }} positions</td><td>Equal sides; Stockfish 18 screening; complete Maia-3 policies with real history</td></tr>
+{% if mining_v3_dataset and mining_v3_dataset.complete %}
+<tr><td>Full colour expansion</td><td>{{ '{:,}'.format(mining_v3_dataset.record_count) }} observations</td><td>Equal side counts; recovered source metadata; {% if mining_v3 and mining_v3.complete %}common FEN-only screening complete{% else %}full screening in progress{% endif %}</td></tr>
+{% endif %}
 <tr><td>Maia-3 ranking</td><td>77 selected + 56 controls</td><td>Top one / top five at 1100, 1500, 2000, 2300, 2600</td></tr>
 <tr><td>Motif reconstruction</td><td>646 selected + 400 controls</td><td>12 directions; average-direction R² 0.46</td></tr>
 <tr><td>Grouping</td><td>1,745 fitted + 3,410 assigned</td><td>Leela layer 10; exploratory k=8</td></tr>

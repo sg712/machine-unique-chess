@@ -19,6 +19,8 @@ The current private material draft contains six provisional families, eight posi
 
 ## Sample and provenance
 
+A later version-3 source audit found that 281 Black pilot states already occurred in the historical master corpus. All 2,000 pilot states are distinct within the pilot, but they are not all unseen relative to earlier development. The expanded audit records this overlap and keeps related source games marked as previously used. See [version 3](MINING_V3.md).
+
 The new sample contains **2,000 positions from 1,662 games**: 1,000 White and 1,000 Black, with 1,000 club and 1,000 elite positions. Each cohort independently has equal sides and 60/20/20 train/validation/test quotas. No game contributes more than two positions. All selected canonical states are distinct, and every saved full move history legally replays to its supplied FEN. Phase counts are 670 opening, 669 middlegame and 661 endgame under the sampler's declared material/ply rule. Rating and phase targets are approximately equal where cells exist; shortfalls are redistributed and reported.
 
 Club input is a bounded prefix of the official June 2026 Lichess archive, with both players at least 1800 and base time at least 600 seconds. The sampler stopped after 2,000 eligible games. Selected dates fall on June 1; this is not a random whole-month sample. All 1,000 selected club positions retain actual mover and opponent clocks. Elite input uses the saved September–November 2025 archives, excludes BOT-tag games, and retains missing clocks as null. Elite time controls remain mixed. These are constructed cohorts, not a representative or fully time-matched comparison.
