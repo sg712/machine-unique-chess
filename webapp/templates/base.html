@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{% block title %}Machine Unique Chess{% endblock %}</title>
 <meta property="og:title" content="Machine Unique Chess">
-<meta property="og:description" content="Play the moves engines see and humans miss. Study 8 mined patterns, then take the blind spot test.">
+<meta name="description" content="A chess research project by Shivansh Gupta. Study and practice positions where Stockfish and Maia, a model of human play, disagree.">
+<meta property="og:description" content="A chess research project by Shivansh Gupta. Study and practice positions where Stockfish and Maia, a model of human play, disagree.">
 <meta property="og:image" content="https://www.machine-unique-chess.com/static/og.png">
 <meta property="og:url" content="https://www.machine-unique-chess.com/">
 <meta property="og:type" content="website">
@@ -31,6 +32,11 @@
   </div>
   <main id="main" tabindex="-1">{% block body %}{% endblock %}</main>
   <noscript><p class="note">The interactive chessboards need JavaScript. You can still read the research and browse the patterns.</p></noscript>
+  <footer class="site-footer">
+    <span>A project by Shivansh Gupta</span>
+    <a href="{{ url_for('research') }}">Research notes</a>
+    <a href="https://github.com/sg712/machine-unique-chess">Source code</a>
+  </footer>
 </div>
 <script type="module" src="{{ url_for('static', filename='board.js') }}"></script>
 </body>

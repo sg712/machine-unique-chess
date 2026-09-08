@@ -4,16 +4,8 @@
 
 <div class="hero">
   <div>
-    <h1 class="tight">Learn the eight patterns</h1>
-  </div>
-  <div class="ring" aria-hidden="true">
-    {% set pc = (100 * tot.tried / tot.of)|round(0)|int if tot.of else 0 %}
-    <svg viewBox="0 0 80 80">
-      <circle class="rbg" cx="40" cy="40" r="34"/>
-      {% if pc > 0 %}<circle class="rfg" cx="40" cy="40" r="34"
-              stroke-dasharray="{{ (2.136 * pc)|round(1) }} 999"/>{% endif %}
-    </svg>
-    <span class="rv">{{ pc }}<i>%</i></span>
+    <h1 class="tight">Choose what to practice</h1>
+    <p>Eight groups of positions, starting with the ones the difficulty model expects to be easier.</p>
   </div>
 </div>
 
@@ -31,15 +23,15 @@
   <span class="go">{{ '→' }}</span>
 </a>
 {% else %}
-<p class="note">All eight finished. Try the <a href="{{ url_for('blindspot_test') }}">blind spot
-test</a> to see where you land now.</p>
+<p class="note">You’ve worked through all eight groups. You can revisit any of them or take
+the <a href="{{ url_for('blindspot_test') }}">twelve-position test</a>.</p>
 {% endif %}
 
 <div class="modules">
   {% for r in rows %}
   <a class="mod {{ r.state }}" href="{{ url_for('concept', cid=r.c.id) }}">
     <span class="num">{{ r.n }}</span>
-    <span class="thumb" data-cid="{{ r.c.id }}"></span>
+    <span class="thumb" data-cid="{{ r.c.id }}" aria-hidden="true"></span>
     <span class="body">
       <span class="top">
         <b class="nm">{{ r.c.label }}</b>
@@ -58,8 +50,8 @@ test</a> to see where you land now.</p>
   {% endfor %}
 </div>
 
-<p class="small" style="margin-top:1.6rem">Try four positions, study the engine's answers, then practice in sessions of five.
-Each pattern has {{ rows[0].p.of }} practice positions. Stop whenever you like; your progress saves. <a href="{{ url_for('research') }}">How these were found →</a></p>
+<p class="small endnote">Your progress saves as you go. <a href="{{ url_for('register') }}">Create an account</a>
+to continue on another device. <a href="{{ url_for('research') }}">How I chose the positions</a>.</p>
 
 <script type="module">
 import { Board } from "{{ url_for('static', filename='board.js') }}";

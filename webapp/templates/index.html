@@ -1,49 +1,55 @@
 {% extends "base.html" %}
 {% block body %}
 
-<h1>See the moves you would normally dismiss.</h1>
-<p class="lede">Practice the surprising moves chess engines favor, through real positions and examples you can replay.</p>
-<div class="row home-actions">
-  <a class="btn p" href="{{ url_for('concept', cid=nxt.c.id) }}">{{ 'Continue learning' if nxt.state != 'new' else 'Try your first position' }}</a>
-  <a class="btn ghost" href="{{ url_for('blindspot_test') }}">Find your blind spot</a>
-</div>
-<p class="small">No signup needed. Start with four examples, then practice five positions at a time.</p>
+<section class="opening-position" aria-labelledby="opening-title">
+  <h1 id="opening-title">Black to move.<br>What would you play?</h1>
+  <figure class="opening-board">
+    <div role="img" aria-label="Black to move. Black has a pawn on a3 and a knight on c5; White threatens the bishop on d6 with a knight on b5.">{{ featured_board|safe }}</div>
+    <figcaption>From a real game, before Black’s 34th move.</figcaption>
+  </figure>
+  <div class="opening-copy">
+    <p>The pawn on a3 is close to promotion. Would you push it, or move another piece first?</p>
+    <details class="opening-answer">
+      <summary>See Stockfish’s move</summary>
+      <p><b>{{ featured.best_san }}</b>. The knight retreats to protect the bishop on d6.
+      After Nxd6, Black can recapture with the knight. Pushing the pawn straight away loses that option.</p>
+      <a href="{{ url_for('research') }}#example-1">Play through both lines</a>
+    </details>
+    <p class="small">One of the positions behind Machine Unique Chess.</p>
+  </div>
+</section>
 
-<div class="bigstats">
-  <div class="bs"><b>123,405</b><span>positions from real games, analysed twice: by a
-    strong engine and by a model of human play</span></div>
-  <div class="bs"><b>4 in 100</b><span>meet the engine–Maia disagreement filter;
-    Maia-2 gives the engine move at most 5% probability at four tested ratings</span></div>
-  <div class="bs"><b>8</b><span>groups chosen for practice. Each card below is one
-    of them, from a real game</span></div>
-</div>
+<section class="project-intro" aria-labelledby="project-title">
+  <h2 id="project-title">Why these positions?</h2>
+  <p>I’m studying moves that Stockfish likes but Maia, a model of human play, is unlikely
+  to choose. I analysed 123,405 positions and selected 5,155 that met this filter.
+  The trainer uses 320 of them, organised into eight groups.</p>
+  <p>The question is whether practicing them helps us find similar moves in our own games.
+  I haven’t tested that with a controlled study yet. For now, you can try the positions
+  and read <a href="{{ url_for('research') }}">what I’ve found so far</a>.</p>
+  <div class="row home-actions">
+    <a class="btn p" href="{{ url_for('concept', cid=nxt.c.id) }}">{{ 'Continue practice' if nxt.state != 'new' else 'Start practicing' }}</a>
+    <a href="{{ url_for('blindspot_test') }}">Take the twelve-position test</a>
+  </div>
+  <p class="small">Four examples to study, then five positions at a time. No account needed.</p>
+</section>
 
-<p class="lede">Browse all eight patterns. Each has four study examples and 36 practice positions.</p>
-<p class="small">No signup needed to play. Register with an email when you want your
-progress everywhere. All ratings below are Lichess ratings.</p>
-
-<div class="cards">
+<h2>Choose a group</h2>
+<p class="small">Each has four study examples and 36 practice positions. The group numbers
+are labels, not difficulty levels; <a href="{{ url_for('learn') }}">Learn</a> suggests an order.</p>
+<div class="pattern-list">
   {% for c in concepts %}
   {% set p = prog[c.id] %}
-  <a class="card" href="{{ url_for('concept', cid=c.id) }}">
-    <div class="mini" data-cid="{{ c.id }}"></div>
-    <div class="ct">
-      <span class="nm">{{ c.name }}</span>
-      <span class="rate"><span class="rate-label">Found by players</span> {{ (c.signature.found_by_real_players * 100)|round(1) }}%</span>
+  <a class="pattern-entry" href="{{ url_for('concept', cid=c.id) }}">
+    <div class="mini" data-cid="{{ c.id }}" aria-hidden="true"></div>
+    <div class="pattern-copy">
+      <h3>{{ c.name }}</h3>
+      <p>{{ blurbs[c.id] }}</p>
+      <span class="small">{% if p.n %}{{ p.correct }}/{{ p.n }} solved
+      {% elif p.studied %}Examples studied · ready to practice
+      {% else %}4 examples · 36 practice positions{% endif %}</span>
     </div>
-    <p class="gl">{{ blurbs[c.id] }}</p>
-    <div class="sig">
-      <span>{{ c.signature.positions }} positions</span>
-      <span>{{ (c.signature.quiet_share * 100)|round(0)|int }}% quiet</span>
-      <span>{{ c.signature.avg_cost_cp }}cp average gap to Maia's favourite</span>
-    </div>
-    <div class="foot">
-      {% if p.n %}
-        <span class="prog">{{ p.correct }}/{{ p.n }} solved</span>
-        <span class="pbar"><span style="width:{{ (100 * p.n / p.of)|round(0)|int }}%"></span></span>
-      {% elif p.studied %}<span class="prog">studied &middot; not drilled</span>
-      {% else %}<span class="prog new">not started</span>{% endif %}
-    </div>
+    <span class="entry-action" aria-hidden="true">Open</span>
   </a>
   {% endfor %}
 </div>
@@ -59,22 +65,4 @@ document.querySelectorAll(".mini").forEach((el) => {
   board.setPosition(p.fen, null);
 });
 </script>
-
-<p class="small" style="margin-top:1.4rem">The percentage is how often players who
-actually reached these positions over the board found the engine's move. Lower means fewer found it in the source games.</p>
-
-<h2>Where this comes from</h2>
-<p>Every position comes from a real game. A position qualifies when Stockfish at depth 16
-rates its chosen move at least 100 centipawns above Maia-2's favourite at 2000, while
-Maia-2 assigns the engine move at most 5% probability at 1100, 1400, 1700 and 2000.
-Of 123,405 positions analysed, 5,155 qualified; in 3,956 the player chose a different move.
-Another move can still be good. Exact engine agreement is not the same as move quality.</p>
-<p>The eight groups above come from clustering the first 1,745 of those by how the engine
-represents them internally. <a href="{{ url_for('research') }}">The full method and findings &rarr;</a></p>
-
-{% if totals.attempts %}
-<p class="small">{{ totals.players }} players &middot; {{ totals.attempts }} positions attempted
-&middot; {{ totals.pct }}% solved.</p>
-{% endif %}
-
 {% endblock %}

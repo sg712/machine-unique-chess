@@ -2,10 +2,10 @@
 {% block title %}Research and evidence · Machine Unique Chess{% endblock %}
 {% macro comparison(pos, key) %}
 <div class="research-position" data-position="{{ key }}">
-  <p><b>{{ pos.stm }} to move.</b> Pick a candidate before revealing the comparison.</p>
+  <p><b>{{ pos.stm }} to move.</b> Choose a move before opening the answer.</p>
   <div class="research-board" role="group" aria-label="{{ pos.stm }} to move, chess position">{{ pos.svg|safe }}</div>
   <details class="research-reveal">
-    <summary>Reveal the engine move and compare the lines</summary>
+    <summary>Show the answer and continuations</summary>
     <p>Stockfish chooses <b>{{ pos.best_san }}</b>. Maia-2 at 1900 favours
       <b>{{ pos.human.san }}</b> (model probability {{ '%.1f'|format(pos.human.p * 100) }}%).</p>
     <p class="small">Depth-20 evaluation from {{ pos.stm|lower }}'s perspective:
@@ -23,23 +23,24 @@
 {% endmacro %}
 {% block body %}
 <article class="research-article">
-<h1>Can we learn from moves a human model overlooks?</h1>
-<p class="lede">This project finds disagreements between Stockfish and Maia, studies their
-structure, and turns selected positions into practice. The evidence supports a useful set
-of difficult examples. Whether practicing them improves play on unseen positions remains an open question.</p>
-<p class="small">Research updated 7 September 2026. New checks use the saved corpus and
-Stockfish 17.1; no new participant study has been completed.</p>
+<h1>What I found in the positions</h1>
+<p class="research-byline">Shivansh Gupta · Analysis updated 7 September 2026</p>
+<p class="lede">I used Stockfish and Maia to look for strong moves that a model of human play
+rarely chooses. That gave me a collection of positions to study, and eventually this trainer.</p>
+<p>Here are the examples, the selection method, and the checks that changed my interpretation.
+I don’t yet know whether practicing these positions improves play in new ones;
+that needs a controlled study.</p>
 <nav class="research-contents" aria-label="Research sections">
   <a href="#examples">Worked examples</a><a href="#method">Selection method</a>
   <a href="#findings">Findings</a><a href="#robustness">Robustness checks</a>
   <a href="#learning">Learning study</a><a href="#reproduce">Methods and data</a>
 </nav>
 
-<h2 id="examples">Start with three positions</h2>
-<p>These examples were chosen for explanation and checked at depth 20, with at least
-70 centipawns between the engine's first two moves. They are separate from the random audit.
-The additional position in each group comes from a different game; it is a practice example,
-not a validated test of transfer.</p>
+<h2 id="examples">Three positions to look at</h2>
+<p>I chose these examples because the lines help explain the moves. Each was checked at
+Stockfish depth 20, with at least 70 centipawns between its first two choices. They aren’t
+part of the random audit below. Each also has a second position from a different game to
+practice on; those pairs haven’t been tested as a measure of learning.</p>
 {% for example in examples %}
 <section class="research-example" aria-labelledby="example-{{ loop.index }}">
   <h3 id="example-{{ loop.index }}">{{ example.title }}</h3>
@@ -49,18 +50,18 @@ not a validated test of transfer.</p>
     <summary>Read the explanation</summary><p>{{ example.explanation }}</p>
   </details>
   <details class="research-related">
-    <summary>Try another position from this group</summary>
+    <summary>Another position to try</summary>
     {{ comparison(example.related, loop.index|string + '-related') }}
     <p class="small">Look for a useful candidate, then compare the continuations.
-      Membership of the same group does not guarantee the same tactical explanation.</p>
+      Positions in the same group can work for different tactical reasons.</p>
   </details>
-  <p class="small"><a href="{{ url_for('concept', cid=example.concept) }}">Explore Pattern {{ example.concept + 1 }}</a></p>
+  <p class="small"><a href="{{ url_for('concept', cid=example.concept) }}">Practice Pattern {{ example.concept + 1 }}</a></p>
 </section>
 {% endfor %}
 
 <h2 id="method">What “machine unique” means here</h2>
-<p>The term is a selection label, not a claim that no person could find the move.
-A position qualifies when Stockfish 17.1 at depth 16 gives its chosen move an evaluation
+<p>I use “machine unique” as shorthand for this filter. It doesn’t mean the move is impossible
+for a person to find. A position qualifies when Stockfish 17.1 at depth 16 gives its chosen move an evaluation
 at least <b>100 centipawns above Maia-2's favourite at 2000</b>, and Maia-2 assigns the
 engine move <b>at most 5% probability at each of 1100, 1400, 1700, and 2000</b>.</p>
 <p>This filter selected <b>{{ '{:,}'.format(r.mu_n) }} of {{ '{:,}'.format(r.n) }} positions
@@ -68,7 +69,7 @@ engine move <b>at most 5% probability at each of 1100, 1400, 1700, and 2000</b>.
 Lichess rated-game archives and the Lichess Elite Database, sampled at intervals during games.
 The corpus balances rating bands, but differs across batches in dates and time controls.
 It is not a random sample of all chess play. Ratings refer to the source Lichess pools;
-we do not convert them to FIDE ratings.</p>
+I haven’t converted them to FIDE ratings.</p>
 <p class="note">The criterion compares the engine move with one model favourite. It does
 not require a unique good move. In <b>{{ '{:,}'.format(r.near_alternatives[1].n) }} positions
 ({{ '%.1f'|format(r.near_alternatives[1].rate * 100) }}%)</b>, the saved runner-up is less than
@@ -77,11 +78,12 @@ not require a unique good move. In <b>{{ '{:,}'.format(r.near_alternatives[1].n)
 also had to retain the engine move at depth 18 with a runner-up gap of at least 70 centipawns.
 That extra check does not apply to every position in the research corpus.</p>
 
-<h2 id="findings">What the saved games show</h2>
-<p>The original player chose the exact engine move in {{ '{:,}'.format(r.exact_matches) }}
-of the selected positions. The other {{ '{:,}'.format(r.hard_core_n) }} are called the
-“hard core” in the data; {{ '{:,}'.format(r.missed_by_2500_plus) }} involved a player rated
-at least 2500. These counts measure exact agreement, not understanding or move quality.</p>
+<h2 id="findings">What the players actually played</h2>
+<p>Players chose the exact engine move in {{ '{:,}'.format(r.exact_matches) }} of the selected
+positions. They played something else in {{ '{:,}'.format(r.hard_core_n) }} cases, including
+{{ '{:,}'.format(r.missed_by_2500_plus) }} with a player rated at least 2500.
+The data calls those nonmatches the “hard core.” Some alternative moves were good too,
+so these counts alone don’t tell us how well someone played or understood the position.</p>
 <div class="table-scroll" role="region" aria-label="Exact agreement by Lichess rating" tabindex="0">
 <table class="research"><caption>Exact agreement with the depth-16 engine choice</caption>
 <thead><tr><th scope="col">Lichess rating</th><th scope="col">Positions</th><th scope="col">Matches</th><th scope="col">Rate</th><th scope="col">95% interval</th></tr></thead>
@@ -91,7 +93,7 @@ at least 2500. These counts measure exact agreement, not understanding or move q
 They do not account for repeated players or systematic differences between datasets.
 Rating bands exclude their lower bound and include their upper bound, except the first band.</p>
 
-<h3>A separate Maia-3 experiment reaches 2600</h3>
+<h3>Checking Maia-3 at higher ratings</h3>
 <p>Maia-3 ranked moves on <b>77 selected positions and 56 controls</b> at five rating settings.
 On the selected positions, the engine move's top-five inclusion rose from 28.6% at 1100
 to 57.1% at 2600; top-one agreement at 2600 was 2.6%. This smaller ranking experiment did
@@ -99,7 +101,7 @@ not re-filter the full corpus using probabilities through 2600.</p>
 <p>Higher top-five inclusion suggests the model ranks the move more favourably at higher
 ratings. It does not reveal whether a person considered the move and rejected it.</p>
 
-<h3>Quiet moves are common, but the comparison is observational</h3>
+<h3>Many of the moves are quiet</h3>
 <p>Among positions meeting the same minimum 100-centipawn gap, the low-probability group
 has more quiet moves and fewer captures or checks. Thirty binary chess features distinguish
 the low- and high-probability groups at AUC {{ '%.3f'|format(contrast.auc_logistic) }}
@@ -117,10 +119,10 @@ it does not establish why humans miss moves. The material-exposure proxy is not 
 of “no compensation.” A quiet move can begin a tactical combination.</p>
 
 <h3>Eight groups for practice</h3>
-<p>Clustering Leela Chess Zero layer-10 embeddings created eight groups on 1,745 positions.
-The later 3,410 positions were assigned to their nearest group centre. Together the groups
-cover all 5,155 selected positions. Eight is a practical teaching choice; the analysis does
-not identify eight distinct, newly discovered chess concepts.</p>
+<p>I grouped the first 1,745 positions using their layer-10 representations in Leela Chess Zero,
+then assigned the remaining 3,410 to the nearest group centre. That covers all 5,155 selected
+positions. I kept eight groups as a manageable way to organise practice, not because the
+analysis had discovered eight new chess concepts.</p>
 <details><summary>Inspect the grouping and motif evidence</summary>
 <p>At eight groups, silhouette is {{ '%.4f'|format(v.silhouette_real['8']) }} against
 {{ '%.4f'|format(v.silhouette_null['8']) }} for independently shuffled embedding dimensions.
@@ -141,10 +143,10 @@ component is residual to this particular basis; it is not proof of knowledge bey
 <td>{{ '%.1f'|format(c.signature.found_by_real_players * 100) }}%</td><td>{{ '%.1f'|format(c.signature.quiet_share * 100) }}%</td></tr>{% endfor %}
 </tbody></table></div></details>
 
-<h2 id="robustness">What changes when we check more carefully?</h2>
-<h3>Greater engine depth changes some exact answers</h3>
-<p>A seeded sample of eight positions per rating band, from {{ r.engine.n }} different games,
-was reanalysed with Stockfish 17.1. All {{ r.engine.complete_n }} reached depth 20 in every search.
+<h2 id="robustness">Checking the results</h2>
+<h3>Some answers change at greater depth</h3>
+<p>I reanalysed eight positions per rating band with Stockfish 17.1, using a seeded random
+sample from {{ r.engine.n }} different games. All {{ r.engine.complete_n }} reached depth 20 in every search.
 The original move remained first in <b>{{ r.engine.same_top_n }}/{{ r.engine.n }}</b>.</p>
 <p>Of {{ r.engine.numeric_n }} positions without mate scores, the original move still beat
 Maia-2's 2000 favourite by at least 100 centipawns in <b>{{ r.engine.old_gap_at_least_100_n }}/{{ r.engine.numeric_n }}</b>.
@@ -157,8 +159,9 @@ the audited candidates, not a proof of optimality. Maia probabilities were not r
 for changed engine moves, so this is not a fresh mining run.</p>
 
 <h3>The selection rate depends on the thresholds</h3>
-<p>Applying twelve threshold combinations to the same saved corpus gives the following
-counts. The 4.18% headline describes one operating point, not a universal prevalence.</p>
+<p>I tried twelve combinations of the probability and evaluation thresholds on the same data.
+The selected count changes with those choices. The 4.18% figure belongs to the original filter;
+it isn’t an estimate of how often these positions occur in chess generally.</p>
 <details><summary>See all twelve threshold checks</summary>
 <div class="table-scroll" role="region" aria-label="Mining threshold sensitivity" tabindex="0">
 <table class="research"><thead><tr><th scope="col">Minimum gap</th><th scope="col">Maia ceiling</th><th scope="col">Selected</th><th scope="col">Corpus share</th><th scope="col">Exact agreement</th></tr></thead><tbody>
@@ -169,25 +172,25 @@ counts. The 4.18% headline describes one operating point, not a universal preval
 <p class="small">These checks reuse rounded probabilities and saved evaluations. They do
 not establish that every feature association or cluster survives a changed threshold.</p></details>
 
-<h3>Rerunning the embedding comparison</h3>
+<h3>Did Leela’s representations improve prediction?</h3>
 <p>The updated comparison fits the embedding's principal-component transformation using
 only each training fold. On {{ '{:,}'.format(a._evaluation.n) }} selected positions,
 the full baseline—surface features, engine evaluations, Maia probabilities, and player rating—scores
 AUC <b>{{ '%.3f'|format(a['surface + engine + Maia + elo'].auc) }}</b>.
 Adding 40 embedding components scores <b>{{ '%.3f'|format(a['...+ EMBEDDING'].auc) }}</b>.</p>
-<p>The sweep from two to forty components did not improve on that full baseline. This
-limits the claim of additional predictive value for these models and this dataset. It does
-not prove that the representation is redundant or that it contains no additional knowledge.
-Component counts were explored on the same folds; a confirmatory comparison needs held-out model selection.</p>
+<p>I tried two to forty components; none improved on the full baseline. I can’t claim an added
+predictive benefit from the representations in this comparison. That doesn’t settle what
+Leela knows: it only tells us what these models could use on this dataset. I also tried the
+component counts on the same folds, so a firmer comparison needs separate model selection data.</p>
 
 <h3>A concept-extraction attempt did not transfer</h3>
 <p>An earlier experiment fitted sparse directions on Leela rollouts using an adaptation of
 Schut et al.'s optimisation approach. None of the 30 individually fitted directions generalized
-under our held-out separation check. Group fitting achieved 1.00 in-group and 0.515 held out.
+under the held-out separation check. Group fitting achieved 1.00 in-group and 0.515 held out.
 The rollout method, representation and evaluation differed from the AlphaZero study.
-This negative result helps explain the move toward exploratory grouping rather than a claim of successful concept discovery.</p>
+After that result, I used the representations to organise practice groups. I don’t treat those groups as successfully extracted concepts.</p>
 
-<h3>Difficulty prediction is not a validated rating test</h3>
+<h3>How much to trust the test score</h3>
 <p>The saved difficulty model reaches AUC {{ '%.3f'|format(d.part_b_difficulty_model['everything cheap'].auc) }}
 and Brier score {{ '%.3f'|format(d.part_b_difficulty_model._brier) }} across the full corpus,
 with five folds grouped by game. It predicts exact agreement with the engine in source games.</p>
@@ -197,19 +200,19 @@ participant responses. A website practice session differs from playing under a g
 the displayed placement is exploratory, not a measured Lichess or FIDE rating.</p>
 
 <h2 id="learning">Does practicing these positions help?</h2>
-<p><b>We do not yet have a completed controlled learning study.</b> The next experiment will
-compare grouped practice with ordinary puzzles matched for difficulty and practice time.
+<p><b>I haven’t run a controlled learning study yet.</b> The proposed experiment compares
+grouped practice with ordinary puzzles matched for difficulty and practice time.
 Both groups will take a baseline test, an immediate test on different positions, and a
 delayed test about a week later. Test positions must come from different games than training positions.</p>
 <p>The primary outcome will credit moves within 20 centipawns of an independently verified
 best score. Exact engine matches, time taken and performance on ordinary positions will be
-secondary outcomes. A proposed 24-person pilot will establish feasibility and uncertainty;
-it is not a claim of adequate statistical power for a definitive learning effect.</p>
+secondary outcomes. The proposed 24-person pilot is meant to check whether the study is workable and how
+uncertain the results are. It may be too small to establish a learning effect.</p>
 <p><a href="https://github.com/sg712/machine-unique-chess/blob/main/docs/LEARNING_STUDY.md">Read the proposed study protocol</a>.
 It specifies assignment, separate test forms, scoring, exclusions, missing responses and
 analysis before recruitment. Ordinary site use is not automatically enrolled in the study.</p>
 
-<h2 id="reproduce">Methods, data and scope</h2>
+<h2 id="reproduce">Methods and data</h2>
 <div class="table-scroll" role="region" aria-label="Experiment sample sizes and methods" tabindex="0">
 <table class="research"><caption>Each result has its own sample and evaluation</caption>
 <thead><tr><th scope="col">Analysis</th><th scope="col">Sample</th><th scope="col">Method / output</th></tr></thead><tbody>
@@ -230,11 +233,12 @@ Input hashes and seeds are recorded. Large source archives and embedding caches 
 <p>The inspiration is <a href="https://arxiv.org/abs/2310.16410">Schut et al.,
 <i>Bridging the Human-AI Knowledge Gap: Concept Discovery and Transfer in AlphaZero</i></a>.
 Their human study reports improvements on concept-prototype positions in four grandmasters.
-This project adapts the idea using Stockfish, Maia and Leela; it has not replicated that learning result.</p>
-<details><summary>Corrections and remaining limitations</summary>
-<p>Earlier copy conflated the Maia-2 mining range with the smaller Maia-3 experiment,
-treated exact disagreement as error, inferred human thought from model rankings, and
-interpreted unexplained motif variance as unnamed knowledge. Those claims have been narrowed.</p>
+I adapted the idea using Stockfish, Maia and Leela. I haven’t replicated their learning result.</p>
+<details><summary>What I’ve corrected, and what still needs checking</summary>
+<p>I’ve corrected several claims in earlier versions of the write-up. The full mining run used
+Maia-2 through 2000; only the smaller Maia-3 experiment reached 2600. A different move isn’t
+automatically a mistake. Model rankings don’t show what a person was thinking, and variance
+left unexplained by my motif basis isn’t evidence of unknown chess knowledge.</p>
 <p>Earlier difficulty evaluations also had placeholder elite-game IDs; the saved current
 model results use repaired IDs. Unresolved IDs can still be treated as singleton groups.
 The new audit found {{ r.duplicate_board_states }} repeated board states after removing move

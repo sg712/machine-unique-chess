@@ -3,7 +3,7 @@
 {% block body %}
 <div class="narrow">
 <h1 class="tight">Create an account</h1>
-<p class="lede">Any progress you've already made in this browser comes with you.</p>
+<p class="lede">Save your current progress to an account so you can continue on another device.</p>
 {% if error %}<p class="err" role="alert">{{ error }}</p>{% endif %}
 <form method="post">
   <label for="email">Email</label>
@@ -11,7 +11,7 @@
   <label for="password">Password <span style="text-transform:none;letter-spacing:0">(8+ characters)</span></label>
   <input type="password" id="password" name="password" required minlength="8"
          autocomplete="new-password">
-  <p style="margin-top:1.2rem"><button class="btn p" type="submit">Register</button></p>
+  <p style="margin-top:1.2rem"><button class="btn p" type="submit">Create account</button></p>
 </form>
 <p class="small">Already have an account? <a href="{{ url_for('login') }}">Sign in</a>.</p>
 </div>

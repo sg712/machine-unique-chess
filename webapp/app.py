@@ -252,9 +252,14 @@ def index():
         blurbs[c["id"]] = f"Mostly {phase}s; the answer is usually a {quiet}{piece} move."
     rows = curriculum(code)
     nxt = next((r for r in rows if r["state"] != "done"), rows[0])
+    featured = RESEARCH_EXAMPLES["examples"][0]["primary"]
+    featured_board = chess.svg.board(chess.Board(featured["fen"]),
+        orientation=chess.BLACK, size=360,
+        colors={"square light": "#f2ece0", "square dark": "#b9906b"})
     return render_template("index.html", code=code, concepts=CONCEPTS, nxt=nxt,
                            prog=concept_progress(code), totals=totals(),
-                           previews=previews, pieces=piece_svgs(), blurbs=blurbs)
+                           previews=previews, pieces=piece_svgs(), blurbs=blurbs,
+                           featured=featured, featured_board=featured_board)
 
 
 def curriculum(code=None):

@@ -2,19 +2,18 @@
 {% block title %}Your progress{% endblock %}
 {% block body %}
 <h1>Your progress</h1>
-{% if bs %}<p class="small">Latest blind spot test: <b>{{ bs.correct }}/{{ bs.n }}</b>
+{% if bs %}<p class="small">Latest twelve-position test: <b>{{ bs.correct }}/{{ bs.n }}</b>
  &middot; rough Lichess comparison: <b>{{ bs.band }}</b> (not a chess rating) &middot;
  <a href="{{ url_for('blindspot_test') }}">retake</a></p>{% endif %}
 {% if email %}<p class="lede">Signed in as <b>{{ email }}</b>.</p>
-{% else %}<p class="lede">Your progress lives in this browser for now.
-<a href="{{ url_for('register') }}">Register with an email</a> to keep it anywhere.</p>{% endif %}
+{% else %}<p class="lede">Your progress is linked to this browser.
+<a href="{{ url_for('register') }}">Register with an email</a> to continue on another device.</p>{% endif %}
 
 {% if tot.n %}
 <p class="bignum">{{ tot.c or 0 }}<span>/{{ tot.n }}</span></p>
-<p>successful attempts{% if tot.h %} · your moves are played by {{ (tot.h * 100)|round(1) }}%
-of humans on average{% endif %}.</p>
+<p>engine moves found across your attempts, including repeats.</p>
 {% else %}
-<p class="lede">Nothing yet. <a href="{{ url_for('index') }}">Pick a pattern</a> to start.</p>
+<p class="lede">No positions tried yet. <a href="{{ url_for('index') }}">Pick a pattern</a> to start.</p>
 {% endif %}
 
 <h2>By pattern</h2>

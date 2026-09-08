@@ -2,14 +2,13 @@
 {% block title %}Practice · {{ c.name }}{% endblock %}
 {% block body %}
 <p class="crumb"><a href="{{ url_for('concept', cid=c.id) }}">{{ c.name }}</a> · {{ 'Review missed positions' if mode == 'missed' else 'Practice' }}</p>
-<h1 class="tight" id="practice-title">Five positions at a time</h1>
-<p class="lede">Find the move, explore the engine's answer, then take a break or keep going.</p>
+<h1 class="tight" id="practice-title">{{ c.name }}: practice</h1>
+<p class="lede">Play five positions, checking the engine’s line after each one.</p>
 {% if positions %}
 <div id="practice">
   <div class="stage">
-    <div class="board-column"><div id="board"></div><p class="board-help">Click or drag a piece. Keyboard: arrow keys, then Enter to select.</p></div>
+    <div class="board-column"><p class="stm" id="stm"></p><div id="board"></div><p class="board-help">Click or drag a piece. Keyboard: arrow keys, then Enter to select.</p></div>
     <div class="side">
-      <p class="stm" id="stm"></p>
       <p class="pickline" id="pick" aria-live="polite">Choose your move.</p>
       <div class="row" id="answer-controls">
         <button class="btn ghost" id="undo" disabled>Take back</button>
@@ -25,7 +24,7 @@
     <h2 id="verdict" tabindex="-1"></h2>
     <p id="comparison"></p>
     <div id="replay" class="replay"></div>
-    <p class="reflection">Before moving on: which candidate did you dismiss? Compare your choice with what the engine does next.</p>
+    <p class="reflection">What does the engine’s move change? Step through the line before trying the next position.</p>
     <details class="sigdrawer"><summary>What the models predict</summary><div id="model-stats"></div></details>
     <button class="btn p" id="next">Next position</button>
   </section>
@@ -35,7 +34,7 @@
   <p class="score" id="session-score"></p>
   <p id="session-copy"></p>
   <div class="row">
-    <button class="btn p" id="continue">Continue with five more</button>
+    <button class="btn p" id="continue">Practice five more</button>
     <a class="btn" href="{{ url_for('drill', cid=c.id, mode='missed') }}">Review missed positions</a>
     <a class="btn ghost" href="{{ url_for('learn') }}">Finish for now</a>
   </div>
@@ -90,7 +89,7 @@ lock.addEventListener('click', async () => {
     const mark = document.createElement('i'); mark.className = result.correct ? 'hit' : 'done'; tally.append(mark);
     status.textContent = 'Answer saved.'; document.getElementById('answer-controls').hidden = true;
     const verdict = document.getElementById('verdict');
-    verdict.textContent = result.correct ? 'You found it.' : 'Explore the engine’s move.';
+    verdict.textContent = result.correct ? 'You found it.' : 'The engine chose a different move.';
     verdict.className = result.correct ? 'verdict good' : 'verdict';
     document.getElementById('comparison').textContent = `You played ${result.picked_san}. The engine plays ${result.best_san}.`;
     replay(document.getElementById('replay'), result.line, PIECES, picked);
@@ -99,7 +98,7 @@ lock.addEventListener('click', async () => {
     p.textContent = `Maia, a model of human moves, gives the engine's choice a ${(result.p_best * 100).toFixed(1)}% chance of being played by a 1900 Lichess player.`; stats.append(p);
     if (result.predicted != null) {
       const q = document.createElement('p'); q.className = 'small';
-      q.textContent = `A separate difficulty model estimates that ${(result.predicted * 100).toFixed(1)}% of 1900 Lichess players would find it. These are model estimates, not your rating.`; stats.append(q);
+      q.textContent = `The difficulty model estimates ${(result.predicted * 100).toFixed(1)}% exact matches at Lichess 1900. This is a prediction from the source games, not a measurement of your strength.`; stats.append(q);
     }
     document.getElementById('next').textContent = sessionCount === 5 || idx === POS.length - 1 ? 'Finish this session' : 'Next position';
     feedback.hidden = false; focusHeading(verdict);

@@ -1,14 +1,13 @@
 {% extends "base.html" %}
-{% block title %}Find your blind spot · Machine Unique Chess{% endblock %}
+{% block title %}Twelve-position test · Machine Unique Chess{% endblock %}
 {% block body %}
 <div id="quiz">
-<h1 class="tight" id="test-heading">Find your blind spot</h1>
-<p class="lede">Play your move on each position. Explore the answers after all twelve.</p>
+<h1 class="tight" id="test-heading">Twelve-position test</h1>
+<p class="lede">Choose the move you would play. The answers come after position twelve.</p>
 <p class="small" id="local-status">Your answers save on this device. Return using the Test page or this link.</p>
 <div class="stage">
-  <div class="board-column"><div id="bsboard"></div><p class="board-help">Click or drag a piece. Keyboard: arrow keys, then Enter to select.</p></div>
+  <div class="board-column"><p class="stm" id="bsstm"></p><div id="bsboard"></div><p class="board-help">Click or drag a piece. Keyboard: arrow keys, then Enter to select.</p></div>
   <div class="side">
-    <p class="stm" id="bsstm"></p>
     <p class="pickline" id="bspick" aria-live="polite">Choose your move.</p>
     <div class="row">
       <button class="btn ghost" id="bsundo" disabled>Take back</button>
@@ -24,20 +23,20 @@
 </div>
 </div>
 <section id="result" hidden>
-<h1 class="tight" id="result-heading" tabindex="-1">Your blind spot</h1>
+<h1 class="tight" id="result-heading" tabindex="-1">Your results</h1>
 <p class="lede" id="verdictline"></p>
-<p><strong>A rough Lichess comparison on these twelve positions, not your chess rating.</strong> The selected positions and prior practice affect this estimate.</p>
+<p><strong>This is a rough comparison, not a chess rating.</strong> The estimate depends on these twelve positions and whether you’ve practiced them before.</p>
 <div class="bars" id="staircase"></div>
 <details class="sigdrawer"><summary>How this comparison works</summary>
-<p class="small">The highlighted band is the closest fit to your answers using each position's difficulty curve. The bars show how often real players found machine unique moves across the broader research pool, not their predicted score on your particular test.</p>
-<p class="small">The trainer's drill positions are easier than the full machine unique pool, so this estimate can be generous. Studying these positions before testing also changes what the result measures.</p>
+<p class="small">The model picks the rating band that best fits your answers. The bars describe actual players in the full research dataset, rather than expected scores on this test.</p>
+<p class="small">The practice bank is easier than the full dataset, so the comparison can overestimate your strength. The model still needs checking against independent test responses.</p>
 </details>
-<h2>Revisit the twelve positions</h2>
+<h2>Review your moves</h2>
 <p>Open a position to compare your move with the engine's line.</p>
 <div id="reveal"></div>
 <p class="row result-actions">
   <button class="btn" id="sharebtn">Copy your result</button>
-  <a class="btn p" href="{{ url_for('learn') }}">Study the patterns</a>
+  <a class="btn p" href="{{ url_for('learn') }}">Back to practice</a>
   <a class="btn ghost" href="{{ url_for('blindspot_test', new=1) }}">New test</a>
 </p>
 <p id="share-status" role="status"></p>

@@ -8,8 +8,7 @@
 <h1 class="tight">{{ c.name }}
   {% if here %}<span class="pill t-{{ here.tier|lower }}"
     style="vertical-align:middle;margin-left:.5rem">{{ here.tier }}</span>{% endif %}</h1>
-{% if here %}<p class="lede">{{ here.blurb }} · found over the board
-  {{ (c.signature.found_by_real_players * 100)|round(0)|int }}% of the time.</p>{% endif %}
+{% if here %}<p class="lede">{{ here.blurb }}.</p>{% endif %}
 
 {% if request.args.get('done') and prog.n >= prog.of %}
 <div class="donecard" id="doneStage">
@@ -28,24 +27,18 @@
 {% endif %}
 
 <div class="tut" id="tutorial" style="display:none">
-  <h3>What happens in this pattern</h3>
-  <ol>
-    <li><span class="tx"><b>Try four positions cold</b></span></li>
-    <li><span class="tx"><b>See the engine's move on each, right away</b></span></li>
-    <li><span class="tx"><b>Study all four side by side</b></span></li>
-    <li><span class="tx"><b>Practice five new positions at a time</b></span></li>
-  </ol>
+  <h3>Before you start</h3>
+  <p>Try four positions without hints. After each move, you can replay the engine’s answer.
+  Then you’ll compare the four examples and practice on new positions.</p>
   <div class="row">
     <button class="btn p" id="tutgo">Start &rarr;</button>
-    <span class="small">Four examples, then short practice sessions.</span>
+
   </div>
 </div>
 
 <div id="tryStage">
-  <h2>First, you try</h2>
-  <p>Four positions from this family. Pick the move you would play, then see the engine's
-  answer and what follows. Attempting first is the point: the pattern lands harder when
-  you've just missed it.</p>
+  <h2>Try the four examples</h2>
+  <p>Choose the move you would play in a game. You can check the answer and replay the line after each position.</p>
 
   <div class="stage trybox">
     <div id="tryboard"></div>
@@ -54,12 +47,12 @@
       <p class="pickline">Your move: <span id="trypick">&hellip;</span></p>
       <div class="row" id="tryrow">
         <button class="btn ghost" id="tryundo" disabled>Take back</button>
-        <button class="btn p" id="trylock" disabled>Lock in</button>
+        <button class="btn p" id="trylock" disabled>Check move</button>
       </div>
       <div id="tryfb" style="display:none">
         <p class="verdict" id="tryverdict" role="status"></p>
         <p id="tryline"></p>
-        <p class="reflection">Which move did you dismiss? Replay the line below before continuing.</p>
+        <p class="reflection">Replay the continuation. What does the engine’s move make possible?</p>
       </div>
       <div class="tally" id="trytally"></div>
       <p class="counter" id="trycounter"></p>
@@ -70,10 +63,9 @@
 </div>
 
 <div id="studyStage" style="display:none">
-  <h2>Now study them together</h2>
-  <p>The same four positions, side by side, each with the engine's move and what follows.
-  Step through each line, then look at the starting positions again. Which moves
-  would you have dismissed? Look for similarities without needing to name the pattern.</p>
+  <h2>Compare the four positions</h2>
+  <p>These are the positions you just played. Step through the lines and look for similarities.
+  The groups came from the engine’s internal representations; they won’t always share one clear tactical idea.</p>
 
   <div class="protos" id="protos"></div>
 
@@ -82,17 +74,18 @@
     {% if prog.n %}<span class="small">You've already tried {{ prog.n }} of {{ prog.of }}
       ({{ prog.correct }} solved).</span>{% endif %}
   </form>
-  <p class="small"><a href="#" id="redo">Redo the try round</a></p>
+  <p class="small"><a href="#" id="redo">Try these examples again</a></p>
 
   <details class="sigdrawer">
-    <summary>The numbers behind this pattern</summary>
-    <p class="small">{{ c.gloss }}</p>
+    <summary>Research notes for this group</summary>
+    <p class="small">The figures below describe this group in the source games, not just its 40 training positions.
+    “Found” means the player chose the exact engine move. Another move may also have been good.</p>
     <div class="sigbar">
       <span><b>{{ c.signature.positions }}</b> positions found</span>
       <span><b>{{ (c.signature.found_by_real_players * 100)|round(1) }}%</b> found over the board</span>
       <span><b>{{ (c.signature.quiet_share * 100)|round(0)|int }}%</b> quiet moves</span>
       <span><b>{{ c.signature.avg_cost_cp }}cp</b> average gap to Maia's favourite</span>
-      <span class="mo">closest named motifs:
+      <span class="mo">similarity to named motifs (exploratory):
         {% for m, v in c.signature.top_motifs %}{{ m }} {{ '%.2f'|format(v)|replace('-', '&minus;')|safe }}{% if not loop.last %} &middot; {% endif %}{% endfor %}</span>
     </div>
   </details>
@@ -195,7 +188,7 @@ lock.addEventListener("click", () => {
   const v = document.getElementById("tryverdict");
   v.textContent = hit ? "You found it." : "Not the engine's move.";
   v.className = "verdict " + (hit ? "good" : "bad");
-  document.getElementById("tryline").textContent = `The engine plays ${line.best_san}. Compare your move with its continuation.`;
+  document.getElementById("tryline").textContent = `The engine plays ${line.best_san}. Use the board below to follow the line.`;
 
   board.setLegal([]);
   replay(document.getElementById('try-replay'), line, PIECES, picked);
