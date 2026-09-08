@@ -1,6 +1,8 @@
 # Version 3: adding the missing White positions
 
-8 September 2026. **The collection and source audits are complete; the full first-pass analysis is running.** This expansion preserves the historical files and gives both actual sides to move the same fresh screening procedure. The [dataset audit](../results/mining_v3_dataset.json) and [source audit](../results/mining_v3_provenance.json) identify the completed collection. Screening results will be published only after every batch finishes. Candidate counts are separate from accepted puzzles and human learning results.
+8 September 2026. **The collection and source audits are complete; the full first-pass analysis is not yet complete.** This expansion preserves the historical files and gives both actual sides to move the same fresh screening procedure. The [dataset audit](../results/mining_v3_dataset.json) and [source audit](../results/mining_v3_provenance.json) identify the completed collection. Screening results will be published only after every batch finishes. Candidate counts are separate from accepted puzzles and human learning results.
+
+The run was paused when the host reached 2% battery. Stage checkpoints had recorded 192,000 engine observations and 210,176 policy observations out of 248,810. Completed outputs remain saved for resumption with the same inputs and settings; these partial counts are not final screening results.
 
 ## What the counts mean
 
@@ -65,7 +67,9 @@ For a mate-free row, let `b` be the highest retained exact root score. The good-
 
 Unexamined or inexact root scores remain explicit. Unscored policy mass is not renormalized away. These bounds account for missing root scores while treating the retained finite-search scores as given; they do not bound the engine's evaluation error or prove the true chess values. Results also retain a 50 cp acceptance sensitivity. No first-pass row is marked as a verified puzzle.
 
-Aggregates separate all observations, recovered games without BOT tags, BOT-tagged games and unresolved sources. A descriptive matched subset selects equal colours before looking at outcomes, within cohort, rating band, phase, time-control class and source month. Its bands follow the six sampling bands above, with an additional under-1800 category for any earlier observations. It requires recovered source history, known time-control class and known source month, removes repeated canonical states and drops cells absent from either colour. This smaller subset is a closer archive comparison, not a population estimate or new test set.
+Aggregates separate all observations, recovered games without BOT tags, BOT-tagged games and unresolved sources. A descriptive matched subset selects equal colours using metadata alone, within cohort, rating band, phase, time-control class and source month. Its bands follow the six sampling bands above, with an additional under-1800 category for any earlier observations. It requires recovered source history, known time-control class and known source month, removes repeated canonical states and drops cells absent from either colour. This smaller subset is a closer archive comparison, not a population estimate or new test set.
+
+The selected IDs are frozen in a private manifest: 45,326 observations per colour across 75 cells. The summary checks the input hash, selection implementation, IDs and cell counts against that manifest. It was saved at 17:57:24 UTC on 8 September 2026, while the run had recorded 24,576 engine results and 40,960 policy results in completed shards. Some early results had already been inspected. The selection rule does not use outcomes, but this is not a preregistration before any outcome access. The public aggregate retains the freeze timing and fingerprints without exposing position IDs.
 
 New teaching items still require exhaustive legal-root evaluation, stable acceptable moves at higher depths, explanations and chess review. The version-2 learning protocol and its incomplete private material bank remain separate.
 
@@ -77,6 +81,7 @@ Use the existing research environment with python-chess, PyTorch, the pinned Mai
 python scripts/mining_v3_recover.py --help
 python scripts/mining_v3_sampling.py --help
 python scripts/mining_v3_dataset.py
+python scripts/mining_v3_matching.py
 python scripts/mining_v3_run.py --input data/mining_v3/positions.jsonl \
   --run-dir results/mining_v3/full --shard-size 8192 --engine-workers 8
 python scripts/mining_v3_summary.py

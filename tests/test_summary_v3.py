@@ -12,6 +12,7 @@ import chess
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts'))
 from mining_v3_dataset import assemble
 from mining_v3_io import digest
+from mining_v3_matching import freeze_selection
 from mining_v3_summary import matched_human_ids, source_month, summarize
 from mining_v2_sampling import canonical_fen
 
@@ -131,6 +132,7 @@ class SummaryFixture(unittest.TestCase):
         self.assertTrue(result['complete'])
         self.assertEqual(result['screened_n'], 4)
         self.assertEqual(result['matched_human']['per_side'], 2)
+        self.assertEqual(result['matched_human']['selection_provenance']['status'], 'not_frozen')
         self.assertEqual(result['quality']['previous_exact_iteration_used_n'], 8)
         self.assertEqual(result['quality']['unscored_mass_at_2000']['mean'], .04)
         self.assertEqual(result['input_sha256']['frozen_scoring_snapshot'], digest(self.source))
@@ -147,6 +149,56 @@ class SummaryFixture(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'must be complete'):
             self.summarize()
         self.assertFalse(self.output.exists())
+
+    def test_frozen_selection_is_idempotent_and_verified_without_public_ids(self):
+        path = self.directory/'matched_human_selection.json'
+        first = freeze_selection(self.metadata, path)
+        checksum = digest(path)
+        second = freeze_selection(self.metadata, path)
+        self.assertEqual(first, second)
+        self.assertEqual(digest(path), checksum)
+        result = self.summarize()
+        provenance = result['matched_human']['selection_provenance']
+        self.assertEqual(provenance['status'], 'verified_frozen_manifest')
+        self.assertEqual(provenance['manifest_sha256'], checksum)
+        self.assertNotIn('PRIVATE-', self.output.read_text())
+        self.assertNotIn(str(self.directory), self.output.read_text())
+
+    def test_frozen_selection_metadata_mismatch_fails(self):
+        path = self.directory/'matched_human_selection.json'
+        manifest = freeze_selection(self.metadata, path)
+        manifest['metadata_sha256'] = 'wrong'
+        write_json(path, manifest)
+        with self.assertRaisesRegex(ValueError, 'Frozen matching metadata hash'):
+            self.summarize()
+
+    def test_frozen_selection_id_mismatch_fails(self):
+        path = self.directory/'matched_human_selection.json'
+        manifest = freeze_selection(self.metadata, path)
+        manifest['selected_ids'] = manifest['selected_ids'][:-1]
+        write_json(path, manifest)
+        with self.assertRaisesRegex(ValueError, 'Frozen matching IDs'):
+            self.summarize()
+
+    def test_frozen_matching_implementation_mismatch_fails(self):
+        path = self.directory/'matched_human_selection.json'
+        manifest = freeze_selection(self.metadata, path)
+        manifest['implementation']['functions_sha256']['matched_human_ids'] = 'wrong'
+        write_json(path, manifest)
+        with self.assertRaisesRegex(ValueError, 'implementation fingerprints changed'):
+            self.summarize()
+
+    def test_frozen_matching_cells_mismatch_fails(self):
+        path = self.directory/'matched_human_selection.json'
+        manifest = freeze_selection(self.metadata, path)
+        manifest['cell_counts'][0]['per_side'] += 1
+        write_json(path, manifest)
+        with self.assertRaisesRegex(ValueError, 'Frozen matching IDs, counts or cells'):
+            self.summarize()
+
+    def test_explicit_missing_matching_manifest_is_not_silently_ignored(self):
+        with self.assertRaises(FileNotFoundError):
+            summarize(self.metadata, self.directory, self.output, self.directory/'missing.json')
 
     def test_incomplete_shard_manifest_cannot_publish(self):
         self.change_manifest(0, 'engine', lambda manifest: manifest.update(complete=False))

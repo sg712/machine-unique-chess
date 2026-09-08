@@ -5,11 +5,14 @@ import argparse
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
 import hashlib
+import inspect
 import json
 from pathlib import Path
 import re
 import statistics
 import sys
+
+import chess
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
@@ -77,7 +80,63 @@ def used_previous_exact_iteration(search):
              final.get('mate') != search.get('mate')))
 
 
-def summarize(input_path, run_dir, output_path):
+def read_matching_metadata(input_path):
+    records = {}
+    for row in read_rows(input_path):
+        if row['id'] in records:
+            raise ValueError('Duplicate metadata record ID')
+        verify_record(row)
+        date = row.get('source', {}).get('date') or ''
+        records[row['id']] = {
+            'id': row['id'], 'fen': row['fen'], 'played_move': row['played_move'],
+            'game_id': row['game_id'], 'side': row['side_to_move'],
+            'cohort': row.get('cohort', row.get('source', {}).get('cohort', 'unknown')),
+            'rating_band': rating_band(row['mover_elo']), 'phase': row['phase'],
+            'time_class': time_class(row.get('time_control')),
+            'month': source_month(date), 'source_recovered': row.get('history_available') is True,
+            'bot_status': bot_status(row), 'analysis_role': row.get('analysis_role', 'unknown'),
+        }
+    return records
+
+
+def matching_fingerprints():
+    functions = (matched_human_ids, read_matching_metadata, source_month, bot_status,
+                 canonical_fen, rating_band, verify_record, time_class, read_rows)
+    return {'functions_sha256': {function.__name__: hashlib.sha256(inspect.getsource(function).encode()).hexdigest()
+                                 for function in functions},
+            'python_chess_version': chess.__version__}
+
+
+def selected_ids_digest(identifiers):
+    return hashlib.sha256(json.dumps(sorted(identifiers), separators=(',', ':')).encode()).hexdigest()
+
+
+def verify_matching_manifest(path, input_path, records, identifiers, cells):
+    manifest = json.loads(Path(path).read_text())
+    if manifest.get('metadata_sha256') != digest(input_path) or manifest.get('metadata_n') != len(records):
+        raise ValueError('Frozen matching metadata hash or count does not match the aggregate input')
+    if manifest.get('implementation') != matching_fingerprints():
+        raise ValueError('Frozen matching implementation fingerprints changed')
+    expected_ids = sorted(identifiers)
+    expected_sides = dict(Counter(records[identifier]['side'] for identifier in identifiers))
+    if (manifest.get('selected_ids') != expected_ids or
+            manifest.get('selected_ids_sha256') != selected_ids_digest(expected_ids) or
+            manifest.get('selected_n') != len(expected_ids) or manifest.get('per_side') != expected_sides or
+            manifest.get('cell_counts') != cells):
+        raise ValueError('Frozen matching IDs, counts or cells differ from the predefined metadata-only selection')
+    state = manifest.get('screening_state_at_freeze')
+    public_state = ({key: state[key] for key in ('complete', 'input_n', 'engine_completed_n',
+                                                'policy_completed_n', 'run_manifest_sha256') if key in state}
+                    if isinstance(state, dict) else None)
+    return {'status': 'verified_frozen_manifest', 'manifest_sha256': digest(path),
+            'metadata_sha256': manifest['metadata_sha256'], 'created_at': manifest['created_at'],
+            'selected_ids_sha256': manifest['selected_ids_sha256'],
+            'implementation': manifest['implementation'],
+            'timing_note': manifest.get('timing_note'),
+            'screening_state_at_freeze': public_state}
+
+
+def summarize(input_path, run_dir, output_path, matching_manifest=None):
     input_path, run_dir, output_path = map(Path, (input_path, run_dir, output_path))
     run = json.loads((run_dir/'run.json').read_text())
     shards = json.loads((run_dir/'shards.json').read_text())
@@ -98,24 +157,18 @@ def summarize(input_path, run_dir, output_path):
         raise ValueError('Input shard indices must be unique and contiguous in source order')
     if sum(shard['rows'] for shard in shards['shards']) != run['input_n']:
         raise ValueError('Shard counts do not total the run input count')
-    records = {}
-    for row in read_rows(input_path):
-        if row['id'] in records:
-            raise ValueError('Duplicate metadata record ID')
-        verify_record(row)
-        date = row.get('source', {}).get('date') or ''
-        records[row['id']] = {
-            'id': row['id'], 'fen': row['fen'], 'played_move': row['played_move'],
-            'game_id': row['game_id'], 'side': row['side_to_move'],
-            'cohort': row.get('cohort', row.get('source', {}).get('cohort', 'unknown')),
-            'rating_band': rating_band(row['mover_elo']), 'phase': row['phase'],
-            'time_class': time_class(row.get('time_control')),
-            'month': source_month(date), 'source_recovered': row.get('history_available') is True,
-            'bot_status': bot_status(row), 'analysis_role': row.get('analysis_role', 'unknown'),
-        }
+    records = read_matching_metadata(input_path)
     if len(records) != run['input_n']:
         raise ValueError('Metadata count differs from the scoring snapshot')
     matched, matching_cells = matched_human_ids(records)
+    adjacent_manifest = input_path.parent/'matched_human_selection.json'
+    if matching_manifest is not None or adjacent_manifest.exists():
+        matching_provenance = verify_matching_manifest(
+            matching_manifest if matching_manifest is not None else adjacent_manifest,
+            input_path, records, matched, matching_cells)
+    else:
+        matching_provenance = {'status': 'not_frozen',
+                               'note': 'No selection manifest was supplied or found beside the metadata; IDs were computed by the deterministic metadata-only rule during aggregation.'}
     stages = {}
     for entry in run['shards']:
         key = (entry['index'], entry['stage'])
@@ -259,7 +312,8 @@ def summarize(input_path, run_dir, output_path):
         'groups': [{'group': g, 'side': s, **dict(c)} for (g, s), c in sorted(groups.items())],
         'matched_human': {'n': len(matched), 'per_side': len(matched)//2,
                           'cells': matching_cells,
-                          'selection': 'Seeded before outcomes; unique canonical states; equal colours within cohort, rating band, phase, time class and source month; only recovered games without BOT tags.',
+                          'selection_provenance': matching_provenance,
+                          'selection': 'Deterministic metadata-only selection; unique canonical states; equal colours within cohort, rating band, phase, time class and source month; only recovered games without BOT tags. Freeze timing and screening progress are recorded in selection_provenance.',
                           'rating_bands': ['under_1800', '1800_1999', '2000_2199', '2200_2399',
                                            '2400_2599', '2600_2799', '2800_plus'],
                           'note': 'Descriptive archive comparison, not a fresh held-out or population-representative sample.'},
@@ -293,8 +347,10 @@ def main():
     ap.add_argument('--input', type=Path, default=ROOT/'data/mining_v3/positions.jsonl')
     ap.add_argument('--run-dir', type=Path, default=ROOT/'results/mining_v3/full')
     ap.add_argument('--output', type=Path, default=ROOT/'results/mining_v3_summary.json')
+    ap.add_argument('--matching-manifest', type=Path,
+                    help='Verify this frozen selection; by default use matched_human_selection.json beside the input if present')
     args = ap.parse_args()
-    result = summarize(args.input, args.run_dir, args.output)
+    result = summarize(args.input, args.run_dir, args.output, args.matching_manifest)
     print(json.dumps({k: result[k] for k in ('screened_n','counts','matched_human')}, indent=2))
 
 

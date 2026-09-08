@@ -283,10 +283,21 @@ It uses a fixed search budget and leaves unexamined moves explicit. These candid
 the deeper, all-move checks used to accept a new puzzle.</p>
 <p>For a closer comparison, I also selected {{ '{:,}'.format(mining_v3.matched_human.per_side) }}
 positions per colour from recovered games without BOT tags. Each group has the same counts by
-rating band, game phase, time-control class and source month, with repeated states removed.
+source cohort, rating band, game phase, time-control class and source month, with repeated states removed.
 This remains a comparison of selected archive games; it does not measure learning or puzzle-solving ability.</p>
+{% set matched_groups = mining_v3.groups | selectattr('group', 'equalto', 'matched_human') | list %}
+{% if matched_groups %}
+<div class="table-scroll" role="region" aria-label="White and Black candidate rates in the matched archive subset" tabindex="0">
+<table class="research"><caption>Matched archive subset: recovered games without BOT tags</caption>
+<thead><tr><th scope="col">Side to move</th><th scope="col">Observations</th><th scope="col">First-pass candidates</th><th scope="col">Candidate percentage</th></tr></thead>
+<tbody>{% for group in matched_groups | sort(attribute='side', reverse=true) %}
+<tr><th scope="row">{{ group.side|capitalize }}</th><td>{{ '{:,}'.format(group.n) }}</td>
+<td>{{ '{:,}'.format(group.screen_candidates_n) }}</td>
+<td>{% if group.n %}{{ '%.2f'|format(100 * group.screen_candidates_n / group.n) }}%{% else %}—{% endif %}</td></tr>
+{% endfor %}</tbody></table></div>
+{% endif %}
 {% else %}
-<p>The full engine-and-model analysis is running. The completed collection counts above are
+<p>The full engine-and-model analysis is not yet complete. The completed collection counts above are
 separate from screening results, which will be reported after every batch has finished.</p>
 {% endif %}
 <p>The new sample includes {{ mining_v3_dataset.new_white_supplements.cached_game_additional_white_plies }}
