@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "complete": true,
+  "created_at": "2026-09-08T20:00:19.252459+00:00",
+  "seed": 20260909,
+  "per_side_target": 100,
+  "method": "Screen candidates from recovered games without BOT tags, excluding known public-exposed source games. Canonical duplicate states receive one representative chosen by a seeded ID hash. Unique states are ranked by a separate SHA-256 hash of the declared seed and canonical FEN; traverse that ranking, accepting at most one position per actual source game globally and exactly 100 per colour. No depth, legal-move count, evaluation magnitude or deep outcome ranks candidates. Export in original source order. This constrained archive sample is for initial feasibility and survival assessment; it is not a uniform sample of all screen rows or a fresh held-out evaluation.",
+  "counts": {
+    "screened_n": 248810,
+    "screen_candidates_n": 4353,
+    "screen_candidates_by_side": {
+      "white": 2106,
+      "black": 2247
+    },
+    "selected_n": 200,
+    "selected_by_side": {
+      "white": 100,
+      "black": 100
+    },
+    "selected_source_games_n": 200
+  },
+  "eligibility": {
+    "exclusions_in_precedence_order": {
+      "not_screen_candidate": 244457,
+      "known_public_exposed_game": 128,
+      "bot_tagged_game": 388,
+      "unknown_bot_status": 1
+    },
+    "eligible_by_side": {
+      "white": 2106,
+      "black": 1730
+    },
+    "candidate_analysis_roles": {
+      "prior_development": 2707,
+      "pilot_train": 39,
+      "pilot_validation": 11,
+      "pilot_test": 13,
+      "public_exposed": 128,
+      "new_train": 870,
+      "new_test": 305,
+      "new_validation": 280
+    }
+  },
+  "canonical_selection": {
+    "eligible_rows_n": 3836,
+    "eligible_unique_states_n": 3830,
+    "canonical_duplicate_rows_removed_n": 6,
+    "eligible_unique_states_by_side": {
+      "white": 2106,
+      "black": 1724
+    },
+    "eligible_games_n": 3284,
+    "eligible_games_by_side": {
+      "white": 1869,
+      "black": 1531
+    },
+    "rank_traversal_exclusions": {
+      "global_game_cap": 1,
+      "colour_quota_full": 3629
+    }
+  },
+  "selection_counts": {
+    "cohort": {
+      "elite": 96,
+      "club": 104
+    },
+    "phase": {
+      "middlegame": 159,
+      "opening": 28,
+      "endgame": 13
+    },
+    "rating_bin": {
+      "2600_2799": 34,
+      "2400_2599": 32,
+      "2200_2399": 34,
+      "2800_plus": 28,
+      "2000_2199": 37,
+      "1800_1999": 34,
+      "under_2400": 1
+    },
+    "analysis_role": {
+      "new_train": 34,
+      "pilot_validation": 1,
+      "new_test": 24,
+      "new_validation": 10,
+      "prior_development": 128,
+      "pilot_test": 2,
+      "pilot_train": 1
+    },
+    "split": {
+      "train": 112,
+      "validation": 42,
+      "test": 46
+    }
+  },
+  "legal_roots": {
+    "total": 7104,
+    "by_side": {
+      "white": 3561,
+      "black": 3543
+    },
+    "minimum": 2,
+    "maximum": 66
+  },
+  "validation": {
+    "screen_gate": true,
+    "recovered_history_replay": true,
+    "explicit_bot_games": 0,
+    "known_public_exposed_games": 0,
+    "unique_canonical_states": 200,
+    "global_max_positions_per_game": 1,
+    "source_order_aligned": true,
+    "original_policies_copied_verbatim": true,
+    "all_four_policies_legal_complete": true,
+    "original_analysis_role_and_split_preserved": true
+  },
+  "limitations": [
+    "One observation per game changes selection probabilities across the candidate pool.",
+    "The colour quotas do not match cohorts, rating, phase, time controls or source months.",
+    "Prior-development games keep that status; source split names do not create new held-out data.",
+    "Passing this screen or subsequent deep search does not establish human puzzle difficulty or learning benefit."
+  ]
+}
