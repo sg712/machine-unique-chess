@@ -1,0 +1,516 @@
+{
+  "schema_version": 2,
+  "date": "2026-09-08",
+  "status": "Exploratory screening; not a validated teaching bank or human learning result",
+  "definition": {
+    "evaluation_range_cp": [
+      -200,
+      200
+    ],
+    "acceptable_tolerance_cp": 20,
+    "max_p_good_upper_each_rating": 0.1,
+    "min_capped_regret_lower_cp_each_rating": 50,
+    "ratings": [
+      1700,
+      2000
+    ],
+    "regret_cap_cp": 300,
+    "selection_note": "Transparent operational shortlist, not tuned to participant outcomes. Both ratings must pass; mate-containing positions excluded."
+  },
+  "sample": {
+    "n": 2000,
+    "games": 1662,
+    "sides": {
+      "White": 1000,
+      "Black": 1000
+    },
+    "cohorts": {
+      "elite": 1000,
+      "club": 1000
+    },
+    "phases": {
+      "middlegame": 669,
+      "endgame": 661,
+      "opening": 670
+    },
+    "splits": {
+      "train": 1200,
+      "validation": 400,
+      "test": 400
+    },
+    "history_n": 2000,
+    "clock_n": 1000
+  },
+  "pilot": {
+    "screened_n": 2000,
+    "competitive_numeric_n": 1281,
+    "mate_in_scored_roots_n": 99,
+    "all_roots_scored_n": 82,
+    "all_requested_depths_reached_n": 806,
+    "screen_candidates_n": 48,
+    "candidate_splits": {
+      "train": 28,
+      "validation": 12,
+      "test": 8
+    },
+    "family_discovery_train_candidates_n": 28,
+    "discovery_note": "Only training-split pilot rows may inform teaching-family discovery; held-out rows are summarized without publishing their positions.",
+    "candidate_cells": [
+      {
+        "side": "Black",
+        "cohort": "club",
+        "n": 10
+      },
+      {
+        "side": "Black",
+        "cohort": "elite",
+        "n": 13
+      },
+      {
+        "side": "White",
+        "cohort": "club",
+        "n": 12
+      },
+      {
+        "side": "White",
+        "cohort": "elite",
+        "n": 13
+      }
+    ],
+    "threshold_sensitivity": [
+      {
+        "tolerance_cp": 20,
+        "p_good_ceiling": 0.05,
+        "regret_floor_cp": 25,
+        "n": 9
+      },
+      {
+        "tolerance_cp": 20,
+        "p_good_ceiling": 0.05,
+        "regret_floor_cp": 50,
+        "n": 8
+      },
+      {
+        "tolerance_cp": 20,
+        "p_good_ceiling": 0.05,
+        "regret_floor_cp": 100,
+        "n": 5
+      },
+      {
+        "tolerance_cp": 20,
+        "p_good_ceiling": 0.1,
+        "regret_floor_cp": 25,
+        "n": 67
+      },
+      {
+        "tolerance_cp": 20,
+        "p_good_ceiling": 0.1,
+        "regret_floor_cp": 50,
+        "n": 48
+      },
+      {
+        "tolerance_cp": 20,
+        "p_good_ceiling": 0.1,
+        "regret_floor_cp": 100,
+        "n": 24
+      },
+      {
+        "tolerance_cp": 20,
+        "p_good_ceiling": 0.2,
+        "regret_floor_cp": 25,
+        "n": 169
+      },
+      {
+        "tolerance_cp": 20,
+        "p_good_ceiling": 0.2,
+        "regret_floor_cp": 50,
+        "n": 113
+      },
+      {
+        "tolerance_cp": 20,
+        "p_good_ceiling": 0.2,
+        "regret_floor_cp": 100,
+        "n": 46
+      },
+      {
+        "tolerance_cp": 50,
+        "p_good_ceiling": 0.05,
+        "regret_floor_cp": 25,
+        "n": 3
+      },
+      {
+        "tolerance_cp": 50,
+        "p_good_ceiling": 0.05,
+        "regret_floor_cp": 50,
+        "n": 3
+      },
+      {
+        "tolerance_cp": 50,
+        "p_good_ceiling": 0.05,
+        "regret_floor_cp": 100,
+        "n": 3
+      },
+      {
+        "tolerance_cp": 50,
+        "p_good_ceiling": 0.1,
+        "regret_floor_cp": 25,
+        "n": 29
+      },
+      {
+        "tolerance_cp": 50,
+        "p_good_ceiling": 0.1,
+        "regret_floor_cp": 50,
+        "n": 29
+      },
+      {
+        "tolerance_cp": 50,
+        "p_good_ceiling": 0.1,
+        "regret_floor_cp": 100,
+        "n": 21
+      },
+      {
+        "tolerance_cp": 50,
+        "p_good_ceiling": 0.2,
+        "regret_floor_cp": 25,
+        "n": 59
+      },
+      {
+        "tolerance_cp": 50,
+        "p_good_ceiling": 0.2,
+        "regret_floor_cp": 50,
+        "n": 59
+      },
+      {
+        "tolerance_cp": 50,
+        "p_good_ceiling": 0.2,
+        "regret_floor_cp": 100,
+        "n": 35
+      }
+    ]
+  },
+  "policy_sensitivity": {
+    "n": 2000,
+    "history_compared_n": 2000,
+    "history_changes_top_move_n": 322,
+    "history_mean_total_variation": 0.12168515026219871,
+    "maia2_vs_maia3_compared_n": 2000,
+    "maia2_vs_maia3_fen_top_move_disagreements_n": 474,
+    "interpretation": "Fixed 2000 rating inputs; model sensitivity, not independent human evidence or puzzle calibration."
+  },
+  "engine_settings": {
+    "input": "data/mining_v2/positions.jsonl",
+    "policies": "data/mining_v2/policies.jsonl",
+    "output": "results/mining_v2/pilot_screen.jsonl",
+    "engine": "models/stockfish18/stockfish/stockfish-macos-m1-apple-silicon",
+    "mode": "screen",
+    "workers": 4,
+    "screen_depth": 16,
+    "screen_seconds": 0.5,
+    "root_seconds": 0.2,
+    "deep_seconds": 5.0,
+    "coverage": 0.85,
+    "max_human": 10,
+    "engine_sha256": "bc0cac905ecdf2147fe22055c733bcd999b1e3f7c399fbaf7fb9055786563590",
+    "scorer_sha256": "9a6165a856316e45d8f5f17ba74917013586c6c7f3843af2c7dbd9e46745d88c",
+    "input_sha256": "d5d166f9587b4800bd28a0cd740f176bad0579875bc99a32895b4584b0d0b197",
+    "policy_sha256": "739f1289a22cb89209e31603b03413926abb5ec8f8a3f4822d3e5305c7fc6fff",
+    "engine_threads": 1,
+    "hash_mb": 64,
+    "clear_hash_each_search": true
+  },
+  "limitations": [
+    "All 123,405 version-1 positions were Black to move; preserved historical results do not describe a balanced sample.",
+    "Club data are a bounded prefix of June 2026, elite data September\u2013November 2025; this constructed pilot is not representative of all chess.",
+    "Game and selected canonical-state splits do not separate players, openings or all transpositions.",
+    "Clocks are preserved for later ablation, not supplied to the current policy model; elite clocks are absent.",
+    "Screening is time-capped and usually partial. Probability bounds assume the recorded finite-search scores; depth instability remains.",
+    "Fixed-rating model policies have not been calibrated to independent puzzle-solving responses.",
+    "WDL sensitivity is Stockfish self-play expected score, not human winning probability.",
+    "Private final items require exhaustive depth-20/24 stable acceptance, chess review and independent review before recruitment."
+  ],
+  "input_sha256": {
+    "data/mining_v2/positions.jsonl": "d5d166f9587b4800bd28a0cd740f176bad0579875bc99a32895b4584b0d0b197",
+    "data/mining_v2/policies.jsonl": "739f1289a22cb89209e31603b03413926abb5ec8f8a3f4822d3e5305c7fc6fff",
+    "results/mining_v2/pilot_screen.jsonl": "c28c0261ca982522b5bf0581e9eb8142213566d07524611b941aa226d5d038f3",
+    "data/mining_v2/historical_stratified.jsonl": "329907ed7c9ca6b789909a487292e657ef03e58d3ed6d79bc36a14c60f88ce15",
+    "results/mining_v2/historical_stratified_screen.jsonl": "35304158f3eff3ce5ba76777b86b67f9fd05e8efa4a25306b9ed78d08c1b945e"
+  },
+  "historical": {
+    "historical_candidate": {
+      "screened_n": 64,
+      "competitive_numeric_n": 54,
+      "mate_in_scored_roots_n": 9,
+      "all_roots_scored_n": 1,
+      "all_requested_depths_reached_n": 4,
+      "screen_candidates_n": 26,
+      "candidate_splits": {
+        "historical_audit": 26
+      },
+      "family_discovery_train_candidates_n": 0,
+      "discovery_note": "Only training-split pilot rows may inform teaching-family discovery; held-out rows are summarized without publishing their positions.",
+      "candidate_cells": [
+        {
+          "side": "Black",
+          "cohort": "historical_candidate",
+          "n": 26
+        }
+      ],
+      "threshold_sensitivity": [
+        {
+          "tolerance_cp": 20,
+          "p_good_ceiling": 0.05,
+          "regret_floor_cp": 25,
+          "n": 5
+        },
+        {
+          "tolerance_cp": 20,
+          "p_good_ceiling": 0.05,
+          "regret_floor_cp": 50,
+          "n": 5
+        },
+        {
+          "tolerance_cp": 20,
+          "p_good_ceiling": 0.05,
+          "regret_floor_cp": 100,
+          "n": 5
+        },
+        {
+          "tolerance_cp": 20,
+          "p_good_ceiling": 0.1,
+          "regret_floor_cp": 25,
+          "n": 27
+        },
+        {
+          "tolerance_cp": 20,
+          "p_good_ceiling": 0.1,
+          "regret_floor_cp": 50,
+          "n": 26
+        },
+        {
+          "tolerance_cp": 20,
+          "p_good_ceiling": 0.1,
+          "regret_floor_cp": 100,
+          "n": 25
+        },
+        {
+          "tolerance_cp": 20,
+          "p_good_ceiling": 0.2,
+          "regret_floor_cp": 25,
+          "n": 47
+        },
+        {
+          "tolerance_cp": 20,
+          "p_good_ceiling": 0.2,
+          "regret_floor_cp": 50,
+          "n": 46
+        },
+        {
+          "tolerance_cp": 20,
+          "p_good_ceiling": 0.2,
+          "regret_floor_cp": 100,
+          "n": 39
+        },
+        {
+          "tolerance_cp": 50,
+          "p_good_ceiling": 0.05,
+          "regret_floor_cp": 25,
+          "n": 5
+        },
+        {
+          "tolerance_cp": 50,
+          "p_good_ceiling": 0.05,
+          "regret_floor_cp": 50,
+          "n": 5
+        },
+        {
+          "tolerance_cp": 50,
+          "p_good_ceiling": 0.05,
+          "regret_floor_cp": 100,
+          "n": 5
+        },
+        {
+          "tolerance_cp": 50,
+          "p_good_ceiling": 0.1,
+          "regret_floor_cp": 25,
+          "n": 25
+        },
+        {
+          "tolerance_cp": 50,
+          "p_good_ceiling": 0.1,
+          "regret_floor_cp": 50,
+          "n": 25
+        },
+        {
+          "tolerance_cp": 50,
+          "p_good_ceiling": 0.1,
+          "regret_floor_cp": 100,
+          "n": 24
+        },
+        {
+          "tolerance_cp": 50,
+          "p_good_ceiling": 0.2,
+          "regret_floor_cp": 25,
+          "n": 43
+        },
+        {
+          "tolerance_cp": 50,
+          "p_good_ceiling": 0.2,
+          "regret_floor_cp": 50,
+          "n": 43
+        },
+        {
+          "tolerance_cp": 50,
+          "p_good_ceiling": 0.2,
+          "regret_floor_cp": 100,
+          "n": 38
+        }
+      ]
+    },
+    "historical_control": {
+      "screened_n": 64,
+      "competitive_numeric_n": 60,
+      "mate_in_scored_roots_n": 4,
+      "all_roots_scored_n": 1,
+      "all_requested_depths_reached_n": 11,
+      "screen_candidates_n": 1,
+      "candidate_splits": {
+        "historical_audit": 1
+      },
+      "family_discovery_train_candidates_n": 0,
+      "discovery_note": "Only training-split pilot rows may inform teaching-family discovery; held-out rows are summarized without publishing their positions.",
+      "candidate_cells": [
+        {
+          "side": "Black",
+          "cohort": "historical_control",
+          "n": 1
+        }
+      ],
+      "threshold_sensitivity": [
+        {
+          "tolerance_cp": 20,
+          "p_good_ceiling": 0.05,
+          "regret_floor_cp": 25,
+          "n": 0
+        },
+        {
+          "tolerance_cp": 20,
+          "p_good_ceiling": 0.05,
+          "regret_floor_cp": 50,
+          "n": 0
+        },
+        {
+          "tolerance_cp": 20,
+          "p_good_ceiling": 0.05,
+          "regret_floor_cp": 100,
+          "n": 0
+        },
+        {
+          "tolerance_cp": 20,
+          "p_good_ceiling": 0.1,
+          "regret_floor_cp": 25,
+          "n": 1
+        },
+        {
+          "tolerance_cp": 20,
+          "p_good_ceiling": 0.1,
+          "regret_floor_cp": 50,
+          "n": 1
+        },
+        {
+          "tolerance_cp": 20,
+          "p_good_ceiling": 0.1,
+          "regret_floor_cp": 100,
+          "n": 1
+        },
+        {
+          "tolerance_cp": 20,
+          "p_good_ceiling": 0.2,
+          "regret_floor_cp": 25,
+          "n": 6
+        },
+        {
+          "tolerance_cp": 20,
+          "p_good_ceiling": 0.2,
+          "regret_floor_cp": 50,
+          "n": 6
+        },
+        {
+          "tolerance_cp": 20,
+          "p_good_ceiling": 0.2,
+          "regret_floor_cp": 100,
+          "n": 4
+        },
+        {
+          "tolerance_cp": 50,
+          "p_good_ceiling": 0.05,
+          "regret_floor_cp": 25,
+          "n": 0
+        },
+        {
+          "tolerance_cp": 50,
+          "p_good_ceiling": 0.05,
+          "regret_floor_cp": 50,
+          "n": 0
+        },
+        {
+          "tolerance_cp": 50,
+          "p_good_ceiling": 0.05,
+          "regret_floor_cp": 100,
+          "n": 0
+        },
+        {
+          "tolerance_cp": 50,
+          "p_good_ceiling": 0.1,
+          "regret_floor_cp": 25,
+          "n": 1
+        },
+        {
+          "tolerance_cp": 50,
+          "p_good_ceiling": 0.1,
+          "regret_floor_cp": 50,
+          "n": 1
+        },
+        {
+          "tolerance_cp": 50,
+          "p_good_ceiling": 0.1,
+          "regret_floor_cp": 100,
+          "n": 1
+        },
+        {
+          "tolerance_cp": 50,
+          "p_good_ceiling": 0.2,
+          "regret_floor_cp": 25,
+          "n": 5
+        },
+        {
+          "tolerance_cp": 50,
+          "p_good_ceiling": 0.2,
+          "regret_floor_cp": 50,
+          "n": 5
+        },
+        {
+          "tolerance_cp": 50,
+          "p_good_ceiling": 0.2,
+          "regret_floor_cp": 100,
+          "n": 3
+        }
+      ]
+    },
+    "note": "FEN-only; no verified historical move histories. Matched cases and controls are a constructed audit."
+  },
+  "deep_checks": {
+    "completed_batches_n": 6,
+    "incomplete_batches_n": 0,
+    "completed_position_checks_n": 35,
+    "unique_positions_n": 19,
+    "verified_unique_n": 13,
+    "verified_training_positions_n": 3,
+    "rejection_reasons_overlapping": {
+      "mate_in_any_legal_root": 5,
+      "requested_depth_not_reached": 1,
+      "acceptance_set_unstable": 3,
+      "nonexact_root_score": 0
+    },
+    "note": "Only completed batches count; the latest completed check per canonical position determines verification. No position IDs, FENs or solutions are published. Verification is engine evidence, not teaching review."
+  }
+}

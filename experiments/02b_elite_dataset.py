@@ -8,12 +8,15 @@ GM-level frontier validation.
 import csv
 import io
 import pathlib
+import sys
 import urllib.request
 import zipfile
 
 import chess.pgn
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from scripts.mining_v2_sampling import legacy_sampled_plies
 MONTHS = ["2025-11", "2024-12", "2024-11"]
 URL = "https://database.nikonoel.fr/lichess_elite_{m}.zip"
 
@@ -59,8 +62,9 @@ def main(want_games: int = 2500, every: int = 4, min_ply: int = 14, max_ply: int
                     n_games += 1
                     gid = h.get("Site", f"e{n_games}").rsplit("/", 1)[-1]
                     board = game.board()
+                    sampled = legacy_sampled_plies(game, every, min_ply, max_ply)
                     for ply, move in enumerate(game.mainline_moves(), start=1):
-                        if min_ply <= ply <= max_ply and ply % every == 0:
+                        if ply in sampled:
                             w.writerow([gid, ply, board.fen(), move.uci(), we, be])
                             rows += 1
                         board.push(move)

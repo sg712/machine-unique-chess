@@ -16,6 +16,7 @@ import csv
 import io
 import pathlib
 import re
+import sys
 import urllib.request
 import zipfile
 
@@ -23,6 +24,8 @@ import chess.pgn
 import pandas as pd
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from scripts.mining_v2_sampling import legacy_sampled_plies
 MONTHS = ["2025-09", "2025-08", "2025-07", "2025-06"]
 URL = "https://database.nikonoel.fr/lichess_elite_{m}.zip"
 EVERY, MIN_PLY, MAX_PLY = 4, 14, 70
@@ -75,8 +78,9 @@ def sample_side(gtext, white_side):
     if game is None:
         return []
     rows, board = [], game.board()
+    sampled = legacy_sampled_plies(game, EVERY, MIN_PLY, MAX_PLY, white_side=white_side)
     for ply, move in enumerate(game.mainline_moves(), start=1):
-        if MIN_PLY <= ply <= MAX_PLY and ply % EVERY == 0 and board.turn == white_side:
+        if ply in sampled and board.turn == white_side:
             rows.append([ply, board.fen(), move.uci()])
         board.push(move)
     return rows

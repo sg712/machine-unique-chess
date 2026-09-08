@@ -67,6 +67,7 @@ VALIDATION = {
     "contrast": json.load(open(ROOT / "results" / "26_why_invisible.json")),
 }
 RESEARCH_EXAMPLES = json.load(open(ROOT / "webapp" / "research_examples.json"))
+MINING_V2 = json.load(open(ROOT / "results" / "mining_v2_summary.json"))
 STUDY_NOTES = {n["id"]: n for n in json.load(open(ROOT / "webapp" / "study_notes.json"))["items"]}
 
 
@@ -503,7 +504,8 @@ def research():
                            d=VALIDATION["difficulty"], lc=VALIDATION["curve"],
                            bv=VALIDATION["bands"], r=VALIDATION["audit"],
                            a=VALIDATION["embedding_audit"]["part_a"],
-                           contrast=VALIDATION["contrast"], examples=examples, pieces=PIECES)
+                           contrast=VALIDATION["contrast"], examples=examples, pieces=PIECES,
+                           mining_v2=MINING_V2)
 
 
 def test_signer():

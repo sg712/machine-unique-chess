@@ -1,6 +1,6 @@
 # Machine Unique Chess
 
-[Live trainer](https://www.machine-unique-chess.com/) · [Research](https://www.machine-unique-chess.com/research) · [Methods](docs/METHODS.md) · [Study protocol](docs/LEARNING_STUDY.md)
+[Live trainer](https://www.machine-unique-chess.com/) · [Research](https://www.machine-unique-chess.com/research) · [Methods](docs/METHODS.md) · [Study protocol](docs/LEARNING_STUDY_V2.md)
 
 Practice engine moves that a model of human play assigns low probability. The project combines Stockfish, Maia and Leela to select positions, examine their structure, and organize examples into eight groups. Learning effectiveness and the discovery of new chess concepts have not been established.
 
@@ -9,6 +9,10 @@ Practice engine moves that a model of human play assigns low probability. The pr
 Across 123,405 sampled positions, 5,155 meet the operational filter: the Stockfish depth-16 move scores at least 100cp above Maia-2's favourite at 2000, and Maia-2 assigns that move at most 5% probability at each of 1100, 1400, 1700 and 2000. A separate Maia-3 ranking experiment covers 77 selected positions and 56 controls through 2600.
 
 The actual player chose the exact engine move in 1,199 selected positions; the other 3,956 are nonmatches, not necessarily errors. In 2,034 positions, the saved runner-up is less than 20cp behind. The trainer has an additional curation filter: depth 18, retained top move, at least 70cp above the runner-up when built.
+
+**Sampling correction, 8 September:** all 123,405 historical positions are Black to move, caused by sampling every fourth ply before moving. The four samplers are fixed and tested. A separate **2,000-position pilot from 1,662 games** now includes exactly 1,000 White and 1,000 Black positions, with real move histories. It uses Stockfish 18 screening, full Maia-3 legal-move probabilities with/FEN-only history conditions, and Maia-2 sensitivity. [New methods](docs/MINING_V2.md) and [aggregate results](results/mining_v2_summary.json) distinguish screening candidates from fully verified teaching material. Historical results and live trainer answers are preserved.
+
+The revised study compares identical material in grouped or shuffled order. Validation, concealed allocation and local material-review exports are implemented; final private items, independent review and actual participant collection remain prerequisites. No human learning result is claimed.
 
 New checks, 7 September 2026:
 

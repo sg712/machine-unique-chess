@@ -31,3 +31,8 @@ results/03_elite_bands*.csv
 # local development and review outputs
 node_modules/
 .impeccable/
+
+# Version-2 research caches and prospective private study materials.
+# Reproducible scripts and aggregate results/mining_v2_summary.json are public.
+data/mining_v2/
+results/mining_v2/

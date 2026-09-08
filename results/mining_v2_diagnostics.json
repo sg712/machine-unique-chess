@@ -1,0 +1,330 @@
+{
+  "schema_version": 1,
+  "created_utc": "2026-09-08T14:32:05.916488+00:00",
+  "status": "Exploratory model diagnostics; no demonstrated human learning or calibrated human solve probabilities",
+  "discovery_scope": "Only pilot training rows enter review rankings; model-size audit also includes historical discovery rows",
+  "ranking_settings": {
+    "top_n": 50,
+    "minimum_conditional_mass_gain": 0.05,
+    "minimum_history_total_variation": 0.1,
+    "tolerance_cp": 20,
+    "rating_pairs": [
+      [
+        1400,
+        1700
+      ],
+      [
+        1700,
+        2000
+      ],
+      [
+        2000,
+        2300
+      ]
+    ],
+    "regret_cap_cp": 300
+  },
+  "ranking_counts": {
+    "source_training_n": 1200,
+    "competitive_training_point_score_n": 722,
+    "rating_transition_rows_before_limit": 68,
+    "rating_transition_unique_positions_before_limit": 37,
+    "history_sensitive_rows_before_limit": 866,
+    "history_sensitive_unique_positions_before_limit": 480,
+    "published_item_identifiers_n": 0,
+    "rating_transition_rows_saved": 50,
+    "history_sensitive_rows_saved": 50
+  },
+  "ranked_transition_conditional_gain_lower": {
+    "n": 50,
+    "mean": 0.10030919724435079,
+    "median": 0.08832103759050369,
+    "min": 0.06467579258605838,
+    "max": 0.22689442336559296
+  },
+  "ranked_history_total_variation": {
+    "n": 50,
+    "mean": 0.4058013547140668,
+    "median": 0.390085308760149,
+    "min": 0.33582074100536374,
+    "max": 0.6126268700404438
+  },
+  "partial_score_note": "Rankings use observed acceptable-move mass. Unknown root values can change the reference; tail probability is retained and partial intervals are explicitly conditional.",
+  "model_size_comparison": {
+    "positions_with_complete_depth_n": 12,
+    "audit_verified_positions_n": 12,
+    "exclusions": {
+      "depth_incomplete_bound_unreached_or_mate": 10,
+      "no_complete_usable_depth": 5,
+      "no_completed_deep_record": 1
+    },
+    "incomplete_deep_batches_ignored_n": 0,
+    "depth24_groups": [
+      {
+        "depth": 24,
+        "condition": "fen_only",
+        "rating": 1700,
+        "tolerance_cp": 20,
+        "positions_n": 9,
+        "mean_p_any_acceptable_5m": 0.018376177539014153,
+        "mean_p_any_acceptable_79m": 0.023276208330773644,
+        "mean_capped_regret_cp_5m": 202.37672017347566,
+        "mean_capped_regret_cp_79m": 201.5171178688571,
+        "mean_absolute_p_any_change": 0.010768277674085565,
+        "crosses_upward_point10_n": 0,
+        "crosses_downward_point10_n": 0
+      },
+      {
+        "depth": 24,
+        "condition": "fen_only",
+        "rating": 1700,
+        "tolerance_cp": 50,
+        "positions_n": 9,
+        "mean_p_any_acceptable_5m": 0.018376177539014153,
+        "mean_p_any_acceptable_79m": 0.023276208330773644,
+        "mean_capped_regret_cp_5m": 202.37672017347566,
+        "mean_capped_regret_cp_79m": 201.5171178688571,
+        "mean_absolute_p_any_change": 0.010768277674085565,
+        "crosses_upward_point10_n": 0,
+        "crosses_downward_point10_n": 0
+      },
+      {
+        "depth": 24,
+        "condition": "fen_only",
+        "rating": 2000,
+        "tolerance_cp": 20,
+        "positions_n": 9,
+        "mean_p_any_acceptable_5m": 0.01967715627203385,
+        "mean_p_any_acceptable_79m": 0.03358688429256694,
+        "mean_capped_regret_cp_5m": 201.01756350386006,
+        "mean_capped_regret_cp_79m": 194.89741867310028,
+        "mean_absolute_p_any_change": 0.0191714663653531,
+        "crosses_upward_point10_n": 0,
+        "crosses_downward_point10_n": 0
+      },
+      {
+        "depth": 24,
+        "condition": "fen_only",
+        "rating": 2000,
+        "tolerance_cp": 50,
+        "positions_n": 9,
+        "mean_p_any_acceptable_5m": 0.01967715627203385,
+        "mean_p_any_acceptable_79m": 0.03358688429256694,
+        "mean_capped_regret_cp_5m": 201.01756350386006,
+        "mean_capped_regret_cp_79m": 194.89741867310028,
+        "mean_absolute_p_any_change": 0.0191714663653531,
+        "crosses_upward_point10_n": 0,
+        "crosses_downward_point10_n": 0
+      },
+      {
+        "depth": 24,
+        "condition": "history",
+        "rating": 1700,
+        "tolerance_cp": 20,
+        "positions_n": 3,
+        "mean_p_any_acceptable_5m": 0.03718460506449143,
+        "mean_p_any_acceptable_79m": 0.03241150934870044,
+        "mean_capped_regret_cp_5m": 222.7127380963722,
+        "mean_capped_regret_cp_79m": 229.19544489252948,
+        "mean_absolute_p_any_change": 0.004773095715790987,
+        "crosses_upward_point10_n": 0,
+        "crosses_downward_point10_n": 0
+      },
+      {
+        "depth": 24,
+        "condition": "history",
+        "rating": 1700,
+        "tolerance_cp": 50,
+        "positions_n": 3,
+        "mean_p_any_acceptable_5m": 0.04170074546709657,
+        "mean_p_any_acceptable_79m": 0.035100720512370266,
+        "mean_capped_regret_cp_5m": 222.7127380963722,
+        "mean_capped_regret_cp_79m": 229.19544489252948,
+        "mean_absolute_p_any_change": 0.006600024954726298,
+        "crosses_upward_point10_n": 0,
+        "crosses_downward_point10_n": 0
+      },
+      {
+        "depth": 24,
+        "condition": "history",
+        "rating": 2000,
+        "tolerance_cp": 20,
+        "positions_n": 3,
+        "mean_p_any_acceptable_5m": 0.04576935386285186,
+        "mean_p_any_acceptable_79m": 0.0860047332632045,
+        "mean_capped_regret_cp_5m": 224.5517826977357,
+        "mean_capped_regret_cp_79m": 214.2100905282047,
+        "mean_absolute_p_any_change": 0.04553330037742853,
+        "crosses_upward_point10_n": 1,
+        "crosses_downward_point10_n": 0
+      },
+      {
+        "depth": 24,
+        "condition": "history",
+        "rating": 2000,
+        "tolerance_cp": 50,
+        "positions_n": 3,
+        "mean_p_any_acceptable_5m": 0.05044415717323621,
+        "mean_p_any_acceptable_79m": 0.08923840429633856,
+        "mean_capped_regret_cp_5m": 224.5517826977357,
+        "mean_capped_regret_cp_79m": 214.2100905282047,
+        "mean_absolute_p_any_change": 0.04697443265467882,
+        "crosses_upward_point10_n": 1,
+        "crosses_downward_point10_n": 0
+      }
+    ],
+    "note": "Full legal policies share the same exhaustive point-score map at each reported depth. The shortlist is selected and small; differences are sensitivity checks, not model accuracy estimates."
+  },
+  "heldout_exact_choice_diagnostic": {
+    "model": "Maia3-5M",
+    "condition": "history",
+    "self_rating": 2000,
+    "opponent_rating": 2000,
+    "target": "original finite-budget screening target; exact UCI move",
+    "split": "test",
+    "fit_performed": false,
+    "groups": {
+      "all_test": {
+        "positions_n": 400,
+        "source_games_n": 331,
+        "bins": [
+          {
+            "probability_lower_inclusive": 0.0,
+            "probability_upper": 0.05,
+            "upper_inclusive": false,
+            "positions_n": 80,
+            "source_games_n": 76,
+            "mean_target_probability": 0.01632176886741945,
+            "observed_exact_target_choice_rate": 0.075,
+            "sparse_fewer_than_30_games": false,
+            "descriptive_only": true
+          },
+          {
+            "probability_lower_inclusive": 0.05,
+            "probability_upper": 0.2,
+            "upper_inclusive": false,
+            "positions_n": 92,
+            "source_games_n": 87,
+            "mean_target_probability": 0.11048699599569259,
+            "observed_exact_target_choice_rate": 0.13043478260869565,
+            "sparse_fewer_than_30_games": false,
+            "descriptive_only": true
+          },
+          {
+            "probability_lower_inclusive": 0.2,
+            "probability_upper": 0.5,
+            "upper_inclusive": false,
+            "positions_n": 85,
+            "source_games_n": 82,
+            "mean_target_probability": 0.3419231258770999,
+            "observed_exact_target_choice_rate": 0.36470588235294116,
+            "sparse_fewer_than_30_games": false,
+            "descriptive_only": true
+          },
+          {
+            "probability_lower_inclusive": 0.5,
+            "probability_upper": 1.0,
+            "upper_inclusive": true,
+            "positions_n": 143,
+            "source_games_n": 137,
+            "mean_target_probability": 0.7703930352117632,
+            "observed_exact_target_choice_rate": 0.7552447552447552,
+            "sparse_fewer_than_30_games": false,
+            "descriptive_only": true
+          }
+        ]
+      },
+      "club_movers_1800_to_2000_test": {
+        "positions_n": 116,
+        "source_games_n": 98,
+        "bins": [
+          {
+            "probability_lower_inclusive": 0.0,
+            "probability_upper": 0.05,
+            "upper_inclusive": false,
+            "positions_n": 20,
+            "source_games_n": 19,
+            "mean_target_probability": 0.016518669509969185,
+            "observed_exact_target_choice_rate": 0.05,
+            "sparse_fewer_than_30_games": true,
+            "descriptive_only": true
+          },
+          {
+            "probability_lower_inclusive": 0.05,
+            "probability_upper": 0.2,
+            "upper_inclusive": false,
+            "positions_n": 30,
+            "source_games_n": 27,
+            "mean_target_probability": 0.10728821009397507,
+            "observed_exact_target_choice_rate": 0.1,
+            "sparse_fewer_than_30_games": true,
+            "descriptive_only": true
+          },
+          {
+            "probability_lower_inclusive": 0.2,
+            "probability_upper": 0.5,
+            "upper_inclusive": false,
+            "positions_n": 21,
+            "source_games_n": 21,
+            "mean_target_probability": 0.3346557766199112,
+            "observed_exact_target_choice_rate": 0.23809523809523808,
+            "sparse_fewer_than_30_games": true,
+            "descriptive_only": true
+          },
+          {
+            "probability_lower_inclusive": 0.5,
+            "probability_upper": 1.0,
+            "upper_inclusive": true,
+            "positions_n": 45,
+            "source_games_n": 44,
+            "mean_target_probability": 0.7611166172557406,
+            "observed_exact_target_choice_rate": 0.7333333333333333,
+            "sparse_fewer_than_30_games": false,
+            "descriptive_only": true
+          }
+        ]
+      }
+    },
+    "interpretation": "Descriptive observed-game exact-choice check at a fixed hypothetical rating. The finite-engine target may have other acceptable alternatives. This is not puzzle calibration, P(any good move), or a human teaching result.",
+    "dependence_note": "Positions can share a source game; bins with fewer than 30 distinct games are sparse. No uncertainty or calibration claim is inferred from these bins."
+  },
+  "source_sha256": {
+    "pilot_positions": "d5d166f9587b4800bd28a0cd740f176bad0579875bc99a32895b4584b0d0b197",
+    "pilot_policies": "739f1289a22cb89209e31603b03413926abb5ec8f8a3f4822d3e5305c7fc6fff",
+    "pilot_screening": "c28c0261ca982522b5bf0581e9eb8142213566d07524611b941aa226d5d038f3",
+    "historical_policies": "f18aaa9c002c5f3334d1e59b22816728115c71af0676028c6b766258e24ad1d2",
+    "larger_model_inputs": "f4387c4323c203b4cb59072b284307e9eb8537ebbd6f8110a2911950c0fd0958",
+    "larger_model_policies": "8db27b88f0e67e8336e021d5f5022bfb9862c95313bd4fd1eb5344f0aefa890e",
+    "larger_model_manifest": "c306e3719f7fdd6524f0d09d91878a3b51664b0d992cfab993507a93c572b625",
+    "diagnostic_script": "1d523d8eed17227b2f79e8da63713fc6feea18aaf43b9591f8a3e023c50384d9",
+    "completed_deep_batches": {
+      "boundary_deep.jsonl": {
+        "scores_sha256": "5fb1736c3117f4a2164b892f8cee7e0b250d79ba610f458ec66246cc66ceccf5",
+        "manifest_sha256": "224ad8656a8cb419b9c3531c092ca5218050eb895e689d6a23436e40f7f2857f"
+      },
+      "family_deep.jsonl": {
+        "scores_sha256": "d8fc29514b56020718b02368564252ecef150325f90db8b205ebe1575ddb6347",
+        "manifest_sha256": "cca56685722878dbaa7921604645c68a5b669bfd0ac75be99fe9105e3b05b4c2"
+      },
+      "historical_deep_final.jsonl": {
+        "scores_sha256": "7d8cad69eeca9a49ccb01f714be357e7ae42c5c0078a4735bc2400534e7116ef",
+        "manifest_sha256": "7379655217367d247e9be219a5b16f51b07d29d5b8ba5f5ec977d9e451032041"
+      },
+      "historical_deep_first.jsonl": {
+        "scores_sha256": "f9b084807967f761964564ec8809cb1247a17a959d5a1a81ca0d6a3a57b1a1bb",
+        "manifest_sha256": "a36f39ebf6fb9abcc352d5396e799c5c459f34410c4447bb8f1229f7c74c8d28"
+      },
+      "historical_deep_retry.jsonl": {
+        "scores_sha256": "5d3c3c7981b8f4564e0cf6b4af8f1b39ec2df70e2f602e15c262727b4c27395c",
+        "manifest_sha256": "a22371de847f94e99e1f61fa5564a33e1d5d8c97c6c7bcfef244f066e7eb78a4"
+      },
+      "pilot_deep.jsonl": {
+        "scores_sha256": "abf597392dcc236ef382b9fd2d298675be35e27869c323f3467a46a7149e1848",
+        "manifest_sha256": "3c72814ddfeea1bc2c349ec12ef9c5acd94b6c17355ec4c0596d158e55ac37cc"
+      }
+    },
+    "private_rating_transitions": "e5d0cf918209dad79e9700b37c0e9e0772b76f7814919e2d17bd12a1bd5db634",
+    "private_history_sensitive": "dd89dcb77d13955b92f7f50d733f39ab574566b213b9f536a3331e22e89b3d6d",
+    "private_model_size_comparison": "93b97e100b72f3699e12285c5aa99087c91c574846a579d74c9592e531a41be1"
+  }
+}

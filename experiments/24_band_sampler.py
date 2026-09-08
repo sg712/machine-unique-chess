@@ -11,7 +11,8 @@ The 63k master is lopsided: ~21k positions under 2000 but only ~4.3k in
 "Both players in band" guarantees every sampled position's mover falls in the
 band. Filters mirror the original samplers exactly — club: rapid/classical
 (base >= 600s), not abandoned; elite: no time-control filter (02b had none).
-Sampling grid identical everywhere: plies 14-70, every 4th.
+Historical outputs used plies 14-70, every fourth ply (Black only). Future runs
+use one seeded ply per four-ply block and alternate the sampled side.
 
 Club games stream from a *different month* than the original download, and any
 game_id already in master is skipped — no duplicates. Elite ids are generated
@@ -23,6 +24,7 @@ import csv
 import io
 import pathlib
 import re
+import sys
 import urllib.request
 import zipfile
 
@@ -31,6 +33,8 @@ import pandas as pd
 import pyzstd
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from scripts.mining_v2_sampling import legacy_sampled_plies
 CLUB_MONTHS = ["2026-07", "2026-05", "2026-04"]      # original club used 2026-06
 CLUB_URL = "https://database.lichess.org/standard/lichess_db_standard_rated_{m}.pgn.zst"
 ELITE_MONTHS = ["2025-10", "2025-09", "2024-12"]     # original elite used 2025-11
@@ -106,8 +110,9 @@ def sample(gtext):
     if game is None:
         return []
     rows, board = [], game.board()
+    sampled = legacy_sampled_plies(game, EVERY, MIN_PLY, MAX_PLY)
     for ply, move in enumerate(game.mainline_moves(), start=1):
-        if MIN_PLY <= ply <= MAX_PLY and ply % EVERY == 0:
+        if ply in sampled:
             rows.append([ply, board.fen(), move.uci()])
         board.push(move)
     return rows

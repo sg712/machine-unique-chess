@@ -24,7 +24,7 @@
 {% block body %}
 <article class="research-article">
 <h1>What I found in the positions</h1>
-<p class="research-byline">Shivansh Gupta · Analysis updated 7 September 2026</p>
+<p class="research-byline">Shivansh Gupta · Analysis updated 8 September 2026</p>
 <p class="lede">I used Stockfish and Maia to look for strong moves that a model of human play
 rarely chooses. That gave me a collection of positions to study, and eventually this trainer.</p>
 <p>Here are the examples, the selection method, and the checks that changed my interpretation.
@@ -32,7 +32,7 @@ I don’t yet know whether practicing these positions improves play in new ones;
 that needs a controlled study.</p>
 <nav class="research-contents" aria-label="Research sections">
   <a href="#examples">Worked examples</a><a href="#method">Selection method</a>
-  <a href="#findings">Findings</a><a href="#robustness">Robustness checks</a>
+  <a href="#findings">Findings</a><a href="#new-mining">New mining run</a><a href="#robustness">Robustness checks</a>
   <a href="#learning">Learning study</a><a href="#reproduce">Methods and data</a>
 </nav>
 
@@ -70,6 +70,10 @@ Lichess rated-game archives and the Lichess Elite Database, sampled at intervals
 The corpus balances rating bands, but differs across batches in dates and time controls.
 It is not a random sample of all chess play. Ratings refer to the source Lichess pools;
 I haven’t converted them to FIDE ratings.</p>
+<p class="note"><b>A sampling mistake I found:</b> all 123,405 positions in this original
+corpus are Black to move. Sampling every fourth ply before a move always landed on Black’s turn.
+I’ve fixed the samplers and kept the old results identified as version 1. The new run below
+includes both sides; the original figures and trainer still describe the earlier collection.</p>
 <p class="note">The criterion compares the engine move with one model favourite. It does
 not require a unique good move. In <b>{{ '{:,}'.format(r.near_alternatives[1].n) }} positions
 ({{ '%.1f'|format(r.near_alternatives[1].rate * 100) }}%)</b>, the saved runner-up is less than
@@ -199,24 +203,59 @@ including trainer positions. Those item curves have not been calibrated against 
 participant responses. A website practice session differs from playing under a game clock;
 the displayed placement is exploratory, not a measured Lichess or FIDE rating.</p>
 
+<h2 id="new-mining">A new run with both sides</h2>
+<p>I sampled <b>{{ '{:,}'.format(mining_v2.sample.n) }} new positions from
+{{ '{:,}'.format(mining_v2.sample.games) }} games</b>, evenly split between White and Black.
+Half come from slower club games and half from elite archives. I saved the preceding moves
+for every position, along with available clocks, and separated source games before selection.</p>
+<p>This time I’m asking how likely the model is to choose <em>any</em> acceptable move,
+and how much its likely choices lose. A rare first choice isn’t enough if a common alternative
+is just as good. Stockfish 18 screens the positions; Maia-3 supplies complete move probabilities
+with and without history, alongside Maia-2 for comparison.</p>
+<p>The first screen shortlisted <b>{{ mining_v2.pilot.screen_candidates_n }} positions</b>
+under the stated competitive-position, acceptable-move and expected-loss criteria.
+Deeper checks determine which can become new puzzles.
+The searches have time limits, and unexamined moves remain explicit in the probability bounds.</p>
+<p>Stricter checks retained <b>{{ mining_v2.deep_checks.verified_unique_n }} of
+{{ mining_v2.deep_checks.unique_positions_n }} reviewed positions</b>, requiring every legal move
+to reach depths 20 and 24 and the complete acceptable-move set to stay the same.
+These checks cover new positions and historical teaching candidates.</p>
+<p>I also rechecked 64 historical candidates and 64 matched controls. The new screen retained
+<b>{{ mining_v2.historical.historical_candidate.screen_candidates_n }}/64 candidates</b> and
+<b>{{ mining_v2.historical.historical_control.screen_candidates_n }}/64 controls</b>.
+This comparison uses FEN-only policies because those saved rows lack verified move history.
+It is a selected audit, not an estimate of how common these positions are in all games.</p>
+<p>At the fixed 2000 setting, adding history changed Maia-3’s first choice in
+<b>{{ mining_v2.policy_sensitivity.history_changes_top_move_n }}/{{ mining_v2.sample.n }}</b> positions.
+That shows why I’m keeping the comparison. It doesn’t establish how often a person would solve
+the same position when presented as a puzzle.</p>
+<p class="small">The club games come from a bounded prefix of June 2026; the elite sample
+uses September–November 2025 and mixed time controls. Clocks are saved but are not inputs to
+the current model. The sample separates games and selected board states, not players or all openings.
+<a href="https://github.com/sg712/machine-unique-chess/blob/main/docs/MINING_V2.md">New methods</a> ·
+<a href="https://github.com/sg712/machine-unique-chess/blob/main/results/mining_v2_summary.json">Counts, thresholds and hashes</a></p>
+
 <h2 id="learning">Does practicing these positions help?</h2>
 <p><b>I haven’t run a controlled learning study yet.</b> The proposed experiment compares
-grouped practice with ordinary puzzles matched for difficulty and practice time.
+grouped and shuffled practice using the same positions, explanations and practice time.
+Only their order changes, so the comparison can test the value of seeing related examples together.
 Both groups will take a baseline test, an immediate test on different positions, and a
 delayed test about a week later. Test positions must come from different games than training positions.</p>
 <p>The primary outcome will credit moves within 20 centipawns of an independently verified
-best score. Exact engine matches, time taken and performance on ordinary positions will be
+best score. Exact engine matches, time taken and performance on positive and boundary cases will be
 secondary outcomes. The proposed 24-person pilot is meant to check whether the study is workable and how
 uncertain the results are. It may be too small to establish a learning effect.</p>
-<p><a href="https://github.com/sg712/machine-unique-chess/blob/main/docs/LEARNING_STUDY.md">Read the proposed study protocol</a>.
-It specifies assignment, separate test forms, scoring, exclusions, missing responses and
-analysis before recruitment. Ordinary site use is not automatically enrolled in the study.</p>
+<p><a href="https://github.com/sg712/machine-unique-chess/blob/main/docs/LEARNING_STUDY_V2.md">Read the revised study protocol</a>.
+The allocation and material-review tools are built. The final private bank still needs
+stable answers, meaningful counterexamples and independent chess review before recruitment.
+Ordinary site use is not automatically enrolled in the study.</p>
 
 <h2 id="reproduce">Methods and data</h2>
 <div class="table-scroll" role="region" aria-label="Experiment sample sizes and methods" tabindex="0">
 <table class="research"><caption>Each result has its own sample and evaluation</caption>
 <thead><tr><th scope="col">Analysis</th><th scope="col">Sample</th><th scope="col">Method / output</th></tr></thead><tbody>
 <tr><td>Mining</td><td>123,405 → 5,155</td><td>Stockfish depth 16; Maia-2 at four settings through 2000</td></tr>
+<tr><td>Version-2 pilot</td><td>{{ '{:,}'.format(mining_v2.sample.n) }} new positions</td><td>Equal sides; Stockfish 18 screening; complete Maia-3 policies with real history</td></tr>
 <tr><td>Maia-3 ranking</td><td>77 selected + 56 controls</td><td>Top one / top five at 1100, 1500, 2000, 2300, 2600</td></tr>
 <tr><td>Motif reconstruction</td><td>646 selected + 400 controls</td><td>12 directions; average-direction R² 0.46</td></tr>
 <tr><td>Grouping</td><td>1,745 fitted + 3,410 assigned</td><td>Leela layer 10; exploratory k=8</td></tr>

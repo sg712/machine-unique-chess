@@ -1,6 +1,6 @@
 # Methods and data provenance
 
-Updated 7 September 2026. This document describes the current saved corpus and separates historical experiments from new audits. Quantities are not interchangeable across experiments. Earlier versions are retained in Git history.
+Updated 8 September 2026. This document separates the historical corpus from new audits. Quantities are not interchangeable across experiments. Earlier versions are retained in Git history. The new balanced pilot is documented in [Version 2](MINING_V2.md).
 
 ## Research question and operational definition
 
@@ -17,12 +17,14 @@ A selected position satisfies both:
 
 ## Sources and sampling
 
-- [Lichess rated-game archives](https://database.lichess.org/): experiment 02 samples games with both players at least 1800 and base time at least 600 seconds, excluding abandoned games. It samples every fourth ply between 14 and 70. The script tries June, May and April 2026 in order; that list is a fallback configuration, not proof all months were consumed.
+- [Lichess rated-game archives](https://database.lichess.org/): historical experiment 02 sampled games with both players at least 1800 and base time at least 600 seconds, excluding abandoned games. It sampled every fourth ply between 14 and 70. The script's June, May and April 2026 list is a fallback configuration, not proof all months were consumed. The current sampler corrects the side aliasing described below.
 - [Lichess Elite Database](https://database.nikonoel.fr/): experiment 02b and later samplers read filtered elite archives. Elite time controls are not necessarily the same as the slower club sample. Saved local archives include September–November 2025. Experiments 24/25 add band-targeted samples; their source-month options are recorded in those scripts.
 - [Lichess puzzle database](https://database.lichess.org/#puzzles): supplies tagged positions for the 12-motif basis, about 150 examples per theme and a 400-position puzzle baseline.
 - [Stockfish](https://github.com/official-stockfish/Stockfish), [Maia-2](https://github.com/CSSLab/maia2), [Maia-3](https://github.com/CSSLab/maia3), and [Leela interpretability tooling](https://github.com/HumanCompatibleAI/leela-interp) supply the engine and model components. Exact local engine hash is recorded for the new audit; historical neural checkpoints are not completely version-pinned in the old outputs.
 
 The corpus contains **123,405 positions from nine mining batches**, including **5,155 selected positions** (4.1773%). Rating-band counts range from 20,074 to 21,359 in the consolidated data. The source distribution is constructed, not representative of all chess games. Ratings are the source Lichess ratings; no universal conversion to FIDE is assumed. Time control, date, phase and player differences can confound comparisons.
+
+**All 123,405 historical positions are Black to move.** The original samplers saved the board before a move and selected every fourth ply, always selecting Black's turn. The top-band sampler's additional mover condition also excluded eligible White turns. The four samplers are now corrected and regression-tested. Historical CSVs, statistics and the 320-item trainer are preserved as version 1; rotating a board would not repair this source bias. Version 2 adds 2,000 new positions evenly split by actual side to move.
 
 Experiment 09 deduplicates full FEN strings and repairs missing elite source-game IDs using experiment 22's reconstruction. Unresolved positions may remain singleton groups. Removing the two FEN move counters reveals **605 duplicate board-state rows** in the current full corpus. Game-level cross-validation does not guarantee separation by player, transposition or time. Exact sampled inputs are identified by SHA-256 in the new output; the historical pipeline lacks a complete immutable archive manifest, which remains a reproducibility limitation.
 
@@ -44,7 +46,7 @@ Experiment 09 deduplicates full FEN strings and repairs missing elite source-gam
 | 30: new descriptive audit | Full corpus threshold sweep; 48 different games for engine check | `30_research_audit.json`, `30_engine_audit.json` |
 | 31: corrected embedding comparison | 1,745 positions / 1,341 games / 246 exact matches | PCA fitted within each training fold; `31_embedding_audit.json` |
 | 32: worked examples | 3 primary + 3 related positions | Deliberately curated; depth 20; each pair from different games; `webapp/research_examples.json` |
-| Proposed learning study | 24-person feasibility pilot | Protocol only in `LEARNING_STUDY.md`; no completed randomized learning result |
+| Proposed learning study | 24-person feasibility pilot | Revised grouped-versus-shuffled protocol and material tools in `LEARNING_STUDY_V2.md`; no completed randomized learning result |
 
 ## Interpreting the observational results
 
@@ -110,4 +112,4 @@ python scripts/render_research_notes.py
 
 `master_all.csv`, raw source archives and embedding caches are omitted from Git because of size. A fresh clone can inspect the committed audit records and run the website, but cannot reproduce the full audit without reconstructing or obtaining those exact inputs. SHA-256 hashes identify the inputs used here; they do not make the omitted files downloadable. Cache row identity beyond the preserved historical ordering is an additional limitation of earlier embedding experiments.
 
-Before a confirmatory study: freeze an archive/checkpoint manifest, separate by game and canonical position (and preferably player/time period), use stronger engine verification, calibrate item curves independently, register the study, then collect participant responses. See [the proposed learning protocol](LEARNING_STUDY.md).
+Before a confirmatory study: freeze an archive/checkpoint manifest, separate by game and canonical position (and preferably player/time period), use stronger engine verification, calibrate item curves independently, register the study, then collect participant responses. See [the revised learning protocol](LEARNING_STUDY_V2.md). The earlier ordinary-puzzle comparison remains archived in `LEARNING_STUDY.md`.

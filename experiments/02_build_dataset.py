@@ -10,12 +10,15 @@ import argparse
 import csv
 import io
 import pathlib
+import sys
 import urllib.request
 
 import chess.pgn
 import pyzstd
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from scripts.mining_v2_sampling import legacy_sampled_plies
 MONTHS = ["2026-06", "2026-05", "2026-04"]  # try newest first
 URL = "https://database.lichess.org/standard/lichess_db_standard_rated_{m}.pgn.zst"
 
@@ -77,8 +80,9 @@ def main() -> None:
                     gid = game.headers.get("Site", f"g{n_games}").rsplit("/", 1)[-1]
                     we, be = game.headers.get("WhiteElo"), game.headers.get("BlackElo")
                     board = game.board()
+                    sampled = legacy_sampled_plies(game, args.every, args.min_ply, args.max_ply)
                     for ply, move in enumerate(game.mainline_moves(), start=1):
-                        if args.min_ply <= ply <= args.max_ply and ply % args.every == 0:
+                        if ply in sampled:
                             w.writerow([gid, ply, board.fen(), move.uci(), we, be])
                             rows += 1
                         board.push(move)
