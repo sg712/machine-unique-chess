@@ -1,0 +1,200 @@
+{
+  "schema_version": 1,
+  "complete": true,
+  "created_at": "2026-09-09T08:50:03.503434+00:00",
+  "seed": 20260910,
+  "selected_n": 4345,
+  "already_deep200_n": 200,
+  "new_n": 4145,
+  "method": "Census of every canonical-unique candidate from the unchanged v3 FEN-only screen gate. The initial 200 frozen records and policy lines retain precedence for their states. Other states prefer an observation with recovered history, no BOT tag and no known public exposure; ties and other observations use a declared seeded SHA-256 ID rank. Every originating candidate observation is retained privately. No colour quota, per-game cap or source-stratum exclusion applies. Export is in original source order. No deep outcome, score magnitude, legal-move count or search complexity chooses a representative.",
+  "counts": {
+    "screened_n": 248810,
+    "screen_candidates_n": 4353,
+    "screen_candidates_by_side": {
+      "white": 2106,
+      "black": 2247
+    },
+    "selected_n": 4345,
+    "selected_by_side": {
+      "white": 2106,
+      "black": 2239
+    },
+    "new_by_side": {
+      "white": 2006,
+      "black": 2139
+    },
+    "canonical_duplicate_rows_removed_n": 8,
+    "selected_source_games_n": 3726,
+    "origin_source_games_n": 3726,
+    "maximum_selected_positions_per_game": 5,
+    "source_stratum_exclusions_n": 0
+  },
+  "source_strata": {
+    "representatives": {
+      "bot_status": {
+        "no_bot": 3934,
+        "bot_tagged": 410,
+        "unknown": 1
+      },
+      "history_status": {
+        "recovered": 4344,
+        "unavailable": 1
+      },
+      "public_exposure": {
+        "not_known_public": 4217,
+        "known_public": 128
+      },
+      "analysis_role": {
+        "prior_development": 2699,
+        "pilot_train": 39,
+        "pilot_validation": 11,
+        "pilot_test": 13,
+        "public_exposed": 128,
+        "new_train": 870,
+        "new_test": 305,
+        "new_validation": 280
+      }
+    },
+    "candidate_observations": {
+      "bot_status": {
+        "no_bot": 3940,
+        "bot_tagged": 412,
+        "unknown": 1
+      },
+      "history_status": {
+        "recovered": 4352,
+        "unavailable": 1
+      },
+      "public_exposure": {
+        "not_known_public": 4225,
+        "known_public": 128
+      },
+      "analysis_role": {
+        "prior_development": 2707,
+        "pilot_train": 39,
+        "pilot_validation": 11,
+        "pilot_test": 13,
+        "public_exposed": 128,
+        "new_train": 870,
+        "new_test": 305,
+        "new_validation": 280
+      }
+    },
+    "new_representatives": {
+      "bot_status": {
+        "no_bot": 3734,
+        "bot_tagged": 410,
+        "unknown": 1
+      },
+      "history_status": {
+        "recovered": 4144,
+        "unavailable": 1
+      },
+      "public_exposure": {
+        "not_known_public": 4017,
+        "known_public": 128
+      },
+      "analysis_role": {
+        "prior_development": 2571,
+        "pilot_train": 38,
+        "pilot_validation": 10,
+        "pilot_test": 11,
+        "public_exposed": 128,
+        "new_test": 281,
+        "new_train": 836,
+        "new_validation": 270
+      }
+    },
+    "representatives_by_side": {
+      "white": {
+        "bot_status": {
+          "no_bot": 2106
+        },
+        "history_status": {
+          "recovered": 2106
+        },
+        "public_exposure": {
+          "not_known_public": 2106
+        },
+        "analysis_role": {
+          "prior_development": 590,
+          "pilot_train": 38,
+          "pilot_validation": 11,
+          "pilot_test": 12,
+          "new_train": 870,
+          "new_test": 305,
+          "new_validation": 280
+        }
+      },
+      "black": {
+        "bot_status": {
+          "no_bot": 1828,
+          "bot_tagged": 410,
+          "unknown": 1
+        },
+        "history_status": {
+          "recovered": 2238,
+          "unavailable": 1
+        },
+        "public_exposure": {
+          "not_known_public": 2111,
+          "known_public": 128
+        },
+        "analysis_role": {
+          "prior_development": 2109,
+          "public_exposed": 128,
+          "pilot_train": 1,
+          "pilot_test": 1
+        }
+      }
+    }
+  },
+  "any_origin_provenance_counts": {
+    "any_bot_tagged": 410,
+    "any_unknown_bot_status": 1,
+    "any_known_public": 128,
+    "any_unknown_public_exposure": 0,
+    "any_unavailable_history": 1,
+    "any_unknown_history": 0,
+    "all_origins_recovered_no_bot_not_known_public": 3830
+  },
+  "validation": {
+    "screen_gate_unchanged": true,
+    "source_hashes_verified": true,
+    "old200_hashes_verified": true,
+    "old200_position_and_policy_bytes_preserved": true,
+    "source_order_aligned": true,
+    "unique_canonical_states": 4345,
+    "all_candidate_origins_recorded": true,
+    "all_boards_valid_and_nonterminal": true,
+    "available_history_replayed": true,
+    "original_policies_copied_verbatim": true,
+    "all_four_policies_legal_complete": true,
+    "original_analysis_role_and_split_preserved": true,
+    "deep_outcomes_read": false
+  },
+  "limitations": [
+    "Repeated positions are one state with several source observations, not independent rows.",
+    "Repeated games remain correlated; this census does not impose a per-game cap.",
+    "BOT-tagged, public-exposed and unresolved sources remain included and separately labelled.",
+    "Any-origin exposure is reported separately from representative provenance.",
+    "Prior-development and public-exposed games do not become fresh held-out data.",
+    "Canonical state matching uses the legal-en-passant first four FEN fields; exact representative full FEN and policies are preserved.",
+    "A successful engine check does not establish human difficulty, teachability or trainer readiness."
+  ],
+  "legal_roots": {
+    "total": 152034,
+    "remaining": 144930,
+    "already_deep200": 7104,
+    "by_side": {
+      "white": 75351,
+      "black": 76683
+    },
+    "remaining_by_side": {
+      "white": 71790,
+      "black": 73140
+    },
+    "minimum": 2,
+    "maximum": 66
+  }
+}
