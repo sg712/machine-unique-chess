@@ -1,6 +1,6 @@
 {
   "private": true,
   "type": "module",
-  "scripts": { "test": "node --experimental-vm-modules --test test_ui.mjs" },
+  "scripts": { "test": "node --experimental-vm-modules --test test_*.mjs" },
   "devDependencies": { "jsdom": "^26.1.0" }
 }

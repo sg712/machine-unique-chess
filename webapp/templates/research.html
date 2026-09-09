@@ -24,12 +24,51 @@
 {% block body %}
 <article class="research-article">
 <h1>What I found in the positions</h1>
-<p class="research-byline">Shivansh Gupta · Analysis updated 8 September 2026</p>
+<p class="research-byline">Shivansh Gupta · Page updated 9 September 2026</p>
 <p class="lede">I used Stockfish and Maia to look for strong moves that a model of human play
 rarely chooses. That gave me a collection of positions to study, and eventually this trainer.</p>
 <p>Here are the examples, the selection method, and the checks that changed my interpretation.
 I don’t yet know whether practicing these positions improves play in new ones;
 that needs a controlled study.</p>
+<section class="research-current" aria-labelledby="current-status">
+  <h2 id="current-status">Where the project stands</h2>
+  <dl>
+    <div><dt>The trainer you can use</dt>
+      <dd>{{ totals.positions }} positions from the original collection: four examples and 36 practice
+      positions in each of eight groups. The expanded collection below has not replaced this material.
+      <a href="{{ url_for('learn') }}">Try a group</a>.</dd></div>
+    {% if mining_v3_dataset and mining_v3_dataset.complete %}
+    <div><dt>The expanded collection</dt>
+      <dd>{{ '{:,}'.format(mining_v3_dataset.record_count) }} observations:
+      {{ '{:,}'.format(mining_v3_dataset.sides.white) }} White to move and
+      {{ '{:,}'.format(mining_v3_dataset.sides.black) }} Black to move.
+      {% if mining_v3 and mining_v3.complete %}The completed first screen identified
+      {{ '{:,}'.format(mining_v3.candidate_unique_canonical_states) }} distinct candidate positions.{% endif %}
+      <a href="#full-expansion">How I assembled and screened them</a>.</dd></div>
+    {% endif %}
+    <div><dt>The deeper checks</dt><dd>
+      {% if mining_v3_full_deep and mining_v3_full_deep.complete %}
+      Every legal move has been checked at depths 20 and 24 in all
+      {{ '{:,}'.format(mining_v3_full_deep.counts.checked_n) }} candidates.
+      {{ '{:,}'.format(mining_v3_full_deep.counts.survives_candidate_criterion_n) }} retained the full selection criterion.
+      {% elif mining_v3_deep200 and mining_v3_deep200.complete %}
+      The first {{ mining_v3_deep200.counts.checked_n }} candidates have been checked at depths 20 and 24.
+      {{ mining_v3_deep200.counts.engine_verified_n }} kept the same acceptable-move set;
+      {{ mining_v3_deep200.counts.survives_candidate_criterion_n }} also retained the full selection criterion.
+      {% if mining_v3_full_deep %}The run covering all
+      {{ '{:,}'.format(mining_v3_full_deep.counts.planned_n) }} candidates has started, reusing those initial checks.
+      Its final results are not yet published here.{% endif %}
+      {% else %}Deeper checks are being prepared; the first-screen candidates are not finished puzzles.{% endif %}
+      New candidates still need chess review and explanations before joining the trainer.
+      {% if mining_v3_deep200 and mining_v3_deep200.complete %}<a href="#depth-checks">Read the depth checks</a>.{% endif %}
+    </dd></div>
+  </dl>
+  {% if mining_v3_full_deep %}
+  <p class="small">Full-run status comes from the published snapshot dated
+    <time datetime="{{ mining_v3_full_deep.created_at }}">{{ mining_v3_full_deep.created_at[:10] }} at {{ mining_v3_full_deep.created_at[11:16] }} UTC</time>.
+    This page is not a live progress feed.</p>
+  {% endif %}
+</section>
 <nav class="research-contents" aria-label="Research sections">
   <a href="#examples">Worked examples</a><a href="#method">Selection method</a>
   <a href="#findings">Findings</a><a href="#new-mining">2,000-position pilot</a>
@@ -337,6 +376,25 @@ rule, but does not by itself make a position useless. The sample was balanced by
 to one position per game; it was not matched on every other feature.</p>
 <p class="small"><a href="https://github.com/sg712/machine-unique-chess/blob/main/docs/MINING_V3_DEEP200.md">Selection and verification methods</a> ·
 <a href="https://github.com/sg712/machine-unique-chess/blob/main/results/mining_v3_deep200.json">Counts, failure reasons and runtime</a></p>
+{% endif %}
+
+{% if mining_v3_full_deep %}
+<h3 id="full-depth-checks">Checking the full candidate set</h3>
+<p>The full run covers all {{ '{:,}'.format(mining_v3_full_deep.counts.planned_n) }} distinct candidates,
+including the first {{ mining_v3_full_deep.counts.imported_completed_positions_n }} checked above.
+Every legal move receives the same independent depth-20 and depth-24 searches.
+Unlike the initial 200-position sample, this includes all source groups and can include
+several positions from one game. Bot-tagged and previously public sources remain labelled.</p>
+{% if mining_v3_full_deep.complete %}
+<p>The full checks are complete. {{ '{:,}'.format(mining_v3_full_deep.counts.engine_verified_n) }} positions
+kept the same acceptable-move set, and {{ '{:,}'.format(mining_v3_full_deep.counts.survives_candidate_criterion_n) }}
+also retained the full selection criterion. These remain candidates for chess review.</p>
+{% else %}
+<p>The full results have not yet been published. The 116 and 62 figures above describe only
+the initial 200-position sample; they are not totals for the full run.</p>
+{% endif %}
+<p class="small"><a href="https://github.com/sg712/machine-unique-chess/blob/main/docs/MINING_V3_FULL_DEEP.md">Full-run method</a> ·
+<a href="https://github.com/sg712/machine-unique-chess/blob/main/results/mining_v3_full_deep.json">Published run snapshot</a></p>
 {% endif %}
 
 <h2 id="learning">Does practicing these positions help?</h2>

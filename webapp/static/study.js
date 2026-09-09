@@ -14,8 +14,8 @@ export function studyReplay(holder, line, pieces, picked = null, prefix = '') {
   const select = document.createElement('select');
   const choices = [
     { label: `Engine: ${line.best_san}`, line, status: 'Engine line' },
-    { label: `Compare: ${line.comparison.san} (Maia)`, line: line.comparison, status: 'Comparison line' },
-    ...line.variations.map(v => ({ label: v.label, line: v, status: 'Side variation' })),
+    ...(line.comparison ? [{ label: `Compare: ${line.comparison.san} (Maia)`, line: line.comparison, status: 'Comparison line' }] : []),
+    ...(line.variations || []).map(v => ({ label: v.label, line: v, status: 'Side variation' })),
   ];
   choices.forEach((choice, i) => {
     const option = document.createElement('option');
@@ -24,16 +24,25 @@ export function studyReplay(holder, line, pieces, picked = null, prefix = '') {
   label.append(select);
   const board = document.createElement('div');
   board.className = 'replay';
-  viewer.append(label, board);
+  if (choices.length > 1) viewer.append(label);
+  viewer.append(board);
   const notes = document.createElement('div');
   notes.className = 'study-explanation';
-  const why = document.createElement('p'); why.textContent = line.note.why;
-  const alternativeHeading = document.createElement('h4');
-  alternativeHeading.textContent = `What changes after ${line.comparison.san}?`;
-  const alternative = document.createElement('p'); alternative.textContent = line.note.alternative;
-  const notice = document.createElement('p'); notice.className = 'study-notice';
-  notice.textContent = line.note.notice;
-  notes.append(why, alternativeHeading, alternative, notice);
+  const paragraphs = line.note.why ? [line.note.why]
+    : [line.note.constraint, line.note.purpose, line.note.continuation];
+  for (const text of paragraphs.filter(Boolean)) {
+    const paragraph = document.createElement('p'); paragraph.textContent = text; notes.append(paragraph);
+  }
+  if (line.comparison && line.note.alternative) {
+    const alternativeHeading = document.createElement('h4');
+    alternativeHeading.textContent = `What changes after ${line.comparison.san}?`;
+    const alternative = document.createElement('p'); alternative.textContent = line.note.alternative;
+    notes.append(alternativeHeading, alternative);
+  }
+  if (line.note.notice) {
+    const notice = document.createElement('p'); notice.className = 'study-notice';
+    notice.textContent = line.note.notice; notes.append(notice);
+  }
   layout.append(viewer, notes); holder.append(heading, layout);
   function show() {
     const choice = choices[Number(select.value)];

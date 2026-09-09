@@ -3,7 +3,8 @@
 {% block body %}
 <p class="crumb"><a href="{{ url_for('concept', cid=c.id) }}">{{ c.name }}</a> · {{ 'Review missed positions' if mode == 'missed' else 'Practice' }}</p>
 <h1 class="tight" id="practice-title">{{ c.name }}: practice</h1>
-<p class="lede">Play five positions, checking the engine’s line after each one.</p>
+<p class="lede">Play up to five positions, checking the engine’s line after each one.
+<a href="{{ url_for('concept', cid=c.id) }}">Review the study examples</a>.</p>
 {% if positions %}
 <div id="practice">
   <div class="stage">
@@ -24,7 +25,7 @@
     <h2 id="verdict" tabindex="-1"></h2>
     <p id="comparison"></p>
     <div id="replay" class="replay"></div>
-    <p class="reflection">What does the engine’s move change? Step through the line before trying the next position.</p>
+    <p class="reflection" id="practice-reflection">Step through the engine’s line, then try the next position.</p>
     <details class="sigdrawer"><summary>What the models predict</summary><div id="model-stats"></div></details>
     <button class="btn p" id="next">Next position</button>
   </section>
@@ -33,8 +34,11 @@
   <h2 id="session-title" tabindex="-1">Session complete</h2>
   <p class="score" id="session-score"></p>
   <p id="session-copy"></p>
+  <p class="small" id="group-progress"></p>
   <div class="row">
     <button class="btn p" id="continue">Practice five more</button>
+    {% if next_group %}<a class="btn p" id="next-group" href="{{ next_group.next_url }}" hidden>Next group: {{ next_group.c.label }}</a>
+    {% else %}<a class="btn p" id="next-group" href="{{ url_for('blindspot_test') }}" hidden>Take the twelve-position test</a>{% endif %}
     <a class="btn" href="{{ url_for('drill', cid=c.id, mode='missed') }}">Review missed positions</a>
     <a class="btn ghost" href="{{ url_for('learn') }}">Finish for now</a>
   </div>
@@ -42,7 +46,10 @@
 <script type="module">
 import { Board } from "{{ url_for('static', filename='board.js') }}";
 import { postJSON, replay, storage, focusHeading } from "{{ url_for('static', filename='training.js') }}";
+import { studyReplay } from "{{ url_for('static', filename='study.js') }}";
 const POS = {{ positions|tojson }}, PIECES = {{ pieces|tojson }}, CID = {{ c.id }};
+const GROUP = {{ group|tojson }}, MODE = {{ mode|tojson }};
+const tried = new Set(GROUP.tried), found = new Set(GROUP.found);
 const el = document.getElementById('board'), lock = document.getElementById('lock'), undo = document.getElementById('undo');
 const pickEl = document.getElementById('pick'), feedback = document.getElementById('feedback');
 const error = document.getElementById('save-error'), status = document.getElementById('save-status');
@@ -57,15 +64,18 @@ function load() {
     onSelect: ({ from, to, uci }) => {
       picked = uci; pickEl.textContent = `${from} → ${to}${uci[4] ? ' · promotion' : ''}`;
       lock.disabled = false; undo.disabled = false;
-      storage.set(STORAGE_KEY, { position: POS[idx].idx, picked, requestId });
+      storage.set(STORAGE_KEY, { position: POS[idx].idx, fen: POS[idx].fen, picked, requestId });
     } });
   board.setLegal(POS[idx].legal); board.setPosition(POS[idx].fen);
   const saved = storage.get(STORAGE_KEY);
-  if (saved?.position === POS[idx].idx && POS[idx].legal.includes(saved.picked)) {
+  if (saved?.position === POS[idx].idx && saved.fen === POS[idx].fen &&
+      POS[idx].legal.includes(saved.picked) && typeof saved.requestId === 'string' &&
+      /^[a-f0-9-]{32,36}$/.test(saved.requestId)) {
     picked = saved.picked; requestId = saved.requestId;
     board.move(picked.slice(0, 2), picked.slice(2, 4), picked[4]);
+    board.setLegal([]);
   }
-  pickEl.textContent = picked ? `Your saved move: ${picked}` : 'Choose your move.';
+  pickEl.textContent = picked ? `Your saved move: ${picked.slice(0, 2)} → ${picked.slice(2, 4)}` : 'Choose your move.';
   document.getElementById('stm').textContent = POS[idx].stm + ' to move.';
   document.getElementById('counter').textContent = `This session: ${sessionCount + 1} of ${Math.min(5, sessionCount + POS.length - idx)} · ${POS.length - idx} positions remaining`;
   lock.disabled = !picked; undo.disabled = !picked; lock.textContent = 'Check move';
@@ -86,13 +96,17 @@ lock.addEventListener('click', async () => {
     const result = await postJSON('/api/answer', { concept: CID, idx: POS[idx].idx, picked,
       request_id: requestId, seconds: Math.min(86400, Math.round((Date.now() - started) / 1000)) });
     answered = true; storage.remove(STORAGE_KEY); sessionCount++; sessionHits += Number(result.correct);
+    tried.add(POS[idx].idx); if (result.correct) found.add(POS[idx].idx);
     const mark = document.createElement('i'); mark.className = result.correct ? 'hit' : 'done'; tally.append(mark);
     status.textContent = 'Answer saved.'; document.getElementById('answer-controls').hidden = true;
     const verdict = document.getElementById('verdict');
     verdict.textContent = result.correct ? 'You found it.' : 'The engine chose a different move.';
     verdict.className = result.correct ? 'verdict good' : 'verdict';
     document.getElementById('comparison').textContent = `You played ${result.picked_san}. The engine plays ${result.best_san}.`;
-    replay(document.getElementById('replay'), result.line, PIECES, picked);
+    const hasExplanation = !!result.line.note;
+    if (hasExplanation) studyReplay(document.getElementById('replay'), result.line, PIECES, picked);
+    else replay(document.getElementById('replay'), result.line, PIECES, picked);
+    document.getElementById('practice-reflection').hidden = hasExplanation;
     const stats = document.getElementById('model-stats'); stats.replaceChildren();
     const p = document.createElement('p'); p.className = 'small';
     p.textContent = `Maia, a model of human moves, gives the engine's choice a ${(result.p_best * 100).toFixed(1)}% chance of being played by a 1900 Lichess player.`; stats.append(p);
@@ -115,9 +129,14 @@ document.getElementById('next').addEventListener('click', () => {
     document.getElementById('practice').hidden = true; document.getElementById('session-done').hidden = false;
     document.getElementById('session-score').textContent = `${sessionHits} / ${sessionCount}`;
     document.getElementById('session-copy').textContent = 'engine moves found in this session. Your progress is saved.';
+    const groupComplete = tried.size === GROUP.total;
+    document.getElementById('session-title').textContent = idx === POS.length && groupComplete
+      ? 'Group complete' : idx === POS.length && MODE === 'missed' ? 'Review complete' : 'Session complete';
+    document.getElementById('group-progress').textContent = `This group: ${tried.size} of ${GROUP.total} positions tried, ${found.size} engine moves found. Each position counts once.`;
     document.getElementById('continue').hidden = idx === POS.length;
+    document.getElementById('next-group').hidden = idx !== POS.length || !groupComplete;
     focusHeading(document.getElementById('session-title'));
-  } else load();
+  } else { load(); focusHeading(document.getElementById('counter')); }
 });
 document.getElementById('continue').addEventListener('click', () => {
   sessionCount = 0; sessionHits = 0; tally.replaceChildren();
@@ -125,13 +144,24 @@ document.getElementById('continue').addEventListener('click', () => {
   load(); focusHeading(document.getElementById('practice-title'));
 });
 const saved = storage.get(STORAGE_KEY);
-if (saved) { const resume = POS.findIndex(p => p.idx === saved.position); if (resume >= 0) idx = resume; }
+if (saved) {
+  const resume = POS.findIndex(p => p.idx === saved.position && p.fen === saved.fen &&
+    p.legal.includes(saved.picked) && typeof saved.requestId === 'string' && /^[a-f0-9-]{32,36}$/.test(saved.requestId));
+  if (resume >= 0) idx = resume;
+  else storage.remove(STORAGE_KEY);
+}
 load();
 </script>
 {% else %}
 <p class="lede">{{ 'No missed positions to review. Try a practice session first, or revisit the whole pattern.' if mode == 'missed' else 'You have tried every position in this pattern. Revisit them or choose your next pattern.' }}</p>
+<p>{{ group.tried|length }} of {{ group.total }} positions tried · {{ group.found|length }} engine moves found.
+Each position counts once.</p>
 <div class="row">
-  <a class="btn p" href="{{ url_for('drill', cid=c.id, mode='restart') }}">Practice from the beginning</a>
+  {% if group.tried|length >= group.total %}
+    {% if next_group %}<a class="btn p" href="{{ next_group.next_url }}">Next group: {{ next_group.c.label }}</a>
+    {% else %}<a class="btn p" href="{{ url_for('blindspot_test') }}">Take the twelve-position test</a>{% endif %}
+  {% elif mode == 'missed' %}<a class="btn p" href="{{ url_for('drill', cid=c.id) }}">Continue practice</a>{% endif %}
+  <a class="btn" href="{{ url_for('drill', cid=c.id, mode='restart') }}">Practice from the beginning</a>
   {% if mode != 'missed' %}<a class="btn" href="{{ url_for('drill', cid=c.id, mode='missed') }}">Review missed positions</a>{% endif %}
   <a class="btn ghost" href="{{ url_for('learn') }}">All patterns</a>
 </div>

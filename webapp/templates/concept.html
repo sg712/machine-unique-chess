@@ -9,15 +9,19 @@
   {% if here %}<span class="pill t-{{ here.tier|lower }}"
     style="vertical-align:middle;margin-left:.5rem">{{ here.tier }}</span>{% endif %}</h1>
 
+{% if prog.studied or prog.n %}
+<p><a class="btn p" href="{{ url_for('drill', cid=c.id, mode='missed') if prog.n >= prog.of else url_for('drill', cid=c.id) }}">{{ 'Review missed positions' if prog.n >= prog.of else 'Continue practice' }}</a></p>
+{% endif %}
+
 {% if request.args.get('done') and prog.n >= prog.of %}
 <div class="donecard" id="doneStage">
-  <span class="k">Pattern complete</span>
+  <h2>Group complete</h2>
   <p class="score">{{ prog.correct }}<i>/{{ prog.n }}</i></p>
-  <p class="lede">solved on {{ c.name }}{% if prog.n %}:
-  {{ (100 * prog.correct / prog.n)|round(0)|int }}%, across your practice. These results include learning and repeat attempts, so they are not directly comparable with a player seeing the position in a game.{% endif %}</p>
+  <p class="lede">engine moves found across {{ prog.n }} positions tried. Each position counts once,
+  including moves you found on a repeat attempt.</p>
   <div class="row">
-    {% if nxt %}<a class="btn p" href="{{ url_for('concept', cid=nxt.id) }}">Next pattern:
-      {{ nxt.label }} &rarr;</a>{% else %}
+    {% if nxt %}<a class="btn p" href="{{ nxt.next_url }}">Next group:
+      {{ nxt.c.label }} &rarr;</a>{% else %}
     <a class="btn p" href="{{ url_for('blindspot_test') }}">All eight done: take the test &rarr;</a>{% endif %}
     <a class="btn" href="{{ url_for('learn') }}">Back to all patterns</a>
     <a class="btn ghost" href="{{ url_for('drill', cid=c.id, mode='restart') }}">Practice from the beginning</a>
@@ -62,27 +66,27 @@
 </div>
 
 <div id="studyStage" style="display:none">
-  <h2>Compare the four positions</h2>
-  <p>These are the positions you just played. Step through the lines and look for similarities.
+  <h2 id="study-title">Compare the four positions</h2>
+  <p>Review the four study positions. Step through the lines and look for similarities.
   The groups came from the engine’s internal representations; they won’t always share one clear tactical idea.
   Each comparison uses Maia’s top prediction for a 1900-rated player.</p>
 
-  <div class="protos" id="protos"></div>
-
   <form method="post" action="{{ url_for('mark_studied', cid=c.id) }}" class="cta">
-    <button class="btn p" type="submit">Practice five positions &rarr;</button>
+    <button class="btn p" type="submit">{{ 'Continue practice' if prog.n else 'Practice five positions' }} &rarr;</button>
     {% if prog.n %}<span class="small">You've already tried {{ prog.n }} of {{ prog.of }}
-      ({{ prog.correct }} solved).</span>{% endif %}
+      ({{ prog.correct }} engine moves found).</span>{% endif %}
   </form>
   <p class="small"><a href="#" id="redo">Try these examples again</a></p>
+
+  <div class="protos" id="protos"></div>
 
   <details class="sigdrawer">
     <summary>Research notes for this group</summary>
     <p class="small">The figures below describe this group in the source games, not just its 40 training positions.
-    “Found” means the player chose the exact engine move. Another move may also have been good.</p>
+    “Exact match” means the recorded move matched the engine’s choice. Another move may also have been good.</p>
     <div class="sigbar">
       <span><b>{{ c.signature.positions }}</b> positions found</span>
-      <span><b>{{ (c.signature.found_by_real_players * 100)|round(1) }}%</b> found over the board</span>
+      <span><b>{{ (c.signature.found_by_real_players * 100)|round(1) }}%</b> source-game exact matches</span>
       <span><b>{{ (c.signature.quiet_share * 100)|round(0)|int }}%</b> quiet moves</span>
       <span><b>{{ c.signature.avg_cost_cp }}cp</b> average gap to Maia's favourite</span>
       <span class="mo">similarity to named motifs (exploratory):
@@ -98,6 +102,28 @@ const PIECES = {{ pieces|tojson }};
 import { studyReplay } from "{{ url_for('static', filename='study.js') }}";
 import { storage, focusHeading } from "{{ url_for('static', filename='training.js') }}";
 const KEY = "mu_tried_{{ c.id }}";
+const DRAFT_KEY = "mu_study_draft_{{ c.id }}";
+const SERVER_STUDIED = {{ (prog.studied or prog.n > 0)|tojson }};
+const FINGERPRINT = LINES.map(line => `${line.fen}|${line.best}`).join('\n');
+function validDraft(value) {
+  if (!value || value.version !== 1 || value.fingerprint !== FINGERPRINT ||
+      !Number.isInteger(value.index) || value.index < 0 || value.index > LINES.length ||
+      !Array.isArray(value.answers) || value.answers.length !== LINES.length) return false;
+  return value.answers.every((answer, i) => {
+    if (i > value.index) return answer === null;
+    if (answer === null) return i === value.index;
+    return answer && typeof answer.checked === 'boolean' &&
+      typeof answer.picked === 'string' && LINES[i].legal.includes(answer.picked) &&
+      (i >= value.index || answer.checked);
+  });
+}
+const storedDraft = storage.get(DRAFT_KEY);
+const restored = validDraft(storedDraft);
+const emptyDraft = () => ({version: 1, fingerprint: FINGERPRINT, index: 0,
+  answers: LINES.map(() => null)});
+let draft = restored ? storedDraft : emptyDraft();
+if (storedDraft && !restored) storage.remove(DRAFT_KEY);
+const saveDraft = () => storage.set(DRAFT_KEY, draft);
 
 // Build explanations only after the four attempts.
 function buildStudy() {
@@ -111,10 +137,11 @@ function buildStudy() {
   });
 }
 
-function showStudy() {
+function showStudy(focus = false) {
   document.getElementById("tryStage").style.display = "none";
   document.getElementById("studyStage").style.display = "";
   buildStudy();
+  if (focus) focusHeading(document.getElementById('study-title'));
 }
 
 // ── stage 1: try each position before seeing the answer ───────────────────────
@@ -122,7 +149,7 @@ const tryEl = document.getElementById("tryboard");
 const tally = document.getElementById("trytally");
 LINES.forEach(() => { const i = document.createElement("i"); tally.appendChild(i); });
 
-let idx = 0, picked = null, board = null;
+let idx = draft.index, picked = null, board = null;
 const pickEl = document.getElementById("trypick");
 const lock = document.getElementById("trylock");
 const undo = document.getElementById("tryundo");
@@ -136,6 +163,7 @@ function loadTry() {
     pieces: PIECES, orientation: line.orientation, interactive: true,
     onSelect: ({ from, to, uci }) => {
       picked = uci;
+      draft.answers[idx] = {picked, checked: false}; saveDraft();
       pickEl.textContent = from + " → " + to;
       lock.disabled = false; undo.disabled = false;
     },
@@ -144,21 +172,32 @@ function loadTry() {
   board.setPosition(line.fen);
   document.getElementById("trystm").textContent = line.stm + " to move.";
   document.getElementById("trycounter").textContent = `Position ${idx + 1} of ${LINES.length}`;
-  picked = null; pickEl.innerHTML = "&hellip;";
+  picked = null; pickEl.textContent = "…";
   lock.disabled = true; undo.disabled = true;
   document.getElementById("tryrow").style.display = "flex";
   document.getElementById("tryfb").style.display = "none";
+  draft.answers.forEach((answer, i) => {
+    tally.children[i].className = answer?.checked ? (answer.picked === LINES[i].best ? 'hit' : 'done') : '';
+  });
+  const answer = draft.answers[idx];
+  if (answer) {
+    picked = answer.picked;
+    board.move(picked.slice(0, 2), picked.slice(2, 4), picked[4]); board.setLegal([]);
+    pickEl.textContent = `${picked.slice(0, 2)} → ${picked.slice(2, 4)}`;
+    lock.disabled = false; undo.disabled = false;
+    if (answer.checked) showTryFeedback(false);
+  }
 }
 
 undo.addEventListener("click", () => {
   board.setPosition(LINES[idx].fen);
   board.setLegal(LINES[idx].legal);
   picked = null; pickEl.innerHTML = "&hellip;";
+  draft.answers[idx] = null; saveDraft();
   lock.disabled = true; undo.disabled = true;
 });
 
-lock.addEventListener("click", () => {
-  if (!picked) return;
+function showTryFeedback(focus = true) {
   const line = LINES[idx];
   const hit = picked === line.best;
   tally.children[idx].classList.add(hit ? "hit" : "done");
@@ -172,30 +211,40 @@ lock.addEventListener("click", () => {
   studyReplay(document.getElementById('try-replay'), line, PIECES, picked);
   document.getElementById("tryfb").style.display = "";
   document.getElementById("try-next-controls").hidden = false;
-  focusHeading(document.getElementById("tryverdict"));
+  if (focus) focusHeading(document.getElementById("tryverdict"));
   document.getElementById("trynext").textContent =
     idx + 1 < LINES.length ? "Next position →" : "Study them together →";
+}
+
+lock.addEventListener("click", () => {
+  if (!picked || draft.answers[idx]?.checked) return;
+  draft.answers[idx] = {picked, checked: true}; saveDraft();
+  showTryFeedback();
 });
 
 document.getElementById("trynext").addEventListener("click", () => {
+  if (!draft.answers[idx]?.checked) return;
   idx += 1;
+  draft.index = idx; saveDraft();
   if (idx >= LINES.length) {
     storage.set(KEY, true);
-    showStudy();
-  } else loadTry();
+    showStudy(true);
+  } else { loadTry(); focusHeading(document.getElementById('trycounter')); }
 });
 
 document.getElementById("redo").addEventListener("click", (e) => {
   e.preventDefault();
   storage.remove(KEY);
+  draft = emptyDraft(); saveDraft();
   idx = 0;
   document.getElementById("studyStage").style.display = "none";
   document.getElementById("tryStage").style.display = "";
   tally.querySelectorAll("i").forEach(i => i.className = "");
   loadTry();
+  focusHeading(document.getElementById('trycounter'));
 });
 
-// ── tutorial: shown once per browser, replayable from the header link ────────
+// Tutorial appears once per browser. In-progress lessons resume before it.
 const TUT = "mu_tut_seen";
 const tut = document.getElementById("tutorial");
 function openTut() {
@@ -211,7 +260,9 @@ function closeTut(then) {
 document.getElementById("tutgo").addEventListener("click", () =>
   closeTut(() => {
     document.getElementById("tryStage").style.display = "";
+    saveDraft();
     loadTry();
+    focusHeading(document.getElementById('trycounter'));
   }));
 let seenTut = true;
 try { seenTut = !!localStorage.getItem(TUT); } catch (e) {}
@@ -219,7 +270,10 @@ try { seenTut = !!localStorage.getItem(TUT); } catch (e) {}
 if (document.getElementById("doneStage")) {
   document.getElementById("tryStage").style.display = "none";
   document.getElementById("studyStage").style.display = "none";
-} else if (storage.get(KEY)) showStudy();
+} else if (restored) {
+  if (idx === LINES.length) showStudy();
+  else loadTry();
+} else if (SERVER_STUDIED || storage.get(KEY)) showStudy();
 else if (!seenTut) openTut();
 else loadTry();
 </script>

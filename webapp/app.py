@@ -79,7 +79,10 @@ MINING_V3_DATASET = _optional_result("mining_v3_dataset.json")
 MINING_V3 = _optional_result("mining_v3_summary.json")
 MINING_V3_PROVENANCE = _optional_result("mining_v3_provenance.json")
 MINING_V3_DEEP200 = _optional_result("mining_v3_deep200.json")
+MINING_V3_FULL_DEEP = _optional_result("mining_v3_full_deep.json")
 STUDY_NOTES = {n["id"]: n for n in json.load(open(ROOT / "webapp" / "study_notes.json"))["items"]}
+_practice_notes_path = ROOT / "webapp" / "practice_notes.json"
+PRACTICE_NOTES = {n["id"]: n for n in json.loads(_practice_notes_path.read_text())["items"]} if _practice_notes_path.exists() else {}
 
 
 # ── storage ───────────────────────────────────────────────────────────────────
@@ -256,6 +259,25 @@ def study_line(note, key):
     return frames_of(note["fen"], note[key]["pv"][:max(12, last_claim)])
 
 
+def practice_line(cid, index, position):
+    """Attach reviewed explanations only to their exact existing drill position."""
+    note = PRACTICE_NOTES.get(f"{cid}:{index}")
+    if not note:
+        return frames_of(position["fen"], position["pv"])
+    if (note["fen"], note["best"]) != (position["fen"], position["best"]):
+        raise ValueError("Practice explanation does not match the position")
+    line = frames_of(note["fen"], note["evidence"]["pv"])
+    line["best_san"] = position["best_san"]
+    line["note"] = {key: note[key] for key in
+                    ("title", "constraint", "purpose", "continuation", "notice")}
+    if note.get("comparison"):
+        comparison = note["comparison"]
+        line["comparison"] = {**frames_of(note["fen"], comparison["pv"]),
+                              "san": comparison["san"]}
+        line["note"]["alternative"] = comparison["explanation"]
+    return line
+
+
 # ── pages ─────────────────────────────────────────────────────────────────────
 @app.route("/")
 def index():
@@ -264,15 +286,28 @@ def index():
                           "orientation": c["study"][0]["stm"],
                           "best": c["study"][0]["best"]} for c in CONCEPTS}
     rows = curriculum(code)
-    nxt = next((r for r in rows if r["state"] != "done"), rows[0])
+    nxt = recommended_group(rows) or rows[0]
     featured = RESEARCH_EXAMPLES["examples"][0]["primary"]
     featured_board = chess.svg.board(chess.Board(featured["fen"]),
         orientation=chess.BLACK, size=360,
         colors={"square light": "#f2ece0", "square dark": "#b9906b"})
+    board = chess.Board(featured["fen"])
+    featured_demo = {
+        **board_of(featured["fen"]),
+        "best": featured["best"], "best_san": featured["best_san"],
+        "move_sans": {move.uci(): board.san(move) for move in board.legal_moves},
+        "title": RESEARCH_EXAMPLES["examples"][0]["title"],
+        "explanation": RESEARCH_EXAMPLES["examples"][0]["explanation"],
+        "line": frames_of(featured["fen"], featured["pv"]),
+        "human_line": frames_of(featured["fen"], featured["human"]["pv"]),
+        "human_san": featured["human"]["san"],
+        "maia_rating": featured["maia_rating"],
+    }
     return render_template("index.html", code=code, concepts=CONCEPTS, nxt=nxt,
                            prog=concept_progress(code), totals=totals(),
                            previews=previews, pieces=piece_svgs(),
-                           featured=featured, featured_board=featured_board)
+                           featured=featured, featured_board=featured_board,
+                           featured_demo=featured_demo)
 
 
 def curriculum(code=None):
@@ -293,14 +328,29 @@ def curriculum(code=None):
         r["state"] = ("done" if p["n"] >= p["of"] else
                       "going" if p["n"] > 0 else
                       "studied" if p["studied"] else "new")
+        r["next_url"] = url_for("drill" if r["state"] in ("studied", "going")
+                                else "concept", cid=r["c"]["id"])
     return rows
+
+
+def next_group(rows, cid):
+    """Next unfinished group in curriculum order, wrapping past skipped groups."""
+    current = next(i for i, row in enumerate(rows) if row["c"]["id"] == cid)
+    ordered = rows[current + 1:] + rows[:current]
+    return next((row for row in ordered if row["state"] != "done"), None)
+
+
+def recommended_group(rows):
+    """Resume started work first; use curriculum order within each state."""
+    return next((row for state in ("going", "studied", "new")
+                 for row in rows if row["state"] == state), None)
 
 
 @app.route("/learn")
 def learn():
     code = me()
     rows = curriculum(code)
-    nxt = next((r for r in rows if r["state"] != "done"), None)
+    nxt = recommended_group(rows)
     tot = {"solved": sum(r["p"]["correct"] for r in rows),
            "tried": sum(r["p"]["n"] for r in rows),
            "of": sum(r["p"]["of"] for r in rows),
@@ -338,10 +388,7 @@ def concept(cid):
         lines.append(line)
     rows = curriculum(code)
     here = next((r for r in rows if r["c"]["id"] == cid), None)
-    nxt = None
-    if here:
-        i = rows.index(here)
-        nxt = rows[i + 1]["c"] if i + 1 < len(rows) else None
+    nxt = next_group(rows, cid)
     return render_template("concept.html", c=c, lines=lines, pieces=PIECES,
                            prog=p, code=code, here=here, nxt=nxt)
 
@@ -396,7 +443,10 @@ def drill(cid):
         order = [i for i in order if i not in seen]
     positions = [{**board_of(c["drill"][i]["fen"]), "idx": i} for i in order]
     return render_template("drill.html", c=c, positions=positions, pieces=PIECES,
-                           mode=mode, code=code)
+                           mode=mode, code=code,
+                           group={"tried": sorted(seen), "found": sorted(solved),
+                                  "total": len(c["drill"])},
+                           next_group=next_group(curriculum(code), cid))
 
 
 def legal_pick(fen, picked):
@@ -470,7 +520,7 @@ def api_answer():
         picked_san=picked_san, human_p=hp, p_best=pos["p_best"],
         model_move_cost_cp=pos["cost_cp"], gap_cp=pos["gap_cp"],
         predicted=pos.get("predicted_find_1900"),
-        human=pos["human"][:3], line=frames_of(pos["fen"], pos["pv"]),
+        human=pos["human"][:3], line=practice_line(cid, idx, pos),
     )
     return finish_submission(key, result)
 
@@ -480,18 +530,15 @@ def profile():
     code = me()
     if not code:
         return redirect(url_for("index"))
-    rows = db().execute(
-        """SELECT concept, COUNT(*) tries, COUNT(DISTINCT idx) seen, SUM(correct) hits,
-                  AVG(human_p) avg_human FROM attempt WHERE code=? GROUP BY concept""",
-        (code,)).fetchall()
-    stats = {r["concept"]: dict(r) for r in rows}
-    tot = db().execute(
-        "SELECT COUNT(*) n, SUM(correct) c, AVG(human_p) h FROM attempt WHERE code=?",
-        (code,)).fetchone()
+    prog = concept_progress(code)
+    tot = {"n": sum(p["n"] for p in prog.values()),
+           "c": sum(p["correct"] for p in prog.values())}
+    attempts = db().execute(
+        "SELECT COUNT(*) n, SUM(correct) c FROM attempt WHERE code=?", (code,)).fetchone()
     bs = db().execute("SELECT * FROM blindspot WHERE code=? ORDER BY at DESC LIMIT 1",
                       (code,)).fetchone()
-    return render_template("me.html", code=code, concepts=CONCEPTS, stats=stats,
-                           tot=dict(tot), prog=concept_progress(code),
+    return render_template("me.html", code=code, concepts=CONCEPTS,
+                           tot=tot, prog=prog, attempts=dict(attempts),
                            bs=dict(bs) if bs else None)
 
 
@@ -518,7 +565,8 @@ def research():
                            contrast=VALIDATION["contrast"], examples=examples, pieces=PIECES,
                            mining_v2=MINING_V2, mining_v3_dataset=MINING_V3_DATASET,
                            mining_v3=MINING_V3, mining_v3_provenance=MINING_V3_PROVENANCE,
-                           mining_v3_deep200=MINING_V3_DEEP200)
+                           mining_v3_deep200=MINING_V3_DEEP200,
+                           mining_v3_full_deep=MINING_V3_FULL_DEEP)
 
 
 def test_signer():

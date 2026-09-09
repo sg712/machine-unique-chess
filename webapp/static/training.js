@@ -53,7 +53,7 @@ export function replay(holder, line, pieces, picked = null, label = 'Engine line
   if (picked) button('Your move', () => {
     board.setPosition(line.frames[0].fen);
     board.move(picked.slice(0, 2), picked.slice(2, 4), picked[4]);
-    status.textContent = 'Your move';
+    status.textContent = 'Your move only. Next move returns to the saved line.';
     moves.querySelectorAll('button').forEach(b => b.removeAttribute('aria-current'));
     previous.disabled = true; next.disabled = false; current = 0;
   });

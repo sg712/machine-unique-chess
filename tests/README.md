@@ -17,3 +17,11 @@ Research checks also verify saved audit denominators, legal engine continuations
 DOM tests do not verify actual layout, screen-reader behavior, pointer dragging, audio output, or browser compatibility. Check the home, Learn, practice, test, account, and research pages in a real browser at 320px, 390px, and desktop widths before calling visual verification complete.
 
 Study-note checks cover all 32 examples, source hashes, unique training positions, legal comparison and side-variation lines, and retirement of the invalid example. DOM checks play all four examples in every group, verify explanations appear only after checking, switch replay lines, and return to the unanswered state.
+
+Website continuation checks cover a later group taking priority over untouched groups,
+same-browser lesson drafts, account-backed study state, distinct progress counts, and the
+last-position next-group action. Homepage DOM checks exercise real legal choices, neutral
+alternative feedback, reveal without an attempt, takeback, retry, and the saved comparison.
+Practice-note tests bind eight notes to their original sources and check 90 legal plies and
+96 board claims. Their feedback is also exercised through the answer API and DOM renderer.
+These checks do not replace the browser layout and interaction verification described above.

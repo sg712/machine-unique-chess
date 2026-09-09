@@ -1,37 +1,62 @@
 {% extends "base.html" %}
 {% block body %}
 
-<section class="opening-position" aria-labelledby="opening-title">
+<section class="opening-position" id="home-demo" aria-labelledby="opening-title">
   <h1 id="opening-title">Black to move.<br>What would you play?</h1>
   <figure class="opening-board">
-    <div role="img" aria-label="Black to move. Black has a pawn on a3 and a knight on c5; White threatens the bishop on d6 with a knight on b5.">{{ featured_board|safe }}</div>
+    <div id="home-fallback" role="img" aria-label="Black to move. Black has a pawn on a3 and a knight on c5; White threatens the bishop on d6 with a knight on b5.">{{ featured_board|safe }}</div>
+    <div id="home-board" aria-describedby="home-board-help" hidden></div>
+    <div id="home-replay" class="home-replay" hidden></div>
     <figcaption>From a real game, before Black’s 34th move.</figcaption>
   </figure>
   <div class="opening-copy">
-    <p>The pawn on a3 is close to promotion. Would you push it, or move another piece first?</p>
-    <details class="opening-answer">
+    <p id="home-prompt">The pawn on a3 is close to promotion. Would you push it, or move another piece first?</p>
+    <div id="home-controls" class="home-demo-controls" hidden>
+      <p class="board-help" id="home-board-help">Tap a piece, then its destination, or drag it. With a keyboard, use the arrow keys and Enter.</p>
+      <p class="home-pick">Your move: <span id="home-picked" aria-live="polite">Choose a move</span></p>
+      <div class="row">
+        <button type="button" class="btn ghost" id="home-undo" disabled>Take back</button>
+        <button type="button" class="btn p" id="home-check" disabled>Check move</button>
+        <button type="button" class="btn ghost" id="home-reveal">Show answer</button>
+      </div>
+    </div>
+    <details class="opening-answer" id="home-answer">
       <summary>See Stockfish’s move</summary>
       <p><b>{{ featured.best_san }}</b>. The knight retreats to protect the bishop on d6.
       After Nxd6, Black can recapture with the knight. Pushing the pawn straight away loses that option.</p>
       <a href="{{ url_for('research') }}#example-1">Play through both lines</a>
     </details>
-    <p class="small">One of the positions behind Machine Unique Chess.</p>
+    <div class="row home-actions">
+      <a class="btn p" id="home-practice" href="{{ nxt.next_url }}">{% if nxt.state in ('studied', 'going') %}Continue practice{% elif nxt.state == 'done' %}Review examples{% else %}Start with four examples{% endif %}</a>
+    </div>
+    <p class="small home-session-note">Four examples to study, then five positions at a time. No account needed.</p>
+    <div id="home-feedback" class="home-feedback" hidden>
+      <p class="home-verdict" id="home-verdict" role="status" tabindex="-1"></p>
+      <p id="home-explanation"></p>
+      <div class="row home-line-controls" role="group" aria-label="Choose a continuation">
+        <button type="button" class="btn ghost" id="home-engine-line" aria-pressed="true">Stockfish’s line</button>
+        <button type="button" class="btn ghost" id="home-human-line" aria-pressed="false">Maia’s choice</button>
+      </div>
+      <p class="small home-comparison-note" id="home-comparison-note"></p>
+      <div class="row">
+        <button type="button" class="btn ghost" id="home-retry">Try again</button>
+        <a href="{{ url_for('research') }}#example-1">Read about this position</a>
+      </div>
+    </div>
   </div>
 </section>
 
 <section class="project-intro" aria-labelledby="project-title">
   <h2 id="project-title">Why these positions?</h2>
   <p>I’m studying moves that Stockfish likes but Maia, a model of human play, is unlikely
-  to choose. I analysed 123,405 positions and selected 5,155 that met this filter.
-  The trainer uses 320 of them, organised into eight groups.</p>
+  to choose. The original collection contained 123,405 Black-to-move positions;
+  5,155 met that first filter. The trainer uses 320 of those positions, organised into eight groups.</p>
+  <p>The research now includes both colours. Read about the
+  <a href="{{ url_for('research') }}#full-expansion">expanded collection and its checks</a>.</p>
   <p>The question is whether practicing them helps us find similar moves in our own games.
   I haven’t tested that with a controlled study yet. For now, you can try the positions
   and read <a href="{{ url_for('research') }}">what I’ve found so far</a>.</p>
-  <div class="row home-actions">
-    <a class="btn p" href="{{ url_for('concept', cid=nxt.c.id) }}">{{ 'Continue practice' if nxt.state != 'new' else 'Start practicing' }}</a>
-    <a href="{{ url_for('blindspot_test') }}">Take the twelve-position test</a>
-  </div>
-  <p class="small">Four examples to study, then five positions at a time. No account needed.</p>
+  <p><a href="{{ url_for('blindspot_test') }}">Take the twelve-position test</a> if you’d like to try a longer set.</p>
 </section>
 
 <h2>Choose a group</h2>
@@ -44,7 +69,7 @@ are labels, not difficulty levels; <a href="{{ url_for('learn') }}">Learn</a> su
     <div class="mini" data-cid="{{ c.id }}" aria-hidden="true"></div>
     <div class="pattern-copy">
       <h3>{{ c.name }}</h3>
-      <span class="small">{% if p.n %}{{ p.correct }}/{{ p.n }} solved
+      <span class="small">{% if p.n %}{{ p.correct }} engine moves found · {{ p.n }} tried
       {% elif p.studied %}Examples studied · ready to practice
       {% else %}4 examples · 36 practice positions{% endif %}</span>
     </div>
@@ -53,15 +78,13 @@ are labels, not difficulty levels; <a href="{{ url_for('learn') }}">Learn</a> su
   {% endfor %}
 </div>
 
+<script id="home-demo-data" type="application/json">{{ featured_demo|default(None)|tojson }}</script>
 <script type="module">
-import { Board } from "{{ url_for('static', filename='board.js') }}";
-const PREVIEWS = {{ previews|tojson }};
-const PIECES = {{ pieces|tojson }};
-document.querySelectorAll(".mini").forEach((el) => {
-  const p = PREVIEWS[el.dataset.cid];
-  if (!p) return;
-  const board = new Board(el, { pieces: PIECES, orientation: p.orientation });
-  board.setPosition(p.fen, null);
+import { initHomepage } from "{{ url_for('static', filename='home.js') }}";
+initHomepage({
+  demo: JSON.parse(document.getElementById('home-demo-data').textContent),
+  pieces: {{ pieces|tojson }},
+  previews: {{ previews|tojson }},
 });
 </script>
 {% endblock %}

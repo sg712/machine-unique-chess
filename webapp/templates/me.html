@@ -11,23 +11,26 @@
 
 {% if tot.n %}
 <p class="bignum">{{ tot.c or 0 }}<span>/{{ tot.n }}</span></p>
-<p>engine moves found across your attempts, including repeats.</p>
+<p>engine moves found across {{ tot.n }} positions tried.</p>
+<p class="small">Each position counts once. “Found” means you chose the engine’s move at least once.</p>
+{% if attempts.n > tot.n %}<p class="small">Including repeats: {{ attempts.n }} attempts,
+{{ attempts.c or 0 }} exact matches.</p>{% endif %}
 {% else %}
 <p class="lede">No positions tried yet. <a href="{{ url_for('index') }}">Pick a pattern</a> to start.</p>
 {% endif %}
 
 <h2>By pattern</h2>
 <div class="table-scroll" role="region" aria-label="Scrollable data table" tabindex="0"><table>
-<thead><tr><th>Pattern</th><th>Studied</th><th>Seen</th><th>Solved</th><th>Rate</th></tr></thead>
+<thead><tr><th>Pattern</th><th>Examples studied</th><th>Positions tried</th><th>Engine moves found</th><th>Found / tried</th></tr></thead>
 <tbody>
 {% for c in concepts %}
-{% set s = stats.get(c.id) %}
+{% set p = prog[c.id] %}
 <tr>
   <td><a href="{{ url_for('concept', cid=c.id) }}">{{ c.name }}</a></td>
-  <td>{{ 'yes' if prog[c.id].studied else '·' }}</td>
-  <td>{{ s.seen if s else 0 }}/{{ prog[c.id].of }}</td>
-  <td>{{ s.hits or 0 if s else 0 }}</td>
-  <td>{% if s and s.tries %}{{ (100 * (s.hits or 0) / s.tries)|round(0)|int }}%{% else %}·{% endif %}</td>
+  <td>{{ 'yes' if p.studied else '·' }}</td>
+  <td>{{ p.n }}/{{ p.of }}</td>
+  <td>{{ p.correct }}</td>
+  <td>{% if p.n %}{{ (100 * p.correct / p.n)|round(0)|int }}%{% else %}·{% endif %}</td>
 </tr>
 {% endfor %}
 </tbody>

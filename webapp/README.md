@@ -9,15 +9,20 @@ python webapp/app.py
 
 ## Pages
 
-- `/`: introduction and eight practice groups.
-- `/learn`: suggested practice order.
-- `/pattern/<id>`: four study examples with replay.
-- `/pattern/<id>/drill`: five-position sessions drawn from 36 positions per group.
+- `/`: playable research example with answer reveal, saved engine/Maia comparisons, and eight practice groups. The demo does not submit answers or create progress.
+- `/learn`: suggested practice order; Continue prioritises groups already in progress, then studied groups.
+- `/pattern/<id>`: four study examples with replay. Unfinished examples and choices resume in the same browser; saved account study progress avoids repeating the introduction on another device.
+- `/pattern/<id>/drill`: five-position sessions drawn from 36 positions per group, followed by review or the next unfinished group. Eight positions have authored explanations; the others retain their engine-line feedback.
 - `/test`: resumable, signed placement attempts; estimates are exploratory.
 - `/research`: methods, three worked examples, saved results, new robustness checks and study protocol.
-- `/me`: account progress. Email/password sign-in and a recovery code preserve access across devices.
+- `/me`: distinct positions tried and engine moves found, with repeat-attempt totals labelled separately. Email/password sign-in and a recovery code preserve access across devices.
 
 The research page reads `research_examples.json` and the committed audit JSONs in `results/`; it does not run an engine during a request. Its comparison viewer reuses the existing board and replay components. Static starting boards and text continuations remain readable without JavaScript.
+
+The research overview separates the original trainer, expanded screening, initial depth checks,
+and full candidate run. Its full-run status is a dated published snapshot, not a live feed.
+The eight practice explanations use existing public lines, with provenance and limitations in
+[the practice-note documentation](../docs/PRACTICE_NOTES.md). New mining candidates are not added by this website update.
 
 ## Storage and deployment
 
