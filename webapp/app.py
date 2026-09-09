@@ -441,9 +441,11 @@ def drill(cid):
         order = sorted(seen - solved)
     elif mode == "continue":
         order = [i for i in order if i not in seen]
-    positions = [{**board_of(c["drill"][i]["fen"]), "idx": i} for i in order]
+    all_positions = [{**board_of(position["fen"]), "idx": i}
+                     for i, position in enumerate(c["drill"])]
+    positions = [all_positions[i] for i in order]
     return render_template("drill.html", c=c, positions=positions, pieces=PIECES,
-                           mode=mode, code=code,
+                           all_positions=all_positions, mode=mode, code=code,
                            group={"tried": sorted(seen), "found": sorted(solved),
                                   "total": len(c["drill"])},
                            next_group=next_group(curriculum(code), cid))
@@ -487,6 +489,10 @@ def api_answer():
     if type(cid) is not int or type(idx) is not int or cid not in BY_ID or not 0 <= idx < len(BY_ID[cid]["drill"]):
         return jsonify(error="That position is unavailable. Reload to continue."), 400
     pos = BY_ID[cid]["drill"][idx]
+    if "owner" in d and d["owner"] != me():
+        return jsonify(error="Your account changed. Reload before saving this answer."), 403
+    if "fen" in d and d["fen"] != pos["fen"]:
+        return jsonify(error="This position has changed. Reload before choosing a move."), 400
     picked = d.get("picked")
     if not legal_pick(pos["fen"], picked):
         return jsonify(error="Choose a legal move on the board."), 400
@@ -523,6 +529,35 @@ def api_answer():
         human=pos["human"][:3], line=practice_line(cid, idx, pos),
     )
     return finish_submission(key, result)
+
+
+@app.post("/api/answer/recover")
+def recover_answer():
+    """Read an existing receipt for this player; never submit or score a move."""
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify(error="The saved answer could not be identified. Reload to continue."), 400
+    code = me()
+    if not code or data.get("owner") != code:
+        return jsonify(error="Your account changed. Reload to recover your progress."), 403
+    cid, index, key = data.get("concept"), data.get("idx"), data.get("request_id")
+    if (type(cid) is not int or type(index) is not int or cid not in BY_ID or
+            not 0 <= index < len(BY_ID[cid]["drill"]) or not isinstance(key, str) or
+            not re.fullmatch(r"[a-f0-9-]{32,36}", key)):
+        return jsonify(error="The saved answer could not be identified. Reload to continue."), 400
+    position = BY_ID[cid]["drill"][index]
+    if data.get("fen") != position["fen"] or not legal_pick(position["fen"], data.get("picked")):
+        return jsonify(error="The saved move does not match this position. Reload to continue."), 400
+    receipt = db().execute(
+        "SELECT payload_hash, response FROM submission WHERE id=? AND code=?",
+        ("drill:" + key, code)).fetchone()
+    expected = hashlib.sha256(json.dumps({"concept": cid, "idx": index,
+        "picked": data["picked"]}, sort_keys=True).encode()).hexdigest()
+    if not receipt or not receipt["response"] or receipt["payload_hash"] != expected:
+        return jsonify(status="missing")
+    response = jsonify(status="saved", result=json.loads(receipt["response"]))
+    response.headers["Cache-Control"] = "no-store"
+    return response
 
 
 @app.route("/me")

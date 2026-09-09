@@ -3,6 +3,7 @@
    slides rather than redrawing. Legality comes from the server. */
 
 const FILES = "abcdefgh";
+const PIECE_NAMES = { k: 'king', q: 'queen', r: 'rook', b: 'bishop', n: 'knight', p: 'pawn' };
 
 /* Move sounds: real wood-impact recordings (Kenney impact pack, CC0),
    fetched and decoded once at page load so playback is instant. The
@@ -79,7 +80,7 @@ export class Board {
     this.el.innerHTML = "";
     this.el.setAttribute('role', this.interactive ? 'group' : 'img');
     this.el.setAttribute('aria-label', this.interactive
-      ? 'Chessboard. Use arrow keys to explore, Enter to select a piece and destination, Escape to cancel.'
+      ? 'Chessboard. Use arrow keys to explore, Home and End for row edges, Control plus Home or End for board corners. Enter or Space selects a piece and destination; Escape cancels.'
       : 'Chess position');
     this.squares = document.createElement("div");
     this.squares.className = "squares";
@@ -91,6 +92,7 @@ export class Board {
     this.announcement = document.createElement('span');
     this.announcement.className = 'sr-only';
     this.announcement.setAttribute('aria-live', 'polite');
+    this.announcement.setAttribute('aria-atomic', 'true');
     this.el.append(this.announcement);
   }
 
@@ -109,14 +111,32 @@ export class Board {
       if (this.interactive) {
         d.type = 'button'; d.tabIndex = i === 0 ? 0 : -1;
         d.addEventListener('keydown', e => {
-          const delta = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -8, ArrowDown: 8 }[e.key];
-          if (delta !== undefined) {
+          if (e.altKey || e.metaKey) return;
+          const navigation = {
+            ArrowLeft: row * 8 + Math.max(0, col - 1),
+            ArrowRight: row * 8 + Math.min(7, col + 1),
+            ArrowUp: Math.max(0, row - 1) * 8 + col,
+            ArrowDown: Math.min(7, row + 1) * 8 + col,
+            Home: e.ctrlKey ? 0 : row * 8,
+            End: e.ctrlKey ? 63 : row * 8 + 7,
+          };
+          const target = navigation[e.key];
+          const activate = e.key === 'Enter' || e.key === ' ';
+          if (this.promotion && (target !== undefined || activate || e.key === 'Escape')) {
             e.preventDefault();
-            const target = Math.max(0, Math.min(63, i + delta));
+            if (e.key === 'Escape') this.promotion.cancel();
+            else this.promotion.picker.querySelector('button').focus();
+          } else if (target !== undefined) {
+            e.preventDefault();
             this.squares.querySelectorAll('.sq').forEach((sq, j) => sq.tabIndex = j === target ? 0 : -1);
             this.squares.children[target].focus();
+          } else if (activate) {
+            // Native activation is suppressed so one key press makes one choice.
+            e.preventDefault();
+            if (!e.repeat) d.click();
           } else if (e.key === 'Escape') {
-            this.clearSelection(); this.announcement.textContent = 'Selection cleared.';
+            e.preventDefault();
+            this.clearSelection(); this.announcement.textContent = 'Selection cleared. Choose a piece.';
           }
         });
         d.addEventListener('focus', () => {
@@ -134,6 +154,8 @@ export class Board {
   }
 
   setPosition(fen, lastMove = null) {
+    this.promotion?.picker.remove();
+    this.promotion = null;
     const prevCount = this.map ? Object.keys(this.map).length : null;
     this.fen = fen;
     this.map = parseFen(fen);
@@ -151,6 +173,7 @@ export class Board {
     }
     this.clearSelection();
     this.#labels();
+    if (this.interactive) this.announcement.textContent = `${fen.split(' ')[1] === 'w' ? 'White' : 'Black'} to move. Select a piece to hear its legal destinations.`;
   }
 
   #place(sq, sym) {
@@ -164,16 +187,32 @@ export class Board {
     this.els.set(sq, p);
   }
 
-  setLegal(list) { this.legal = list || []; }
+  setLegal(list) {
+    this.legal = list || [];
+    const lostSelection = this.sel && !this.#destsFrom(this.sel).length;
+    if (lostSelection) this.sel = null;
+    this.#paint();
+    if (lostSelection) this.announcement.textContent = 'Selection cleared. Move selection is unavailable.';
+  }
 
   #labels() {
-    const names = { k: 'king', q: 'queen', r: 'rook', b: 'bishop', n: 'knight', p: 'pawn' };
     const description = [];
+    const destinations = new Set(this.sel ? this.#destsFrom(this.sel) : []);
+    const sources = new Set(this.legal.map(move => move.slice(0, 2)));
     this.squares.querySelectorAll('.sq').forEach(sq => {
-      const piece = this.map?.[sq.dataset.sq];
-      const label = piece ? `${piece === piece.toUpperCase() ? 'White' : 'Black'} ${names[piece.toLowerCase()]}` : 'empty';
-      sq.setAttribute('aria-label', `${sq.dataset.sq}, ${label}`);
-      if (this.interactive) sq.setAttribute('aria-pressed', String(sq.dataset.sq === this.sel));
+      const name = sq.dataset.sq, piece = this.map?.[name];
+      const label = piece ? `${piece === piece.toUpperCase() ? 'White' : 'Black'} ${PIECE_NAMES[piece.toLowerCase()]}` : 'empty';
+      let state = '';
+      if (this.interactive) {
+        sq.setAttribute('aria-pressed', String(name === this.sel));
+        if (name === this.sel) state = ', selected';
+        else if (destinations.has(name)) {
+          state = `, legal destination from ${this.sel}`;
+          const promotions = this.legal.filter(move => move.startsWith(this.sel + name) && move.length === 5);
+          if (promotions.length) state += `, promotion choices: ${promotions.map(move => PIECE_NAMES[move[4]]).join(', ')}`;
+        } else if (sources.has(name)) state = ', available to move';
+      }
+      sq.setAttribute('aria-label', `${name}, ${label}${state}`);
       if (piece) description.push(`${label} on ${sq.dataset.sq}`);
     });
     if (!this.interactive) this.el.setAttribute('aria-label', description.join(', '));
@@ -186,25 +225,48 @@ export class Board {
       this.els.get(from).style.transform = `translate(${col * 100}%, ${row * 100}%)`;
       const picker = document.createElement('div');
       picker.className = 'promotion-picker';
-      picker.setAttribute('role', 'group'); picker.setAttribute('aria-label', 'Choose a promotion piece');
+      picker.setAttribute('role', 'group'); picker.setAttribute('aria-label', `Choose a promotion piece for ${to}. Use arrow keys or Tab, Enter or Space to choose, Escape to cancel.`);
+      const cancelPromotion = () => {
+        picker.remove(); this.promotion = null; this.clearSelection();
+        this.announcement.textContent = 'Promotion cancelled. Choose a move.';
+        this.squares.querySelector(`[data-sq="${from}"]`).focus();
+      };
       for (const uci of options) {
         const b = document.createElement('button'); b.type = 'button'; b.className = 'btn';
         b.textContent = { q: 'Queen', r: 'Rook', b: 'Bishop', n: 'Knight' }[uci[4]];
         b.addEventListener('click', () => {
-          picker.remove(); this.move(from, to, uci[4]); this.onSelect({ from, to, uci });
+          picker.remove(); this.promotion = null;
+          this.move(from, to, uci[4]); this.onSelect({ from, to, uci });
           this.squares.querySelector(`[data-sq="${to}"]`).focus();
         }); picker.append(b);
       }
       const cancel = document.createElement('button'); cancel.type = 'button'; cancel.className = 'btn ghost'; cancel.textContent = 'Cancel';
-      cancel.addEventListener('click', () => { picker.remove(); this.clearSelection(); this.squares.querySelector(`[data-sq="${from}"]`).focus(); });
-      picker.append(cancel); this.el.append(picker); picker.querySelector('button').focus();
+      cancel.addEventListener('click', cancelPromotion);
+      picker.addEventListener('keydown', e => {
+        if (e.altKey || e.metaKey) return;
+        const buttons = [...picker.querySelectorAll('button')], index = buttons.indexOf(e.target);
+        if (index < 0) return;
+        if (e.key === 'Escape') { e.preventDefault(); cancelPromotion(); }
+        else if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault(); if (!e.repeat) e.target.click();
+        } else if (['ArrowLeft', 'ArrowUp', 'ArrowRight', 'ArrowDown', 'Home', 'End'].includes(e.key)) {
+          e.preventDefault();
+          const next = e.key === 'Home' ? 0 : e.key === 'End' ? buttons.length - 1
+            : Math.max(0, Math.min(buttons.length - 1, index + (['ArrowLeft', 'ArrowUp'].includes(e.key) ? -1 : 1)));
+          buttons[next].focus();
+        }
+      });
+      picker.append(cancel); this.el.append(picker);
+      this.promotion = { picker, cancel: cancelPromotion };
+      this.announcement.textContent = `${from} to ${to}. Choose a promotion piece.`;
+      picker.querySelector('button').focus();
       return;
     }
     this.move(from, to); this.onSelect({ from, to, uci: from + to });
   }
 
   #destsFrom(sq) {
-    return this.legal.filter(m => m.startsWith(sq)).map(m => m.slice(2, 4));
+    return [...new Set(this.legal.filter(m => m.startsWith(sq)).map(m => m.slice(2, 4)))];
   }
 
   /** Drag a piece with the pointer; a small movement still counts as a tap. */
@@ -270,22 +332,29 @@ export class Board {
       this.#paint();
       return;
     }
+    const previousSelection = this.sel;
     this.sel = this.map[sq] && this.#destsFrom(sq).length ? sq : null;
     this.#paint();
+    if (!this.sel) {
+      this.announcement.textContent = !this.legal.length ? 'Move selection is unavailable.'
+        : previousSelection ? `${sq} is not a legal destination. Selection cleared. Choose a piece.`
+          : this.map[sq] ? `${sq} has no legal move for this turn. Choose another piece.`
+            : `${sq} is empty. Choose a piece with a legal move.`;
+    }
   }
 
   #paint() {
     this.squares.querySelectorAll(".sq").forEach(s => s.classList.remove("sel", "dot"));
     this.#labels();
     if (!this.sel) return;
-    this.announcement.textContent = `${this.sel} selected. Choose a highlighted destination.`;
+    this.announcement.textContent = `${this.sel} selected. Legal destinations: ${this.#destsFrom(this.sel).join(', ')}. Press Enter or Space on a destination, or Escape to cancel.`;
     this.squares.querySelector(`[data-sq="${this.sel}"]`)?.classList.add("sel");
     for (const d of this.#destsFrom(this.sel)) {
       this.squares.querySelector(`[data-sq="${d}"]`)?.classList.add("dot");
     }
   }
 
-  clearSelection() { this.sel = null; this.#paint(); }
+  clearSelection() { this.sel = null; this.#paint(); this.announcement.textContent = ''; }
 
   /** Slide the piece on `from` to `to`, fading any captured piece.
       One move per position: the board locks afterwards until setLegal
@@ -294,6 +363,7 @@ export class Board {
     const p = this.els.get(from);
     if (!p) return;
     this.legal = [];
+    this.sel = null;
     const taken = this.els.get(to);
     sound(taken ? "capture" : "move");
     if (taken) { taken.classList.add("gone"); setTimeout(() => taken.remove(), 220); }
@@ -322,7 +392,7 @@ export class Board {
     if (promotion) p.innerHTML = `<svg viewBox="0 0 45 45">${this.pieces[this.map[to]] || ''}</svg>`;
     delete this.map[from];
     this.#labels();
-    this.announcement.textContent = `${from} to ${to}${promotion ? ', promoted' : ''}. Move selected.`;
+    this.announcement.textContent = `${from} to ${to}${promotion ? ', promoted to ' + PIECE_NAMES[promotion] : ''}. Move selected.`;
     this.squares.querySelectorAll(".sq").forEach(s => s.classList.remove("last"));
     this.squares.querySelector(`[data-sq="${from}"]`)?.classList.add("last");
     this.squares.querySelector(`[data-sq="${to}"]`)?.classList.add("last");

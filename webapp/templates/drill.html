@@ -5,7 +5,7 @@
 <h1 class="tight" id="practice-title">{{ c.name }}: practice</h1>
 <p class="lede">Play up to five positions, checking the engine’s line after each one.
 <a href="{{ url_for('concept', cid=c.id) }}">Review the study examples</a>.</p>
-{% if positions %}
+<div id="practice-flow"{% if not positions %} hidden{% endif %}>
 <div id="practice">
   <div class="stage">
     <div class="board-column"><p class="stm" id="stm"></p><div id="board"></div><p class="board-help">Click or drag a piece. Keyboard: arrow keys, then Enter to select.</p></div>
@@ -43,116 +43,8 @@
     <a class="btn ghost" href="{{ url_for('learn') }}">Finish for now</a>
   </div>
 </section>
-<script type="module">
-import { Board } from "{{ url_for('static', filename='board.js') }}";
-import { postJSON, replay, storage, focusHeading } from "{{ url_for('static', filename='training.js') }}";
-import { studyReplay } from "{{ url_for('static', filename='study.js') }}";
-const POS = {{ positions|tojson }}, PIECES = {{ pieces|tojson }}, CID = {{ c.id }};
-const GROUP = {{ group|tojson }}, MODE = {{ mode|tojson }};
-const tried = new Set(GROUP.tried), found = new Set(GROUP.found);
-const el = document.getElementById('board'), lock = document.getElementById('lock'), undo = document.getElementById('undo');
-const pickEl = document.getElementById('pick'), feedback = document.getElementById('feedback');
-const error = document.getElementById('save-error'), status = document.getElementById('save-status');
-const STORAGE_KEY = 'mu_pending_drill_' + CID + '_' + {{ mode|tojson }};
-let idx = 0, board, picked = null, pending = false, answered = false, requestId;
-let started = Date.now(), sessionCount = 0, sessionHits = 0;
-const tally = document.getElementById('tally');
-function load() {
-  el.replaceChildren(); picked = null; answered = false; started = Date.now();
-  requestId = crypto.randomUUID();
-  board = new Board(el, { pieces: PIECES, orientation: POS[idx].orientation, interactive: true,
-    onSelect: ({ from, to, uci }) => {
-      picked = uci; pickEl.textContent = `${from} → ${to}${uci[4] ? ' · promotion' : ''}`;
-      lock.disabled = false; undo.disabled = false;
-      storage.set(STORAGE_KEY, { position: POS[idx].idx, fen: POS[idx].fen, picked, requestId });
-    } });
-  board.setLegal(POS[idx].legal); board.setPosition(POS[idx].fen);
-  const saved = storage.get(STORAGE_KEY);
-  if (saved?.position === POS[idx].idx && saved.fen === POS[idx].fen &&
-      POS[idx].legal.includes(saved.picked) && typeof saved.requestId === 'string' &&
-      /^[a-f0-9-]{32,36}$/.test(saved.requestId)) {
-    picked = saved.picked; requestId = saved.requestId;
-    board.move(picked.slice(0, 2), picked.slice(2, 4), picked[4]);
-    board.setLegal([]);
-  }
-  pickEl.textContent = picked ? `Your saved move: ${picked.slice(0, 2)} → ${picked.slice(2, 4)}` : 'Choose your move.';
-  document.getElementById('stm').textContent = POS[idx].stm + ' to move.';
-  document.getElementById('counter').textContent = `This session: ${sessionCount + 1} of ${Math.min(5, sessionCount + POS.length - idx)} · ${POS.length - idx} positions remaining`;
-  lock.disabled = !picked; undo.disabled = !picked; lock.textContent = 'Check move';
-  error.textContent = ''; status.textContent = '';
-  feedback.hidden = true; document.getElementById('answer-controls').hidden = false;
-}
-undo.addEventListener('click', () => {
-  if (pending || answered) return;
-  storage.remove(STORAGE_KEY); picked = null; requestId = crypto.randomUUID();
-  board.setPosition(POS[idx].fen); board.setLegal(POS[idx].legal);
-  pickEl.textContent = 'Choose your move.'; lock.disabled = true; undo.disabled = true;
-});
-lock.addEventListener('click', async () => {
-  if (!picked || pending || answered) return;
-  pending = true; lock.disabled = true; undo.disabled = true;
-  status.textContent = 'Saving your answer…'; error.textContent = '';
-  try {
-    const result = await postJSON('/api/answer', { concept: CID, idx: POS[idx].idx, picked,
-      request_id: requestId, seconds: Math.min(86400, Math.round((Date.now() - started) / 1000)) });
-    answered = true; storage.remove(STORAGE_KEY); sessionCount++; sessionHits += Number(result.correct);
-    tried.add(POS[idx].idx); if (result.correct) found.add(POS[idx].idx);
-    const mark = document.createElement('i'); mark.className = result.correct ? 'hit' : 'done'; tally.append(mark);
-    status.textContent = 'Answer saved.'; document.getElementById('answer-controls').hidden = true;
-    const verdict = document.getElementById('verdict');
-    verdict.textContent = result.correct ? 'You found it.' : 'The engine chose a different move.';
-    verdict.className = result.correct ? 'verdict good' : 'verdict';
-    document.getElementById('comparison').textContent = `You played ${result.picked_san}. The engine plays ${result.best_san}.`;
-    const hasExplanation = !!result.line.note;
-    if (hasExplanation) studyReplay(document.getElementById('replay'), result.line, PIECES, picked);
-    else replay(document.getElementById('replay'), result.line, PIECES, picked);
-    document.getElementById('practice-reflection').hidden = hasExplanation;
-    const stats = document.getElementById('model-stats'); stats.replaceChildren();
-    const p = document.createElement('p'); p.className = 'small';
-    p.textContent = `Maia, a model of human moves, gives the engine's choice a ${(result.p_best * 100).toFixed(1)}% chance of being played by a 1900 Lichess player.`; stats.append(p);
-    if (result.predicted != null) {
-      const q = document.createElement('p'); q.className = 'small';
-      q.textContent = `The difficulty model estimates ${(result.predicted * 100).toFixed(1)}% exact matches at Lichess 1900. This is a prediction from the source games, not a measurement of your strength.`; stats.append(q);
-    }
-    document.getElementById('next').textContent = sessionCount === 5 || idx === POS.length - 1 ? 'Finish this session' : 'Next position';
-    feedback.hidden = false; focusHeading(verdict);
-  } catch (e) {
-    error.textContent = e.message; status.textContent = ''; lock.textContent = 'Retry saving';
-    lock.disabled = false;
-    // Keep the submitted answer fixed until retry: a timed-out request may already be saved.
-  } finally { pending = false; }
-});
-document.getElementById('next').addEventListener('click', () => {
-  if (!answered) return;
-  idx++;
-  if (sessionCount === 5 || idx === POS.length) {
-    document.getElementById('practice').hidden = true; document.getElementById('session-done').hidden = false;
-    document.getElementById('session-score').textContent = `${sessionHits} / ${sessionCount}`;
-    document.getElementById('session-copy').textContent = 'engine moves found in this session. Your progress is saved.';
-    const groupComplete = tried.size === GROUP.total;
-    document.getElementById('session-title').textContent = idx === POS.length && groupComplete
-      ? 'Group complete' : idx === POS.length && MODE === 'missed' ? 'Review complete' : 'Session complete';
-    document.getElementById('group-progress').textContent = `This group: ${tried.size} of ${GROUP.total} positions tried, ${found.size} engine moves found. Each position counts once.`;
-    document.getElementById('continue').hidden = idx === POS.length;
-    document.getElementById('next-group').hidden = idx !== POS.length || !groupComplete;
-    focusHeading(document.getElementById('session-title'));
-  } else { load(); focusHeading(document.getElementById('counter')); }
-});
-document.getElementById('continue').addEventListener('click', () => {
-  sessionCount = 0; sessionHits = 0; tally.replaceChildren();
-  document.getElementById('session-done').hidden = true; document.getElementById('practice').hidden = false;
-  load(); focusHeading(document.getElementById('practice-title'));
-});
-const saved = storage.get(STORAGE_KEY);
-if (saved) {
-  const resume = POS.findIndex(p => p.idx === saved.position && p.fen === saved.fen &&
-    p.legal.includes(saved.picked) && typeof saved.requestId === 'string' && /^[a-f0-9-]{32,36}$/.test(saved.requestId));
-  if (resume >= 0) idx = resume;
-  else storage.remove(STORAGE_KEY);
-}
-load();
-</script>
-{% else %}
+</div>
+<section id="practice-empty"{% if positions %} hidden{% endif %}>
 <p class="lede">{{ 'No missed positions to review. Try a practice session first, or revisit the whole pattern.' if mode == 'missed' else 'You have tried every position in this pattern. Revisit them or choose your next pattern.' }}</p>
 <p>{{ group.tried|length }} of {{ group.total }} positions tried · {{ group.found|length }} engine moves found.
 Each position counts once.</p>
@@ -165,5 +57,13 @@ Each position counts once.</p>
   {% if mode != 'missed' %}<a class="btn" href="{{ url_for('drill', cid=c.id, mode='missed') }}">Review missed positions</a>{% endif %}
   <a class="btn ghost" href="{{ url_for('learn') }}">All patterns</a>
 </div>
-{% endif %}
+</section>
+<script type="module">
+import { mountDrill } from "{{ url_for('static', filename='drill.js') }}";
+const POS = {{ positions|tojson }}, PIECES = {{ pieces|tojson }}, CID = {{ c.id }};
+const GROUP = {{ group|tojson }}, MODE = {{ mode|tojson }};
+const OWNER = {{ code|tojson }};
+mountDrill({positions: POS, allPositions: {{ all_positions|tojson }}, pieces: PIECES,
+  cid: CID, group: GROUP, mode: MODE, owner: OWNER});
+</script>
 {% endblock %}

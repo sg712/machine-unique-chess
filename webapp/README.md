@@ -12,7 +12,7 @@ python webapp/app.py
 - `/`: playable research example with answer reveal, saved engine/Maia comparisons, and eight practice groups. The demo does not submit answers or create progress.
 - `/learn`: suggested practice order; Continue prioritises groups already in progress, then studied groups.
 - `/pattern/<id>`: four study examples with replay. Unfinished examples and choices resume in the same browser; saved account study progress avoids repeating the introduction on another device.
-- `/pattern/<id>/drill`: five-position sessions drawn from 36 positions per group, followed by review or the next unfinished group. Eight positions have authored explanations; the others retain their engine-line feedback.
+- `/pattern/<id>/drill`: five-position sessions drawn from 36 positions per group, followed by review or the next unfinished group. Twenty-four positions have authored explanations; the others retain their engine-line feedback.
 - `/test`: resumable, signed placement attempts; estimates are exploratory.
 - `/research`: methods, three worked examples, saved results, new robustness checks and study protocol.
 - `/me`: distinct positions tried and engine moves found, with repeat-attempt totals labelled separately. Email/password sign-in and a recovery code preserve access across devices.
@@ -21,8 +21,20 @@ The research page reads `research_examples.json` and the committed audit JSONs i
 
 The research overview separates the original trainer, expanded screening, initial depth checks,
 and full candidate run. Its full-run status is a dated published snapshot, not a live feed.
-The eight practice explanations use existing public lines, with provenance and limitations in
+The 24 practice explanations use existing public lines, with provenance and limitations in
 [the practice-note documentation](../docs/PRACTICE_NOTES.md). New mining candidates are not added by this website update.
+
+Practice keeps an account-bound draft in this browser until the user advances past feedback.
+If a save is interrupted, `/api/answer/recover` reads the original receipt without recording
+another attempt, including after the position has left the practice queue. A missing receipt
+offers an explicit retry of the same move, request ID and elapsed time. Account changes and
+changed positions reject stale saves. Reload recovery requires browser storage; progress
+already saved on the server remains available without it. Earlier unowned browser drafts
+are not imported. Session tallies restart on reload; distinct account progress does not.
+
+Interactive boards support arrow keys, row Home/End, Ctrl+Home/End for board corners,
+Enter/Space selection, Escape cancellation and keyboard promotion choices. Square labels
+and live announcements identify movable pieces, selected pieces and legal destinations.
 
 ## Storage and deployment
 

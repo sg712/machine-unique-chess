@@ -87,7 +87,7 @@ back.addEventListener('click', () => { if (idx > 0 && !pending && !submitting) {
 lock.addEventListener('click', () => {
   if (!picked || pending || submitting) return;
   picks[idx] = picked; persist();
-  if (idx < ITEMS.length - 1) { idx++; load(); }
+  if (idx < ITEMS.length - 1) { idx++; load(); focusHeading(document.getElementById('bscounter')); }
   else { submitting = true; submit(); }
 });
 async function submit() {

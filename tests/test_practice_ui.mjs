@@ -31,7 +31,9 @@ async function setup(fixture) {
   const dom = new JSDOM(fixture.page, {url:'https://practice-test.invalid', runScripts:'outside-only', pretendToBeVisual:true});
   const w = dom.window;
   w.HTMLElement.prototype.scrollIntoView = function() {};
-  w.localStorage.setItem(`mu_pending_drill_${fixture.cid}_restart`, JSON.stringify({
+  const owner = JSON.parse(fixture.page.match(/const OWNER = (.*?);/)[1]);
+  w.localStorage.setItem(`mu_pending_drill_v2_${owner}_${fixture.cid}_restart`, JSON.stringify({
+    version:2, owner, cid:fixture.cid, mode:'restart', phase:'chosen', seconds:null,
     position:fixture.idx, fen:fixture.fen, picked:fixture.best, requestId:fixture.key,
   }));
   let submitted = 0;
@@ -59,7 +61,7 @@ async function setup(fixture) {
 }
 
 test('reviewed practice notes appear only after checking, with only supported replay choices', async () => {
-  assert.equal(fixtures.length, 8);
+  assert.equal(fixtures.length, 24);
   for (const fixture of fixtures) {
     const s = await setup(fixture);
     assert.equal(s.document.querySelector('.study-explanation'), null);
@@ -83,7 +85,7 @@ test('reviewed practice notes appear only after checking, with only supported re
       assert.match(s.document.querySelector('.replay-status').textContent, /Engine line/);
     }
     s.document.getElementById('next').click();
-    assert.equal(s.document.getElementById('feedback').hidden, true);
+    assert.ok(s.document.getElementById('feedback').hidden || s.document.getElementById('practice').hidden);
     s.dom.window.close();
   }
 });

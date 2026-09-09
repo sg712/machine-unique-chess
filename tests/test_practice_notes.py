@@ -57,6 +57,8 @@ def check_claim(claim, boards, pv):
         assert before.piece_at(square).symbol() == claim['captured_piece']
     elif kind == 'check':
         assert board.is_check() is claim['expected']
+    elif kind == 'checkmate':
+        assert board.is_checkmate() is claim['expected']
     elif kind == 'pinned':
         assert claim['color'] in ('white', 'black')
         color = claim['color'] == 'white'
@@ -89,13 +91,15 @@ class PracticeNotesTests(unittest.TestCase):
         cls.notes = json.loads((ROOT / 'webapp/practice_notes.json').read_text())
         cls.items = cls.notes['items']
 
-    def test_one_existing_public_drill_per_group_with_exact_identity(self):
+    def test_three_existing_public_drills_per_group_with_exact_identity(self):
         self.assertEqual(self.notes['schema_version'], 1)
         self.assertEqual(self.notes['concepts_sha256'], digest(self.concepts_path))
-        self.assertEqual(len(self.items), 8)
+        self.assertEqual(len(self.items), 24)
         self.assertEqual({n['concept_id'] for n in self.items}, set(range(8)))
-        self.assertEqual(len({n['id'] for n in self.items}), 8)
-        self.assertEqual(len({n['fen'] for n in self.items}), 8)
+        self.assertEqual(len({n['id'] for n in self.items}), 24)
+        self.assertEqual(len({n['fen'] for n in self.items}), 24)
+        for group_id in range(8):
+            self.assertEqual(sum(n['concept_id'] == group_id for n in self.items), 3)
         for note in self.items:
             with self.subTest(note=note['id']):
                 group = next(g for g in self.groups if g['id'] == note['concept_id'])
@@ -200,6 +204,27 @@ class PracticeNotesTests(unittest.TestCase):
         self.assertLess(note['evidence']['cp'], 0)
         self.assertLess(note['comparison']['cp'], 0)
         self.assertGreater(note['evidence']['cp'], note['comparison']['cp'])
+
+    def test_saved_mate_is_terminal_and_not_claimed_before_recapture(self):
+        note = next(n for n in self.items if n['id'] == '4:9')
+        pv = note['evidence']['pv']
+        states = replay(note['fen'], pv)
+        self.assertEqual({m.uci() for m in states[1].legal_moves}, {'f1h2'})
+        self.assertFalse(states[1].is_checkmate())
+        self.assertTrue(states[3].is_checkmate())
+        with self.assertRaises(AssertionError):
+            check_claim({'ply': 1, 'type': 'checkmate', 'expected': True}, states, pv)
+
+    def test_queen_pin_does_not_mean_every_queen_move_is_illegal(self):
+        note = next(n for n in self.items if n['id'] == '6:35')
+        board = replay(note['fen'], note['evidence']['pv'])[3]
+        self.assertTrue(board.is_pinned(chess.WHITE, chess.F2))
+        # Capturing along the pin line remains legal. It is not the saved reply,
+        # and these legality checks do not assign an engine score to that branch.
+        capture = chess.Move.from_uci('f2d4')
+        self.assertIn(capture, board.legal_moves)
+        board.push(capture)
+        self.assertIn(chess.Move.from_uci('c5d4'), board.legal_moves)
 
     def test_checker_rejects_a_false_attacker_or_capture_claim(self):
         note = next(n for n in self.items if n['id'] == '3:0')

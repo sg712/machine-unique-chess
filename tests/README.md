@@ -22,6 +22,12 @@ Website continuation checks cover a later group taking priority over untouched g
 same-browser lesson drafts, account-backed study state, distinct progress counts, and the
 last-position next-group action. Homepage DOM checks exercise real legal choices, neutral
 alternative feedback, reveal without an attempt, takeback, retry, and the saved comparison.
-Practice-note tests bind eight notes to their original sources and check 90 legal plies and
-96 board claims. Their feedback is also exercised through the answer API and DOM renderer.
+Practice-note tests bind 24 notes to their original sources and check 183 legal plies and
+298 board claims. Their feedback is also exercised through the answer API and DOM renderer.
+Recovery checks use real saved-response fixtures for interrupted replies, acknowledged
+feedback, empty completed groups and restart/missed queue ordering. They also cover immutable
+retries, invalid drafts, offline reads, storage failures and once-only feedback acknowledgement.
+The recovery endpoint is exercised with SQLite writes forbidden; ownership and position
+checks prevent stale or cross-account recovery. Keyboard checks cover both board orientations,
+nonwrapping navigation, legal-destination labels, promotions and next-position focus.
 These checks do not replace the browser layout and interaction verification described above.

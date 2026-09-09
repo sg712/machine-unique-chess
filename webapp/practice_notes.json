@@ -2,7 +2,7 @@
   "schema_version": 1,
   "authored_at": "2026-09-09T10:09:19.335907+00:00",
   "concepts_sha256": "1e736d4eba05a71b5e9729c8a068713b200b2b5eec13ae71a3f58e0a13213e59",
-  "method": "Eight existing public practice positions, one per group. Three explanations use cached Stockfish research lines whose generator checked a minimum depth of 20; five use published six-ply previews with no exported engine version, achieved depth, or absolute score. Board claims and all saved moves are checked by legal replay. These are explanations of specific continuations, not proofs that the lines are forced or complete explanations of evaluation differences. No new engine searches or private mining candidates are used.",
+  "method": "Twenty-four existing public practice positions, three per group. Three explanations use cached Stockfish research lines whose generator checked a minimum depth of 20; twenty-one use published previews of up to six plies with no exported engine version, achieved depth, or absolute score. Board claims and all saved moves are checked by legal replay. These are explanations of specific continuations, not proofs that all replies are forced or complete explanations of evaluation differences. The terminal checkmate explicitly identified in one saved line is checked on the board. No new engine searches or private mining candidates are used.",
   "items": [
     {
       "id": "0:0",
@@ -1696,6 +1696,2992 @@
           "piece": "q"
         }
       ]
+    },
+    {
+      "id": "0:1",
+      "concept_id": 0,
+      "drill_index": 1,
+      "fen": "6N1/5pbp/p3b1p1/7k/2q5/6Q1/5PPP/4R1K1 b - - 10 28",
+      "best": "c4c3",
+      "title": "Fork the queen and rook",
+      "constraint": "White’s queen is on g3 and the rook is on e1. From c3, Black’s queen can attack both.",
+      "purpose": "...Qc3 creates the fork. The bishop on g7 protects the queen along the g7–f6–e5–d4–c3 diagonal.",
+      "continuation": "White answers with Qe3 in the saved line. After ...Qxe3 Rxe3, the queens are exchanged and White’s rook has moved from e1 to e3.",
+      "notice": "From c3, look across the third rank toward the queen and diagonally toward the rook.",
+      "evidence": {
+        "source": "webapp/concepts.json",
+        "source_sha256": "1e736d4eba05a71b5e9729c8a068713b200b2b5eec13ae71a3f58e0a13213e59",
+        "locator": {
+          "concept_id": 0,
+          "role": "drill",
+          "drill_index": 1
+        },
+        "source_kind": "published_pv_excerpt",
+        "engine_name": null,
+        "depth": null,
+        "depth_kind": "not exported",
+        "target_depth": null,
+        "actual_depth": null,
+        "cp": null,
+        "mate": null,
+        "score_perspective": null,
+        "pv": [
+          {
+            "uci": "c4c3",
+            "san": "Qc3"
+          },
+          {
+            "uci": "g3e3",
+            "san": "Qe3"
+          },
+          {
+            "uci": "c3e3",
+            "san": "Qxe3"
+          },
+          {
+            "uci": "e1e3",
+            "san": "Rxe3"
+          },
+          {
+            "uci": "g7b2",
+            "san": "Bb2"
+          },
+          {
+            "uci": "e3e2",
+            "san": "Re2"
+          }
+        ]
+      },
+      "claims": [
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "g3",
+          "piece": "Q"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "e1",
+          "piece": "R"
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "attacks",
+          "supports": [
+            "constraint",
+            "purpose"
+          ],
+          "from_square": "c3",
+          "to_square": "g3",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "attacks",
+          "supports": [
+            "constraint",
+            "purpose"
+          ],
+          "from_square": "c3",
+          "to_square": "e1",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "attacks",
+          "supports": [
+            "purpose"
+          ],
+          "from_square": "g7",
+          "to_square": "c3",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "e3",
+          "piece": "Q"
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "capture",
+          "supports": [
+            "continuation"
+          ],
+          "captured_piece": "Q",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 4,
+          "type": "capture",
+          "supports": [
+            "continuation"
+          ],
+          "captured_piece": "q",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 4,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "e3",
+          "piece": "R"
+        },
+        {
+          "line": "engine",
+          "ply": 4,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "e1",
+          "piece": null
+        }
+      ]
+    },
+    {
+      "id": "0:9",
+      "concept_id": 0,
+      "drill_index": 9,
+      "fen": "r2r2k1/pQp1qpbp/6p1/8/1PP5/P2b1B2/R4PPP/2BR2K1 b - - 2 18",
+      "best": "d3e4",
+      "title": "Put the bishop on the queen’s diagonal",
+      "constraint": "White’s queen on b7 is attacking the rook on a8.",
+      "purpose": "...Be4 attacks that queen along e4–d5–c6–b7. It also puts the bishop on a line to a8 if White takes the rook.",
+      "continuation": "The saved reply is Qxa8. Black answers ...Bxa8; after Rxd8+, ...Qxd8 captures White’s rook on d8. This is the consequence of the rook capture shown in the line.",
+      "notice": "Follow the bishop’s diagonal all the way to a8 before taking that rook.",
+      "evidence": {
+        "source": "webapp/concepts.json",
+        "source_sha256": "1e736d4eba05a71b5e9729c8a068713b200b2b5eec13ae71a3f58e0a13213e59",
+        "locator": {
+          "concept_id": 0,
+          "role": "drill",
+          "drill_index": 9
+        },
+        "source_kind": "published_pv_excerpt",
+        "engine_name": null,
+        "depth": null,
+        "depth_kind": "not exported",
+        "target_depth": null,
+        "actual_depth": null,
+        "cp": null,
+        "mate": null,
+        "score_perspective": null,
+        "pv": [
+          {
+            "uci": "d3e4",
+            "san": "Be4"
+          },
+          {
+            "uci": "b7a8",
+            "san": "Qxa8"
+          },
+          {
+            "uci": "e4a8",
+            "san": "Bxa8"
+          },
+          {
+            "uci": "d1d8",
+            "san": "Rxd8+"
+          },
+          {
+            "uci": "e7d8",
+            "san": "Qxd8"
+          },
+          {
+            "uci": "f3e2",
+            "san": "Be2"
+          }
+        ]
+      },
+      "claims": [
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "b7",
+          "piece": "Q"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "a8",
+          "piece": "r"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "attacks",
+          "supports": [
+            "constraint"
+          ],
+          "from_square": "b7",
+          "to_square": "a8",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "attacks",
+          "supports": [
+            "purpose"
+          ],
+          "from_square": "e4",
+          "to_square": "b7",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "attacks",
+          "supports": [
+            "purpose"
+          ],
+          "from_square": "e4",
+          "to_square": "a8",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "capture",
+          "supports": [
+            "continuation"
+          ],
+          "captured_piece": "r",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "capture",
+          "supports": [
+            "continuation"
+          ],
+          "captured_piece": "Q",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "a8",
+          "piece": "b"
+        },
+        {
+          "line": "engine",
+          "ply": 4,
+          "type": "capture",
+          "supports": [
+            "continuation"
+          ],
+          "captured_piece": "r",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 4,
+          "type": "check",
+          "supports": [
+            "continuation"
+          ],
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 5,
+          "type": "capture",
+          "supports": [
+            "continuation"
+          ],
+          "captured_piece": "R",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 5,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "d8",
+          "piece": "q"
+        }
+      ]
+    },
+    {
+      "id": "1:3",
+      "concept_id": 1,
+      "drill_index": 3,
+      "fen": "r6k/7p/6p1/p2BP1N1/1p1P4/qPp3P1/2Qn3P/1R4K1 b - - 0 30",
+      "best": "a5a4",
+      "title": "Remove the pawn blocking b4",
+      "constraint": "White’s pawn on b3 blocks Black’s pawn on b4.",
+      "purpose": "...a4 attacks the blocker from the side. If Black captures on b3, the a-pawn can continue down the b-file.",
+      "continuation": "The saved line is ...a4 Qd3 ...axb3 Re1 ...b2. Black’s pawn reaches b2, where the queen on a3 protects it.",
+      "notice": "Track the a-pawn’s route: a5–a4–b3–b2.",
+      "evidence": {
+        "source": "webapp/concepts.json",
+        "source_sha256": "1e736d4eba05a71b5e9729c8a068713b200b2b5eec13ae71a3f58e0a13213e59",
+        "locator": {
+          "concept_id": 1,
+          "role": "drill",
+          "drill_index": 3
+        },
+        "source_kind": "published_pv_excerpt",
+        "engine_name": null,
+        "depth": null,
+        "depth_kind": "not exported",
+        "target_depth": null,
+        "actual_depth": null,
+        "cp": null,
+        "mate": null,
+        "score_perspective": null,
+        "pv": [
+          {
+            "uci": "a5a4",
+            "san": "a4"
+          },
+          {
+            "uci": "c2d3",
+            "san": "Qd3"
+          },
+          {
+            "uci": "a4b3",
+            "san": "axb3"
+          },
+          {
+            "uci": "b1e1",
+            "san": "Re1"
+          },
+          {
+            "uci": "b3b2",
+            "san": "b2"
+          },
+          {
+            "uci": "d5a8",
+            "san": "Bxa8"
+          }
+        ]
+      },
+      "claims": [
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "b3",
+          "piece": "P"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "b4",
+          "piece": "p"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "purpose"
+          ],
+          "square": "a5",
+          "piece": "p"
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "attacks",
+          "supports": [
+            "purpose"
+          ],
+          "from_square": "a4",
+          "to_square": "b3",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "capture",
+          "supports": [
+            "purpose",
+            "continuation"
+          ],
+          "captured_piece": "P",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "piece_at",
+          "supports": [
+            "purpose",
+            "continuation"
+          ],
+          "square": "b3",
+          "piece": "p"
+        },
+        {
+          "line": "engine",
+          "ply": 4,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "e1",
+          "piece": "R"
+        },
+        {
+          "line": "engine",
+          "ply": 5,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "b2",
+          "piece": "p"
+        },
+        {
+          "line": "engine",
+          "ply": 5,
+          "type": "attacks",
+          "supports": [
+            "continuation"
+          ],
+          "from_square": "a3",
+          "to_square": "b2",
+          "expected": true
+        }
+      ]
+    },
+    {
+      "id": "1:12",
+      "concept_id": 1,
+      "drill_index": 12,
+      "fen": "R1r2k2/2r2ppp/8/8/1P1p4/3P4/R1PK1PPP/8 b - - 4 30",
+      "best": "c7c2",
+      "title": "Draw one rook away from the other",
+      "constraint": "White’s rook on a2 protects the rook on a8 along the a-file.",
+      "purpose": "...Rxc2+ gives check with the c7-rook. In the saved reply, Rxc2 draws White’s lower rook off the a-file, leaving the a8-rook for Black’s other rook.",
+      "continuation": "After ...Rxc2+ Rxc2, Black plays ...Rxa8 with the rook from c8. One black rook draws the defender away; the other makes the capture.",
+      "notice": "Watch which rook moves each time. The two black rooks have different jobs.",
+      "evidence": {
+        "source": "webapp/concepts.json",
+        "source_sha256": "1e736d4eba05a71b5e9729c8a068713b200b2b5eec13ae71a3f58e0a13213e59",
+        "locator": {
+          "concept_id": 1,
+          "role": "drill",
+          "drill_index": 12
+        },
+        "source_kind": "published_pv_excerpt",
+        "engine_name": null,
+        "depth": null,
+        "depth_kind": "not exported",
+        "target_depth": null,
+        "actual_depth": null,
+        "cp": null,
+        "mate": null,
+        "score_perspective": null,
+        "pv": [
+          {
+            "uci": "c7c2",
+            "san": "Rxc2+"
+          },
+          {
+            "uci": "a2c2",
+            "san": "Rxc2"
+          },
+          {
+            "uci": "c8a8",
+            "san": "Rxa8"
+          },
+          {
+            "uci": "d2e2",
+            "san": "Ke2"
+          },
+          {
+            "uci": "f8e7",
+            "san": "Ke7"
+          },
+          {
+            "uci": "c2c4",
+            "san": "Rc4"
+          }
+        ]
+      },
+      "claims": [
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "a2",
+          "piece": "R"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "a8",
+          "piece": "R"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "attacks",
+          "supports": [
+            "constraint"
+          ],
+          "from_square": "a2",
+          "to_square": "a8",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "capture",
+          "supports": [
+            "purpose"
+          ],
+          "captured_piece": "P",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "check",
+          "supports": [
+            "purpose"
+          ],
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "piece_at",
+          "supports": [
+            "purpose"
+          ],
+          "square": "c7",
+          "piece": null
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "capture",
+          "supports": [
+            "purpose",
+            "continuation"
+          ],
+          "captured_piece": "r",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "piece_at",
+          "supports": [
+            "purpose",
+            "continuation"
+          ],
+          "square": "a2",
+          "piece": null
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "piece_at",
+          "supports": [
+            "purpose",
+            "continuation"
+          ],
+          "square": "c2",
+          "piece": "R"
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "capture",
+          "supports": [
+            "continuation"
+          ],
+          "captured_piece": "R",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "c8",
+          "piece": null
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "a8",
+          "piece": "r"
+        }
+      ]
+    },
+    {
+      "id": "2:2",
+      "concept_id": 2,
+      "drill_index": 2,
+      "fen": "2kr1b1r/pp1q1pp1/4p1p1/3n4/3P2P1/P5BP/1KP1QPB1/3R3R b - - 0 18",
+      "best": "f8a3",
+      "title": "Draw the king onto a diagonal",
+      "constraint": "White’s king is on b2, beside its pawn on a3.",
+      "purpose": "...Bxa3+ offers the bishop with check. After the king takes on a3, ...Qe7+ reaches it along the e7–d6–c5–b4–a3 diagonal.",
+      "continuation": "The saved line continues Kxa3 Qe7+ Kb2 Qb4+ Kc1. The bishop sacrifice opens a sequence of queen checks against the exposed king.",
+      "notice": "At each queen check, trace the open line from the queen to the king.",
+      "evidence": {
+        "source": "webapp/concepts.json",
+        "source_sha256": "1e736d4eba05a71b5e9729c8a068713b200b2b5eec13ae71a3f58e0a13213e59",
+        "locator": {
+          "concept_id": 2,
+          "role": "drill",
+          "drill_index": 2
+        },
+        "source_kind": "published_pv_excerpt",
+        "engine_name": null,
+        "depth": null,
+        "depth_kind": "not exported",
+        "target_depth": null,
+        "actual_depth": null,
+        "cp": null,
+        "mate": null,
+        "score_perspective": null,
+        "pv": [
+          {
+            "uci": "f8a3",
+            "san": "Bxa3+"
+          },
+          {
+            "uci": "b2a3",
+            "san": "Kxa3"
+          },
+          {
+            "uci": "d7e7",
+            "san": "Qe7+"
+          },
+          {
+            "uci": "a3b2",
+            "san": "Kb2"
+          },
+          {
+            "uci": "e7b4",
+            "san": "Qb4+"
+          },
+          {
+            "uci": "b2c1",
+            "san": "Kc1"
+          }
+        ]
+      },
+      "claims": [
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "b2",
+          "piece": "K"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "a3",
+          "piece": "P"
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "capture",
+          "supports": [
+            "purpose"
+          ],
+          "captured_piece": "P",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "check",
+          "supports": [
+            "purpose"
+          ],
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "capture",
+          "supports": [
+            "purpose",
+            "continuation"
+          ],
+          "captured_piece": "b",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "piece_at",
+          "supports": [
+            "purpose",
+            "continuation"
+          ],
+          "square": "a3",
+          "piece": "K"
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "attacks",
+          "supports": [
+            "purpose",
+            "continuation"
+          ],
+          "from_square": "e7",
+          "to_square": "a3",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "check",
+          "supports": [
+            "continuation"
+          ],
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 4,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "b2",
+          "piece": "K"
+        },
+        {
+          "line": "engine",
+          "ply": 5,
+          "type": "attacks",
+          "supports": [
+            "continuation"
+          ],
+          "from_square": "b4",
+          "to_square": "b2",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 5,
+          "type": "check",
+          "supports": [
+            "continuation"
+          ],
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 6,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "c1",
+          "piece": "K"
+        }
+      ]
+    },
+    {
+      "id": "2:11",
+      "concept_id": 2,
+      "drill_index": 11,
+      "fen": "2q2rk1/p4p1p/bp1b2p1/2p4n/2NP4/3Q2P1/PPB1RP1P/4R1K1 b - - 0 22",
+      "best": "h5f4",
+      "title": "Fork two pieces and open the g-file",
+      "constraint": "White’s queen on d3 and rook on e2 are both within reach of a knight on f4.",
+      "purpose": "...Nf4 attacks both pieces. White can take the knight with gxf4, but that moves the g3-pawn off the g-file.",
+      "continuation": "In the saved line, gxf4 is followed by ...Bxc4 Qxc4. Black then plays ...Qg4+, checking down the newly opened g-file, and White replies Kf1.",
+      "notice": "Compare the g-file before gxf4 and after it. The pawn’s old square matters to the queen’s check.",
+      "evidence": {
+        "source": "webapp/concepts.json",
+        "source_sha256": "1e736d4eba05a71b5e9729c8a068713b200b2b5eec13ae71a3f58e0a13213e59",
+        "locator": {
+          "concept_id": 2,
+          "role": "drill",
+          "drill_index": 11
+        },
+        "source_kind": "published_pv_excerpt",
+        "engine_name": null,
+        "depth": null,
+        "depth_kind": "not exported",
+        "target_depth": null,
+        "actual_depth": null,
+        "cp": null,
+        "mate": null,
+        "score_perspective": null,
+        "pv": [
+          {
+            "uci": "h5f4",
+            "san": "Nf4"
+          },
+          {
+            "uci": "g3f4",
+            "san": "gxf4"
+          },
+          {
+            "uci": "a6c4",
+            "san": "Bxc4"
+          },
+          {
+            "uci": "d3c4",
+            "san": "Qxc4"
+          },
+          {
+            "uci": "c8g4",
+            "san": "Qg4+"
+          },
+          {
+            "uci": "g1f1",
+            "san": "Kf1"
+          }
+        ]
+      },
+      "claims": [
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "d3",
+          "piece": "Q"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "e2",
+          "piece": "R"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "purpose"
+          ],
+          "square": "g3",
+          "piece": "P"
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "attacks",
+          "supports": [
+            "constraint",
+            "purpose"
+          ],
+          "from_square": "f4",
+          "to_square": "d3",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "attacks",
+          "supports": [
+            "constraint",
+            "purpose"
+          ],
+          "from_square": "f4",
+          "to_square": "e2",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "capture",
+          "supports": [
+            "purpose",
+            "continuation"
+          ],
+          "captured_piece": "n",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "piece_at",
+          "supports": [
+            "purpose"
+          ],
+          "square": "g3",
+          "piece": null
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "piece_at",
+          "supports": [
+            "purpose"
+          ],
+          "square": "f4",
+          "piece": "P"
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "capture",
+          "supports": [
+            "continuation"
+          ],
+          "captured_piece": "N",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 4,
+          "type": "capture",
+          "supports": [
+            "continuation"
+          ],
+          "captured_piece": "b",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 5,
+          "type": "attacks",
+          "supports": [
+            "continuation"
+          ],
+          "from_square": "g4",
+          "to_square": "g1",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 5,
+          "type": "check",
+          "supports": [
+            "continuation"
+          ],
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 6,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "f1",
+          "piece": "K"
+        }
+      ]
+    },
+    {
+      "id": "3:2",
+      "concept_id": 3,
+      "drill_index": 2,
+      "fen": "rnbq1rk1/ppp2Np1/5n1p/8/1bBP4/2N5/PP3PPP/R1BQK2R b KQ - 0 10",
+      "best": "b4c3",
+      "title": "Take the checking capture first",
+      "constraint": "White has knights on c3 and f7. Black’s bishop on b4 can capture the first with check, while the rook on f8 attacks the second.",
+      "purpose": "...Bxc3+ starts with the checking capture. After bxc3, Black follows with ...Rxf7; the saved continuation then exchanges the rook for White’s bishop as well.",
+      "continuation": "The line is ...Bxc3+ bxc3 ...Rxf7 Bxf7+ ...Kxf7 O-O. Black has exchanged a bishop and rook for two knights and a bishop; White then castles.",
+      "notice": "Count the captured pieces across the whole sequence, rather than stopping at the rook capture on f7.",
+      "evidence": {
+        "source": "webapp/concepts.json",
+        "source_sha256": "1e736d4eba05a71b5e9729c8a068713b200b2b5eec13ae71a3f58e0a13213e59",
+        "locator": {
+          "concept_id": 3,
+          "role": "drill",
+          "drill_index": 2
+        },
+        "source_kind": "published_pv_excerpt",
+        "engine_name": null,
+        "depth": null,
+        "depth_kind": "not exported",
+        "target_depth": null,
+        "actual_depth": null,
+        "cp": null,
+        "mate": null,
+        "score_perspective": null,
+        "pv": [
+          {
+            "uci": "b4c3",
+            "san": "Bxc3+"
+          },
+          {
+            "uci": "b2c3",
+            "san": "bxc3"
+          },
+          {
+            "uci": "f8f7",
+            "san": "Rxf7"
+          },
+          {
+            "uci": "c4f7",
+            "san": "Bxf7+"
+          },
+          {
+            "uci": "g8f7",
+            "san": "Kxf7"
+          },
+          {
+            "uci": "e1g1",
+            "san": "O-O"
+          }
+        ]
+      },
+      "claims": [
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "c3",
+          "piece": "N"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "f7",
+          "piece": "N"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "attacks",
+          "supports": [
+            "constraint"
+          ],
+          "from_square": "b4",
+          "to_square": "c3",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "attacks",
+          "supports": [
+            "constraint"
+          ],
+          "from_square": "f8",
+          "to_square": "f7",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "capture",
+          "supports": [
+            "purpose",
+            "continuation"
+          ],
+          "captured_piece": "N",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "check",
+          "supports": [
+            "purpose"
+          ],
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "capture",
+          "supports": [
+            "purpose",
+            "continuation"
+          ],
+          "captured_piece": "b",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "piece_at",
+          "supports": [
+            "purpose"
+          ],
+          "square": "c3",
+          "piece": "P"
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "capture",
+          "supports": [
+            "purpose",
+            "continuation"
+          ],
+          "captured_piece": "N",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 4,
+          "type": "capture",
+          "supports": [
+            "purpose",
+            "continuation"
+          ],
+          "captured_piece": "r",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 4,
+          "type": "check",
+          "supports": [
+            "continuation"
+          ],
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 5,
+          "type": "capture",
+          "supports": [
+            "purpose",
+            "continuation"
+          ],
+          "captured_piece": "B",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 5,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "f7",
+          "piece": "k"
+        },
+        {
+          "line": "engine",
+          "ply": 6,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "g1",
+          "piece": "K"
+        },
+        {
+          "line": "engine",
+          "ply": 6,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "f1",
+          "piece": "R"
+        }
+      ]
+    },
+    {
+      "id": "3:5",
+      "concept_id": 3,
+      "drill_index": 5,
+      "fen": "2rq1rk1/pb2ppbp/1p1p1np1/2nP4/P1P1P3/2NB1N2/1B3PPP/R2Q1RK1 b - - 0 12",
+      "best": "f6e4",
+      "title": "Clear both blockers on the long diagonal",
+      "constraint": "Black’s knight on f6 and White’s knight on c3 stand between the bishop on g7 and White’s bishop on b2.",
+      "purpose": "...Nfxe4 clears f6 and takes a pawn. In the saved reply, Nxe4 also pulls White’s c3-knight off that diagonal, allowing ...Bxb2.",
+      "continuation": "After ...Nfxe4 Nxe4 ...Bxb2, White captures the other knight with Nxc5. Black’s rook recaptures with ...Rxc5.",
+      "notice": "The bishop needs two squares cleared: f6 by Black’s move, then c3 by White’s reply.",
+      "evidence": {
+        "source": "webapp/concepts.json",
+        "source_sha256": "1e736d4eba05a71b5e9729c8a068713b200b2b5eec13ae71a3f58e0a13213e59",
+        "locator": {
+          "concept_id": 3,
+          "role": "drill",
+          "drill_index": 5
+        },
+        "source_kind": "published_pv_excerpt",
+        "engine_name": null,
+        "depth": null,
+        "depth_kind": "not exported",
+        "target_depth": null,
+        "actual_depth": null,
+        "cp": null,
+        "mate": null,
+        "score_perspective": null,
+        "pv": [
+          {
+            "uci": "f6e4",
+            "san": "Nfxe4"
+          },
+          {
+            "uci": "c3e4",
+            "san": "Nxe4"
+          },
+          {
+            "uci": "g7b2",
+            "san": "Bxb2"
+          },
+          {
+            "uci": "e4c5",
+            "san": "Nxc5"
+          },
+          {
+            "uci": "c8c5",
+            "san": "Rxc5"
+          },
+          {
+            "uci": "a1a2",
+            "san": "Ra2"
+          }
+        ]
+      },
+      "claims": [
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "f6",
+          "piece": "n"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "c3",
+          "piece": "N"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "g7",
+          "piece": "b"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "b2",
+          "piece": "B"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "attacks",
+          "supports": [
+            "constraint"
+          ],
+          "from_square": "g7",
+          "to_square": "b2",
+          "expected": false
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "capture",
+          "supports": [
+            "purpose"
+          ],
+          "captured_piece": "P",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "piece_at",
+          "supports": [
+            "purpose"
+          ],
+          "square": "f6",
+          "piece": null
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "capture",
+          "supports": [
+            "purpose",
+            "continuation"
+          ],
+          "captured_piece": "n",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "piece_at",
+          "supports": [
+            "purpose"
+          ],
+          "square": "c3",
+          "piece": null
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "attacks",
+          "supports": [
+            "purpose"
+          ],
+          "from_square": "g7",
+          "to_square": "b2",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "capture",
+          "supports": [
+            "purpose",
+            "continuation"
+          ],
+          "captured_piece": "B",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 4,
+          "type": "capture",
+          "supports": [
+            "continuation"
+          ],
+          "captured_piece": "n",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 5,
+          "type": "capture",
+          "supports": [
+            "continuation"
+          ],
+          "captured_piece": "N",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 5,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "c5",
+          "piece": "r"
+        }
+      ]
+    },
+    {
+      "id": "4:9",
+      "concept_id": 4,
+      "drill_index": 9,
+      "fen": "r3kb1r/pQ4p1/2p4q/3p4/4p1p1/2P1PnP1/PP3P1P/R1BR1N1K b kq - 2 20",
+      "best": "h6h2",
+      "title": "Use the rook behind the queen",
+      "constraint": "White’s pawn on h2 sits directly in front of the king on h1. Black’s queen and rook share the h-file.",
+      "purpose": "...Qxh2+ takes the pawn with check. After Nxh2, the knight is on a square the h8-rook can capture; Black’s knight on f3 also guards h2.",
+      "continuation": "The saved line is ...Qxh2+ Nxh2 ...Rxh2#. The rook’s recapture is checkmate in this position.",
+      "notice": "Look past the queen to the rook behind it, and check how the knight on f3 supports h2.",
+      "evidence": {
+        "source": "webapp/concepts.json",
+        "source_sha256": "1e736d4eba05a71b5e9729c8a068713b200b2b5eec13ae71a3f58e0a13213e59",
+        "locator": {
+          "concept_id": 4,
+          "role": "drill",
+          "drill_index": 9
+        },
+        "source_kind": "published_pv_excerpt",
+        "engine_name": null,
+        "depth": null,
+        "depth_kind": "not exported",
+        "target_depth": null,
+        "actual_depth": null,
+        "cp": null,
+        "mate": null,
+        "score_perspective": null,
+        "pv": [
+          {
+            "uci": "h6h2",
+            "san": "Qxh2+"
+          },
+          {
+            "uci": "f1h2",
+            "san": "Nxh2"
+          },
+          {
+            "uci": "h8h2",
+            "san": "Rxh2#"
+          }
+        ]
+      },
+      "claims": [
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "h2",
+          "piece": "P"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "h1",
+          "piece": "K"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "h6",
+          "piece": "q"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "h8",
+          "piece": "r"
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "capture",
+          "supports": [
+            "purpose"
+          ],
+          "captured_piece": "P",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "check",
+          "supports": [
+            "purpose"
+          ],
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "capture",
+          "supports": [
+            "purpose",
+            "continuation"
+          ],
+          "captured_piece": "q",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "piece_at",
+          "supports": [
+            "purpose"
+          ],
+          "square": "h2",
+          "piece": "N"
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "attacks",
+          "supports": [
+            "purpose"
+          ],
+          "from_square": "h8",
+          "to_square": "h2",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "attacks",
+          "supports": [
+            "purpose"
+          ],
+          "from_square": "f3",
+          "to_square": "h2",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "capture",
+          "supports": [
+            "continuation"
+          ],
+          "captured_piece": "N",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "h2",
+          "piece": "r"
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "checkmate",
+          "supports": [
+            "continuation"
+          ],
+          "expected": true
+        }
+      ]
+    },
+    {
+      "id": "4:10",
+      "concept_id": 4,
+      "drill_index": 10,
+      "fen": "r2qr1k1/ppp2ppp/3b2b1/8/4n1PP/2P2Q2/PPB2P2/R1B2K1R b - - 0 16",
+      "best": "e4g3",
+      "title": "Open the bishop’s diagonal with check",
+      "constraint": "Black’s knight on e4 blocks the bishop on g6 from attacking White’s bishop on c2.",
+      "purpose": "...Ng3+ clears that diagonal while checking the king on f1. The knight also attacks the rook on h1.",
+      "continuation": "White takes the knight with fxg3 in the saved line. Black then plays ...Bxc2, capturing the bishop that the knight had been blocking from view.",
+      "notice": "Follow two attacks after ...Ng3+: the knight’s check and the bishop’s new line to c2.",
+      "evidence": {
+        "source": "webapp/concepts.json",
+        "source_sha256": "1e736d4eba05a71b5e9729c8a068713b200b2b5eec13ae71a3f58e0a13213e59",
+        "locator": {
+          "concept_id": 4,
+          "role": "drill",
+          "drill_index": 10
+        },
+        "source_kind": "published_pv_excerpt",
+        "engine_name": null,
+        "depth": null,
+        "depth_kind": "not exported",
+        "target_depth": null,
+        "actual_depth": null,
+        "cp": null,
+        "mate": null,
+        "score_perspective": null,
+        "pv": [
+          {
+            "uci": "e4g3",
+            "san": "Ng3+"
+          },
+          {
+            "uci": "f2g3",
+            "san": "fxg3"
+          },
+          {
+            "uci": "g6c2",
+            "san": "Bxc2"
+          },
+          {
+            "uci": "f1g1",
+            "san": "Kg1"
+          },
+          {
+            "uci": "c2e4",
+            "san": "Be4"
+          },
+          {
+            "uci": "f3f1",
+            "san": "Qf1"
+          }
+        ]
+      },
+      "claims": [
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "e4",
+          "piece": "n"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "g6",
+          "piece": "b"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "c2",
+          "piece": "B"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "attacks",
+          "supports": [
+            "constraint"
+          ],
+          "from_square": "g6",
+          "to_square": "c2",
+          "expected": false
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "piece_at",
+          "supports": [
+            "purpose"
+          ],
+          "square": "e4",
+          "piece": null
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "check",
+          "supports": [
+            "purpose"
+          ],
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "attacks",
+          "supports": [
+            "purpose"
+          ],
+          "from_square": "g3",
+          "to_square": "f1",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "attacks",
+          "supports": [
+            "purpose"
+          ],
+          "from_square": "g3",
+          "to_square": "h1",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "attacks",
+          "supports": [
+            "purpose",
+            "continuation"
+          ],
+          "from_square": "g6",
+          "to_square": "c2",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "capture",
+          "supports": [
+            "continuation"
+          ],
+          "captured_piece": "n",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "g3",
+          "piece": "P"
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "capture",
+          "supports": [
+            "continuation"
+          ],
+          "captured_piece": "B",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "c2",
+          "piece": "b"
+        }
+      ]
+    },
+    {
+      "id": "5:6",
+      "concept_id": 5,
+      "drill_index": 6,
+      "fen": "4r1k1/4r1p1/7p/5Q2/3R3N/2P3qP/P3b1P1/R6K b - - 6 34",
+      "best": "e2h5",
+      "title": "Clear the e-file for the rook",
+      "constraint": "Black’s bishop on e2 blocks the e7-rook’s route to e1.",
+      "purpose": "...Bh5 clears the file. In the saved line, the rook can then enter on e1, where Black’s queen on g3 protects it.",
+      "continuation": "After ...Bh5 Rf1 ...Re1 Rf4, Black plays ...Rxf1+ and White answers Rxf1. The file clearance leads to a rook exchange on the first rank.",
+      "notice": "Watch e2 become empty, then trace the rook’s route from e7 to e1 to f1.",
+      "evidence": {
+        "source": "webapp/concepts.json",
+        "source_sha256": "1e736d4eba05a71b5e9729c8a068713b200b2b5eec13ae71a3f58e0a13213e59",
+        "locator": {
+          "concept_id": 5,
+          "role": "drill",
+          "drill_index": 6
+        },
+        "source_kind": "published_pv_excerpt",
+        "engine_name": null,
+        "depth": null,
+        "depth_kind": "not exported",
+        "target_depth": null,
+        "actual_depth": null,
+        "cp": null,
+        "mate": null,
+        "score_perspective": null,
+        "pv": [
+          {
+            "uci": "e2h5",
+            "san": "Bh5"
+          },
+          {
+            "uci": "a1f1",
+            "san": "Rf1"
+          },
+          {
+            "uci": "e7e1",
+            "san": "Re1"
+          },
+          {
+            "uci": "d4f4",
+            "san": "Rf4"
+          },
+          {
+            "uci": "e1f1",
+            "san": "Rxf1+"
+          },
+          {
+            "uci": "f4f1",
+            "san": "Rxf1"
+          }
+        ]
+      },
+      "claims": [
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "e2",
+          "piece": "b"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "e7",
+          "piece": "r"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "attacks",
+          "supports": [
+            "constraint"
+          ],
+          "from_square": "e7",
+          "to_square": "e1",
+          "expected": false
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "piece_at",
+          "supports": [
+            "purpose"
+          ],
+          "square": "e2",
+          "piece": null
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "attacks",
+          "supports": [
+            "purpose"
+          ],
+          "from_square": "e7",
+          "to_square": "e1",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "piece_at",
+          "supports": [
+            "purpose",
+            "continuation"
+          ],
+          "square": "e1",
+          "piece": "r"
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "attacks",
+          "supports": [
+            "purpose"
+          ],
+          "from_square": "g3",
+          "to_square": "e1",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 4,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "f4",
+          "piece": "R"
+        },
+        {
+          "line": "engine",
+          "ply": 5,
+          "type": "capture",
+          "supports": [
+            "continuation"
+          ],
+          "captured_piece": "R",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 5,
+          "type": "check",
+          "supports": [
+            "continuation"
+          ],
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 6,
+          "type": "capture",
+          "supports": [
+            "continuation"
+          ],
+          "captured_piece": "r",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 6,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "f1",
+          "piece": "R"
+        }
+      ]
+    },
+    {
+      "id": "5:23",
+      "concept_id": 5,
+      "drill_index": 23,
+      "fen": "r7/1p1q2k1/p1p2p2/3p4/1R1Q4/4P3/P4PPP/6K1 b - - 1 22",
+      "best": "c6c5",
+      "title": "Fork the queen and rook with a pawn",
+      "constraint": "White’s queen on d4 and rook on b4 sit on the two capture squares of a black pawn on c5.",
+      "purpose": "...c5 attacks both major pieces at once.",
+      "continuation": "White answers with Qg4+ in the saved line. Black takes with ...Qxg4, and Rxg4+ exchanges the queens while leaving White’s rook on g4.",
+      "notice": "Notice White’s checking reply before assuming the pawn fork simply wins the rook.",
+      "evidence": {
+        "source": "webapp/concepts.json",
+        "source_sha256": "1e736d4eba05a71b5e9729c8a068713b200b2b5eec13ae71a3f58e0a13213e59",
+        "locator": {
+          "concept_id": 5,
+          "role": "drill",
+          "drill_index": 23
+        },
+        "source_kind": "published_pv_excerpt",
+        "engine_name": null,
+        "depth": null,
+        "depth_kind": "not exported",
+        "target_depth": null,
+        "actual_depth": null,
+        "cp": null,
+        "mate": null,
+        "score_perspective": null,
+        "pv": [
+          {
+            "uci": "c6c5",
+            "san": "c5"
+          },
+          {
+            "uci": "d4g4",
+            "san": "Qg4+"
+          },
+          {
+            "uci": "d7g4",
+            "san": "Qxg4"
+          },
+          {
+            "uci": "b4g4",
+            "san": "Rxg4+"
+          },
+          {
+            "uci": "g7f7",
+            "san": "Kf7"
+          },
+          {
+            "uci": "g1f1",
+            "san": "Kf1"
+          }
+        ]
+      },
+      "claims": [
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "d4",
+          "piece": "Q"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "b4",
+          "piece": "R"
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "attacks",
+          "supports": [
+            "constraint",
+            "purpose"
+          ],
+          "from_square": "c5",
+          "to_square": "d4",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "attacks",
+          "supports": [
+            "constraint",
+            "purpose"
+          ],
+          "from_square": "c5",
+          "to_square": "b4",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "check",
+          "supports": [
+            "continuation"
+          ],
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "g4",
+          "piece": "Q"
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "capture",
+          "supports": [
+            "continuation"
+          ],
+          "captured_piece": "Q",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 4,
+          "type": "capture",
+          "supports": [
+            "continuation"
+          ],
+          "captured_piece": "q",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 4,
+          "type": "check",
+          "supports": [
+            "continuation"
+          ],
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 4,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "g4",
+          "piece": "R"
+        }
+      ]
+    },
+    {
+      "id": "6:2",
+      "concept_id": 6,
+      "drill_index": 2,
+      "fen": "1r1n1rk1/ppBbqppp/8/2p5/1P6/P3PB2/2Q2PPP/R2R2K1 b - - 0 18",
+      "best": "d7a4",
+      "title": "Attack the queen and clear the seventh rank",
+      "constraint": "Black’s bishop on d7 stands between the queen on e7 and White’s bishop on c7.",
+      "purpose": "...Ba4 attacks White’s queen on c2 and clears d7, opening Black’s queen’s route to c7.",
+      "continuation": "In the saved line, White takes the bishop with Qxa4. Black replies ...Qxc7, trading bishops after moving the white queen away from c2.",
+      "notice": "The bishop’s move changes two lines: a4–b3–c2 and e7–d7–c7.",
+      "evidence": {
+        "source": "webapp/concepts.json",
+        "source_sha256": "1e736d4eba05a71b5e9729c8a068713b200b2b5eec13ae71a3f58e0a13213e59",
+        "locator": {
+          "concept_id": 6,
+          "role": "drill",
+          "drill_index": 2
+        },
+        "source_kind": "published_pv_excerpt",
+        "engine_name": null,
+        "depth": null,
+        "depth_kind": "not exported",
+        "target_depth": null,
+        "actual_depth": null,
+        "cp": null,
+        "mate": null,
+        "score_perspective": null,
+        "pv": [
+          {
+            "uci": "d7a4",
+            "san": "Ba4"
+          },
+          {
+            "uci": "c2a4",
+            "san": "Qxa4"
+          },
+          {
+            "uci": "e7c7",
+            "san": "Qxc7"
+          },
+          {
+            "uci": "a4a7",
+            "san": "Qxa7"
+          },
+          {
+            "uci": "d8e6",
+            "san": "Ne6"
+          },
+          {
+            "uci": "a1c1",
+            "san": "Rac1"
+          }
+        ]
+      },
+      "claims": [
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "d7",
+          "piece": "b"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "e7",
+          "piece": "q"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "c7",
+          "piece": "B"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "attacks",
+          "supports": [
+            "constraint"
+          ],
+          "from_square": "e7",
+          "to_square": "c7",
+          "expected": false
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "piece_at",
+          "supports": [
+            "purpose"
+          ],
+          "square": "d7",
+          "piece": null
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "attacks",
+          "supports": [
+            "purpose"
+          ],
+          "from_square": "a4",
+          "to_square": "c2",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "attacks",
+          "supports": [
+            "purpose"
+          ],
+          "from_square": "e7",
+          "to_square": "c7",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "capture",
+          "supports": [
+            "continuation"
+          ],
+          "captured_piece": "b",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "c2",
+          "piece": null
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "a4",
+          "piece": "Q"
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "capture",
+          "supports": [
+            "continuation"
+          ],
+          "captured_piece": "B",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "c7",
+          "piece": "q"
+        }
+      ]
+    },
+    {
+      "id": "6:35",
+      "concept_id": 6,
+      "drill_index": 35,
+      "fen": "6k1/4p2p/1r4p1/2qP4/P3PN2/5Q1P/Rbr2PP1/1R4K1 b - - 0 34",
+      "best": "c2f2",
+      "title": "Bring the queen onto the bishop’s diagonal",
+      "constraint": "White’s queen on f3 protects the pawn on f2, beside the king on g1.",
+      "purpose": "After ...Rxf2 Qxf2, ...Bd4 pins the queen to the king along d4–e3–f2–g1. Black’s queen on c5 protects the bishop.",
+      "continuation": "White chooses Rf1 in the saved line. Black then takes the queen with ...Bxf2+, and Raxf2 recaptures the bishop.",
+      "notice": "Line up d4, e3, f2 and g1: the queen stands between the bishop and the king.",
+      "evidence": {
+        "source": "webapp/concepts.json",
+        "source_sha256": "1e736d4eba05a71b5e9729c8a068713b200b2b5eec13ae71a3f58e0a13213e59",
+        "locator": {
+          "concept_id": 6,
+          "role": "drill",
+          "drill_index": 35
+        },
+        "source_kind": "published_pv_excerpt",
+        "engine_name": null,
+        "depth": null,
+        "depth_kind": "not exported",
+        "target_depth": null,
+        "actual_depth": null,
+        "cp": null,
+        "mate": null,
+        "score_perspective": null,
+        "pv": [
+          {
+            "uci": "c2f2",
+            "san": "Rxf2"
+          },
+          {
+            "uci": "f3f2",
+            "san": "Qxf2"
+          },
+          {
+            "uci": "b2d4",
+            "san": "Bd4"
+          },
+          {
+            "uci": "b1f1",
+            "san": "Rf1"
+          },
+          {
+            "uci": "d4f2",
+            "san": "Bxf2+"
+          },
+          {
+            "uci": "a2f2",
+            "san": "Raxf2"
+          }
+        ]
+      },
+      "claims": [
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "f3",
+          "piece": "Q"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "f2",
+          "piece": "P"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "g1",
+          "piece": "K"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "attacks",
+          "supports": [
+            "constraint"
+          ],
+          "from_square": "f3",
+          "to_square": "f2",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "capture",
+          "supports": [
+            "purpose"
+          ],
+          "captured_piece": "P",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "capture",
+          "supports": [
+            "purpose"
+          ],
+          "captured_piece": "r",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "piece_at",
+          "supports": [
+            "purpose"
+          ],
+          "square": "f2",
+          "piece": "Q"
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "attacks",
+          "supports": [
+            "purpose"
+          ],
+          "from_square": "d4",
+          "to_square": "f2",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "pinned",
+          "supports": [
+            "purpose"
+          ],
+          "color": "white",
+          "square": "f2",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "attacks",
+          "supports": [
+            "purpose"
+          ],
+          "from_square": "c5",
+          "to_square": "d4",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 4,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "f1",
+          "piece": "R"
+        },
+        {
+          "line": "engine",
+          "ply": 5,
+          "type": "capture",
+          "supports": [
+            "continuation"
+          ],
+          "captured_piece": "Q",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 5,
+          "type": "check",
+          "supports": [
+            "continuation"
+          ],
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 6,
+          "type": "capture",
+          "supports": [
+            "continuation"
+          ],
+          "captured_piece": "b",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 6,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "a2",
+          "piece": null
+        },
+        {
+          "line": "engine",
+          "ply": 6,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "f2",
+          "piece": "R"
+        }
+      ]
+    },
+    {
+      "id": "7:3",
+      "concept_id": 7,
+      "drill_index": 3,
+      "fen": "5rk1/Q4ppp/4p3/8/3P1B2/P3P3/1qrN1PbP/3RK1R1 b - - 1 20",
+      "best": "c2d2",
+      "title": "Draw the rook off the back rank",
+      "constraint": "White’s rook on d1 blocks the line from a1 to the king on e1.",
+      "purpose": "...Rxd2 offers Black’s rook for the knight. The saved reply Rxd2 pulls White’s rook off d1, allowing ...Qa1+ along the back rank.",
+      "continuation": "After ...Rxd2 Rxd2 ...Qa1+, White returns the rook to d1. Black then changes direction with ...Qc3+, checking along c3–d2–e1; White replies Ke2.",
+      "notice": "Follow the rook as it leaves d1 and returns, then trace the queen’s second check.",
+      "evidence": {
+        "source": "webapp/concepts.json",
+        "source_sha256": "1e736d4eba05a71b5e9729c8a068713b200b2b5eec13ae71a3f58e0a13213e59",
+        "locator": {
+          "concept_id": 7,
+          "role": "drill",
+          "drill_index": 3
+        },
+        "source_kind": "published_pv_excerpt",
+        "engine_name": null,
+        "depth": null,
+        "depth_kind": "not exported",
+        "target_depth": null,
+        "actual_depth": null,
+        "cp": null,
+        "mate": null,
+        "score_perspective": null,
+        "pv": [
+          {
+            "uci": "c2d2",
+            "san": "Rxd2"
+          },
+          {
+            "uci": "d1d2",
+            "san": "Rxd2"
+          },
+          {
+            "uci": "b2a1",
+            "san": "Qa1+"
+          },
+          {
+            "uci": "d2d1",
+            "san": "Rd1"
+          },
+          {
+            "uci": "a1c3",
+            "san": "Qc3+"
+          },
+          {
+            "uci": "e1e2",
+            "san": "Ke2"
+          }
+        ]
+      },
+      "claims": [
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "d1",
+          "piece": "R"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "e1",
+          "piece": "K"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "b1",
+          "piece": null
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "c1",
+          "piece": null
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "capture",
+          "supports": [
+            "purpose"
+          ],
+          "captured_piece": "N",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "capture",
+          "supports": [
+            "purpose",
+            "continuation"
+          ],
+          "captured_piece": "r",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "piece_at",
+          "supports": [
+            "purpose"
+          ],
+          "square": "d1",
+          "piece": null
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "piece_at",
+          "supports": [
+            "purpose"
+          ],
+          "square": "d2",
+          "piece": "R"
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "attacks",
+          "supports": [
+            "purpose",
+            "continuation"
+          ],
+          "from_square": "a1",
+          "to_square": "e1",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "check",
+          "supports": [
+            "continuation"
+          ],
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 4,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "d1",
+          "piece": "R"
+        },
+        {
+          "line": "engine",
+          "ply": 4,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "d2",
+          "piece": null
+        },
+        {
+          "line": "engine",
+          "ply": 5,
+          "type": "attacks",
+          "supports": [
+            "continuation"
+          ],
+          "from_square": "c3",
+          "to_square": "e1",
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 5,
+          "type": "check",
+          "supports": [
+            "continuation"
+          ],
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 6,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "e2",
+          "piece": "K"
+        }
+      ]
+    },
+    {
+      "id": "7:8",
+      "concept_id": 7,
+      "drill_index": 8,
+      "fen": "2k1r1r1/ppp2p2/7p/P2p4/1P6/2P5/3B1KB1/R7 b - - 0 26",
+      "best": "g8g2",
+      "title": "Use two checks to take both bishops",
+      "constraint": "White has bishops on g2 and d2, with the king between them on f2.",
+      "purpose": "...Rxg2+ captures one bishop with check. After Kxg2, ...Re2+ brings Black’s other rook to the second rank with another check.",
+      "continuation": "The saved line continues Kf3 Rxd2. Across the sequence, Black gives up the g8-rook for both bishops and keeps the other rook on d2.",
+      "notice": "Track the two rooks separately: the first takes on g2, the second enters on e2 and takes on d2.",
+      "evidence": {
+        "source": "webapp/concepts.json",
+        "source_sha256": "1e736d4eba05a71b5e9729c8a068713b200b2b5eec13ae71a3f58e0a13213e59",
+        "locator": {
+          "concept_id": 7,
+          "role": "drill",
+          "drill_index": 8
+        },
+        "source_kind": "published_pv_excerpt",
+        "engine_name": null,
+        "depth": null,
+        "depth_kind": "not exported",
+        "target_depth": null,
+        "actual_depth": null,
+        "cp": null,
+        "mate": null,
+        "score_perspective": null,
+        "pv": [
+          {
+            "uci": "g8g2",
+            "san": "Rxg2+"
+          },
+          {
+            "uci": "f2g2",
+            "san": "Kxg2"
+          },
+          {
+            "uci": "e8e2",
+            "san": "Re2+"
+          },
+          {
+            "uci": "g2f3",
+            "san": "Kf3"
+          },
+          {
+            "uci": "e2d2",
+            "san": "Rxd2"
+          },
+          {
+            "uci": "f3e3",
+            "san": "Ke3"
+          }
+        ]
+      },
+      "claims": [
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "g2",
+          "piece": "B"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "d2",
+          "piece": "B"
+        },
+        {
+          "line": "engine",
+          "ply": 0,
+          "type": "piece_at",
+          "supports": [
+            "constraint"
+          ],
+          "square": "f2",
+          "piece": "K"
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "capture",
+          "supports": [
+            "purpose"
+          ],
+          "captured_piece": "B",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "check",
+          "supports": [
+            "purpose"
+          ],
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 1,
+          "type": "piece_at",
+          "supports": [
+            "purpose"
+          ],
+          "square": "g8",
+          "piece": null
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "capture",
+          "supports": [
+            "purpose",
+            "continuation"
+          ],
+          "captured_piece": "r",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 2,
+          "type": "piece_at",
+          "supports": [
+            "purpose"
+          ],
+          "square": "g2",
+          "piece": "K"
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "piece_at",
+          "supports": [
+            "purpose"
+          ],
+          "square": "e8",
+          "piece": null
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "piece_at",
+          "supports": [
+            "purpose",
+            "continuation"
+          ],
+          "square": "e2",
+          "piece": "r"
+        },
+        {
+          "line": "engine",
+          "ply": 3,
+          "type": "check",
+          "supports": [
+            "purpose",
+            "continuation"
+          ],
+          "expected": true
+        },
+        {
+          "line": "engine",
+          "ply": 4,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "f3",
+          "piece": "K"
+        },
+        {
+          "line": "engine",
+          "ply": 5,
+          "type": "capture",
+          "supports": [
+            "continuation"
+          ],
+          "captured_piece": "B",
+          "en_passant": false
+        },
+        {
+          "line": "engine",
+          "ply": 5,
+          "type": "piece_at",
+          "supports": [
+            "continuation"
+          ],
+          "square": "d2",
+          "piece": "r"
+        }
+      ]
     }
-  ]
+  ],
+  "expanded_at": "2026-09-09T19:02:07.831929+00:00"
 }

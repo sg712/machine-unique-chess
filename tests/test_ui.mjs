@@ -137,14 +137,18 @@ test('failed drill request preserves the choice and retries using the same id', 
 test('five answers produce a session boundary and allow continuing', async () => {
   const s=await setup(pages['/pattern/0/drill'],{page:true,fetch:async(url,init)=>({ok:true,json:async()=>({
     correct:true,picked_san:'test',best_san:'test',p_best:.01,predicted:.1,
-    line:{orientation:'w',frames:[{fen:'4k3/8/8/8/8/8/4P3/4K3 w - - 0 1',last:null}],sans:[]}
+    line:{orientation:'w',frames:[{fen:JSON.parse(init.body).fen,last:null}],sans:[]}
   })})});
   for(let i=0;i<5;i++){play(s.document);s.document.getElementById('lock').click();await flush();s.document.getElementById('next').click();}
   assert.equal(s.document.getElementById('session-done').hidden,false);
   assert.equal(s.document.getElementById('session-score').textContent,'5 / 5');
+  // A queued second acknowledgement must not consume another position.
+  s.document.getElementById('next').click();
   s.document.getElementById('continue').click();
   assert.equal(s.document.getElementById('practice').hidden,false);
   assert.match(s.document.getElementById('counter').textContent,/session: 1 of 5/);
+  play(s.document);s.document.getElementById('lock').click();await flush();
+  assert.equal(s.fetches.at(-1).payload.idx,5);
   s.dom.window.close();
 });
 
