@@ -16,6 +16,8 @@ The recorded move matched the exact engine choice in 1,199 selected positions; t
 
 **First 200 depth checks completed, 9 September:** exhaustive depth-20/24 searches covered 100 White and 100 Black candidates from 200 recovered games without BOT tags. **116 met the engine-stability contract; 62 also retained the model-based candidate criterion** (35 White, 27 Black). Those 62 still need explanations and chess review; no new trainer puzzles were added. These results concern this selected batch, not all first-pass candidates. [Depth-check methods](docs/MINING_V3_DEEP200.md) and [validated results](results/mining_v3_deep200.json).
 
+**Full candidate pool, started 9 September:** the remaining **4,145 distinct candidates** are queued for the same exhaustive checks, with the original 200 reused after validation. This requires 289,860 new move searches. Source labels remain explicit, including BOT-tagged, public and unresolved games. A resumable local pipeline saves the final aggregate and report automatically. [Full-run methods](docs/MINING_V3_FULL_DEEP.md), [frozen census](results/mining_v3_full_deep_selection.json) and [timestamped progress snapshot](results/mining_v3_full_deep.json); a snapshot is not a live feed or a completed result.
+
 The revised study compares identical material in grouped or shuffled order. Validation, concealed allocation and local material-review exports are implemented; final private items, independent review and actual participant collection remain prerequisites. No human learning result is claimed.
 
 New checks, 7 September 2026:

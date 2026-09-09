@@ -1,6 +1,6 @@
 # Checking the full candidate pool
 
-9 September 2026. This follow-up extends the completed [200-position batch](MINING_V3_DEEP200.md) to every distinct candidate from the same first-pass screen. The full run is being prepared; its completion must be established by the validated aggregate, not by this protocol or a started process.
+9 September 2026. This follow-up extends the completed [200-position batch](MINING_V3_DEEP200.md) to every distinct candidate from the same first-pass screen. **The full run started on 9 September and was incomplete at the time of the initial [saved progress snapshot](../results/mining_v3_full_deep.json).** Completion must be established by a validated aggregate with `complete: true`, not by this protocol or a started process. Saved snapshots carry their own timestamps and are not a live progress feed.
 
 ## Scope
 

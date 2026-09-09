@@ -1,0 +1,441 @@
+{
+  "schema_version": 1,
+  "complete": false,
+  "created_at": "2026-09-09T09:00:44.480320+00:00",
+  "checkpoint_at": "2026-09-09T09:00:40.810401+00:00",
+  "scope": "Census of all distinct first-pass candidate states, retaining the initial 200 checks and computing the remainder under the same depth-20/24 contract.",
+  "selection": {
+    "frozen_at": "2026-09-09T08:50:03.503434+00:00",
+    "protocol_declared_at": "2026-09-09T08:49:27.866626+00:00",
+    "freeze_precedes_run_checked": true,
+    "protocol_precedes_run_checked": true,
+    "candidate_observations_n": 4353,
+    "distinct_candidate_states_n": 4345,
+    "canonical_repeat_observations_n": 8,
+    "unique_representative_source_games_n": 3726,
+    "unique_origin_source_games_n": 3726,
+    "maximum_selected_positions_per_source_game": 5,
+    "source_stratum_exclusions_n": 0
+  },
+  "engine": {
+    "depths": [
+      20,
+      24
+    ],
+    "board_context": "fen_only",
+    "engine_threads": 1,
+    "hash_mb": 64,
+    "clear_hash_each_search": true,
+    "time_limit": null,
+    "node_limit": null,
+    "workers": 8,
+    "python_chess_version": "1.11.2"
+  },
+  "counts": {
+    "planned_n": 4345,
+    "completed_positions_n": 201,
+    "pending_positions_n": 4144,
+    "imported_completed_positions_n": 200,
+    "new_completed_positions_n": 1,
+    "new_pending_positions_n": 4144,
+    "partially_searched_positions_n": 1,
+    "planned_root_searches_n": 304068,
+    "completed_root_searches_n": 14308,
+    "imported_root_searches_n": 14208,
+    "new_completed_root_searches_n": 100,
+    "new_pending_root_searches_n": 289760,
+    "checked_n": null,
+    "engine_verified_n": null,
+    "survives_candidate_criterion_n": null,
+    "trainer_ready_n": 0,
+    "failure_reasons_overlapping": null
+  },
+  "previously_completed_initial_batch": {
+    "checked_n": 200,
+    "engine_verified_n": 116,
+    "survives_candidate_criterion_n": 62,
+    "trainer_ready_n": 0,
+    "root_searches_n": 14208,
+    "by_side": {
+      "white": {
+        "checked_n": 100,
+        "engine_verified_n": 60,
+        "survives_candidate_criterion_n": 35,
+        "trainer_ready_n": 0
+      },
+      "black": {
+        "checked_n": 100,
+        "engine_verified_n": 56,
+        "survives_candidate_criterion_n": 27,
+        "trainer_ready_n": 0
+      }
+    },
+    "interpretation": "Previously completed and published initial batch; imported evidence is not new computation. Its outcomes are not a prediction for the remaining census."
+  },
+  "groups": {
+    "by_side": {
+      "white": {
+        "planned_n": 2106,
+        "completed_n": 101,
+        "pending_n": 2005,
+        "imported_completed_n": 100,
+        "new_completed_n": 1,
+        "outcomes": null
+      },
+      "black": {
+        "planned_n": 2239,
+        "completed_n": 100,
+        "pending_n": 2139,
+        "imported_completed_n": 100,
+        "new_completed_n": 0,
+        "outcomes": null
+      }
+    },
+    "by_evidence_origin": {
+      "imported_deep200": {
+        "planned_n": 200,
+        "completed_n": 200,
+        "pending_n": 0,
+        "imported_completed_n": 200,
+        "new_completed_n": 0,
+        "outcomes": null
+      },
+      "new_full_census": {
+        "planned_n": 4145,
+        "completed_n": 1,
+        "pending_n": 4144,
+        "imported_completed_n": 0,
+        "new_completed_n": 1,
+        "outcomes": null
+      }
+    },
+    "representative_strata": {
+      "bot_status": {
+        "bot_tagged": {
+          "planned_n": 410,
+          "completed_n": 0,
+          "pending_n": 410,
+          "imported_completed_n": 0,
+          "new_completed_n": 0,
+          "outcomes": null
+        },
+        "no_bot": {
+          "planned_n": 3934,
+          "completed_n": 201,
+          "pending_n": 3733,
+          "imported_completed_n": 200,
+          "new_completed_n": 1,
+          "outcomes": null
+        },
+        "unknown": {
+          "planned_n": 1,
+          "completed_n": 0,
+          "pending_n": 1,
+          "imported_completed_n": 0,
+          "new_completed_n": 0,
+          "outcomes": null
+        }
+      },
+      "history_status": {
+        "recovered": {
+          "planned_n": 4344,
+          "completed_n": 201,
+          "pending_n": 4143,
+          "imported_completed_n": 200,
+          "new_completed_n": 1,
+          "outcomes": null
+        },
+        "unavailable": {
+          "planned_n": 1,
+          "completed_n": 0,
+          "pending_n": 1,
+          "imported_completed_n": 0,
+          "new_completed_n": 0,
+          "outcomes": null
+        },
+        "unknown": {
+          "planned_n": 0,
+          "completed_n": 0,
+          "pending_n": 0,
+          "imported_completed_n": 0,
+          "new_completed_n": 0,
+          "outcomes": null
+        }
+      },
+      "public_exposure": {
+        "known_public": {
+          "planned_n": 128,
+          "completed_n": 0,
+          "pending_n": 128,
+          "imported_completed_n": 0,
+          "new_completed_n": 0,
+          "outcomes": null
+        },
+        "not_known_public": {
+          "planned_n": 4217,
+          "completed_n": 201,
+          "pending_n": 4016,
+          "imported_completed_n": 200,
+          "new_completed_n": 1,
+          "outcomes": null
+        },
+        "unknown": {
+          "planned_n": 0,
+          "completed_n": 0,
+          "pending_n": 0,
+          "imported_completed_n": 0,
+          "new_completed_n": 0,
+          "outcomes": null
+        }
+      },
+      "analysis_role": {
+        "new_test": {
+          "planned_n": 305,
+          "completed_n": 24,
+          "pending_n": 281,
+          "imported_completed_n": 24,
+          "new_completed_n": 0,
+          "outcomes": null
+        },
+        "new_train": {
+          "planned_n": 870,
+          "completed_n": 35,
+          "pending_n": 835,
+          "imported_completed_n": 34,
+          "new_completed_n": 1,
+          "outcomes": null
+        },
+        "new_validation": {
+          "planned_n": 280,
+          "completed_n": 10,
+          "pending_n": 270,
+          "imported_completed_n": 10,
+          "new_completed_n": 0,
+          "outcomes": null
+        },
+        "pilot_test": {
+          "planned_n": 13,
+          "completed_n": 2,
+          "pending_n": 11,
+          "imported_completed_n": 2,
+          "new_completed_n": 0,
+          "outcomes": null
+        },
+        "pilot_train": {
+          "planned_n": 39,
+          "completed_n": 1,
+          "pending_n": 38,
+          "imported_completed_n": 1,
+          "new_completed_n": 0,
+          "outcomes": null
+        },
+        "pilot_validation": {
+          "planned_n": 11,
+          "completed_n": 1,
+          "pending_n": 10,
+          "imported_completed_n": 1,
+          "new_completed_n": 0,
+          "outcomes": null
+        },
+        "prior_development": {
+          "planned_n": 2699,
+          "completed_n": 128,
+          "pending_n": 2571,
+          "imported_completed_n": 128,
+          "new_completed_n": 0,
+          "outcomes": null
+        },
+        "public_exposed": {
+          "planned_n": 128,
+          "completed_n": 0,
+          "pending_n": 128,
+          "imported_completed_n": 0,
+          "new_completed_n": 0,
+          "outcomes": null
+        },
+        "unknown": {
+          "planned_n": 0,
+          "completed_n": 0,
+          "pending_n": 0,
+          "imported_completed_n": 0,
+          "new_completed_n": 0,
+          "outcomes": null
+        }
+      }
+    },
+    "any_origin_provenance": {
+      "any_bot_tagged": {
+        "planned_n": 410,
+        "completed_n": 0,
+        "pending_n": 410,
+        "imported_completed_n": 0,
+        "new_completed_n": 0,
+        "outcomes": null
+      },
+      "any_unknown_bot_status": {
+        "planned_n": 1,
+        "completed_n": 0,
+        "pending_n": 1,
+        "imported_completed_n": 0,
+        "new_completed_n": 0,
+        "outcomes": null
+      },
+      "any_known_public": {
+        "planned_n": 128,
+        "completed_n": 0,
+        "pending_n": 128,
+        "imported_completed_n": 0,
+        "new_completed_n": 0,
+        "outcomes": null
+      },
+      "any_unknown_public_exposure": {
+        "planned_n": 0,
+        "completed_n": 0,
+        "pending_n": 0,
+        "imported_completed_n": 0,
+        "new_completed_n": 0,
+        "outcomes": null
+      },
+      "any_unavailable_history": {
+        "planned_n": 1,
+        "completed_n": 0,
+        "pending_n": 1,
+        "imported_completed_n": 0,
+        "new_completed_n": 0,
+        "outcomes": null
+      },
+      "any_unknown_history": {
+        "planned_n": 0,
+        "completed_n": 0,
+        "pending_n": 0,
+        "imported_completed_n": 0,
+        "new_completed_n": 0,
+        "outcomes": null
+      },
+      "all_origins_recovered_no_bot_not_known_public": {
+        "planned_n": 3830,
+        "completed_n": 201,
+        "pending_n": 3629,
+        "imported_completed_n": 200,
+        "new_completed_n": 1,
+        "outcomes": null
+      }
+    }
+  },
+  "depth_changes": null,
+  "runtime": {
+    "new_run_attempts": {
+      "attempts_n": 1,
+      "closed_attempts_n": 0,
+      "unfinished_prior_attempts_n": 0,
+      "closed_attempt_elapsed_wall_seconds": 0,
+      "closed_attempt_recorded_monotonic_seconds": 0,
+      "closed_attempts_missing_monotonic_timing_n": 0,
+      "open_attempt_elapsed_wall_seconds_to_checkpoint": 42.86383295059204,
+      "attempt_elapsed_wall_seconds_to_checkpoint": 42.86383295059204,
+      "run_elapsed_wall_seconds_to_checkpoint": 47.18926692008972,
+      "active_compute_seconds": null,
+      "host_suspension_measured": false,
+      "host_suspension_seconds": null,
+      "interpretation": "These attempt wall-clock intervals concern only this new run, including any host suspension within attempts and excluding gaps between attempts. Recorded closed-attempt monotonic durations are separate elapsed-clock measurements, not CPU time; their difference from wall time is not used to infer sleep. Imported searches were performed earlier. Active compute and host suspension were not measured; missing prior finish times are not imputed."
+    },
+    "imported_root_search_seconds": {
+      "n": 14208,
+      "sum": 77815.33554347162,
+      "mean": 5.476867648048397,
+      "median": 3.052055833002669,
+      "p90": 11.360301062709187,
+      "minimum": 0.008185291982954368,
+      "maximum": 667.620512583002
+    },
+    "new_root_search_seconds": {
+      "n": 100,
+      "sum": 311.33135837406735,
+      "mean": 3.1133135837406734,
+      "median": 1.795067791492329,
+      "p90": 6.35777098720428,
+      "minimum": 0.512334583007032,
+      "maximum": 16.54029854098917
+    },
+    "root_search_seconds_by_origin_and_depth": {
+      "imported_20": {
+        "n": 7104,
+        "sum": 14172.582222953177,
+        "mean": 1.9950143894922827,
+        "median": 1.5189021875121398,
+        "p90": 3.3794894749880764,
+        "minimum": 0.008185291982954368,
+        "maximum": 257.50107191700954
+      },
+      "imported_24": {
+        "n": 7104,
+        "sum": 63642.753320518445,
+        "mean": 8.95872090660451,
+        "median": 6.451346832996933,
+        "p90": 15.204858362607773,
+        "minimum": 0.008479709009407088,
+        "maximum": 667.620512583002
+      },
+      "new_20": {
+        "n": 67,
+        "sum": 107.90730570905725,
+        "mean": 1.6105568016277203,
+        "median": 1.4694867499929387,
+        "p90": 2.5426560328050978,
+        "minimum": 0.512334583007032,
+        "maximum": 4.4638133340049535
+      },
+      "new_24": {
+        "n": 33,
+        "sum": 203.4240526650101,
+        "mean": 6.164365232273033,
+        "median": 5.662004500016337,
+        "p90": 9.893294700002299,
+        "minimum": 1.032134709006641,
+        "maximum": 16.54029854098917
+      }
+    },
+    "imported_nodes": 70328375217,
+    "new_nodes": 272611148,
+    "completed_position_root_search_seconds": null,
+    "interpretation": "Imported root durations and nodes are historical work, not new computation. Recorded root monotonic-clock durations overlap across workers and are neither CPU time nor total job elapsed time. No host-suspension duration is inferred or subtracted; no continuous-compute completion forecast is made.",
+    "quantile_method": "Linear interpolation at p*(n-1)."
+  },
+  "validation": {
+    "frozen_hashes_checked": true,
+    "durable_new_root_prefix_checked": true,
+    "root_identities_exact_scores_and_depths_checked": true,
+    "all_legal_roots_covered": false,
+    "all_root_pvs_replayed": false,
+    "all_outcomes_recomputed": false,
+    "saved_outcomes_match_recomputation": false,
+    "any_origin_exposure_recomputed": true
+  },
+  "fingerprints": {
+    "engine_sha256": "bc0cac905ecdf2147fe22055c733bcd999b1e3f7c399fbaf7fb9055786563590",
+    "runner_sha256": "e827d1016b639aa4c48ce60e5f94765609e5ab27215d1b40762b538b81790dca",
+    "original_runner_sha256": "06579e53688f24a62fd9c4e423ee1b0d02684d3a90677775091370cbcb9d5e65",
+    "search_and_metrics_sha256": "a358695ef91a0588a037decad6b445680db2f3ded5c8ff08980368a4ccc45b70",
+    "canonicalization_sha256": "78888081a8c5762d08166bbade3a59712ed8b1b9233ba82627842af640586b7f",
+    "io_sha256": "6554f179e417260e6a736997c65c5460cbb1f73043c8b41fdf8a646adfdbb070",
+    "input_sha256": "476b27f25a4416483ad54d3ea3d52c88e773dca6b54842d058271a1d69456419",
+    "policy_sha256": "8b691c97fdbf03c0c7307831480c87e69032134483b5b444c285616d97cbfaad",
+    "selection_manifest_sha256": "b125fffac4326e6f6aeeccbb61fa71958df2df82c1ec6164cbff55beb7c1ce12",
+    "settings_sha256": "380be14879c36a21930db2583a16449e5a770b12e0296e389ff95cd909ebb4e8",
+    "imported_roots_sha256": "6003e1e2b1fc6f5ef158e59d75addfd83037daab0704f54321704356b562b0dd",
+    "new_roots_checkpoint_sha256": "bb963c436567b183befb10856b7f6165585144449b5c868146884bcdd43693fd",
+    "run_manifest_snapshot_sha256": "2a2ace64baa84ef591b9dfc36a772a03a09bc83162d64246f78d8c9459b90e58",
+    "checkpoint_manifest_snapshot_sha256": "7958071f33a9635242ffae4a7e598152e3c97c96a86f54ea513b5ec05336d828",
+    "prior_public_summary_sha256": "450038609659478d631c71cf178aeff87b816fd422846acd0162976121cdb070",
+    "summary_builder_sha256": "5bbb12cdbdadbecd07f677bc212cede6eb52794e03996880a58e42116231105d"
+  },
+  "limitations": [
+    "Completed progress counts describe root coverage, not success or failure; new outcome totals are withheld until final recomputation.",
+    "The census covers first-pass candidates, not all chess positions; no human solving or learning effect is estimated.",
+    "Several states can come from the same game. Removing the earlier one-game cap does not make source observations independent.",
+    "BOT tags, missing histories, unknown sources and public exposure are reported separately. Any-origin flags overlap and must not be added as mutually exclusive groups.",
+    "Recovered origins without BOT tags or known public exposure are an archive stratum, not proof of unassisted human play or fresh held-out data.",
+    "Engine stability, retained candidate criteria and trainer readiness are separate; every trainer-ready count remains zero.",
+    "Private positions, moves, game identities, histories and filesystem paths are excluded from this aggregate."
+  ]
+}
