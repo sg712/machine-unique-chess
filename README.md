@@ -14,6 +14,8 @@ The recorded move matched the exact engine choice in 1,199 selected positions; t
 
 **Full colour expansion:** 123,405 genuine White observations have now been added, giving **124,405 White and 124,405 Black observations** including the pilot. All new histories replay correctly; repeated historical states are flagged. Recovering the original games corrected 207 rating joins and identified 17,931 historical observations from BOT-tagged games. The full Stockfish 18/Maia3 first-pass analysis is complete for all 248,810 observations, using the same settings for both colours. Candidates still require deeper verification before becoming puzzles. [Expansion methods](docs/MINING_V3.md), [dataset counts](results/mining_v3_dataset.json) [source audit](results/mining_v3_provenance.json) and [screening results](results/mining_v3_summary.json).
 
+**First 200 depth checks completed, 9 September:** exhaustive depth-20/24 searches covered 100 White and 100 Black candidates from 200 recovered games without BOT tags. **116 met the engine-stability contract; 62 also retained the model-based candidate criterion** (35 White, 27 Black). Those 62 still need explanations and chess review; no new trainer puzzles were added. These results concern this selected batch, not all first-pass candidates. [Depth-check methods](docs/MINING_V3_DEEP200.md) and [validated results](results/mining_v3_deep200.json).
+
 The revised study compares identical material in grouped or shuffled order. Validation, concealed allocation and local material-review exports are implemented; final private items, independent review and actual participant collection remain prerequisites. No human learning result is claimed.
 
 New checks, 7 September 2026:

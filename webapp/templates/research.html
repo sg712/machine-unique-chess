@@ -34,6 +34,7 @@ that needs a controlled study.</p>
   <a href="#examples">Worked examples</a><a href="#method">Selection method</a>
   <a href="#findings">Findings</a><a href="#new-mining">2,000-position pilot</a>
   {% if mining_v3_dataset and mining_v3_dataset.complete %}<a href="#full-expansion">Full colour expansion</a>{% endif %}
+  {% if mining_v3_deep200 and mining_v3_deep200.complete %}<a href="#depth-checks">Deeper checks</a>{% endif %}
   <a href="#robustness">Robustness checks</a>
   <a href="#learning">Learning study</a><a href="#reproduce">Methods and data</a>
 </nav>
@@ -280,8 +281,8 @@ Stockfish 18 and Maia-3 analysis. The models receive the current board, without 
 because those details could not be recovered for every original position.</p>
 <p>The screen produced <b>{{ '{:,}'.format(mining_v3.counts.candidates_n) }} candidate observations</b>.
 They cover {{ '{:,}'.format(mining_v3.candidate_unique_canonical_states) }} distinct board states.
-It uses a fixed search budget and leaves unexamined moves explicit. These candidates have not passed
-the deeper, all-move checks used to accept a new puzzle.</p>
+It uses a fixed search budget and leaves unexamined moves explicit. Each candidate needs
+deeper, all-move checks and chess review before joining the trainer.</p>
 <p>For a closer comparison, I also selected {{ '{:,}'.format(mining_v3.matched_human.per_side) }}
 positions per colour from recovered games without BOT tags. Each group has the same counts by
 source cohort, rating band, game phase, time-control class and source month, with repeated states removed.
@@ -313,6 +314,31 @@ development history; assigning a new split does not turn them into fresh test da
 <a href="https://github.com/sg712/machine-unique-chess/blob/main/results/mining_v3_summary.json">Screening results</a>{% endif %}</p>
 {% endif %}
 
+{% if mining_v3_deep200 and mining_v3_deep200.complete %}
+<h2 id="depth-checks">Checking the first 200 candidates</h2>
+<p>I selected 100 White and 100 Black candidates from 200 different games without BOT tags.
+Known public training games were excluded. Each legal move was searched separately at
+depths 20 and 24, giving {{ '{:,}'.format(mining_v3_deep200.counts.root_searches_n) }} move searches.</p>
+<p><b>{{ mining_v3_deep200.counts.engine_verified_n }} positions passed the engine-stability checks.</b>
+The complete set of moves within 20 centipawns of the best stayed the same at both depths, and none of their legal moves
+had a mate-valued score. Of these, <b>{{ mining_v3_deep200.counts.survives_candidate_criterion_n }}
+also kept the original candidate criterion</b>: a roughly balanced evaluation, low Maia probability
+for the acceptable moves, and a large average evaluation loss under Maia's predicted moves at both depths.</p>
+<div class="table-scroll" role="region" aria-label="Results of the first 200 deeper checks" tabindex="0">
+<table class="research"><caption>Selected games without BOT tags: one position per game</caption>
+<thead><tr><th scope="col">Side to move</th><th scope="col">Checked</th><th scope="col">Stable move set, no mates</th><th scope="col">Full criterion retained</th></tr></thead>
+<tbody>{% for side in ['white', 'black'] %}{% set group = mining_v3_deep200.counts.by_side[side] %}
+<tr><th scope="row">{{ side|capitalize }}</th><td>{{ group.n }}</td>
+<td>{{ group.engine_verified_n }}</td><td>{{ group.survives_candidate_criterion_n }}</td></tr>
+{% endfor %}</tbody></table></div>
+<p>These are engine checks. The surviving positions still need explanations and chess review
+before joining the trainer. A mate in a poor alternative causes rejection under this conservative
+rule, but does not by itself make a position useless. The sample was balanced by colour and limited
+to one position per game; it was not matched on every other feature.</p>
+<p class="small"><a href="https://github.com/sg712/machine-unique-chess/blob/main/docs/MINING_V3_DEEP200.md">Selection and verification methods</a> ·
+<a href="https://github.com/sg712/machine-unique-chess/blob/main/results/mining_v3_deep200.json">Counts, failure reasons and runtime</a></p>
+{% endif %}
+
 <h2 id="learning">Does practicing these positions help?</h2>
 <p><b>I haven’t run a controlled learning study yet.</b> The proposed experiment compares
 grouped and shuffled practice using the same positions, explanations and practice time.
@@ -336,6 +362,9 @@ Ordinary site use is not automatically enrolled in the study.</p>
 <tr><td>Version-2 pilot</td><td>{{ '{:,}'.format(mining_v2.sample.n) }} positions</td><td>Equal sides; Stockfish 18 screening; complete Maia-3 policies with real history</td></tr>
 {% if mining_v3_dataset and mining_v3_dataset.complete %}
 <tr><td>Full colour expansion</td><td>{{ '{:,}'.format(mining_v3_dataset.record_count) }} observations</td><td>Equal side counts; recovered source metadata; {% if mining_v3 and mining_v3.complete %}common FEN-only screening complete{% else %}full screening in progress{% endif %}</td></tr>
+{% endif %}
+{% if mining_v3_deep200 and mining_v3_deep200.complete %}
+<tr><td>Deeper candidate checks</td><td>{{ mining_v3_deep200.counts.checked_n }} positions / 200 games</td><td>Every legal move at depths 20 and 24; {{ mining_v3_deep200.counts.survives_candidate_criterion_n }} retained the full criterion; chess review pending</td></tr>
 {% endif %}
 <tr><td>Maia-3 ranking</td><td>77 selected + 56 controls</td><td>Top one / top five at 1100, 1500, 2000, 2300, 2600</td></tr>
 <tr><td>Motif reconstruction</td><td>646 selected + 400 controls</td><td>12 directions; average-direction R² 0.46</td></tr>

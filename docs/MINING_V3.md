@@ -87,6 +87,8 @@ In the matched subset, the candidate rate rounds to 1.62% for each colour. This 
 
 The retained top and root searches both have median depth 10. Only 6,677 observations had every legal root examined in this first pass, and 8,642 contained a mate-valued retained score. Mean unscored Maia-2000 policy mass was 5.35% where reported. The summary verifies all 62 stage outputs and their identities, settings and hashes, along with the frozen matched-subset manifest. The engine evaluated 15,314,967,755 nodes in total; that amount of computation does not replace deeper candidate validation.
 
+**Follow-up completed, 9 September:** a separately frozen batch of 200 candidates—100 per colour, from 200 recovered source games without BOT tags—now has exhaustive depth-20/24 checks. Of these, 116 met the engine-stability contract (60 White, 56 Black), and 62 also retained the candidate criterion at both depths (35 White, 27 Black). The first-pass counts above keep their original scope. This constrained batch does not establish a survival rate for the remaining candidates, and its 62 retained positions still require explanations and chess review; none was marked trainer-ready. See the [depth-check methods and limitations](MINING_V3_DEEP200.md) and [validated aggregate](../results/mining_v3_deep200.json).
+
 ## Reproduce
 
 Use the existing research environment with python-chess, PyTorch, the pinned Maia sources/weights and Stockfish 18. Raw source games, full policies, engine outputs and potential assessment positions remain local under ignored version-3 directories. Public files contain aggregate counts and fingerprints.

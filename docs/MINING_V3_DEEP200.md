@@ -1,6 +1,6 @@
 # Initial 200-position depth check
 
-9 September 2026 in India. **The 200-position batch is selected and the deep analysis is running.** This follows the completed first-pass screen of 248,810 observations. No new trainer puzzles or human learning results are claimed.
+9 September 2026 in India. **All 200 positions have completed exhaustive depth-20/24 analysis: 116 meet the engine-stability contract, and 62 also retain the model-based candidate criterion.** The [validated results](../results/mining_v3_deep200.json) follow the completed first-pass screen of 248,810 observations. None of these 200 positions is marked ready for the trainer, and no human learning result is claimed.
 
 ## Frozen selection
 
@@ -34,13 +34,43 @@ Every completed root is checkpointed. Resume verifies the frozen input, policy, 
 
 A stable position can fail the model-based candidate criterion. A candidate can retain that criterion at depth 24 but fail stability or the depth-20 gate. Those outcomes are reported separately, with overlapping failure reasons. The no-mate rule is the existing conservative verification contract; a mate in a poor alternative does not itself make a chess position useless.
 
-## Runtime and reporting
+## Completed results
 
-Earlier fresh depth checks averaged roughly 275 summed position-seconds across small batches, suggesting approximately two to three hours for 200 positions with six to eight workers. Those earlier runs used per-root time caps and some retries. This run has no time stop, so difficult roots may take longer. The completed report will use measured runtime and distinguish summed search time, actual run time and pauses.
+All **14,208 legal-root searches** reached their requested depth with valid exact-score evidence. That establishes completion of the searches; engine stability additionally requires the no-mate and unchanged-acceptable-set checks above.
 
-A cost estimate for the remaining **4,145 distinct candidates** is a planning extrapolation from this restricted 200-position batch. It is not a representative survival estimate for all 4,345 states, which include bot-source and previously public material excluded from this selection.
+| Outcome | White | Black | Total |
+|---|---:|---:|---:|
+| Positions fully checked | 100 | 100 | 200 |
+| Engine stability contract met | 60 | 56 | 116 |
+| Stability and candidate criterion retained | 35 | 27 | 62 |
+| Ready for the trainer | 0 | 0 | 0 |
 
-Only a complete batch will be published as completed verification. The final aggregate must validate all file hashes and legal-root identities and recompute each position's outcomes from the saved roots and frozen policies. Raw inputs, moves, histories and possible future assessment material stay local.
+Thus 58% of this batch met the engine-stability contract, and 31% met that contract plus the candidate criterion at both depths. Of the 116 engine-stable positions, 54 did not retain the full candidate criterion. These are descriptive results for this constrained batch, not a survival rate for all 4,345 distinct first-pass candidates or evidence of a colour difference.
+
+The recorded failure reasons **overlap**:
+
+| Failure reason | Positions |
+|---|---:|
+| Within-20-cp acceptable move set changed between depths | 56 |
+| At least one legal root had a mate-valued score | 34 |
+| Candidate criterion not retained at depth 20 | 117 |
+| Candidate criterion not retained at depth 24 | 121 |
+
+These counts must not be added. A position can have a mate-valued alternative, a changed acceptable set and a failed probability/regret gate. Among the 166 positions without any mate-valued root, the acceptable set changed in 50; the median absolute change in best numeric score from depth 20 to 24 was 8 cp, with a 90th percentile of 24 cp. Modest score changes can still change which moves fall inside the acceptance threshold.
+
+The **62 retained positions need explanations, chess review and teaching-family assessment**. Engine evidence alone does not show that people will find them difficult, learn a useful pattern from them or improve after practice. No new trainer puzzle or private study item was approved by this run.
+
+The completed aggregate checks the frozen selection, all input/output hashes and legal-root identities, then recomputes the outcomes from the saved roots and unchanged FEN-only policies. All saved position results match that recomputation. Raw inputs, moves, histories and possible future assessment material remain private.
+
+## Runtime and remaining work
+
+The run evaluated **70,328,375,217 nodes**. The one recorded execution attempt spans **43,093 seconds, about 12 hours of elapsed clock time**. The Mac actually entered system sleep during that attempt. This was not 12 hours of measured active computation: neither active-compute time nor the duration of host suspension was measured, and no estimated sleep duration is subtracted.
+
+Recorded root-search durations sum to 77,815 seconds, averaging 389 seconds per position across its roots and both depths. These monotonic-clock durations overlap across workers; their sum is neither CPU time nor the job's elapsed clock time, and host suspension was not separately measured or corrected. The slowest single root took about 668 recorded seconds. Search costs have a long tail, so the earlier estimate based on small, time-capped batches was not a reliable forecast for this uncapped procedure.
+
+There are **4,145 distinct first-pass candidates outside this batch**. Scaling the batch's mean recorded root duration to that count gives about 448 summed-search hours, or **56 hours with ideal eight-worker parallelism**. This is an illustrative planning scenario, not a completion forecast or a claim about active CPU time. The remaining pool differs from this recovered, non-BOT, game-capped sample and includes previously public and BOT-source material excluded here. Search complexity, scheduling, hardware contention, retries and pauses can all change the cost. Extrapolating the sleeping host's roughly 12-hour attempt directly would not estimate continuous execution reliably.
+
+The next practical step is to review the 62 retained positions and their explanations before deciding how much of the remaining pool warrants the same expense. The remaining candidates have not undergone this deep check.
 
 ## Reproduce
 

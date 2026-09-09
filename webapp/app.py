@@ -78,6 +78,7 @@ def _optional_result(name):
 MINING_V3_DATASET = _optional_result("mining_v3_dataset.json")
 MINING_V3 = _optional_result("mining_v3_summary.json")
 MINING_V3_PROVENANCE = _optional_result("mining_v3_provenance.json")
+MINING_V3_DEEP200 = _optional_result("mining_v3_deep200.json")
 STUDY_NOTES = {n["id"]: n for n in json.load(open(ROOT / "webapp" / "study_notes.json"))["items"]}
 
 
@@ -516,7 +517,8 @@ def research():
                            a=VALIDATION["embedding_audit"]["part_a"],
                            contrast=VALIDATION["contrast"], examples=examples, pieces=PIECES,
                            mining_v2=MINING_V2, mining_v3_dataset=MINING_V3_DATASET,
-                           mining_v3=MINING_V3, mining_v3_provenance=MINING_V3_PROVENANCE)
+                           mining_v3=MINING_V3, mining_v3_provenance=MINING_V3_PROVENANCE,
+                           mining_v3_deep200=MINING_V3_DEEP200)
 
 
 def test_signer():

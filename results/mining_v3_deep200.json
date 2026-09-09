@@ -1,0 +1,238 @@
+{
+  "schema_version": 1,
+  "complete": true,
+  "created_at": "2026-09-09T08:02:39.329919+00:00",
+  "scope": "Completed exhaustive depth-20/24 checks of 200 constrained random screen candidates; no teaching or human-learning validation.",
+  "sample": {
+    "n": 200,
+    "by_side": {
+      "white": 100,
+      "black": 100
+    },
+    "unique_source_games_n": 200,
+    "unique_canonical_states_n": 200,
+    "source_histories_recovered_n": 200,
+    "bot_tagged_games_n": 0,
+    "known_public_exposed_games_n": 0,
+    "categories": {
+      "cohort": {
+        "elite": 96,
+        "club": 104
+      },
+      "phase": {
+        "opening": 28,
+        "middlegame": 159,
+        "endgame": 13
+      },
+      "split": {
+        "train": 112,
+        "validation": 42,
+        "test": 46
+      },
+      "analysis_role": {
+        "pilot_train": 1,
+        "prior_development": 128,
+        "new_train": 34,
+        "new_test": 24,
+        "pilot_validation": 1,
+        "pilot_test": 2,
+        "new_validation": 10
+      },
+      "rating_band": {
+        "2800_plus": 28,
+        "2600_2799": 34,
+        "2000_2199": 37,
+        "1800_1999": 35,
+        "2200_2399": 34,
+        "2400_2599": 32
+      }
+    }
+  },
+  "selection": {
+    "seed": 20260909,
+    "per_side_target": 100,
+    "frozen_at": "2026-09-08T20:00:19.252459+00:00",
+    "protocol_declared_at": "2026-09-08T19:59:47.072502+00:00",
+    "freeze_precedes_run_checked": true,
+    "protocol_precedes_run_checked": true,
+    "ranking": "Declared seeded hash ranking of canonical states, at most one source game globally; no shallow score or search complexity preference."
+  },
+  "engine": {
+    "depths": [
+      20,
+      24
+    ],
+    "board_context": "fen_only",
+    "workers": 8,
+    "python_chess_version": "1.11.2",
+    "threads_per_worker": 1,
+    "hash_mb_per_worker": 64,
+    "time_limit": null,
+    "node_limit": null,
+    "clear_hash_each_search": true
+  },
+  "counts": {
+    "checked_n": 200,
+    "root_searches_n": 14208,
+    "engine_verified_n": 116,
+    "survives_candidate_criterion_n": 62,
+    "trainer_ready_n": 0,
+    "by_side": {
+      "white": {
+        "n": 100,
+        "engine_verified_n": 60,
+        "survives_candidate_criterion_n": 35,
+        "trainer_ready_n": 0
+      },
+      "black": {
+        "n": 100,
+        "engine_verified_n": 56,
+        "survives_candidate_criterion_n": 27,
+        "trainer_ready_n": 0
+      }
+    }
+  },
+  "outcome_definitions": {
+    "engine_verified": "Every legal root has an exact achieved-depth score at both depths, no mate-valued root, and the complete within-20cp move set is stable.",
+    "survives_candidate_criterion": "Engine verified and the original competitive-position, low acceptable-move probability and high capped-regret criterion holds at both depths.",
+    "trainer_ready": "Zero: explanations, chess review, teaching-family fit and study readiness have not been established."
+  },
+  "failure_reasons_overlapping": {
+    "acceptable_set_changed": 56,
+    "candidate_criterion_not_retained_at_24": 121,
+    "mate_in_any_legal_root": 34,
+    "candidate_criterion_not_retained_at_20": 117
+  },
+  "depth_changes": {
+    "comparison": "Depth 20 versus depth 24; score changes exclude positions with any mate-valued root.",
+    "numeric_positions_n": 166,
+    "best_score_change_cp": {
+      "n": 166,
+      "sum": -143,
+      "mean": -0.8614457831325302,
+      "median": -1.0,
+      "p90": 17.0,
+      "minimum": -44,
+      "maximum": 77
+    },
+    "absolute_best_score_change_cp": {
+      "n": 166,
+      "sum": 1823,
+      "mean": 10.981927710843374,
+      "median": 8.0,
+      "p90": 24.0,
+      "minimum": 0,
+      "maximum": 77
+    },
+    "best_move_set_changed_n": 37,
+    "best_move_set_comparable_n": 166,
+    "acceptable_move_set_changed_n": 50,
+    "acceptable_move_set_comparable_n": 166,
+    "candidate_criterion_by_depth": {
+      "20": 83,
+      "24": 79
+    }
+  },
+  "runtime": {
+    "attempts_n": 1,
+    "closed_attempts_n": 1,
+    "unfinished_prior_attempts_n": 0,
+    "attempt_timing_complete": true,
+    "closed_attempt_seconds_sum": 43093.49743890762,
+    "attempt_elapsed_wall_seconds": 43093.49743890762,
+    "active_attempt_wall_seconds": null,
+    "host_suspension_measured": false,
+    "host_suspension_seconds": null,
+    "elapsed_wall_seconds_including_pauses": 43093.497473955154,
+    "outside_attempt_seconds": 3.504753112792969e-05,
+    "interpretation": "Attempt elapsed time sums recorded wall-clock intervals and excludes gaps between explicit runner attempts. It includes host sleep or suspension within an attempt. Host suspension and active compute time were not measured; no sleep duration is inferred or subtracted. The legacy active_attempt_wall_seconds field is null. Missing prior finish times are not imputed.",
+    "root_search_seconds": {
+      "n": 14208,
+      "sum": 77815.33554347162,
+      "mean": 5.476867648048397,
+      "median": 3.052055833002669,
+      "p90": 11.360301062709187,
+      "minimum": 0.008185291982954368,
+      "maximum": 667.620512583002
+    },
+    "root_search_seconds_by_depth": {
+      "20": {
+        "n": 7104,
+        "sum": 14172.582222953177,
+        "mean": 1.9950143894922827,
+        "median": 1.5189021875121398,
+        "p90": 3.3794894749880764,
+        "minimum": 0.008185291982954368,
+        "maximum": 257.50107191700954
+      },
+      "24": {
+        "n": 7104,
+        "sum": 63642.753320518445,
+        "mean": 8.95872090660451,
+        "median": 6.451346832996933,
+        "p90": 15.204858362607773,
+        "minimum": 0.008479709009407088,
+        "maximum": 667.620512583002
+      }
+    },
+    "per_position_root_search_seconds": {
+      "n": 200,
+      "sum": 77815.33554347162,
+      "mean": 389.0766777173581,
+      "median": 349.849328935059,
+      "p90": 621.773477064364,
+      "minimum": 11.121477416047128,
+      "maximum": 1847.4528839549748
+    },
+    "nodes_total": 70328375217,
+    "per_position_nodes": {
+      "n": 200,
+      "sum": 70328375217,
+      "mean": 351641876.085,
+      "median": 268988299.5,
+      "p90": 620877419.8999999,
+      "minimum": 8342200,
+      "maximum": 2769342864
+    },
+    "quantile_method": "Linear interpolation at p*(n-1).",
+    "root_timing_interpretation": "Root timings are recorded monotonic-clock durations, summed across searches that may overlap. They are not CPU-time measurements or total job elapsed time; host suspension is not measured or corrected."
+  },
+  "remaining_work_planning_estimate": {
+    "distinct_screen_candidate_states": 4345,
+    "sampled_distinct_states": 200,
+    "remaining_distinct_states": 4145,
+    "serial_root_search_hours_from_sample_mean": 447.97856364956925,
+    "ideal_same_worker_hours_from_root_sum": 55.99732045619616,
+    "attempt_elapsed_hours_from_observed_throughput": 248.08687067260013,
+    "active_attempt_hours_from_observed_throughput": null,
+    "interpretation": "Nonrepresentative planning estimate only: this game-capped, colour-balanced, recovered non-BOT sample excludes some remaining candidates. Attempt throughput extrapolates elapsed clock time, including any host suspension within attempts; it is not active computation or a reliable no-sleep forecast. The legacy active_attempt_hours_from_observed_throughput field is null. Root-based estimates use recorded monotonic durations, not CPU time. Heavy search tails, hardware contention, retries and pauses can change costs; ideal parallel time is not a completion forecast."
+  },
+  "validation": {
+    "all_input_output_hashes_checked": true,
+    "frozen_selection_checked": true,
+    "all_legal_roots_exact_and_depth_reached": true,
+    "position_results_recomputed": true,
+    "saved_results_match_recomputation": true,
+    "original_fen_only_policies_preserved": true
+  },
+  "fingerprints": {
+    "input_sha256": "01148ae062ada9d439d967804cd498565ffb63d340245d20881895ae2acd8934",
+    "policy_sha256": "aed630dc7c9075f80b2760003dcac39a6c0bee9bf16bd7b74a5fdd45e79e7fd9",
+    "selection_manifest_sha256": "acabd1aa4c86a192b95b127049ceb90c77d3cac650ea247607b482e616a2cd2d",
+    "engine_sha256": "bc0cac905ecdf2147fe22055c733bcd999b1e3f7c399fbaf7fb9055786563590",
+    "runner_sha256": "06579e53688f24a62fd9c4e423ee1b0d02684d3a90677775091370cbcb9d5e65",
+    "search_and_metrics_sha256": "a358695ef91a0588a037decad6b445680db2f3ded5c8ff08980368a4ccc45b70",
+    "canonicalization_sha256": "78888081a8c5762d08166bbade3a59712ed8b1b9233ba82627842af640586b7f",
+    "io_sha256": "6554f179e417260e6a736997c65c5460cbb1f73043c8b41fdf8a646adfdbb070",
+    "roots_sha256": "6003e1e2b1fc6f5ef158e59d75addfd83037daab0704f54321704356b562b0dd",
+    "positions_sha256": "b04238f99f67dd826b75990c00a7faa756095bcdd7611faa8282aa652fbf9ba6",
+    "run_manifest_sha256": "e0f53ac03ef3c42385e61cba0161206ac826a579939af7131d5fd2f6afe59a3a"
+  },
+  "limitations": [
+    "Counts concern selected archive positions and finite engine searches, not a human success rate or learning effect.",
+    "Engine verification, retained model-surprise criterion and trainer readiness are separate outcomes.",
+    "Failure reasons overlap and must not be added as mutually exclusive categories.",
+    "Selection caps games and colours without matching other covariates; old development and pilot exposure labels are retained.",
+    "Public aggregates do not disclose positions, moves, source-game identities, histories or private file locations."
+  ]
+}
