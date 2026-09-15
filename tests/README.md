@@ -39,3 +39,9 @@ transaction rollback, owner-bound test tokens, cross-origin writes and transfer/
 Private candidate-review checks verify held-out-role exclusions, deterministic colour balance,
 any-origin game separation, evidence integrity and strict portable review notes. Generated private
 packets and their answers are Git-ignored; test fixtures use synthetic evidence.
+
+The September 16 research checks also verify all-origin editorial eligibility, acceptable-set
+probabilities and tolerance sensitivity, source aliases, private teaching assertions, evidence links
+and closed readiness gates. Study-design sensitivity tests require the optional NumPy/SciPy
+research dependencies and skip in a web-only environment. Their simulations are explicitly
+hypothetical planning illustrations, not human responses or observed learning results.

@@ -1,0 +1,391 @@
+{
+  "acceptable_set": {
+    "depth24_exact_top_score_tie_size_histogram": {
+      "1": 1025,
+      "2": 6,
+      "4": 1
+    },
+    "depth24_size_histogram": {
+      "1": 903,
+      "2": 106,
+      "3": 17,
+      "4": 5,
+      "5": 1
+    },
+    "multiple_acceptable_moves_n": 129,
+    "nearest_root_loss_distance_from_20cp_acceptance_boundary": {
+      "max": 20,
+      "mean": 15.300387596899224,
+      "median": 20.0,
+      "min": 0,
+      "n": 1032,
+      "p10": 3.0,
+      "p25": 10.0,
+      "p75": 20.0,
+      "p90": 20.0
+    },
+    "note": "The exact-top set includes every tied top score, not an arbitrary single best move. Tolerance sensitivity still uses saved depth20/24 scores and leaves regret/evaluation gates fixed.",
+    "root_within_5cp_of_acceptance_boundary_at_either_depth_n": 149,
+    "tolerance_counterfactual_cp": {
+      "10": {
+        "passes_jointly_n": 964,
+        "passes_probability_both_depths_n": 1032,
+        "same_acceptable_set_both_depths_n": 964
+      },
+      "20": {
+        "passes_jointly_n": 1032,
+        "passes_probability_both_depths_n": 1032,
+        "same_acceptable_set_both_depths_n": 1032
+      },
+      "30": {
+        "passes_jointly_n": 849,
+        "passes_probability_both_depths_n": 932,
+        "same_acceptable_set_both_depths_n": 877
+      },
+      "50": {
+        "passes_jointly_n": 598,
+        "passes_probability_both_depths_n": 708,
+        "same_acceptable_set_both_depths_n": 708
+      }
+    }
+  },
+  "date": "2026-09-16",
+  "deduplicated_phase": {
+    "endgame": 36,
+    "middlegame": 790,
+    "opening": 143
+  },
+  "deduplicated_side": {
+    "black": 520,
+    "white": 449
+  },
+  "depth24_policy_probability": {
+    "1400": {
+      "acceptable_mass_at_least_double_exact_top_tie_mass_n": 62,
+      "acceptable_set_mass": {
+        "max": 0.17276525497436523,
+        "mean": 0.026139018795808884,
+        "median": 0.020443102344870567,
+        "min": 4.750030711875297e-05,
+        "n": 1032,
+        "p10": 0.003656839346513152,
+        "p25": 0.008579451590776443,
+        "p75": 0.03608358098426834,
+        "p90": 0.055629799515008925
+      },
+      "exact_top_tie_set_mass": {
+        "max": 0.17276525497436523,
+        "mean": 0.023901819873928136,
+        "median": 0.018586423248052597,
+        "min": 4.750030711875297e-05,
+        "n": 1032,
+        "p10": 0.0032681416021659976,
+        "p25": 0.007672509993426502,
+        "p75": 0.032345687970519066,
+        "p90": 0.05289234407246113
+      },
+      "extra_acceptable_mass": {
+        "max": 0.11220648791640997,
+        "mean": 0.0022371989218807485,
+        "median": 0.0,
+        "min": 0.0,
+        "n": 1032,
+        "p10": 0.0,
+        "p25": 0.0,
+        "p75": 0.0,
+        "p90": 0.003471278422512113
+      },
+      "extra_acceptable_mass_at_least_one_percentage_point_n": 72
+    },
+    "1700": {
+      "acceptable_mass_at_least_double_exact_top_tie_mass_n": 58,
+      "acceptable_set_mass": {
+        "max": 0.09775030612945557,
+        "mean": 0.02316612611008351,
+        "median": 0.018593916669487953,
+        "min": 3.97051808249671e-05,
+        "n": 1032,
+        "p10": 0.0031156694749370217,
+        "p25": 0.008051252458244562,
+        "p75": 0.03252029558643699,
+        "p90": 0.050450994819402684
+      },
+      "exact_top_tie_set_mass": {
+        "max": 0.09775030612945557,
+        "mean": 0.02118021356524645,
+        "median": 0.01683405227959156,
+        "min": 3.97051808249671e-05,
+        "n": 1032,
+        "p10": 0.002780759031884372,
+        "p25": 0.007151453290134668,
+        "p75": 0.030299357138574123,
+        "p90": 0.045812219753861426
+      },
+      "extra_acceptable_mass": {
+        "max": 0.07823273912072182,
+        "mean": 0.0019859125448370594,
+        "median": 0.0,
+        "min": 0.0,
+        "n": 1032,
+        "p10": 0.0,
+        "p25": 0.0,
+        "p75": 0.0,
+        "p90": 0.003069050936028357
+      },
+      "extra_acceptable_mass_at_least_one_percentage_point_n": 71
+    },
+    "2000": {
+      "acceptable_mass_at_least_double_exact_top_tie_mass_n": 55,
+      "acceptable_set_mass": {
+        "max": 0.09797511994838715,
+        "mean": 0.025576904755713583,
+        "median": 0.020160064101219177,
+        "min": 4.748608262161724e-05,
+        "n": 1032,
+        "p10": 0.003061224054545164,
+        "p25": 0.008165205828845501,
+        "p75": 0.03745096712373197,
+        "p90": 0.0566836442798376
+      },
+      "exact_top_tie_set_mass": {
+        "max": 0.09797511994838715,
+        "mean": 0.023466240947559423,
+        "median": 0.01860824041068554,
+        "min": 4.748608262161724e-05,
+        "n": 1032,
+        "p10": 0.002846494852565229,
+        "p25": 0.007231796160340309,
+        "p75": 0.03457969054579735,
+        "p90": 0.050804786384105675
+      },
+      "extra_acceptable_mass": {
+        "max": 0.07994430512189865,
+        "mean": 0.0021106638081541612,
+        "median": 0.0,
+        "min": 0.0,
+        "n": 1032,
+        "p10": 0.0,
+        "p25": 0.0,
+        "p75": 0.0,
+        "p90": 0.002718018135055892
+      },
+      "extra_acceptable_mass_at_least_one_percentage_point_n": 66
+    },
+    "2300": {
+      "acceptable_mass_at_least_double_exact_top_tie_mass_n": 56,
+      "acceptable_set_mass": {
+        "max": 0.33750638365745544,
+        "mean": 0.03830232756542656,
+        "median": 0.02557704970240593,
+        "min": 8.152223017532378e-05,
+        "n": 1032,
+        "p10": 0.003460029466077686,
+        "p25": 0.009580940939486027,
+        "p75": 0.05542355589568615,
+        "p90": 0.09205554425716397
+      },
+      "exact_top_tie_set_mass": {
+        "max": 0.33750638365745544,
+        "mean": 0.035265344747688145,
+        "median": 0.023407206870615482,
+        "min": 8.152223017532378e-05,
+        "n": 1032,
+        "p10": 0.0030953039880841976,
+        "p25": 0.00809849426150322,
+        "p75": 0.04971202462911606,
+        "p90": 0.08434900194406508
+      },
+      "extra_acceptable_mass": {
+        "max": 0.13906249403953552,
+        "mean": 0.00303698281773841,
+        "median": 0.0,
+        "min": 0.0,
+        "n": 1032,
+        "p10": 0.0,
+        "p25": 0.0,
+        "p75": 0.0,
+        "p90": 0.002729527535848319
+      },
+      "extra_acceptable_mass_at_least_one_percentage_point_n": 73
+    }
+  },
+  "fingerprints": {
+    "aggregate_sha256": "f7c8472f4f1d69818cec20be2bf80bcc82f77cd7589af0079cba3550ae01c3d0",
+    "canonicalization_sha256": "78888081a8c5762d08166bbade3a59712ed8b1b9233ba82627842af640586b7f",
+    "checkpoint_manifest_snapshot_sha256": "c289723854ba5c0573a7a44393893a496cb94e86a333a48473b4ef2af8e33e6d",
+    "diagnostics_builder_sha256": "3a87143bac960bdc0fb3e36e1b330d10900a2337c13ec73083346e47781799ee",
+    "editorial_identity_digest_sha256": "2705ab328075d4ae417ccf0b5012e7d54fef35f1fca0b64c5ace96de039bae9c",
+    "imported_roots_sha256": "6003e1e2b1fc6f5ef158e59d75addfd83037daab0704f54321704356b562b0dd",
+    "input_sha256": "476b27f25a4416483ad54d3ea3d52c88e773dca6b54842d058271a1d69456419",
+    "io_sha256": "6554f179e417260e6a736997c65c5460cbb1f73043c8b41fdf8a646adfdbb070",
+    "new_roots_sha256": "2a7cb0f4022d80a64268fe6c667f0ae92d1b980f200f34625e5d7902d6e2c629",
+    "original_runner_sha256": "06579e53688f24a62fd9c4e423ee1b0d02684d3a90677775091370cbcb9d5e65",
+    "policy_sha256": "8b691c97fdbf03c0c7307831480c87e69032134483b5b444c285616d97cbfaad",
+    "positions_sha256": "5f57883a0c9f0284e12f6dff2a9544af43fe5f5b62a4acab27c89c407627569a",
+    "review_builder_sha256": "88354aab64e44257484283aa37b99138d40e058e4017fc5f5edffc0b7c547a02",
+    "run_manifest_snapshot_sha256": "e824e1b6ebad5b8128ac710fdbf048e7eb4f6e85a230967f3f538599b8c8f5b3",
+    "runner_sha256": "e827d1016b639aa4c48ce60e5f94765609e5ab27215d1b40762b538b81790dca",
+    "search_and_metrics_sha256": "a358695ef91a0588a037decad6b445680db2f3ded5c8ff08980368a4ccc45b70",
+    "selection_builder_sha256": "3dd35f3e53c64796c8213c8eb6d76ba1a2179cca83ab1e7888eeb9111d8439c3",
+    "selection_manifest_sha256": "b125fffac4326e6f6aeeccbb61fa71958df2df82c1ec6164cbff55beb7c1ce12",
+    "summary_builder_sha256": "5bbb12cdbdadbecd07f677bc212cede6eb52794e03996880a58e42116231105d"
+  },
+  "history_context": {
+    "compatible_paired_context_comparison_available": false,
+    "editorial_positions_n": 1032,
+    "four_rating_history_maps_available_n": 0,
+    "reason": "All eligible saved policy rows have empty history maps. Recovered source history does not imply a saved history-conditioned prediction."
+  },
+  "limitations": [
+    "Conditioning on screening and retention prevents estimates of general chess prevalence or model calibration.",
+    "Depth agreement is search stability, not a proof of chess truth or teaching value.",
+    "Any-origin exclusions protect untouched validation/test roles; prior development remains exploratory even if an old split label says test or validation.",
+    "Known-public filtering does not establish that the source games or positions have never been seen.",
+    "Saved engine scores are FEN-only. No claims about repetition-history equivalence or human success are supported.",
+    "Greedy source deduplication is deterministic but is neither optimal nor a balanced sample.",
+    "Cross-side, phase, rating and policy comparisons are descriptive within this selected pool, with no significance tests."
+  ],
+  "metadata": {
+    "all_origin_role_combinations": {
+      "new_train": 287,
+      "pilot_train": 8,
+      "prior_development": 737
+    },
+    "note": "Except for explicitly all-origin fields, metadata describes the retained representative observation. Unknowns are retained; model rating is not player rating.",
+    "phase": {
+      "endgame": 40,
+      "middlegame": 841,
+      "opening": 151
+    },
+    "representative_analysis_role": {
+      "new_train": 287,
+      "pilot_train": 8,
+      "prior_development": 737
+    },
+    "representative_mover_elo_bin_recomputed": {
+      "1800_1999": 182,
+      "2000_2199": 192,
+      "2200_2399": 196,
+      "2400_2599": 195,
+      "2600_2799": 177,
+      "2800_plus": 90
+    },
+    "representative_time_control_class": {
+      "blitz": 238,
+      "classical": 13,
+      "rapid": 300,
+      "unknown": 481
+    },
+    "saved_representative_rating_bin": {
+      "1800_1999": 181,
+      "2000_2199": 192,
+      "2200_2399": 195,
+      "2400_2599": 195,
+      "2600_2799": 177,
+      "2800_plus": 90,
+      "under_2400": 2
+    },
+    "side": {
+      "black": 551,
+      "white": 481
+    },
+    "side_by_phase": {
+      "black": {
+        "endgame": 18,
+        "middlegame": 452,
+        "opening": 81
+      },
+      "white": {
+        "endgame": 22,
+        "middlegame": 389,
+        "opening": 70
+      }
+    }
+  },
+  "pool_counts": {
+    "editorial_eligible": 1032,
+    "noneditorial_role_excluded": 199,
+    "not_retained": 2947,
+    "retained": 1398,
+    "source_eligible_retained": 1231,
+    "source_excluded": 167
+  },
+  "schema_version": 1,
+  "scope": "Exploratory description of retained, editorial-eligible states only; not a population estimate, a held-out evaluation, human success measurement, or a trainer release. All originating observations must be recovered, have no BOT tag, not be known public, and have analysis roles confined to prior_development, pilot_train, and new_train.",
+  "selection_seed": "editorial-diagnostics-20260916",
+  "source_concentration": {
+    "greedy_method": "Seeded SHA-256 ordering; accept only when every alias-collapsed originating game is unused. Not a maximum independent set.",
+    "greedy_one_position_per_all_origin_game_n": 969,
+    "greedy_removed_for_shared_source_n": 63,
+    "largest_overlap_component_positions_n": 3,
+    "max_positions_from_one_game_n": 3,
+    "overlap_components_n": 969,
+    "position_game_incidences_n": 1032,
+    "positions_n": 1032,
+    "positions_with_multiple_origin_games_n": 0,
+    "selected_identity_digest_sha256": "0f2f59de451cea0bb3de8c1c06d77b219dd50464b021c0a90ffe10a3809eb6dc",
+    "source_game_positions_histogram": {
+      "1": 908,
+      "2": 59,
+      "3": 2
+    },
+    "source_incidence_hhi": 0.0010910552250465717,
+    "top_10_games_share_of_incidences": 0.02131782945736434,
+    "unique_source_games_after_recorded_alias_collapse_n": 969
+  },
+  "threshold_margins": {
+    "any_of_probability_1pp_regret_10cp_evaluation_25cp_margins_n": 147,
+    "hypothetical_abs_evaluation_150cp_remaining_n": 871,
+    "hypothetical_all_three_stricter_conditions_remaining_n": 598,
+    "hypothetical_probability_005_remaining_n": 871,
+    "hypothetical_probability_008_remaining_n": 1001,
+    "hypothetical_regret_75cp_remaining_n": 830,
+    "max_p_good_upper_across_two_depths_and_1700_2000": {
+      "max": 0.0979751986434394,
+      "mean": 0.027735352562300437,
+      "median": 0.022926891655288273,
+      "min": 4.7553060539939906e-05,
+      "n": 1032,
+      "p10": 0.003493447314667719,
+      "p25": 0.009617517213428073,
+      "p75": 0.0406268653459847,
+      "p90": 0.06008672228781506
+    },
+    "min_distance_from_plus_minus_200cp_boundary": {
+      "max": 200,
+      "mean": 116.81298449612403,
+      "median": 123.0,
+      "min": 0,
+      "n": 1032,
+      "p10": 35.0,
+      "p25": 70.0,
+      "p75": 166.0,
+      "p90": 191.0
+    },
+    "min_regret_lower_cp_across_two_depths_and_1700_2000": {
+      "max": 299.73523123317136,
+      "mean": 130.47085676371512,
+      "median": 113.70663062159707,
+      "min": 50.21085035466422,
+      "n": 1032,
+      "p10": 64.57300552290867,
+      "p25": 82.09617835697236,
+      "p75": 164.12044082257762,
+      "p90": 232.25838636734153
+    },
+    "note": "Post-selection sensitivity on saved fixed-depth scores. These are not new acceptance rules or evidence of human difficulty.",
+    "within_10cp_of_regret_cutoff_n": 69,
+    "within_25cp_of_evaluation_boundary_n": 70,
+    "within_25cp_of_regret_cutoff_n": 202,
+    "within_one_percentage_point_of_probability_cutoff_n": 14,
+    "within_two_percentage_points_of_probability_cutoff_n": 31
+  },
+  "validation": {
+    "eligible_root_scores_and_metrics_reconciled": true,
+    "frozen_source_hashes_checked": true,
+    "new_engine_searches_n": 0,
+    "new_model_predictions_n": 0,
+    "only_editorial_roles_analyzed": true,
+    "trainer_positions_promoted_n": 0
+  }
+}
