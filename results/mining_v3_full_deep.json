@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "complete": false,
-  "created_at": "2026-09-09T09:00:44.480320+00:00",
-  "checkpoint_at": "2026-09-09T09:00:40.810401+00:00",
+  "complete": true,
+  "created_at": "2026-09-15T17:13:55.686631+00:00",
+  "checkpoint_at": "2026-09-15T17:10:54.205791+00:00",
   "scope": "Census of all distinct first-pass candidate states, retaining the initial 200 checks and computing the remainder under the same depth-20/24 contract.",
   "selection": {
     "frozen_at": "2026-09-09T08:50:03.503434+00:00",
@@ -33,22 +33,27 @@
   },
   "counts": {
     "planned_n": 4345,
-    "completed_positions_n": 201,
-    "pending_positions_n": 4144,
+    "completed_positions_n": 4345,
+    "pending_positions_n": 0,
     "imported_completed_positions_n": 200,
-    "new_completed_positions_n": 1,
-    "new_pending_positions_n": 4144,
-    "partially_searched_positions_n": 1,
+    "new_completed_positions_n": 4145,
+    "new_pending_positions_n": 0,
+    "partially_searched_positions_n": 0,
     "planned_root_searches_n": 304068,
-    "completed_root_searches_n": 14308,
+    "completed_root_searches_n": 304068,
     "imported_root_searches_n": 14208,
-    "new_completed_root_searches_n": 100,
-    "new_pending_root_searches_n": 289760,
-    "checked_n": null,
-    "engine_verified_n": null,
-    "survives_candidate_criterion_n": null,
+    "new_completed_root_searches_n": 289860,
+    "new_pending_root_searches_n": 0,
+    "checked_n": 4345,
+    "engine_verified_n": 2379,
+    "survives_candidate_criterion_n": 1398,
     "trainer_ready_n": 0,
-    "failure_reasons_overlapping": null
+    "failure_reasons_overlapping": {
+      "acceptable_set_changed": 1536,
+      "candidate_criterion_not_retained_at_24": 2501,
+      "candidate_criterion_not_retained_at_20": 2383,
+      "mate_in_any_legal_root": 619
+    }
   },
   "previously_completed_initial_batch": {
     "checked_n": 200,
@@ -76,19 +81,41 @@
     "by_side": {
       "white": {
         "planned_n": 2106,
-        "completed_n": 101,
-        "pending_n": 2005,
+        "completed_n": 2106,
+        "pending_n": 0,
         "imported_completed_n": 100,
-        "new_completed_n": 1,
-        "outcomes": null
+        "new_completed_n": 2006,
+        "outcomes": {
+          "checked_n": 2106,
+          "engine_verified_n": 1177,
+          "survives_candidate_criterion_n": 680,
+          "trainer_ready_n": 0,
+          "failure_reasons_overlapping": {
+            "acceptable_set_changed": 727,
+            "candidate_criterion_not_retained_at_24": 1213,
+            "candidate_criterion_not_retained_at_20": 1174,
+            "mate_in_any_legal_root": 288
+          }
+        }
       },
       "black": {
         "planned_n": 2239,
-        "completed_n": 100,
-        "pending_n": 2139,
+        "completed_n": 2239,
+        "pending_n": 0,
         "imported_completed_n": 100,
-        "new_completed_n": 0,
-        "outcomes": null
+        "new_completed_n": 2139,
+        "outcomes": {
+          "checked_n": 2239,
+          "engine_verified_n": 1202,
+          "survives_candidate_criterion_n": 718,
+          "trainer_ready_n": 0,
+          "failure_reasons_overlapping": {
+            "acceptable_set_changed": 809,
+            "candidate_criterion_not_retained_at_20": 1209,
+            "mate_in_any_legal_root": 331,
+            "candidate_criterion_not_retained_at_24": 1288
+          }
+        }
       }
     },
     "by_evidence_origin": {
@@ -98,60 +125,135 @@
         "pending_n": 0,
         "imported_completed_n": 200,
         "new_completed_n": 0,
-        "outcomes": null
+        "outcomes": {
+          "checked_n": 200,
+          "engine_verified_n": 116,
+          "survives_candidate_criterion_n": 62,
+          "trainer_ready_n": 0,
+          "failure_reasons_overlapping": {
+            "candidate_criterion_not_retained_at_20": 117,
+            "candidate_criterion_not_retained_at_24": 121,
+            "acceptable_set_changed": 56,
+            "mate_in_any_legal_root": 34
+          }
+        }
       },
       "new_full_census": {
         "planned_n": 4145,
-        "completed_n": 1,
-        "pending_n": 4144,
+        "completed_n": 4145,
+        "pending_n": 0,
         "imported_completed_n": 0,
-        "new_completed_n": 1,
-        "outcomes": null
+        "new_completed_n": 4145,
+        "outcomes": {
+          "checked_n": 4145,
+          "engine_verified_n": 2263,
+          "survives_candidate_criterion_n": 1336,
+          "trainer_ready_n": 0,
+          "failure_reasons_overlapping": {
+            "candidate_criterion_not_retained_at_24": 2380,
+            "acceptable_set_changed": 1480,
+            "candidate_criterion_not_retained_at_20": 2266,
+            "mate_in_any_legal_root": 585
+          }
+        }
       }
     },
     "representative_strata": {
       "bot_status": {
         "bot_tagged": {
           "planned_n": 410,
-          "completed_n": 0,
-          "pending_n": 410,
+          "completed_n": 410,
+          "pending_n": 0,
           "imported_completed_n": 0,
-          "new_completed_n": 0,
-          "outcomes": null
+          "new_completed_n": 410,
+          "outcomes": {
+            "checked_n": 410,
+            "engine_verified_n": 210,
+            "survives_candidate_criterion_n": 120,
+            "trainer_ready_n": 0,
+            "failure_reasons_overlapping": {
+              "candidate_criterion_not_retained_at_20": 231,
+              "candidate_criterion_not_retained_at_24": 242,
+              "acceptable_set_changed": 152,
+              "mate_in_any_legal_root": 72
+            }
+          }
         },
         "no_bot": {
           "planned_n": 3934,
-          "completed_n": 201,
-          "pending_n": 3733,
+          "completed_n": 3934,
+          "pending_n": 0,
           "imported_completed_n": 200,
-          "new_completed_n": 1,
-          "outcomes": null
+          "new_completed_n": 3734,
+          "outcomes": {
+            "checked_n": 3934,
+            "engine_verified_n": 2169,
+            "survives_candidate_criterion_n": 1278,
+            "trainer_ready_n": 0,
+            "failure_reasons_overlapping": {
+              "acceptable_set_changed": 1383,
+              "candidate_criterion_not_retained_at_24": 2258,
+              "candidate_criterion_not_retained_at_20": 2151,
+              "mate_in_any_legal_root": 547
+            }
+          }
         },
         "unknown": {
           "planned_n": 1,
-          "completed_n": 0,
-          "pending_n": 1,
+          "completed_n": 1,
+          "pending_n": 0,
           "imported_completed_n": 0,
-          "new_completed_n": 0,
-          "outcomes": null
+          "new_completed_n": 1,
+          "outcomes": {
+            "checked_n": 1,
+            "engine_verified_n": 0,
+            "survives_candidate_criterion_n": 0,
+            "trainer_ready_n": 0,
+            "failure_reasons_overlapping": {
+              "acceptable_set_changed": 1,
+              "candidate_criterion_not_retained_at_20": 1,
+              "candidate_criterion_not_retained_at_24": 1
+            }
+          }
         }
       },
       "history_status": {
         "recovered": {
           "planned_n": 4344,
-          "completed_n": 201,
-          "pending_n": 4143,
+          "completed_n": 4344,
+          "pending_n": 0,
           "imported_completed_n": 200,
-          "new_completed_n": 1,
-          "outcomes": null
+          "new_completed_n": 4144,
+          "outcomes": {
+            "checked_n": 4344,
+            "engine_verified_n": 2379,
+            "survives_candidate_criterion_n": 1398,
+            "trainer_ready_n": 0,
+            "failure_reasons_overlapping": {
+              "acceptable_set_changed": 1535,
+              "candidate_criterion_not_retained_at_24": 2500,
+              "candidate_criterion_not_retained_at_20": 2382,
+              "mate_in_any_legal_root": 619
+            }
+          }
         },
         "unavailable": {
           "planned_n": 1,
-          "completed_n": 0,
-          "pending_n": 1,
+          "completed_n": 1,
+          "pending_n": 0,
           "imported_completed_n": 0,
-          "new_completed_n": 0,
-          "outcomes": null
+          "new_completed_n": 1,
+          "outcomes": {
+            "checked_n": 1,
+            "engine_verified_n": 0,
+            "survives_candidate_criterion_n": 0,
+            "trainer_ready_n": 0,
+            "failure_reasons_overlapping": {
+              "acceptable_set_changed": 1,
+              "candidate_criterion_not_retained_at_20": 1,
+              "candidate_criterion_not_retained_at_24": 1
+            }
+          }
         },
         "unknown": {
           "planned_n": 0,
@@ -159,25 +261,53 @@
           "pending_n": 0,
           "imported_completed_n": 0,
           "new_completed_n": 0,
-          "outcomes": null
+          "outcomes": {
+            "checked_n": 0,
+            "engine_verified_n": 0,
+            "survives_candidate_criterion_n": 0,
+            "trainer_ready_n": 0,
+            "failure_reasons_overlapping": {}
+          }
         }
       },
       "public_exposure": {
         "known_public": {
           "planned_n": 128,
-          "completed_n": 0,
-          "pending_n": 128,
+          "completed_n": 128,
+          "pending_n": 0,
           "imported_completed_n": 0,
-          "new_completed_n": 0,
-          "outcomes": null
+          "new_completed_n": 128,
+          "outcomes": {
+            "checked_n": 128,
+            "engine_verified_n": 88,
+            "survives_candidate_criterion_n": 56,
+            "trainer_ready_n": 0,
+            "failure_reasons_overlapping": {
+              "candidate_criterion_not_retained_at_20": 56,
+              "candidate_criterion_not_retained_at_24": 65,
+              "mate_in_any_legal_root": 25,
+              "acceptable_set_changed": 20
+            }
+          }
         },
         "not_known_public": {
           "planned_n": 4217,
-          "completed_n": 201,
-          "pending_n": 4016,
+          "completed_n": 4217,
+          "pending_n": 0,
           "imported_completed_n": 200,
-          "new_completed_n": 1,
-          "outcomes": null
+          "new_completed_n": 4017,
+          "outcomes": {
+            "checked_n": 4217,
+            "engine_verified_n": 2291,
+            "survives_candidate_criterion_n": 1342,
+            "trainer_ready_n": 0,
+            "failure_reasons_overlapping": {
+              "acceptable_set_changed": 1516,
+              "candidate_criterion_not_retained_at_24": 2436,
+              "candidate_criterion_not_retained_at_20": 2327,
+              "mate_in_any_legal_root": 594
+            }
+          }
         },
         "unknown": {
           "planned_n": 0,
@@ -185,73 +315,166 @@
           "pending_n": 0,
           "imported_completed_n": 0,
           "new_completed_n": 0,
-          "outcomes": null
+          "outcomes": {
+            "checked_n": 0,
+            "engine_verified_n": 0,
+            "survives_candidate_criterion_n": 0,
+            "trainer_ready_n": 0,
+            "failure_reasons_overlapping": {}
+          }
         }
       },
       "analysis_role": {
         "new_test": {
           "planned_n": 305,
-          "completed_n": 24,
-          "pending_n": 281,
+          "completed_n": 305,
+          "pending_n": 0,
           "imported_completed_n": 24,
-          "new_completed_n": 0,
-          "outcomes": null
+          "new_completed_n": 281,
+          "outcomes": {
+            "checked_n": 305,
+            "engine_verified_n": 172,
+            "survives_candidate_criterion_n": 98,
+            "trainer_ready_n": 0,
+            "failure_reasons_overlapping": {
+              "mate_in_any_legal_root": 40,
+              "candidate_criterion_not_retained_at_20": 178,
+              "candidate_criterion_not_retained_at_24": 179,
+              "acceptable_set_changed": 102
+            }
+          }
         },
         "new_train": {
           "planned_n": 870,
-          "completed_n": 35,
-          "pending_n": 835,
+          "completed_n": 870,
+          "pending_n": 0,
           "imported_completed_n": 34,
-          "new_completed_n": 1,
-          "outcomes": null
+          "new_completed_n": 836,
+          "outcomes": {
+            "checked_n": 870,
+            "engine_verified_n": 482,
+            "survives_candidate_criterion_n": 287,
+            "trainer_ready_n": 0,
+            "failure_reasons_overlapping": {
+              "mate_in_any_legal_root": 118,
+              "candidate_criterion_not_retained_at_20": 472,
+              "candidate_criterion_not_retained_at_24": 485,
+              "acceptable_set_changed": 308
+            }
+          }
         },
         "new_validation": {
           "planned_n": 280,
-          "completed_n": 10,
-          "pending_n": 270,
+          "completed_n": 280,
+          "pending_n": 0,
           "imported_completed_n": 10,
-          "new_completed_n": 0,
-          "outcomes": null
+          "new_completed_n": 270,
+          "outcomes": {
+            "checked_n": 280,
+            "engine_verified_n": 152,
+            "survives_candidate_criterion_n": 92,
+            "trainer_ready_n": 0,
+            "failure_reasons_overlapping": {
+              "mate_in_any_legal_root": 50,
+              "candidate_criterion_not_retained_at_20": 148,
+              "candidate_criterion_not_retained_at_24": 167,
+              "acceptable_set_changed": 96
+            }
+          }
         },
         "pilot_test": {
           "planned_n": 13,
-          "completed_n": 2,
-          "pending_n": 11,
+          "completed_n": 13,
+          "pending_n": 0,
           "imported_completed_n": 2,
-          "new_completed_n": 0,
-          "outcomes": null
+          "new_completed_n": 11,
+          "outcomes": {
+            "checked_n": 13,
+            "engine_verified_n": 7,
+            "survives_candidate_criterion_n": 5,
+            "trainer_ready_n": 0,
+            "failure_reasons_overlapping": {
+              "mate_in_any_legal_root": 3,
+              "candidate_criterion_not_retained_at_20": 6,
+              "candidate_criterion_not_retained_at_24": 7,
+              "acceptable_set_changed": 4
+            }
+          }
         },
         "pilot_train": {
           "planned_n": 39,
-          "completed_n": 1,
-          "pending_n": 38,
+          "completed_n": 39,
+          "pending_n": 0,
           "imported_completed_n": 1,
-          "new_completed_n": 0,
-          "outcomes": null
+          "new_completed_n": 38,
+          "outcomes": {
+            "checked_n": 39,
+            "engine_verified_n": 21,
+            "survives_candidate_criterion_n": 8,
+            "trainer_ready_n": 0,
+            "failure_reasons_overlapping": {
+              "acceptable_set_changed": 14,
+              "candidate_criterion_not_retained_at_20": 27,
+              "candidate_criterion_not_retained_at_24": 25,
+              "mate_in_any_legal_root": 4
+            }
+          }
         },
         "pilot_validation": {
           "planned_n": 11,
-          "completed_n": 1,
-          "pending_n": 10,
+          "completed_n": 11,
+          "pending_n": 0,
           "imported_completed_n": 1,
-          "new_completed_n": 0,
-          "outcomes": null
+          "new_completed_n": 10,
+          "outcomes": {
+            "checked_n": 11,
+            "engine_verified_n": 6,
+            "survives_candidate_criterion_n": 4,
+            "trainer_ready_n": 0,
+            "failure_reasons_overlapping": {
+              "candidate_criterion_not_retained_at_20": 4,
+              "candidate_criterion_not_retained_at_24": 4,
+              "acceptable_set_changed": 5
+            }
+          }
         },
         "prior_development": {
           "planned_n": 2699,
-          "completed_n": 128,
-          "pending_n": 2571,
+          "completed_n": 2699,
+          "pending_n": 0,
           "imported_completed_n": 128,
-          "new_completed_n": 0,
-          "outcomes": null
+          "new_completed_n": 2571,
+          "outcomes": {
+            "checked_n": 2699,
+            "engine_verified_n": 1451,
+            "survives_candidate_criterion_n": 848,
+            "trainer_ready_n": 0,
+            "failure_reasons_overlapping": {
+              "acceptable_set_changed": 987,
+              "candidate_criterion_not_retained_at_20": 1492,
+              "mate_in_any_legal_root": 379,
+              "candidate_criterion_not_retained_at_24": 1569
+            }
+          }
         },
         "public_exposed": {
           "planned_n": 128,
-          "completed_n": 0,
-          "pending_n": 128,
+          "completed_n": 128,
+          "pending_n": 0,
           "imported_completed_n": 0,
-          "new_completed_n": 0,
-          "outcomes": null
+          "new_completed_n": 128,
+          "outcomes": {
+            "checked_n": 128,
+            "engine_verified_n": 88,
+            "survives_candidate_criterion_n": 56,
+            "trainer_ready_n": 0,
+            "failure_reasons_overlapping": {
+              "candidate_criterion_not_retained_at_20": 56,
+              "candidate_criterion_not_retained_at_24": 65,
+              "mate_in_any_legal_root": 25,
+              "acceptable_set_changed": 20
+            }
+          }
         },
         "unknown": {
           "planned_n": 0,
@@ -259,34 +482,72 @@
           "pending_n": 0,
           "imported_completed_n": 0,
           "new_completed_n": 0,
-          "outcomes": null
+          "outcomes": {
+            "checked_n": 0,
+            "engine_verified_n": 0,
+            "survives_candidate_criterion_n": 0,
+            "trainer_ready_n": 0,
+            "failure_reasons_overlapping": {}
+          }
         }
       }
     },
     "any_origin_provenance": {
       "any_bot_tagged": {
         "planned_n": 410,
-        "completed_n": 0,
-        "pending_n": 410,
+        "completed_n": 410,
+        "pending_n": 0,
         "imported_completed_n": 0,
-        "new_completed_n": 0,
-        "outcomes": null
+        "new_completed_n": 410,
+        "outcomes": {
+          "checked_n": 410,
+          "engine_verified_n": 210,
+          "survives_candidate_criterion_n": 120,
+          "trainer_ready_n": 0,
+          "failure_reasons_overlapping": {
+            "candidate_criterion_not_retained_at_20": 231,
+            "candidate_criterion_not_retained_at_24": 242,
+            "acceptable_set_changed": 152,
+            "mate_in_any_legal_root": 72
+          }
+        }
       },
       "any_unknown_bot_status": {
         "planned_n": 1,
-        "completed_n": 0,
-        "pending_n": 1,
+        "completed_n": 1,
+        "pending_n": 0,
         "imported_completed_n": 0,
-        "new_completed_n": 0,
-        "outcomes": null
+        "new_completed_n": 1,
+        "outcomes": {
+          "checked_n": 1,
+          "engine_verified_n": 0,
+          "survives_candidate_criterion_n": 0,
+          "trainer_ready_n": 0,
+          "failure_reasons_overlapping": {
+            "acceptable_set_changed": 1,
+            "candidate_criterion_not_retained_at_20": 1,
+            "candidate_criterion_not_retained_at_24": 1
+          }
+        }
       },
       "any_known_public": {
         "planned_n": 128,
-        "completed_n": 0,
-        "pending_n": 128,
+        "completed_n": 128,
+        "pending_n": 0,
         "imported_completed_n": 0,
-        "new_completed_n": 0,
-        "outcomes": null
+        "new_completed_n": 128,
+        "outcomes": {
+          "checked_n": 128,
+          "engine_verified_n": 88,
+          "survives_candidate_criterion_n": 56,
+          "trainer_ready_n": 0,
+          "failure_reasons_overlapping": {
+            "candidate_criterion_not_retained_at_20": 56,
+            "candidate_criterion_not_retained_at_24": 65,
+            "mate_in_any_legal_root": 25,
+            "acceptable_set_changed": 20
+          }
+        }
       },
       "any_unknown_public_exposure": {
         "planned_n": 0,
@@ -294,15 +555,31 @@
         "pending_n": 0,
         "imported_completed_n": 0,
         "new_completed_n": 0,
-        "outcomes": null
+        "outcomes": {
+          "checked_n": 0,
+          "engine_verified_n": 0,
+          "survives_candidate_criterion_n": 0,
+          "trainer_ready_n": 0,
+          "failure_reasons_overlapping": {}
+        }
       },
       "any_unavailable_history": {
         "planned_n": 1,
-        "completed_n": 0,
-        "pending_n": 1,
+        "completed_n": 1,
+        "pending_n": 0,
         "imported_completed_n": 0,
-        "new_completed_n": 0,
-        "outcomes": null
+        "new_completed_n": 1,
+        "outcomes": {
+          "checked_n": 1,
+          "engine_verified_n": 0,
+          "survives_candidate_criterion_n": 0,
+          "trainer_ready_n": 0,
+          "failure_reasons_overlapping": {
+            "acceptable_set_changed": 1,
+            "candidate_criterion_not_retained_at_20": 1,
+            "candidate_criterion_not_retained_at_24": 1
+          }
+        }
       },
       "any_unknown_history": {
         "planned_n": 0,
@@ -310,30 +587,70 @@
         "pending_n": 0,
         "imported_completed_n": 0,
         "new_completed_n": 0,
-        "outcomes": null
+        "outcomes": {
+          "checked_n": 0,
+          "engine_verified_n": 0,
+          "survives_candidate_criterion_n": 0,
+          "trainer_ready_n": 0,
+          "failure_reasons_overlapping": {}
+        }
       },
       "all_origins_recovered_no_bot_not_known_public": {
         "planned_n": 3830,
-        "completed_n": 201,
-        "pending_n": 3629,
+        "completed_n": 3830,
+        "pending_n": 0,
         "imported_completed_n": 200,
-        "new_completed_n": 1,
-        "outcomes": null
+        "new_completed_n": 3630,
+        "outcomes": {
+          "checked_n": 3830,
+          "engine_verified_n": 2096,
+          "survives_candidate_criterion_n": 1231,
+          "trainer_ready_n": 0,
+          "failure_reasons_overlapping": {
+            "acceptable_set_changed": 1366,
+            "candidate_criterion_not_retained_at_24": 2207,
+            "candidate_criterion_not_retained_at_20": 2108,
+            "mate_in_any_legal_root": 529
+          }
+        }
       }
     }
   },
-  "depth_changes": null,
+  "depth_changes": {
+    "numeric_positions_n": 3726,
+    "best_score_change_cp": {
+      "n": 3726,
+      "sum": -2091,
+      "mean": -0.5611916264090178,
+      "median": 0.0,
+      "p90": 16.0,
+      "minimum": -134,
+      "maximum": 164
+    },
+    "absolute_best_score_change_cp": {
+      "n": 3726,
+      "sum": 40229,
+      "mean": 10.796833064949007,
+      "median": 7.0,
+      "p90": 25.0,
+      "minimum": 0,
+      "maximum": 164
+    },
+    "best_move_set_changed_n": 782,
+    "acceptable_move_set_changed_n": 1347,
+    "interpretation": "Depth 20 versus 24. Numeric score and move-set comparisons exclude positions with any mate-valued root."
+  },
   "runtime": {
     "new_run_attempts": {
-      "attempts_n": 1,
-      "closed_attempts_n": 0,
+      "attempts_n": 18,
+      "closed_attempts_n": 18,
       "unfinished_prior_attempts_n": 0,
-      "closed_attempt_elapsed_wall_seconds": 0,
-      "closed_attempt_recorded_monotonic_seconds": 0,
+      "closed_attempt_elapsed_wall_seconds": 386543.79916524887,
+      "closed_attempt_recorded_monotonic_seconds": 212105.65637574808,
       "closed_attempts_missing_monotonic_timing_n": 0,
-      "open_attempt_elapsed_wall_seconds_to_checkpoint": 42.86383295059204,
-      "attempt_elapsed_wall_seconds_to_checkpoint": 42.86383295059204,
-      "run_elapsed_wall_seconds_to_checkpoint": 47.18926692008972,
+      "open_attempt_elapsed_wall_seconds_to_checkpoint": null,
+      "attempt_elapsed_wall_seconds_to_checkpoint": 386543.79916524887,
+      "run_elapsed_wall_seconds_to_checkpoint": 547949.0630619526,
       "active_compute_seconds": null,
       "host_suspension_measured": false,
       "host_suspension_seconds": null,
@@ -349,13 +666,13 @@
       "maximum": 667.620512583002
     },
     "new_root_search_seconds": {
-      "n": 100,
-      "sum": 311.33135837406735,
-      "mean": 3.1133135837406734,
-      "median": 1.795067791492329,
-      "p90": 6.35777098720428,
-      "minimum": 0.512334583007032,
-      "maximum": 16.54029854098917
+      "n": 289860,
+      "sum": 1661735.794220411,
+      "mean": 5.732891030912892,
+      "median": 3.0885423539730255,
+      "p90": 11.420896971388721,
+      "minimum": 0.00704145897179842,
+      "maximum": 12701.440660417022
     },
     "root_search_seconds_by_origin_and_depth": {
       "imported_20": {
@@ -377,27 +694,46 @@
         "maximum": 667.620512583002
       },
       "new_20": {
-        "n": 67,
-        "sum": 107.90730570905725,
-        "mean": 1.6105568016277203,
-        "median": 1.4694867499929387,
-        "p90": 2.5426560328050978,
-        "minimum": 0.512334583007032,
-        "maximum": 4.4638133340049535
+        "n": 144930,
+        "sum": 288529.2157028676,
+        "mean": 1.9908177444481308,
+        "median": 1.5080551874707453,
+        "p90": 3.459369449986844,
+        "minimum": 0.00704145897179842,
+        "maximum": 794.8772008750238
       },
       "new_24": {
-        "n": 33,
-        "sum": 203.4240526650101,
-        "mean": 6.164365232273033,
-        "median": 5.662004500016337,
-        "p90": 9.893294700002299,
-        "minimum": 1.032134709006641,
-        "maximum": 16.54029854098917
+        "n": 144930,
+        "sum": 1373206.5785175434,
+        "mean": 9.474964317377655,
+        "median": 6.484033812972484,
+        "p90": 15.645760483585764,
+        "minimum": 0.008251415973063558,
+        "maximum": 12701.440660417022
       }
     },
     "imported_nodes": 70328375217,
-    "new_nodes": 272611148,
-    "completed_position_root_search_seconds": null,
+    "new_nodes": 1490799732096,
+    "completed_position_root_search_seconds": {
+      "imported": {
+        "n": 200,
+        "sum": 77815.33554347162,
+        "mean": 389.0766777173581,
+        "median": 349.849328935059,
+        "p90": 621.773477064364,
+        "minimum": 11.121477416047128,
+        "maximum": 1847.4528839549748
+      },
+      "new": {
+        "n": 4145,
+        "sum": 1661735.794220411,
+        "mean": 400.9012772546227,
+        "median": 341.17822403708124,
+        "p90": 620.1513824564987,
+        "minimum": 4.001531791000161,
+        "maximum": 16444.893930874765
+      }
+    },
     "interpretation": "Imported root durations and nodes are historical work, not new computation. Recorded root monotonic-clock durations overlap across workers and are neither CPU time nor total job elapsed time. No host-suspension duration is inferred or subtracted; no continuous-compute completion forecast is made.",
     "quantile_method": "Linear interpolation at p*(n-1)."
   },
@@ -405,10 +741,10 @@
     "frozen_hashes_checked": true,
     "durable_new_root_prefix_checked": true,
     "root_identities_exact_scores_and_depths_checked": true,
-    "all_legal_roots_covered": false,
-    "all_root_pvs_replayed": false,
-    "all_outcomes_recomputed": false,
-    "saved_outcomes_match_recomputation": false,
+    "all_legal_roots_covered": true,
+    "all_root_pvs_replayed": true,
+    "all_outcomes_recomputed": true,
+    "saved_outcomes_match_recomputation": true,
     "any_origin_exposure_recomputed": true
   },
   "fingerprints": {
@@ -423,11 +759,13 @@
     "selection_manifest_sha256": "b125fffac4326e6f6aeeccbb61fa71958df2df82c1ec6164cbff55beb7c1ce12",
     "settings_sha256": "380be14879c36a21930db2583a16449e5a770b12e0296e389ff95cd909ebb4e8",
     "imported_roots_sha256": "6003e1e2b1fc6f5ef158e59d75addfd83037daab0704f54321704356b562b0dd",
-    "new_roots_checkpoint_sha256": "bb963c436567b183befb10856b7f6165585144449b5c868146884bcdd43693fd",
-    "run_manifest_snapshot_sha256": "2a2ace64baa84ef591b9dfc36a772a03a09bc83162d64246f78d8c9459b90e58",
-    "checkpoint_manifest_snapshot_sha256": "7958071f33a9635242ffae4a7e598152e3c97c96a86f54ea513b5ec05336d828",
+    "new_roots_checkpoint_sha256": "2a7cb0f4022d80a64268fe6c667f0ae92d1b980f200f34625e5d7902d6e2c629",
+    "run_manifest_snapshot_sha256": "e824e1b6ebad5b8128ac710fdbf048e7eb4f6e85a230967f3f538599b8c8f5b3",
+    "checkpoint_manifest_snapshot_sha256": "c289723854ba5c0573a7a44393893a496cb94e86a333a48473b4ef2af8e33e6d",
     "prior_public_summary_sha256": "450038609659478d631c71cf178aeff87b816fd422846acd0162976121cdb070",
-    "summary_builder_sha256": "5bbb12cdbdadbecd07f677bc212cede6eb52794e03996880a58e42116231105d"
+    "summary_builder_sha256": "5bbb12cdbdadbecd07f677bc212cede6eb52794e03996880a58e42116231105d",
+    "positions_sha256": "5f57883a0c9f0284e12f6dff2a9544af43fe5f5b62a4acab27c89c407627569a",
+    "new_roots_sha256": "2a7cb0f4022d80a64268fe6c667f0ae92d1b980f200f34625e5d7902d6e2c629"
   },
   "limitations": [
     "Completed progress counts describe root coverage, not success or failure; new outcome totals are withheld until final recomputation.",

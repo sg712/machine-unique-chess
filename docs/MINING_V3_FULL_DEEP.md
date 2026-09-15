@@ -1,10 +1,42 @@
 # Checking the full candidate pool
 
-9 September 2026. This follow-up extends the completed [200-position batch](MINING_V3_DEEP200.md) to every distinct candidate from the same first-pass screen. **The full run started on 9 September and was incomplete at the time of the initial [saved progress snapshot](../results/mining_v3_full_deep.json).** Completion must be established by a validated aggregate with `complete: true`, not by this protocol or a started process. Saved snapshots carry their own timestamps and are not a live progress feed.
+Completed 15 September 2026; selection and protocol frozen on 9 September. This follow-up extends the [200-position batch](MINING_V3_DEEP200.md) to every distinct candidate from the same first-pass screen. **All 4,345 positions and 304,068 legal-move searches are complete.** The [validated aggregate](../results/mining_v3_full_deep.json), saved at 17:13 UTC on 15 September, has `complete: true`, no pending or partial positions, and all validation checks passed.
+
+## Results
+
+**2,379 positions met the engine-stability rule; 1,398 also retained the full candidate criterion.** Engine stability means the complete within-20-centipawn acceptable-move set stayed the same at depths 20 and 24, with no mate-valued score for any legal root. The additional criterion measures engine evaluation and Maia probabilities under the unchanged thresholds below. None of these positions is yet approved for the trainer.
+
+| Side to move | Checked | Engine-stable | Stable + full candidate criterion |
+|---|---:|---:|---:|
+| White | 2,106 | 1,177 | 680 |
+| Black | 2,239 | 1,202 | 718 |
+| Total | 4,345 | 2,379 | 1,398 |
+
+The initial 200 contribute 116 engine-stable positions and 62 retaining the full criterion. The other 4,145 contribute 2,263 and 1,336 respectively. These are parts of the same census; the initial batch is not an additional sample or an independent replication. White and Black positions were not matched on every feature, and several states can share a source game. These counts do not establish a colour effect, human solving rate or learning benefit.
+
+### Source groups
+
+These rows use provenance from **any originating candidate observation**, not only the chosen representative. Flags overlap and must not be added as disjoint groups.
+
+| Source condition | Checked | Engine-stable | Stable + full candidate criterion |
+|---|---:|---:|---:|
+| All origins recovered, without BOT tags or known public exposure | 3,830 | 2,096 | 1,231 |
+| Any BOT-tagged origin | 410 | 210 | 120 |
+| Any known public origin | 128 | 88 | 56 |
+| Any origin with unresolved BOT status | 1 | 0 | 0 |
+| Any origin with unavailable history | 1 | 0 | 0 |
+
+The 1,231 retained positions in the first row provide a narrower pool for explanation and chess review. That source label does not prove unassisted human play or fresh held-out data. Trainer readiness remains zero in every group.
+
+### What changed at greater depth
+
+Among the 3,726 positions with only numeric centipawn scores, the median absolute change in the best evaluation was 7 cp, and the 90th percentile was 25 cp. Yet 1,347 changed their complete acceptable-move set between depths 20 and 24. A small evaluation change does not guarantee the same set of acceptable answers.
+
+Another 619 positions had a mate-valued score for at least one legal root and were excluded by the frozen stability rule. This flag concerns any tested move, including alternatives to the best move. Failure flags in the aggregate can overlap.
 
 ## Scope
 
-The unchanged screen selected 4,353 observations representing **4,345 distinct canonical board states**. The initial 200 are included in that total. The remaining **4,145 states** receive the same exhaustive depth-20/24 procedure: 2,006 White and 2,139 Black. The [frozen selection audit](../results/mining_v3_full_deep_selection.json) records the complete plan. This stage does not repeat the screen across all 248,810 observations or add a new mining source.
+The unchanged screen selected 4,353 observations representing **4,345 distinct canonical board states**. The initial 200 are included in that total. The additional **4,145 states** received the same exhaustive depth-20/24 procedure: 2,006 White and 2,139 Black. The [frozen selection audit](../results/mining_v3_full_deep_selection.json) records the complete plan. This stage did not repeat the screen across all 248,810 observations or add a new mining source.
 
 The census spans 3,726 source games, with at most five selected states from one game. It contains 152,034 legal moves and therefore 304,068 two-depth searches in total. Of these, **14,208 searches are reused and 289,860 are new**. There are 410 states with BOT-tagged candidate origins, 128 with known public exposure and one with unresolved BOT status and unavailable history; these categories overlap. All candidate origins are recovered, without BOT tags and without known public exposure for 3,830 states.
 
@@ -38,13 +70,15 @@ The original deep200 files are frozen. The new runner, selection code, summary b
 
 Progress reports distinguish the 200 imported positions, newly completed positions, pending positions, imported roots and new roots. Incomplete positions are never counted as failures. New pass/fail aggregates are withheld until the entire census finishes and every outcome is recomputed from its full legal-root evidence.
 
-Final validation covers every selected identity, exact legal-root coverage at both depths, legal continuations, source strata, original policy probabilities, frozen hashes and saved outcomes. Public outputs contain aggregate counts and fingerprints, without positions, solutions, source-game identities or private filesystem paths. Completed results and a local readable report are saved automatically; website publication is a separate deployment step.
+Final validation checked every selected identity, exact legal-root coverage at both depths, legal continuations, source strata, original policy probabilities, frozen hashes and saved outcomes. All outcomes were recomputed from the complete evidence and matched the saved results. Public outputs contain aggregate counts and fingerprints, without positions, solutions, source-game identities or private filesystem paths. The completed aggregate and a local readable report were saved by the pipeline; website publication is a separate deployment step.
 
-## Compute expectations
+## Interpreting runtime
 
-The first batch's recorded root durations suggest about **56 hours under ideal eight-worker parallelism** for the remaining 4,145 states. This is an illustrative planning calculation, not a promised finish time. The full pool differs from the constrained initial sample, and search costs have a long tail.
+Before the full run, the first batch's recorded root durations suggested about **56 hours under ideal eight-worker parallelism** for the additional 4,145 states. This was an illustrative planning calculation, not a promised finish time. The full pool differs from the constrained initial sample, and search costs have a long tail.
 
 Imported root durations, new root durations, elapsed clock intervals and recorded monotonic attempt durations are kept separate. Parallel search durations overlap. They are not CPU-time measurements; elapsed clock intervals can include host sleep. The roughly 12-hour civil-clock duration of the first batch is not used as a no-sleep computation estimate.
+
+Execution included manual pauses, system sleep and an automatic low-battery pause. Power settings also varied: late on 14 September, Low Power Mode was changed from Always to Only on Battery, allowing normal performance on AC. The search rules and frozen evidence were unchanged. These operational timings are not a controlled hardware benchmark, and no speed-up factor is inferred from the change in power setting.
 
 ## Run and inspect
 

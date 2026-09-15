@@ -24,7 +24,8 @@
 {% block body %}
 <article class="research-article">
 <h1>What I found in the positions</h1>
-<p class="research-byline">Shivansh Gupta · Page updated 9 September 2026</p>
+<p class="research-byline">Shivansh Gupta · {% if mining_v3_full_deep and mining_v3_full_deep.complete %}Results updated
+<time datetime="{{ mining_v3_full_deep.created_at }}">{{ mining_v3_full_deep.created_at[:10] }} at {{ mining_v3_full_deep.created_at[11:16] }} UTC</time>{% else %}Page updated 9 September 2026{% endif %}</p>
 <p class="lede">I used Stockfish and Maia to look for strong moves that a model of human play
 rarely chooses. That gave me a collection of positions to study, and eventually this trainer.</p>
 <p>Here are the examples, the selection method, and the checks that changed my interpretation.
@@ -53,14 +54,15 @@ that needs a controlled study.</p>
       {{ '{:,}'.format(mining_v3_full_deep.counts.survives_candidate_criterion_n) }} retained the full selection criterion.
       {% elif mining_v3_deep200 and mining_v3_deep200.complete %}
       The first {{ mining_v3_deep200.counts.checked_n }} candidates have been checked at depths 20 and 24.
-      {{ mining_v3_deep200.counts.engine_verified_n }} kept the same acceptable-move set;
+      {{ mining_v3_deep200.counts.engine_verified_n }} met the stability rule: an unchanged acceptable-move set and no mate-valued roots;
       {{ mining_v3_deep200.counts.survives_candidate_criterion_n }} also retained the full selection criterion.
       {% if mining_v3_full_deep %}The run covering all
       {{ '{:,}'.format(mining_v3_full_deep.counts.planned_n) }} candidates has started, reusing those initial checks.
       Its final results are not yet published here.{% endif %}
       {% else %}Deeper checks are being prepared; the first-screen candidates are not finished puzzles.{% endif %}
       New candidates still need chess review and explanations before joining the trainer.
-      {% if mining_v3_deep200 and mining_v3_deep200.complete %}<a href="#depth-checks">Read the depth checks</a>.{% endif %}
+      {% if mining_v3_full_deep and mining_v3_full_deep.complete %}<a href="#full-depth-checks">Read the full depth checks</a>.
+      {% elif mining_v3_deep200 and mining_v3_deep200.complete %}<a href="#depth-checks">Read the depth checks</a>.{% endif %}
     </dd></div>
   </dl>
   {% if mining_v3_full_deep %}
@@ -73,7 +75,8 @@ that needs a controlled study.</p>
   <a href="#examples">Worked examples</a><a href="#method">Selection method</a>
   <a href="#findings">Findings</a><a href="#new-mining">2,000-position pilot</a>
   {% if mining_v3_dataset and mining_v3_dataset.complete %}<a href="#full-expansion">Full colour expansion</a>{% endif %}
-  {% if mining_v3_deep200 and mining_v3_deep200.complete %}<a href="#depth-checks">Deeper checks</a>{% endif %}
+  {% if mining_v3_full_deep and mining_v3_full_deep.complete %}<a href="#full-depth-checks">Full depth checks</a>
+  {% elif mining_v3_deep200 and mining_v3_deep200.complete %}<a href="#depth-checks">Deeper checks</a>{% endif %}
   <a href="#robustness">Robustness checks</a>
   <a href="#learning">Learning study</a><a href="#reproduce">Methods and data</a>
 </nav>
@@ -365,7 +368,7 @@ also kept the original candidate criterion</b>: a roughly balanced evaluation, l
 for the acceptable moves, and a large average evaluation loss under Maia's predicted moves at both depths.</p>
 <div class="table-scroll" role="region" aria-label="Results of the first 200 deeper checks" tabindex="0">
 <table class="research"><caption>Selected games without BOT tags: one position per game</caption>
-<thead><tr><th scope="col">Side to move</th><th scope="col">Checked</th><th scope="col">Stable move set, no mates</th><th scope="col">Full criterion retained</th></tr></thead>
+<thead><tr><th scope="col">Side to move</th><th scope="col">Checked</th><th scope="col">Stable acceptable set, no mate scores</th><th scope="col">Stable + selection criterion</th></tr></thead>
 <tbody>{% for side in ['white', 'black'] %}{% set group = mining_v3_deep200.counts.by_side[side] %}
 <tr><th scope="row">{{ side|capitalize }}</th><td>{{ group.n }}</td>
 <td>{{ group.engine_verified_n }}</td><td>{{ group.survives_candidate_criterion_n }}</td></tr>
@@ -379,22 +382,41 @@ to one position per game; it was not matched on every other feature.</p>
 {% endif %}
 
 {% if mining_v3_full_deep %}
-<h3 id="full-depth-checks">Checking the full candidate set</h3>
+<h2 id="full-depth-checks">Checking the full candidate set</h2>
 <p>The full run covers all {{ '{:,}'.format(mining_v3_full_deep.counts.planned_n) }} distinct candidates,
-including the first {{ mining_v3_full_deep.counts.imported_completed_positions_n }} checked above.
+including the first {{ mining_v3_full_deep.counts.imported_completed_positions_n }} whose searches were reused after validation.
 Every legal move receives the same independent depth-20 and depth-24 searches.
 Unlike the initial 200-position sample, this includes all source groups and can include
 several positions from one game. Bot-tagged and previously public sources remain labelled.</p>
 {% if mining_v3_full_deep.complete %}
-<p>The full checks are complete. {{ '{:,}'.format(mining_v3_full_deep.counts.engine_verified_n) }} positions
-kept the same acceptable-move set, and {{ '{:,}'.format(mining_v3_full_deep.counts.survives_candidate_criterion_n) }}
-also retained the full selection criterion. These remain candidates for chess review.</p>
+<p>The full checks are complete. <b>{{ '{:,}'.format(mining_v3_full_deep.counts.engine_verified_n) }} positions
+met the engine-stability rule:</b> their complete sets of moves within 20 centipawns of the best
+were unchanged at both depths, and no legal root move had a mate-valued score.
+Of these, <b>{{ '{:,}'.format(mining_v3_full_deep.counts.survives_candidate_criterion_n) }} also retained the full selection criterion.</b></p>
+<p>The selection criterion requires a best evaluation within ±200 centipawns, at most 10% Maia
+probability on the acceptable moves, and at least 50 centipawns of expected loss under Maia's
+predicted moves, with loss capped at 300 centipawns per move. These conditions must hold at both
+depths and, for Maia, at both the 1700 and 2000 settings.</p>
+<div class="table-scroll" role="region" aria-label="Results of the full candidate depth checks" tabindex="0">
+<table class="research" id="full-census-results"><caption>Full candidate census: all source groups</caption>
+<thead><tr><th scope="col">Side to move</th><th scope="col">Checked</th><th scope="col">Stable acceptable set, no mate scores</th><th scope="col">Stable + selection criterion</th></tr></thead>
+<tbody>{% for side in ['white', 'black'] %}{% set outcome = mining_v3_full_deep.groups.by_side[side].outcomes %}
+<tr><th scope="row">{{ side|capitalize }}</th><td>{{ '{:,}'.format(outcome.checked_n) }}</td>
+<td>{{ '{:,}'.format(outcome.engine_verified_n) }}</td><td>{{ '{:,}'.format(outcome.survives_candidate_criterion_n) }}</td></tr>
+{% endfor %}</tbody>
+<tfoot><tr><th scope="row">All candidates</th><td>{{ '{:,}'.format(mining_v3_full_deep.counts.checked_n) }}</td>
+<td>{{ '{:,}'.format(mining_v3_full_deep.counts.engine_verified_n) }}</td><td>{{ '{:,}'.format(mining_v3_full_deep.counts.survives_candidate_criterion_n) }}</td></tr></tfoot>
+</table></div>
+<p>These counts describe the screened candidate pool. The positions can share source games,
+and the White and Black groups were not matched on every feature. The results do not measure
+human solving rates or learning. These remain candidates for chess review; they have not been added to the trainer.</p>
 {% else %}
-<p>The full results have not yet been published. The 116 and 62 figures above describe only
-the initial 200-position sample; they are not totals for the full run.</p>
+<p>The full results have not yet been published.{% if mining_v3_deep200 and mining_v3_deep200.complete %}
+The {{ mining_v3_deep200.counts.engine_verified_n }} and {{ mining_v3_deep200.counts.survives_candidate_criterion_n }} figures above describe only
+the initial {{ mining_v3_deep200.counts.checked_n }}-position sample; they are not totals for the full run.{% endif %}</p>
 {% endif %}
 <p class="small"><a href="https://github.com/sg712/machine-unique-chess/blob/main/docs/MINING_V3_FULL_DEEP.md">Full-run method</a> ·
-<a href="https://github.com/sg712/machine-unique-chess/blob/main/results/mining_v3_full_deep.json">Published run snapshot</a></p>
+<a href="https://github.com/sg712/machine-unique-chess/blob/main/results/mining_v3_full_deep.json">{% if mining_v3_full_deep.complete %}Verified full results, source groups and runtime{% else %}Published run snapshot{% endif %}</a></p>
 {% endif %}
 
 <h2 id="learning">Does practicing these positions help?</h2>
@@ -422,7 +444,10 @@ Ordinary site use is not automatically enrolled in the study.</p>
 <tr><td>Full colour expansion</td><td>{{ '{:,}'.format(mining_v3_dataset.record_count) }} observations</td><td>Equal side counts; recovered source metadata; {% if mining_v3 and mining_v3.complete %}common FEN-only screening complete{% else %}full screening in progress{% endif %}</td></tr>
 {% endif %}
 {% if mining_v3_deep200 and mining_v3_deep200.complete %}
-<tr><td>Deeper candidate checks</td><td>{{ mining_v3_deep200.counts.checked_n }} positions / 200 games</td><td>Every legal move at depths 20 and 24; {{ mining_v3_deep200.counts.survives_candidate_criterion_n }} retained the full criterion; chess review pending</td></tr>
+<tr><td>Initial candidate depth checks</td><td>{{ mining_v3_deep200.counts.checked_n }} positions / 200 games</td><td>Every legal move at depths 20 and 24; {{ mining_v3_deep200.counts.survives_candidate_criterion_n }} retained the full criterion; chess review pending</td></tr>
+{% endif %}
+{% if mining_v3_full_deep and mining_v3_full_deep.complete %}
+<tr><td><a href="#full-depth-checks">Full candidate depth checks</a></td><td>{{ '{:,}'.format(mining_v3_full_deep.counts.checked_n) }} positions / {{ '{:,}'.format(mining_v3_full_deep.selection.unique_representative_source_games_n) }} source games</td><td>Every legal move at depths 20 and 24; {{ '{:,}'.format(mining_v3_full_deep.counts.survives_candidate_criterion_n) }} retained the full criterion; chess review pending</td></tr>
 {% endif %}
 <tr><td>Maia-3 ranking</td><td>77 selected + 56 controls</td><td>Top one / top five at 1100, 1500, 2000, 2300, 2600</td></tr>
 <tr><td>Motif reconstruction</td><td>646 selected + 400 controls</td><td>12 directions; average-direction R² 0.46</td></tr>

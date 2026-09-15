@@ -62,15 +62,15 @@ The **62 retained positions need explanations, chess review and teaching-family 
 
 The completed aggregate checks the frozen selection, all input/output hashes and legal-root identities, then recomputes the outcomes from the saved roots and unchanged FEN-only policies. All saved position results match that recomputation. Raw inputs, moves, histories and possible future assessment material remain private.
 
-## Runtime and remaining work
+## Runtime and follow-up
 
 The run evaluated **70,328,375,217 nodes**. The one recorded execution attempt spans **43,093 seconds, about 12 hours of elapsed clock time**. The Mac actually entered system sleep during that attempt. This was not 12 hours of measured active computation: neither active-compute time nor the duration of host suspension was measured, and no estimated sleep duration is subtracted.
 
 Recorded root-search durations sum to 77,815 seconds, averaging 389 seconds per position across its roots and both depths. These monotonic-clock durations overlap across workers; their sum is neither CPU time nor the job's elapsed clock time, and host suspension was not separately measured or corrected. The slowest single root took about 668 recorded seconds. Search costs have a long tail, so the earlier estimate based on small, time-capped batches was not a reliable forecast for this uncapped procedure.
 
-There are **4,145 distinct first-pass candidates outside this batch**. Scaling the batch's mean recorded root duration to that count gives about 448 summed-search hours, or **56 hours with ideal eight-worker parallelism**. This is an illustrative planning scenario, not a completion forecast or a claim about active CPU time. The remaining pool differs from this recovered, non-BOT, game-capped sample and includes previously public and BOT-source material excluded here. Search complexity, scheduling, hardware contention, retries and pauses can all change the cost. Extrapolating the sleeping host's roughly 12-hour attempt directly would not estimate continuous execution reliably.
+There are **4,145 distinct first-pass candidates outside this batch**. Before the full-census run, scaling the batch's mean recorded root duration to that count gave about 448 summed-search hours, or **56 hours with ideal eight-worker parallelism**. This was an illustrative planning scenario, not a completion forecast or a claim about active CPU time. The rest of the pool differs from this recovered, non-BOT, game-capped sample and includes previously public and BOT-source material excluded here. Search complexity, scheduling, hardware contention, retries and pauses can all change the cost. Extrapolating the sleeping host's roughly 12-hour attempt directly would not estimate continuous execution reliably.
 
-The next practical step is to review the 62 retained positions and their explanations before deciding how much of the remaining pool warrants the same expense. The remaining candidates have not undergone this deep check.
+The [full-census follow-up](MINING_V3_FULL_DEEP.md) completed the same procedure for all 4,345 distinct candidates, including these 200, on 15 September. Its [validated aggregate](../results/mining_v3_full_deep.json) reports 2,379 engine-stable positions and 1,398 retaining the full criterion. This initial batch remains a historical subset of that census, not an additional 200 positions or an independent replication. Its 62 retained positions still need explanations and chess review.
 
 ## Reproduce
 
