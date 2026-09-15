@@ -1,5 +1,5 @@
 import { Board } from './board.js';
-import { postJSON, replay, storage, focusHeading } from './training.js';
+import { postJSON, answerReplay, answerComparison, storage, focusHeading } from './training.js';
 import { studyReplay } from './study.js';
 
 export function mountDrill({positions, allPositions, pieces, cid, group, mode, owner, mixed = false}) {
@@ -13,12 +13,19 @@ export function mountDrill({positions, allPositions, pieces, cid, group, mode, o
   const outstanding = new Set(positions.map(position => position.idx));
   let queue = [...positions], current, board, picked = null, draft = null;
   let pending = false, answered = false, retry = 'save', storageFailed = false;
+  let previousFeedback = false;
   let started = Date.now(), sessionCount = 0, sessionHits = 0;
+
+  function matchesCurrentVersion(value, position) {
+    return value.grading_id ? value.grading_id === position.grading_id
+      : position.answer_schema !== 'acceptable-moves/v1' && position.legacy_request_allowed !== false;
+  }
 
   function validDraft(value) {
     const position = value && byIndex.get(value.position);
     return !!position && value.version === 2 && value.owner === owner && value.cid === cid &&
       value.mode === mode && value.fen === position.fen && position.legal.includes(value.picked) &&
+      (value.phase !== 'chosen' || matchesCurrentVersion(value, position)) &&
       typeof value.requestId === 'string' && /^[a-f0-9-]{32,36}$/.test(value.requestId) &&
       ['chosen', 'submitted', 'feedback'].includes(value.phase) &&
       (!mixed || (Array.isArray(value.remaining) && value.remaining.length <= allPositions.length &&
@@ -31,6 +38,7 @@ export function mountDrill({positions, allPositions, pieces, cid, group, mode, o
   function persist() { storageFailed = !storage.set(key, draft); }
   function payload() {
     return {owner, concept: current.concept ?? cid, idx: current.source_idx ?? draft.position, fen: draft.fen,
+      ...(draft.grading_id ? {grading_id: draft.grading_id} : {}),
       picked: draft.picked, request_id: draft.requestId, seconds: draft.seconds};
   }
 
@@ -50,6 +58,7 @@ export function mountDrill({positions, allPositions, pieces, cid, group, mode, o
         if (pending || answered) return;
         picked = uci;
         draft = {version: 2, owner, cid, mode, position: current.idx, fen: current.fen,
+          grading_id: current.grading_id,
           picked, requestId: crypto.randomUUID(), phase: 'chosen', seconds: null};
         if (mixed) draft.remaining = queue.slice(1).map(position => position.idx);
         persist();
@@ -79,34 +88,45 @@ export function mountDrill({positions, allPositions, pieces, cid, group, mode, o
     // Render before acknowledging the response so a failed render remains recoverable.
     const explained = !!result.line.note;
     if (explained) studyReplay(get('replay'), result.line, pieces, picked);
-    else replay(get('replay'), result.line, pieces, picked);
+    else answerReplay(get('replay'), result.line, pieces, picked);
     get('practice-reflection').hidden = explained;
     const stats = get('model-stats'); stats.replaceChildren();
-    const probability = document.createElement('p'); probability.className = 'small';
-    probability.textContent = `Maia, a model of human moves, gives the engine's choice a ${(result.p_best * 100).toFixed(1)}% chance of being played by a 1900 Lichess player.`;
-    stats.append(probability);
+    if (result.p_best != null) {
+      const probability = document.createElement('p'); probability.className = 'small';
+      probability.textContent = `Maia, a model of human moves, gives the engine's choice a ${(result.p_best * 100).toFixed(1)}% chance of being played by a 1900 Lichess player.`;
+      stats.append(probability);
+    }
     if (result.predicted != null) {
       const estimate = document.createElement('p'); estimate.className = 'small';
       estimate.textContent = `The difficulty model estimates ${(result.predicted * 100).toFixed(1)}% exact matches at Lichess 1900. This is a prediction from the source games, not a measurement of your strength.`;
       stats.append(estimate);
     }
-    answered = true; sessionCount++; sessionHits += Number(result.correct);
-    tried.add(current.idx); if (result.correct) found.add(current.idx);
+    const previousVersion = restored && ((result.grading_id && current.grading_id && result.grading_id !== current.grading_id)
+      || (!result.grading_id && current.legacy_request_allowed === false));
+    previousFeedback = !!previousVersion;
+    answered = true;
+    if (!previousFeedback) { sessionCount++; sessionHits += Number(result.correct); }
+    if (!previousVersion) { tried.add(current.idx); if (result.correct) found.add(current.idx); }
     // Recovery may show an older receipt than this page's server-side history.
     if (!restored) {
       if (result.correct) outstanding.delete(current.idx); else outstanding.add(current.idx);
     }
     draft.phase = 'feedback'; persist();
-    const mark = document.createElement('i'); mark.className = result.correct ? 'hit' : 'done'; get('tally').append(mark);
+    if (!previousFeedback) {
+      const mark = document.createElement('i'); mark.className = result.correct ? 'hit' : 'done'; get('tally').append(mark);
+    }
     status.textContent = storageFailed
       ? 'Answer saved. This browser could not keep your place for a reload.'
+      : previousVersion ? 'Your earlier answer is restored. It uses the previous answers and does not count toward this version.'
       : restored ? 'Your saved answer is restored.' : 'Answer saved.';
     get('answer-controls').hidden = true;
     const verdict = get('verdict');
-    verdict.textContent = result.correct ? 'You found it.' : 'The engine chose a different move.';
+    verdict.textContent = result.correct ? (result.accepted_alternative ? 'Your move is accepted.' : 'You found it.')
+      : result.answer_schema === 'acceptable-moves/v1' ? 'Your move is outside the accepted set.' : 'The engine chose a different move.';
     verdict.className = result.correct ? 'verdict good' : 'verdict';
-    get('comparison').textContent = `You played ${result.picked_san}. The engine plays ${result.best_san}.`;
-    get('next').textContent = sessionCount === 5 || queue.length === 1 ? 'Finish this session' : 'Next position';
+    get('comparison').textContent = answerComparison(result);
+    get('next').textContent = previousFeedback ? 'Continue with current answers'
+      : sessionCount === 5 || queue.length === 1 ? 'Finish this session' : 'Next position';
     feedback.hidden = false; error.textContent = ''; focusHeading(verdict);
     get('attempt-workspace').hidden = true;
   }
@@ -125,8 +145,21 @@ export function mountDrill({positions, allPositions, pieces, cid, group, mode, o
       const response = await postJSON('/api/answer/recover', payload());
       if (response.status === 'saved') showFeedback(response.result, true);
       else if (response.status === 'missing') {
-        retry = 'save'; lock.disabled = false; lock.textContent = 'Retry saving';
-        status.textContent = 'No saved answer was found. Retry saving the same move.';
+        if (!matchesCurrentVersion(draft, current)) {
+          // An old receipt may be recovered, but an unsaved old attempt must
+          // never be retried or silently scored against different answers.
+          storage.remove(key); draft = null; previousFeedback = false;
+          queue = [...positions]; load();
+          const notice = queue.length ? status : document.createElement('p');
+          notice.setAttribute('role', 'status');
+          notice.textContent = queue.length
+            ? 'The answers have changed. No saved answer was found for the earlier attempt. Choose your move again.'
+            : 'No saved answer was found for the earlier attempt. Your current practice queue is up to date.';
+          if (!queue.length) empty.prepend(notice);
+        } else {
+          retry = 'save'; lock.disabled = false; lock.textContent = 'Retry saving';
+          status.textContent = 'No saved answer was found. Retry saving the same move.';
+        }
       } else throw new Error('Your saved answer could not be restored. Try again.');
     } catch (e) { failed(e, 'recover'); }
     finally { pending = false; }
@@ -156,7 +189,13 @@ export function mountDrill({positions, allPositions, pieces, cid, group, mode, o
   get('next').addEventListener('click', () => {
     if (!answered || pending) return;
     answered = false;
-    storage.remove(key); draft = null; queue.shift();
+    storage.remove(key); draft = null;
+    if (previousFeedback) {
+      previousFeedback = false;
+      if (!positions.some(position => position.idx === current.idx)) queue.shift();
+      load(); focusHeading(get('counter')); return;
+    }
+    queue.shift();
     if (sessionCount === 5 || queue.length === 0) {
       get('practice').hidden = true; get('session-done').hidden = false;
       get('session-score').textContent = `${sessionHits} / ${sessionCount}`;

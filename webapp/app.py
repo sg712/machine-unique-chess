@@ -7,6 +7,7 @@ Learning effectiveness and conceptual novelty have not been established.
 """
 import json
 import hashlib
+import hmac
 import math
 import os
 import pathlib
@@ -17,6 +18,7 @@ import time
 from urllib.parse import urlsplit
 
 import chess
+from answers import answer_spec, feedback_metadata, grade, digest
 from werkzeug.security import check_password_hash, generate_password_hash
 import chess.svg
 from flask import (Flask, g, jsonify, redirect, render_template, request,
@@ -128,6 +130,45 @@ _practice_notes_path = ROOT / "webapp" / "practice_notes.json"
 PRACTICE_NOTES = {n["id"]: n for n in json.loads(_practice_notes_path.read_text())["items"]} if _practice_notes_path.exists() else {}
 
 
+def validate_answer_bank():
+    for concept in CONCEPTS:
+        for position in concept["drill"]:
+            answer_spec(position)
+        # These existing explanatory demos are deliberately legacy-only. A new
+        # set-aware lesson needs server-gated feedback, not embedded answer data.
+        if any("answer" in position for position in concept["study"]):
+            raise ValueError("Versioned answer sets are supported in practice/test, not legacy study demos")
+    if any("answer" in example["primary"] for example in RESEARCH_EXAMPLES["examples"]):
+        raise ValueError("Versioned answer sets are not supported in legacy home demos")
+
+
+def test_bank_id():
+    return digest({"answers": {key: answer_spec(BY_ID[int(key.split(':')[0])]["drill"][int(key.split(':')[1])])["grading_id"]
+                               for key in sorted(TEST_DATA["items"])},
+                   "calibration": TEST_DATA})
+
+
+def question_version(position):
+    # A plain hash of (FEN, best) would let a browser enumerate legal moves and
+    # discover a legacy answer. Only an opaque keyed identifier leaves the server.
+    return hmac.new(app.secret_key.encode(), answer_spec(position)["grading_id"].encode(),
+                    hashlib.sha256).hexdigest()
+
+
+def answer_feedback(position, picked):
+    return {**feedback_metadata(position, picked), "grading_id": question_version(position)}
+
+
+def legacy_requests_allowed():
+    return test_bank_id() == LEGACY_TEST_BANK_ID
+
+
+validate_answer_bank()
+# Pin the pre-versioning release, not whichever bank happens to load after a
+# deployment. Otherwise an old token could silently adopt changed legacy answers.
+LEGACY_TEST_BANK_ID = "ee09551023ec042aaabe23cc37a835d9d5440ca646939d898849970671c9dccd"
+
+
 # ── storage ───────────────────────────────────────────────────────────────────
 def db():
     if "db" not in g:
@@ -176,6 +217,7 @@ def init_db():
         conn.execute("""CREATE TABLE IF NOT EXISTS submission (
             id TEXT PRIMARY KEY, code TEXT NOT NULL, payload_hash TEXT NOT NULL,
             response TEXT NOT NULL)""")
+        conn.execute("ALTER TABLE attempt ADD COLUMN IF NOT EXISTS grading_id TEXT")
         conn.commit()
         conn.close()
         return
@@ -204,6 +246,8 @@ def init_db():
         code TEXT NOT NULL, at REAL, n INTEGER, correct INTEGER,
         band TEXT, detail TEXT);
     """)
+    if "grading_id" not in {row[1] for row in conn.execute("PRAGMA table_info(attempt)")}:
+        conn.execute("ALTER TABLE attempt ADD COLUMN grading_id TEXT")
     conn.commit()
     conn.close()
 
@@ -255,19 +299,38 @@ def practice_history(code):
     if not code:
         return []
     rows = db().execute("""
-        SELECT last.concept, last.idx, last.fen, last.correct, last.created_at,
-               last.id, first.correct first_correct, stats.ever_found,
+        SELECT last.concept, last.idx, last.fen, last.best, last.grading_id, last.correct, last.created_at,
+               last.id, first.correct first_correct, stats.first_id, stats.ever_found,
                stats.attempts
         FROM (SELECT concept, idx, MIN(id) first_id, MAX(id) last_id,
                      MAX(correct) ever_found, COUNT(*) attempts
-              FROM attempt WHERE code=? GROUP BY concept, idx, fen) stats
+              FROM attempt WHERE code=? GROUP BY concept, idx, fen, best, grading_id) stats
         JOIN attempt last ON last.id=stats.last_id
         JOIN attempt first ON first.id=stats.first_id
         ORDER BY last.id
         """, (code,)).fetchall()
-    return [dict(row) for row in rows if row["concept"] in BY_ID
-            and 0 <= row["idx"] < len(BY_ID[row["concept"]]["drill"])
-            and row["fen"] == BY_ID[row["concept"]]["drill"][row["idx"]]["fen"]]
+    current = {}
+    for source in rows:
+        row = dict(source)
+        if row["concept"] not in BY_ID or not 0 <= row["idx"] < len(BY_ID[row["concept"]]["drill"]):
+            continue
+        position = BY_ID[row["concept"]]["drill"][row["idx"]]
+        spec = answer_spec(position)
+        if row["fen"] != position["fen"] or row["best"] != position["best"]:
+            continue
+        if row["grading_id"] != spec["grading_id"] and (row["grading_id"] is not None or spec["explicit"]):
+            continue
+        key = (row["concept"], row["idx"])
+        old = current.get(key)
+        if old:
+            # Unversioned legacy rows and newly tagged exact-match rows share
+            # one history, only while both still name the same answer.
+            row["attempts"] += old["attempts"]
+            row["ever_found"] = max(old["ever_found"], row["ever_found"])
+            if old["first_id"] < row["first_id"]:
+                row["first_id"], row["first_correct"] = old["first_id"], old["first_correct"]
+        current[key] = row
+    return sorted(current.values(), key=lambda row: row["id"])
 
 
 def practice_summary(history):
@@ -329,8 +392,19 @@ def study_line(note, key):
     return frames_of(note["fen"], note[key]["pv"][:max(12, last_claim)])
 
 
-def practice_line(cid, index, position):
+def practice_line(cid, index, position, picked=None):
     """Attach reviewed explanations only to their exact existing drill position."""
+    spec = answer_spec(position)
+    if spec["explicit"]:
+        shown = picked if picked in spec["accepted"] else position["best"]
+        line = frames_of(position["fen"], spec["branches"][shown])
+        line["label"] = "Your accepted move" if shown == picked else "Accepted move"
+        line["shown_move"] = shown
+        board = chess.Board(position["fen"])
+        line["accepted_lines"] = [{**frames_of(position["fen"], spec["branches"][move]),
+                                  "move": move, "san": board.san(chess.Move.from_uci(move))}
+                                 for move in spec["accepted"]]
+        return line
     note = PRACTICE_NOTES.get(f"{cid}:{index}")
     if not note:
         return frames_of(position["fen"], position["pv"])
@@ -509,7 +583,11 @@ def drill(cid):
         order = sorted(row["idx"] for row in history if not row["correct"])
     elif mode == "continue":
         order = [i for i in order if i not in seen]
-    all_positions = [{**board_of(position["fen"]), "idx": i}
+    allow_legacy = legacy_requests_allowed()
+    all_positions = [{**board_of(position["fen"]), "idx": i,
+                      "grading_id": question_version(position),
+                      "answer_schema": answer_spec(position)["schema"],
+                      "legacy_request_allowed": allow_legacy}
                      for i, position in enumerate(c["drill"])]
     positions = [all_positions[i] for i in order]
     return render_template("drill.html", c=c, positions=positions, pieces=PIECES,
@@ -524,7 +602,11 @@ def review():
     """A repeatable, oldest-outstanding-first queue across all eight groups."""
     code = ensure_player()
     history = practice_history(code)
+    allow_legacy = legacy_requests_allowed()
     all_positions = [{**board_of(pos["fen"]), "idx": f"{c['id']}:{i}",
+                      "grading_id": question_version(pos),
+                      "answer_schema": answer_spec(pos)["schema"],
+                      "legacy_request_allowed": allow_legacy,
                       "concept": c["id"], "source_idx": i, "label": c["label"]}
                      for c in CONCEPTS for i, pos in enumerate(c["drill"])]
     by_key = {pos["idx"]: pos for pos in all_positions}
@@ -576,10 +658,14 @@ def api_answer():
     if type(cid) is not int or type(idx) is not int or cid not in BY_ID or not 0 <= idx < len(BY_ID[cid]["drill"]):
         return jsonify(error="That position is unavailable. Reload to continue."), 400
     pos = BY_ID[cid]["drill"][idx]
+    spec = answer_spec(pos)
     if "owner" in d and d["owner"] != me():
         return jsonify(error="Your account changed. Reload before saving this answer."), 403
     if "fen" in d and d["fen"] != pos["fen"]:
         return jsonify(error="This position has changed. Reload before choosing a move."), 400
+    if ((spec["explicit"] or "grading_id" in d or not legacy_requests_allowed()) and
+            d.get("grading_id") != question_version(pos)):
+        return jsonify(error="This position's answers have changed. Reload before choosing a move."), 409
     picked = d.get("picked")
     if not legal_pick(pos["fen"], picked):
         return jsonify(error="Choose a legal move on the board."), 400
@@ -593,29 +679,33 @@ def api_answer():
     if not code:
         return jsonify(error="Your account changed. Reload before saving this answer."), 403
     key = "drill:" + key
-    cached = reserve_submission(key, code, {"concept": cid, "idx": idx, "picked": picked})
+    receipt_payload = {"concept": cid, "idx": idx, "picked": picked}
+    if "grading_id" in d:
+        receipt_payload["grading_id"] = d["grading_id"]
+    cached = reserve_submission(key, code, receipt_payload)
     if cached is not None:
         return cached
     b = chess.Board(pos["fen"])
 
-    hp = next((h["p"] for h in pos["human"] if h["uci"] == picked), 0.0)
-    correct = picked == pos["best"]
+    hp = next((h["p"] for h in pos.get("human", []) if h["uci"] == picked), 0.0)
+    correct = grade(pos, picked)
     db().execute(
-        """INSERT INTO attempt(code,concept,idx,fen,picked,best,correct,human_p,seconds,created_at)
-           VALUES(?,?,?,?,?,?,?,?,?,?)""",
+        """INSERT INTO attempt(code,concept,idx,fen,picked,best,correct,human_p,seconds,created_at,grading_id)
+           VALUES(?,?,?,?,?,?,?,?,?,?,?)""",
         (code, cid, idx, pos["fen"], picked, pos["best"], int(correct), hp,
-         seconds, time.time()))
+         seconds, time.time(), spec["grading_id"]))
 
     try:
         picked_san = b.san(chess.Move.from_uci(picked))
     except Exception:
         picked_san = picked
     result = dict(
-        correct=correct, best=pos["best"], best_san=pos["best_san"],
-        picked_san=picked_san, human_p=hp, p_best=pos["p_best"],
-        model_move_cost_cp=pos["cost_cp"], gap_cp=pos["gap_cp"],
-        predicted=pos.get("predicted_find_1900"),
-        human=pos["human"][:3], line=practice_line(cid, idx, pos),
+        correct=correct, best=pos["best"], best_san=b.san(chess.Move.from_uci(pos["best"])),
+        picked_san=picked_san, human_p=hp, p_best=None if spec["explicit"] else pos["p_best"],
+        model_move_cost_cp=None if spec["explicit"] else pos["cost_cp"], gap_cp=None if spec["explicit"] else pos["gap_cp"],
+        predicted=None if spec["explicit"] else pos.get("predicted_find_1900"),
+        human=pos.get("human", [])[:3], line=practice_line(cid, idx, pos, picked),
+        **answer_feedback(pos, picked),
     )
     return finish_submission(key, result)
 
@@ -640,8 +730,10 @@ def recover_answer():
     receipt = db().execute(
         "SELECT payload_hash, response FROM submission WHERE id=? AND code=?",
         ("drill:" + key, code)).fetchone()
-    expected = hashlib.sha256(json.dumps({"concept": cid, "idx": index,
-        "picked": data["picked"]}, sort_keys=True).encode()).hexdigest()
+    receipt_payload = {"concept": cid, "idx": index, "picked": data["picked"]}
+    if "grading_id" in data:
+        receipt_payload["grading_id"] = data["grading_id"]
+    expected = hashlib.sha256(json.dumps(receipt_payload, sort_keys=True).encode()).hexdigest()
     if not receipt or not receipt["response"] or receipt["payload_hash"] != expected:
         return jsonify(status="missing")
     response = jsonify(status="saved", result=json.loads(receipt["response"]))
@@ -699,7 +791,7 @@ def test_signer():
     return URLSafeTimedSerializer(app.secret_key, salt="blindspot-v2")
 
 
-def read_test(token):
+def read_test(token, allow_stale=False):
     try:
         data = test_signer().loads(token, max_age=7 * 86400)
         if (not isinstance(data, dict) or not isinstance(data.get("id"), str) or
@@ -710,6 +802,8 @@ def read_test(token):
         if not isinstance(keys, list) or len(keys) != 12 or len(set(keys)) != 12:
             return None
         if not all(k in TEST_DATA["items"] for k in keys):
+            return None
+        if not allow_stale and data.get("bank_id", LEGACY_TEST_BANK_ID) != test_bank_id():
             return None
         return data
     except (BadSignature, SignatureExpired, TypeError, ValueError):
@@ -732,7 +826,7 @@ def blindspot_test():
                          if f"{cid}:{i}" not in keys]
             keys.append(random.choice(remaining))
         token = test_signer().dumps({"id": secrets.token_hex(16), "items": keys,
-                                     "owner": ensure_player()})
+                                     "owner": ensure_player(), "bank_id": test_bank_id()})
         return redirect(url_for("blindspot_test", attempt=token))
     attempt = read_test(token)
     if attempt is None:
@@ -755,7 +849,7 @@ def api_blindspot():
     data = request.get_json(silent=True)
     if not isinstance(data, dict):
         return {"error": "No test answers were received."}, 400
-    attempt = read_test(data.get("attempt"))
+    attempt = read_test(data.get("attempt"), allow_stale=True)
     picks = data.get("picks")
     if attempt is None:
         return {"error": "This test link has expired. Start a fresh test."}, 400
@@ -765,6 +859,15 @@ def api_blindspot():
     keys = attempt["items"]
     if not isinstance(picks, list) or len(picks) != len(keys):
         return {"error": "Answer all twelve positions before saving your result."}, 400
+    if attempt.get("bank_id", LEGACY_TEST_BANK_ID) != test_bank_id():
+        # Completed responses are immutable history even after a bank change.
+        # No new reservation or grading is allowed against an earlier bank.
+        saved = db().execute("SELECT payload_hash,response FROM submission WHERE id=? AND code=?",
+                             ("test:" + attempt["id"], code)).fetchone()
+        expected = hashlib.sha256(json.dumps({"picks": picks}, sort_keys=True).encode()).hexdigest()
+        if saved and saved["response"] and saved["payload_hash"] == expected:
+            return jsonify(json.loads(saved["response"]))
+        return {"error": "This test's answers have changed. Start a fresh test."}, 409
     for key, picked in zip(keys, picks):
         cid, i = map(int, key.split(":"))
         if not legal_pick(BY_ID[cid]["drill"][i]["fen"], picked):
@@ -777,27 +880,30 @@ def api_blindspot():
     if cached is not None:
         return cached
     correct, reveal = 0, []
+    calibrated = legacy_requests_allowed()
     loglik = [0.0] * len(TEST_DATA["band_labels"])
     for key, picked in zip(keys, picks):
         cid, i = map(int, key.split(":"))
         pos = BY_ID[cid]["drill"][i]
-        hit = picked == pos["best"]
+        hit = grade(pos, picked)
         correct += int(hit)
         b = chess.Board(pos["fen"])
-        reveal.append({"fen": pos["fen"], "best_san": pos["best_san"],
+        reveal.append({"fen": pos["fen"], "best_san": b.san(chess.Move.from_uci(pos["best"])),
                        "picked_san": b.san(chess.Move.from_uci(picked)), "hit": hit,
                        "picked": picked, "concept": BY_ID[cid]["label"], "cid": cid,
-                       "line": practice_line(cid, i, pos)})
+                       "line": practice_line(cid, i, pos, picked), **answer_feedback(pos, picked)})
         for bi, pr in enumerate(TEST_DATA["items"][key]):
             pr = min(max(pr, 0.03), 0.97)
             loglik[bi] += math.log(pr if hit else 1.0 - pr)
     best_band = max(range(len(loglik)), key=lambda i: loglik[i])
     db().execute("INSERT INTO blindspot(code, at, n, correct, band, detail) VALUES(?,?,?,?,?,?)",
                  (code, time.time(), len(keys), correct,
-                  TEST_DATA["band_labels"][best_band], json.dumps({"keys": keys, "picks": picks})))
+                  TEST_DATA["band_labels"][best_band] if calibrated else None,
+                  json.dumps({"keys": keys, "picks": picks, "bank_id": test_bank_id()})))
     return finish_submission(receipt, {
         "n": len(keys), "correct": correct,
-        "band": TEST_DATA["band_labels"][best_band], "band_idx": best_band,
+        "band": TEST_DATA["band_labels"][best_band] if calibrated else None,
+        "band_idx": best_band if calibrated else None, "rating_comparison_available": calibrated,
         "band_labels": TEST_DATA["band_labels"], "staircase": TEST_DATA["staircase"],
         "reveal": reveal})
 

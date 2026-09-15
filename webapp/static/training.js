@@ -31,6 +31,39 @@ export function focusHeading(element) {
   element.scrollIntoView({ block: 'nearest', behavior: 'instant' });
 }
 
+export function answerComparison(result) {
+  if (result.answer_schema !== 'acceptable-moves/v1') {
+    return `You played ${result.picked_san}. The engine plays ${result.best_san}.`;
+  }
+  const moves = result.acceptable_moves.map(move => move.san).join(', ');
+  return `You played ${result.picked_san}. Accepted ${result.acceptable_moves.length === 1 ? 'move' : 'moves'}: ${moves}.`;
+}
+
+export function answerReplay(holder, line, pieces, picked) {
+  if (!line.accepted_lines) return replay(holder, line, pieces, picked);
+  holder.replaceChildren();
+  const viewer = document.createElement('div');
+  if (line.accepted_lines.length > 1) {
+    const label = document.createElement('label'); label.className = 'study-line-choice';
+    label.append('Replay an accepted move');
+    const select = document.createElement('select');
+    line.accepted_lines.forEach(branch => {
+      const option = document.createElement('option'); option.value = branch.move;
+      option.textContent = branch.san + (branch.move === picked ? ' · your move' : '');
+      select.append(option);
+    });
+    select.value = line.shown_move;
+    select.addEventListener('change', () => {
+      const branch = line.accepted_lines.find(item => item.move === select.value);
+      replay(viewer, branch, pieces, picked,
+        branch.move === picked ? 'Your accepted move' : 'Accepted move');
+    });
+    label.append(select); holder.append(label);
+  }
+  holder.append(viewer);
+  replay(viewer, line, pieces, picked, line.label);
+}
+
 // One viewer for study feedback, drill feedback, and test review.
 export function replay(holder, line, pieces, picked = null, label = 'Engine line') {
   holder.replaceChildren();

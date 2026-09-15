@@ -54,7 +54,7 @@
 <h2>Your latest twelve-position test</h2>
 <p><b>{{ bs.correct }} / {{ bs.n }}</b> engine moves found. Test results are separate from practice totals.</p>
 <details class="sigdrawer"><summary>Rough rating comparison</summary>
-<p>{{ bs.band }} on the Lichess scale used by the model. A twelve-position result is too small to establish a chess rating.</p></details>
+<p>{% if bs.band %}{{ bs.band }} on the Lichess scale used by the model. A twelve-position result is too small to establish a chess rating.{% else %}No rating comparison is available for this answer version.{% endif %}</p></details>
 <p><a href="{{ url_for('blindspot_test') }}">Take another twelve-position test</a></p>
 {% endif %}
 {% endblock %}
