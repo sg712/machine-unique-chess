@@ -2,7 +2,7 @@ import { Board } from './board.js';
 import { postJSON, replay, storage, focusHeading } from './training.js';
 import { studyReplay } from './study.js';
 
-export function mountDrill({positions, allPositions, pieces, cid, group, mode, owner}) {
+export function mountDrill({positions, allPositions, pieces, cid, group, mode, owner, mixed = false}) {
   const get = id => document.getElementById(id);
   const flow = get('practice-flow'), empty = get('practice-empty'), boardEl = get('board');
   const lock = get('lock'), undo = get('undo'), feedback = get('feedback');
@@ -10,6 +10,7 @@ export function mountDrill({positions, allPositions, pieces, cid, group, mode, o
   const byIndex = new Map(allPositions.map(position => [position.idx, position]));
   const key = `mu_pending_drill_v2_${owner}_${cid}_${mode}`;
   const tried = new Set(group.tried), found = new Set(group.found);
+  const outstanding = new Set(positions.map(position => position.idx));
   let queue = [...positions], current, board, picked = null, draft = null;
   let pending = false, answered = false, retry = 'save', storageFailed = false;
   let started = Date.now(), sessionCount = 0, sessionHits = 0;
@@ -20,13 +21,16 @@ export function mountDrill({positions, allPositions, pieces, cid, group, mode, o
       value.mode === mode && value.fen === position.fen && position.legal.includes(value.picked) &&
       typeof value.requestId === 'string' && /^[a-f0-9-]{32,36}$/.test(value.requestId) &&
       ['chosen', 'submitted', 'feedback'].includes(value.phase) &&
+      (!mixed || (Array.isArray(value.remaining) && value.remaining.length <= allPositions.length &&
+        new Set(value.remaining).size === value.remaining.length &&
+        value.remaining.every(idx => idx !== value.position && byIndex.has(idx)))) &&
       (value.phase === 'chosen' ? value.seconds === null :
         Number.isInteger(value.seconds) && value.seconds >= 0 && value.seconds <= 86400);
   }
 
   function persist() { storageFailed = !storage.set(key, draft); }
   function payload() {
-    return {owner, concept: cid, idx: draft.position, fen: draft.fen,
+    return {owner, concept: current.concept ?? cid, idx: current.source_idx ?? draft.position, fen: draft.fen,
       picked: draft.picked, request_id: draft.requestId, seconds: draft.seconds};
   }
 
@@ -40,12 +44,14 @@ export function mountDrill({positions, allPositions, pieces, cid, group, mode, o
     boardEl.replaceChildren(); get('replay').replaceChildren();
     flow.hidden = false; empty.hidden = true;
     get('practice').hidden = false; get('session-done').hidden = true;
+    get('attempt-workspace').hidden = false;
     board = new Board(boardEl, {pieces, orientation: current.orientation, interactive: true,
       onSelect: ({uci}) => {
         if (pending || answered) return;
         picked = uci;
         draft = {version: 2, owner, cid, mode, position: current.idx, fen: current.fen,
           picked, requestId: crypto.randomUUID(), phase: 'chosen', seconds: null};
+        if (mixed) draft.remaining = queue.slice(1).map(position => position.idx);
         persist();
         pickEl.textContent = `${uci.slice(0, 2)} → ${uci.slice(2, 4)}${uci[4] ? ' · promotion' : ''}`;
         lock.disabled = false; undo.disabled = false;
@@ -58,6 +64,7 @@ export function mountDrill({positions, allPositions, pieces, cid, group, mode, o
     }
     pickEl.textContent = picked ? `Your saved move: ${picked.slice(0, 2)} → ${picked.slice(2, 4)}` : 'Choose your move.';
     get('stm').textContent = current.stm + ' to move.';
+    if (mixed) get('review-source').textContent = `${current.label} · practice position ${current.source_idx + 1}`;
     get('counter').textContent = `This session: ${sessionCount + 1} of ${Math.min(5, sessionCount + queue.length)} · ${queue.length} positions remaining`;
     lock.disabled = !picked; undo.disabled = !picked || saved?.phase !== 'chosen';
     lock.textContent = 'Check move'; error.textContent = ''; status.textContent = '';
@@ -85,6 +92,10 @@ export function mountDrill({positions, allPositions, pieces, cid, group, mode, o
     }
     answered = true; sessionCount++; sessionHits += Number(result.correct);
     tried.add(current.idx); if (result.correct) found.add(current.idx);
+    // Recovery may show an older receipt than this page's server-side history.
+    if (!restored) {
+      if (result.correct) outstanding.delete(current.idx); else outstanding.add(current.idx);
+    }
     draft.phase = 'feedback'; persist();
     const mark = document.createElement('i'); mark.className = result.correct ? 'hit' : 'done'; get('tally').append(mark);
     status.textContent = storageFailed
@@ -97,6 +108,7 @@ export function mountDrill({positions, allPositions, pieces, cid, group, mode, o
     get('comparison').textContent = `You played ${result.picked_san}. The engine plays ${result.best_san}.`;
     get('next').textContent = sessionCount === 5 || queue.length === 1 ? 'Finish this session' : 'Next position';
     feedback.hidden = false; error.textContent = ''; focusHeading(verdict);
+    get('attempt-workspace').hidden = true;
   }
 
   function failed(errorValue, action) {
@@ -150,11 +162,13 @@ export function mountDrill({positions, allPositions, pieces, cid, group, mode, o
       get('session-score').textContent = `${sessionHits} / ${sessionCount}`;
       get('session-copy').textContent = 'engine moves found in this session. Your progress is saved.';
       const complete = tried.size === group.total;
-      get('session-title').textContent = !queue.length && complete ? 'Group complete'
+      get('session-title').textContent = mixed ? 'Review session complete' : !queue.length && complete ? 'Group complete'
         : !queue.length && mode === 'missed' ? 'Review complete' : 'Session complete';
-      get('group-progress').textContent = `This group: ${tried.size} of ${group.total} positions tried, ${found.size} engine moves found. Each position counts once.`;
+      get('group-progress').textContent = mixed
+        ? `${outstanding.size} ${outstanding.size === 1 ? 'position still needs' : 'positions still need'} another look. Missed moves stay in your review queue.`
+        : `This group: ${tried.size} of ${group.total} positions tried, ${found.size} engine moves found. Each position counts once.`;
       get('continue').hidden = queue.length === 0;
-      get('next-group').hidden = queue.length !== 0 || !complete;
+      get('next-group').hidden = mixed || queue.length !== 0 || !complete;
       focusHeading(get('session-title'));
     } else { load(); focusHeading(get('counter')); }
   });
@@ -166,9 +180,11 @@ export function mountDrill({positions, allPositions, pieces, cid, group, mode, o
   const saved = storage.get(key);
   const usable = validDraft(saved) && (saved.phase !== 'chosen' || positions.some(p => p.idx === saved.position));
   if (saved && !usable) storage.remove(key);
-  // Every drill mode follows curriculum order. Earlier entries may still be
-  // present in restart or missed mode, but were already visited this session.
-  if (usable) queue = [byIndex.get(saved.position), ...queue.filter(p => p.idx > saved.position)];
+  // Group drills use curriculum order; mixed review preserves the saved tail.
+  // Keep only still-outstanding tail entries after a reload or another device's work.
+  if (usable) queue = [byIndex.get(saved.position), ...(mixed
+    ? saved.remaining.filter(idx => outstanding.has(idx)).map(idx => byIndex.get(idx))
+    : queue.filter(p => p.idx > saved.position))];
   load(usable ? saved : null);
   if (usable && saved.phase !== 'chosen') void restore();
 }

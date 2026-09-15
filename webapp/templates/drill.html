@@ -1,13 +1,22 @@
 {% extends "base.html" %}
-{% block title %}Practice · {{ c.name }}{% endblock %}
+{% block title %}{{ 'Review your moves' if mixed else 'Practice · ' ~ c.name }}{% endblock %}
 {% block body %}
+{% if mixed %}
+<p class="crumb"><a href="{{ url_for('learn') }}">Learn</a> · Review</p>
+<h1 class="tight" id="practice-title">Another look at your moves</h1>
+<p class="lede">Positions you missed on your latest attempt, from any of the eight groups.
+Review up to five at a time, starting with the ones you last attempted longest ago.</p>
+<p class="small">Find the engine’s move to clear a position. If you miss it again later, it returns here.
+Results from the twelve-position test stay in their own review.</p>
+{% else %}
 <p class="crumb"><a href="{{ url_for('concept', cid=c.id) }}">{{ c.name }}</a> · {{ 'Review missed positions' if mode == 'missed' else 'Practice' }}</p>
 <h1 class="tight" id="practice-title">{{ c.name }}: practice</h1>
 <p class="lede">Play up to five positions, checking the engine’s line after each one.
 <a href="{{ url_for('concept', cid=c.id) }}">Review the study examples</a>.</p>
+{% endif %}
 <div id="practice-flow"{% if not positions %} hidden{% endif %}>
 <div id="practice">
-  <div class="stage">
+  <div class="stage" id="attempt-workspace">
     <div class="board-column"><p class="stm" id="stm"></p><div id="board"></div><p class="board-help">Click or drag a piece. Keyboard: arrow keys, then Enter to select.</p></div>
     <div class="side">
       <p class="pickline" id="pick" aria-live="polite">Choose your move.</p>
@@ -15,12 +24,13 @@
         <button class="btn ghost" id="undo" disabled>Take back</button>
         <button class="btn p" id="lock" disabled>Check move</button>
       </div>
-      <p id="save-status" role="status"></p>
-      <p id="save-error" class="err" role="alert"></p>
       <div class="tally" id="tally" aria-hidden="true"></div>
       <p class="counter" id="counter"></p>
+      {% if mixed %}<p class="small" id="review-source"></p>{% endif %}
     </div>
   </div>
+  <p id="save-status" role="status"></p>
+  <p id="save-error" class="err" role="alert"></p>
   <section id="feedback" hidden>
     <h2 id="verdict" tabindex="-1"></h2>
     <p id="comparison"></p>
@@ -39,12 +49,19 @@
     <button class="btn p" id="continue">Practice five more</button>
     {% if next_group %}<a class="btn p" id="next-group" href="{{ next_group.next_url }}" hidden>Next group: {{ next_group.c.label }}</a>
     {% else %}<a class="btn p" id="next-group" href="{{ url_for('blindspot_test') }}" hidden>Take the twelve-position test</a>{% endif %}
-    <a class="btn" href="{{ url_for('drill', cid=c.id, mode='missed') }}">Review missed positions</a>
+    <a class="btn" href="{{ url_for('review') if mixed else url_for('drill', cid=c.id, mode='missed') }}">{{ 'Check review queue' if mixed else 'Review missed positions' }}</a>
+    {% if not mixed %}<a class="btn ghost" href="{{ url_for('review') }}">Review across all groups</a>{% endif %}
     <a class="btn ghost" href="{{ url_for('learn') }}">Finish for now</a>
   </div>
 </section>
 </div>
 <section id="practice-empty"{% if positions %} hidden{% endif %}>
+{% if mixed %}
+<h2>Nothing waiting for review</h2>
+<p class="lede">{{ 'Your latest attempt matches the engine’s move on every position you’ve tried.' if group.tried else 'Try a practice session first. Positions you miss will appear here.' }}</p>
+<p class="small">This queue records your latest practice answers. Clearing it doesn’t measure retention or chess strength.</p>
+<a class="btn p" href="{{ url_for('learn') }}">Choose what to practice</a>
+{% else %}
 <p class="lede">{{ 'No missed positions to review. Try a practice session first, or revisit the whole pattern.' if mode == 'missed' else 'You have tried every position in this pattern. Revisit them or choose your next pattern.' }}</p>
 <p>{{ group.tried|length }} of {{ group.total }} positions tried · {{ group.found|length }} engine moves found.
 Each position counts once.</p>
@@ -57,13 +74,14 @@ Each position counts once.</p>
   {% if mode != 'missed' %}<a class="btn" href="{{ url_for('drill', cid=c.id, mode='missed') }}">Review missed positions</a>{% endif %}
   <a class="btn ghost" href="{{ url_for('learn') }}">All patterns</a>
 </div>
+{% endif %}
 </section>
 <script type="module">
 import { mountDrill } from "{{ url_for('static', filename='drill.js') }}";
-const POS = {{ positions|tojson }}, PIECES = {{ pieces|tojson }}, CID = {{ c.id }};
+const POS = {{ positions|tojson }}, PIECES = {{ pieces|tojson }}, CID = {{ -1 if mixed else c.id }};
 const GROUP = {{ group|tojson }}, MODE = {{ mode|tojson }};
 const OWNER = {{ code|tojson }};
 mountDrill({positions: POS, allPositions: {{ all_positions|tojson }}, pieces: PIECES,
-  cid: CID, group: GROUP, mode: MODE, owner: OWNER});
+  cid: CID, group: GROUP, mode: MODE, owner: OWNER, mixed: {{ mixed|default(false)|tojson }}});
 </script>
 {% endblock %}

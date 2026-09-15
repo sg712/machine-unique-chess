@@ -43,7 +43,7 @@
   <h2>Try the four examples</h2>
   <p>Choose the move you would play in a game. After checking your move, you can read the explanation and replay both continuations.</p>
 
-  <div class="stage trybox">
+  <div class="stage trybox" id="study-attempt-workspace">
     <div id="tryboard"></div>
     <div class="side">
       <p class="stm" id="trystm"></p>
@@ -52,14 +52,14 @@
         <button class="btn ghost" id="tryundo" disabled>Take back</button>
         <button class="btn p" id="trylock" disabled>Check move</button>
       </div>
-      <div id="tryfb" style="display:none">
-        <p class="verdict" id="tryverdict" role="status"></p>
-        <p id="tryline"></p>
-        <p class="small">The comparison move is Maia’s top prediction for a 1900-rated player.</p>
-      </div>
       <div class="tally" id="trytally"></div>
       <p class="counter" id="trycounter"></p>
     </div>
+  </div>
+  <div id="tryfb" style="display:none">
+    <p class="verdict" id="tryverdict" role="status"></p>
+    <p id="tryline"></p>
+    <p class="small">The comparison move is Maia’s top prediction for a 1900-rated player.</p>
   </div>
   <div id="try-replay" class="replay"></div>
   <div class="row" id="try-next-controls" hidden><button class="btn p" id="trynext">Next position &rarr;</button></div>
@@ -156,6 +156,7 @@ const undo = document.getElementById("tryundo");
 
 function loadTry() {
   const line = LINES[idx];
+  document.getElementById('study-attempt-workspace').hidden = false;
   document.getElementById("try-replay").replaceChildren();
   document.getElementById("try-next-controls").hidden = true;
   tryEl.innerHTML = "";
@@ -209,6 +210,7 @@ function showTryFeedback(focus = true) {
 
   board.setLegal([]);
   studyReplay(document.getElementById('try-replay'), line, PIECES, picked);
+  document.getElementById('study-attempt-workspace').hidden = true;
   document.getElementById("tryfb").style.display = "";
   document.getElementById("try-next-controls").hidden = false;
   if (focus) focusHeading(document.getElementById("tryverdict"));

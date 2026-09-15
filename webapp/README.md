@@ -13,9 +13,10 @@ python webapp/app.py
 - `/learn`: suggested practice order; Continue prioritises groups already in progress, then studied groups.
 - `/pattern/<id>`: four study examples with replay. Unfinished examples and choices resume in the same browser; saved account study progress avoids repeating the introduction on another device.
 - `/pattern/<id>/drill`: five-position sessions drawn from 36 positions per group, followed by review or the next unfinished group. Twenty-four positions have authored explanations; the others retain their engine-line feedback.
-- `/test`: resumable, signed placement attempts; estimates are exploratory.
+- `/review`: five-position sessions across all groups, ordered by oldest latest attempt. A latest miss enters the queue even after an earlier success; a correct answer clears it. Review is a single pass, with remaining misses available on the next visit.
+- `/test`: resumable, owner-bound signed attempts. Results lead with actual answers and missed/all review filters, including authored explanations when available. Rating comparisons are secondary and exploratory.
 - `/research`: methods, three worked examples, saved results, new robustness checks and study protocol.
-- `/me`: distinct positions tried and engine moves found, with repeat-attempt totals labelled separately. Email/password sign-in and a recovery code preserve access across devices.
+- `/me`: next-practice and review actions, distinct first-try/latest-try/ever-found totals, and per-group review counts. Repeated attempts and test results are separate. Email/password sign-in and legacy recovery codes preserve access across devices.
 
 The research page reads `research_examples.json` and the committed audit JSONs in `results/`; it does not run an engine during a request. Its comparison viewer reuses the existing board and replay components. Static starting boards and text continuations remain readable without JavaScript.
 
@@ -31,6 +32,17 @@ offers an explicit retry of the same move, request ID and elapsed time. Account 
 changed positions reject stale saves. Reload recovery requires browser storage; progress
 already saved on the server remains available without it. Earlier unowned browser drafts
 are not imported. Session tallies restart on reload; distinct account progress does not.
+Mixed review drafts also preserve the remaining cross-group order and use the actual group
+and index in every save. Restoring an old receipt does not overwrite the fresh server-derived
+review count. Practice and study feedback hide the original attempt board after replay is
+ready; the replay's “Your move” control remains available for comparison.
+
+Sign-in offers an unchecked, explicit option to add this browser's guest history to an
+existing account. Registered-account history cannot be transferred this way. Guest attempts,
+study progress, test results and submission receipts move in one transaction. Account
+transitions and answer writes lock the affected player to avoid stranding an in-flight answer.
+Test links belong to their original player; links created before owner binding require a fresh
+test. Browser-origin checks reject cross-site account/progress changes, including logout.
 
 Interactive boards support arrow keys, row Home/End, Ctrl+Home/End for board corners,
 Enter/Space selection, Escape cancellation and keyboard promotion choices. Square labels

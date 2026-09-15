@@ -20,6 +20,8 @@ The recorded move matched the exact engine choice in 1,199 selected positions; t
 
 The revised study compares identical material in grouped or shuffled order. Validation, concealed allocation and local material-review exports are implemented; final private items, independent review and actual participant collection remain prerequisites. No human learning result is claimed.
 
+**Editorial review, 16 September:** a private review desk turns completed evidence into a reproducible 24-position batch (12 White, 12 Black), with saved continuations for every legal root, alternative-move comparison and portable review notes. Validation/test-role material is excluded. The batch is for developing explanations, with every review and trainer-readiness gate still pending. [Review workflow](docs/CANDIDATE_REVIEW.md).
+
 New checks, 7 September 2026:
 
 - **Depth audit:** 48 sampled positions from different games, eight per rating band. Every search reached depth 20; 35 retained the original first move. In 44 cases without mate scores, 42 retained the 100cp gap against Maia's favourite. This is a small stratified audit, not a full remine.
@@ -31,6 +33,8 @@ New checks, 7 September 2026:
 The eight groups are an exploratory practice organization. The 12-motif reconstruction does not establish that residual variance represents unknown chess concepts. Sparse-direction extraction did not generalize in the earlier 30-fit experiment. See [grouping findings](docs/FINDINGS_validation.md), [feature associations](docs/FINDINGS_methods.md), and [difficulty evaluation](docs/FINDINGS_difficulty.md).
 
 ## Run the trainer
+
+Practice now has a cross-group [review queue](https://www.machine-unique-chess.com/review): positions return when the latest attempt misses, even after an earlier correct answer. Progress distinguishes first-try, latest-try and ever-found results. Test review leads with the moves to revisit and uses the existing authored explanations where available. These records describe answers, not learning gains.
 
 ```sh
 python -m pip install -r requirements.txt

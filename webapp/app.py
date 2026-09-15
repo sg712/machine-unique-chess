@@ -14,6 +14,7 @@ import re
 import secrets
 import sqlite3
 import time
+from urllib.parse import urlsplit
 
 import chess
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -52,6 +53,48 @@ app.secret_key = os.environ.get("SECRET_KEY", "unnamed-concepts-local-dev")
 app.config.update(SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE="Lax",
                   SESSION_COOKIE_SECURE=bool(os.environ.get("VERCEL")),
                   MAX_CONTENT_LENGTH=64 * 1024)
+
+
+def _request_origin_matches(value):
+    """Compare browser origins with the actual request host, never forwarded hosts."""
+    try:
+        origin = urlsplit(value)
+        target = urlsplit(request.host_url)
+        if (origin.scheme not in ("http", "https") or not origin.hostname or
+                origin.username is not None or origin.password is not None):
+            return False
+        source = (origin.scheme, origin.hostname.lower(),
+                  origin.port or (443 if origin.scheme == "https" else 80))
+        destination = (target.scheme, target.hostname.lower(),
+                       target.port or (443 if target.scheme == "https" else 80))
+        if source == destination:
+            return True
+        # Vercel terminates HTTPS before forwarding a request to Python. Accept
+        # that one transport change only, with the same actual Host header.
+        return (bool(os.environ.get("VERCEL")) and
+                destination == ("http", source[1], 80) and
+                source == ("https", source[1], 443))
+    except (TypeError, ValueError, AttributeError):
+        return False
+
+
+@app.before_request
+def protect_browser_writes():
+    """Reject cross-origin browser forms, including requests that change accounts."""
+    if request.method in ("GET", "HEAD", "OPTIONS") and request.endpoint != "logout":
+        return None
+    fetch_site = request.headers.get("Sec-Fetch-Site")
+    origin = request.headers.get("Origin")
+    referer = request.headers.get("Referer")
+    rejected = (fetch_site not in (None, "none", "same-origin") or
+                (origin is not None and not _request_origin_matches(origin)) or
+                (origin is None and referer is not None and not _request_origin_matches(referer)))
+    if rejected:
+        message = "Open this page on Machine Unique Chess and try again."
+        response = jsonify(error=message) if request.path.startswith("/api/") else app.response_class(message)
+        response.status_code = 403
+        response.headers["Cache-Control"] = "no-store"
+        return response
 
 CONCEPTS = json.load(open(ROOT / "webapp" / "concepts.json"))
 BY_ID = {c["id"]: c for c in CONCEPTS}
@@ -179,7 +222,7 @@ def me():
 
 def ensure_player() -> str:
     """Every visitor gets a player row on first action, no signup wall."""
-    code = me()
+    code = lock_current_player()
     if code:
         return code
     code = secrets.token_hex(3).upper()
@@ -203,21 +246,48 @@ def inject_account():
     return {"email": current_email()}
 
 
-def concept_progress(code: str) -> dict:
-    """Per-concept: studied?, drills attempted, drills correct."""
-    out = {}
+def practice_history(code):
+    """First, latest and ever-correct outcomes for each current practice position.
+
+    Saved row IDs order attempts, including retries made within the same second.
+    Receipt retries never insert another row. Tests are deliberately separate.
+    """
     if not code:
-        return {c["id"]: {"studied": False, "n": 0, "correct": 0, "of": len(c["drill"])}
-                for c in CONCEPTS}
-    st = {r["concept"] for r in db().execute("SELECT concept FROM studied WHERE code=?", (code,))}
-    rows = db().execute(
-        """SELECT concept, COUNT(DISTINCT idx) n,
-           COUNT(DISTINCT CASE WHEN correct=1 THEN idx END) c FROM attempt
-           WHERE code=? GROUP BY concept""", (code,)).fetchall()
-    agg = {r["concept"]: (r["n"], r["c"] or 0) for r in rows}
+        return []
+    rows = db().execute("""
+        SELECT last.concept, last.idx, last.fen, last.correct, last.created_at,
+               last.id, first.correct first_correct, stats.ever_found,
+               stats.attempts
+        FROM (SELECT concept, idx, MIN(id) first_id, MAX(id) last_id,
+                     MAX(correct) ever_found, COUNT(*) attempts
+              FROM attempt WHERE code=? GROUP BY concept, idx, fen) stats
+        JOIN attempt last ON last.id=stats.last_id
+        JOIN attempt first ON first.id=stats.first_id
+        ORDER BY last.id
+        """, (code,)).fetchall()
+    return [dict(row) for row in rows if row["concept"] in BY_ID
+            and 0 <= row["idx"] < len(BY_ID[row["concept"]]["drill"])
+            and row["fen"] == BY_ID[row["concept"]]["drill"][row["idx"]]["fen"]]
+
+
+def practice_summary(history):
+    return {"tried": len(history),
+            "first": sum(bool(row["first_correct"]) for row in history),
+            "latest": sum(bool(row["correct"]) for row in history),
+            "review": sum(not row["correct"] for row in history)}
+
+
+def concept_progress(code: str) -> dict:
+    """Keep historical coverage separate from positions needing another look."""
+    out = {}
+    st = {r["concept"] for r in db().execute("SELECT concept FROM studied WHERE code=?", (code,))} if code else set()
+    history = practice_history(code)
     for c in CONCEPTS:
-        n, corr = agg.get(c["id"], (0, 0))
-        out[c["id"]] = {"studied": c["id"] in st, "n": n, "correct": corr,
+        rows = [row for row in history if row["concept"] == c["id"]]
+        out[c["id"]] = {"studied": c["id"] in st, "n": len(rows),
+                        "correct": sum(bool(row["ever_found"]) for row in rows),
+                        "review": sum(not row["correct"] for row in rows),
+                        "first": sum(bool(row["first_correct"]) for row in rows),
                         "of": len(c["drill"])}
     return out
 
@@ -307,7 +377,8 @@ def index():
                            prog=concept_progress(code), totals=totals(),
                            previews=previews, pieces=piece_svgs(),
                            featured=featured, featured_board=featured_board,
-                           featured_demo=featured_demo)
+                           featured_demo=featured_demo,
+                           practice=practice_summary(practice_history(code)))
 
 
 def curriculum(code=None):
@@ -357,6 +428,7 @@ def learn():
            "done": sum(1 for r in rows if r["state"] == "done"),
            "started": sum(1 for r in rows if r["state"] != "new")}
     return render_template("learn.html", rows=rows, nxt=nxt, tot=tot, code=code,
+                           review_count=sum(r["p"]["review"] for r in rows),
                            previews={r["c"]["id"]: {
                                "fen": r["c"]["study"][0]["fen"],
                                "orientation": r["c"]["study"][0]["stm"]} for r in rows},
@@ -426,19 +498,15 @@ def drill(cid):
         return redirect(url_for("index"))
     c = BY_ID[cid]
     code = ensure_player()
-    seen, solved = set(), set()
-    if code:
-        for r in db().execute("SELECT idx, MAX(correct) correct FROM attempt WHERE code=? AND concept=? GROUP BY idx",
-                              (code, cid)).fetchall():
-            seen.add(r["idx"])
-            if r["correct"]:
-                solved.add(r["idx"])
+    history = [row for row in practice_history(code) if row["concept"] == cid]
+    seen = {row["idx"] for row in history}
+    solved = {row["idx"] for row in history if row["ever_found"]}
     mode = request.args.get("mode", "continue")
     if mode not in ("continue", "restart", "missed"):
         mode = "continue"
     order = list(range(len(c["drill"])))
     if mode == "missed":
-        order = sorted(seen - solved)
+        order = sorted(row["idx"] for row in history if not row["correct"])
     elif mode == "continue":
         order = [i for i in order if i not in seen]
     all_positions = [{**board_of(position["fen"]), "idx": i}
@@ -449,6 +517,25 @@ def drill(cid):
                            group={"tried": sorted(seen), "found": sorted(solved),
                                   "total": len(c["drill"])},
                            next_group=next_group(curriculum(code), cid))
+
+
+@app.route("/review")
+def review():
+    """A repeatable, oldest-outstanding-first queue across all eight groups."""
+    code = ensure_player()
+    history = practice_history(code)
+    all_positions = [{**board_of(pos["fen"]), "idx": f"{c['id']}:{i}",
+                      "concept": c["id"], "source_idx": i, "label": c["label"]}
+                     for c in CONCEPTS for i, pos in enumerate(c["drill"])]
+    by_key = {pos["idx"]: pos for pos in all_positions}
+    positions = [by_key[f"{row['concept']}:{row['idx']}"]
+                 for row in history if not row["correct"]]
+    return render_template("drill.html", c=None, positions=positions,
+                           all_positions=all_positions, pieces=PIECES,
+                           mode="review", code=code, mixed=True,
+                           group={"tried": [f"{r['concept']}:{r['idx']}" for r in history],
+                                  "found": [f"{r['concept']}:{r['idx']}" for r in history if r["ever_found"]],
+                                  "total": len(all_positions)}, next_group=None)
 
 
 def legal_pick(fen, picked):
@@ -502,7 +589,9 @@ def api_answer():
     key = d.get("request_id")
     if not isinstance(key, str) or not re.fullmatch(r"[a-f0-9-]{32,36}", key):
         return jsonify(error="Reload this practice session before saving."), 400
-    code = ensure_player()
+    code = lock_current_player(d["owner"]) if "owner" in d else ensure_player()
+    if not code:
+        return jsonify(error="Your account changed. Reload before saving this answer."), 403
     key = "drill:" + key
     cached = reserve_submission(key, code, {"concept": cid, "idx": idx, "picked": picked})
     if cached is not None:
@@ -574,7 +663,9 @@ def profile():
                       (code,)).fetchone()
     return render_template("me.html", code=code, concepts=CONCEPTS,
                            tot=tot, prog=prog, attempts=dict(attempts),
-                           bs=dict(bs) if bs else None)
+                           bs=dict(bs) if bs else None,
+                           practice=practice_summary(practice_history(code)),
+                           nxt=recommended_group(curriculum(code)))
 
 
 @app.route("/research")
@@ -611,7 +702,9 @@ def test_signer():
 def read_test(token):
     try:
         data = test_signer().loads(token, max_age=7 * 86400)
-        if not isinstance(data, dict) or not isinstance(data.get("id"), str):
+        if (not isinstance(data, dict) or not isinstance(data.get("id"), str) or
+                not re.fullmatch(r"[a-f0-9]{32}", data["id"]) or
+                not isinstance(data.get("owner"), str) or not CODE_RE.fullmatch(data["owner"])):
             return None
         keys = data.get("items")
         if not isinstance(keys, list) or len(keys) != 12 or len(set(keys)) != 12:
@@ -638,18 +731,23 @@ def blindspot_test():
             remaining = [f"{cid}:{i}" for i in range(len(BY_ID[cid]["drill"]))
                          if f"{cid}:{i}" not in keys]
             keys.append(random.choice(remaining))
-        token = test_signer().dumps({"id": secrets.token_hex(16), "items": keys})
+        token = test_signer().dumps({"id": secrets.token_hex(16), "items": keys,
+                                     "owner": ensure_player()})
         return redirect(url_for("blindspot_test", attempt=token))
     attempt = read_test(token)
     if attempt is None:
         return render_template("test_start.html", code=me(),
                                error="This test link has expired or is invalid. Start a fresh test."), 400
+    code = me()
+    if attempt["owner"] != code:
+        return render_template("test_start.html", code=code,
+            error="This test belongs to a different session. Sign back in to the original account or start a fresh test."), 403
     payload = []
     for key in attempt["items"]:
         cid, i = map(int, key.split(":"))
         payload.append(board_of(BY_ID[cid]["drill"][i]["fen"]))
     return render_template("test.html", items=payload, pieces=PIECES,
-                           token=token, attempt_id=attempt["id"], code=ensure_player())
+                           token=token, attempt_id=attempt["id"], code=code)
 
 
 @app.post("/api/blindspot")
@@ -661,6 +759,9 @@ def api_blindspot():
     picks = data.get("picks")
     if attempt is None:
         return {"error": "This test link has expired. Start a fresh test."}, 400
+    code = me()
+    if attempt["owner"] != code:
+        return {"error": "Your account changed. Sign back in to the original account or start a fresh test."}, 403
     keys = attempt["items"]
     if not isinstance(picks, list) or len(picks) != len(keys):
         return {"error": "Answer all twelve positions before saving your result."}, 400
@@ -668,7 +769,9 @@ def api_blindspot():
         cid, i = map(int, key.split(":"))
         if not legal_pick(BY_ID[cid]["drill"][i]["fen"], picked):
             return {"error": "One answer is not a legal move. Return to that position and choose again."}, 400
-    code = ensure_player()
+    code = lock_current_player(attempt["owner"])
+    if not code:
+        return {"error": "Your account changed. Sign back in to the original account or start a fresh test."}, 403
     receipt = "test:" + attempt["id"]
     cached = reserve_submission(receipt, code, {"picks": picks})
     if cached is not None:
@@ -684,7 +787,7 @@ def api_blindspot():
         reveal.append({"fen": pos["fen"], "best_san": pos["best_san"],
                        "picked_san": b.san(chess.Move.from_uci(picked)), "hit": hit,
                        "picked": picked, "concept": BY_ID[cid]["label"], "cid": cid,
-                       "line": frames_of(pos["fen"], pos["pv"])})
+                       "line": practice_line(cid, i, pos)})
         for bi, pr in enumerate(TEST_DATA["items"][key]):
             pr = min(max(pr, 0.03), 0.97)
             loglik[bi] += math.log(pr if hit else 1.0 - pr)
@@ -697,6 +800,60 @@ def api_blindspot():
         "band": TEST_DATA["band_labels"][best_band], "band_idx": best_band,
         "band_labels": TEST_DATA["band_labels"], "staircase": TEST_DATA["staircase"],
         "reveal": reveal})
+
+
+def guest_progress_for(code):
+    """Only anonymous progress can be offered for an optional account transfer."""
+    empty = {"positions": 0, "studied": 0, "tests": 0}
+    if not code or db().execute("SELECT 1 FROM account WHERE code=?", (code,)).fetchone():
+        return empty
+    positions = db().execute("""SELECT COUNT(*) n FROM (
+        SELECT concept, idx FROM attempt WHERE code=? GROUP BY concept, idx
+        ) AS tried""", (code,)).fetchone()["n"]
+    studied = db().execute("SELECT COUNT(*) n FROM studied WHERE code=?", (code,)).fetchone()["n"]
+    tests = db().execute("SELECT COUNT(*) n FROM blindspot WHERE code=?", (code,)).fetchone()["n"]
+    return {"positions": positions, "studied": studied, "tests": tests}
+
+
+def _lock_player_for_account_change(code):
+    """Serialize a guest transfer with registration of that same player."""
+    connection = db()
+    if DATABASE_URL:
+        return connection.execute("SELECT code FROM player WHERE code=? FOR UPDATE", (code,)).fetchone()
+    if not connection.in_transaction:
+        connection.execute("BEGIN IMMEDIATE")
+    return connection.execute("SELECT code FROM player WHERE code=?", (code,)).fetchone()
+
+
+def lock_current_player(expected=None):
+    """Bind a write to a still-owned player while account transitions are locked."""
+    code = me()
+    if not code or (expected is not None and expected != code):
+        return None
+    if not _lock_player_for_account_change(code):
+        return None
+    return code if me() == code else None
+
+
+def merge_guest_progress(source, destination):
+    """Move opted-in guest history and receipts together; the caller commits."""
+    if not source or source == destination:
+        return False
+    if not _lock_player_for_account_change(source):
+        return False
+    # Recheck after acquiring the lock: another tab may just have registered.
+    if db().execute("SELECT 1 FROM account WHERE code=?", (source,)).fetchone():
+        return False
+    for row in db().execute("SELECT concept, at FROM studied WHERE code=?", (source,)).fetchall():
+        db().execute("""INSERT INTO studied(code, concept, at) VALUES(?,?,?)
+            ON CONFLICT (code, concept) DO UPDATE SET at = CASE
+            WHEN studied.at IS NULL OR EXCLUDED.at > studied.at THEN EXCLUDED.at
+            ELSE studied.at END""", (destination, row["concept"], row["at"]))
+    for table in ("attempt", "blindspot", "submission"):
+        db().execute(f"UPDATE {table} SET code=? WHERE code=?", (destination, source))
+    db().execute("DELETE FROM studied WHERE code=?", (source,))
+    db().execute("DELETE FROM player WHERE code=?", (source,))
+    return True
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -713,9 +870,10 @@ def register():
             error = "That email is already registered. Sign in instead."
         else:
             code = ensure_player()
+            exists = _lock_player_for_account_change(code)
             # if this browser's progress already belongs to another account,
             # start the new account on a fresh slate instead of stealing it
-            if db().execute("SELECT 1 FROM account WHERE code=?", (code,)).fetchone():
+            if not exists or db().execute("SELECT 1 FROM account WHERE code=?", (code,)).fetchone():
                 code = secrets.token_hex(3).upper()
                 db().execute("INSERT INTO player(code, created_at) VALUES(?,?)",
                              (code, time.time()))
@@ -732,17 +890,25 @@ def register():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     error = None
+    guest = me()
+    guest_progress = guest_progress_for(guest)
     if request.method == "POST":
         email = (request.form.get("email") or "").strip().lower()
         pw = request.form.get("password") or ""
         row = db().execute("SELECT * FROM account WHERE email=?", (email,)).fetchone()
         if row and check_password_hash(row["pw_hash"], pw):
+            if request.form.get("merge_progress") == "on":
+                merge_guest_progress(guest, row["code"])
+                db().commit()
             session["code"] = row["code"]
             session["authenticated_code"] = row["code"]
             session.permanent = True
             return redirect(url_for("profile"))
         error = "Wrong email or password."
-    return render_template("login.html", error=error, code=me())
+    return render_template("login.html", error=error, code=guest,
+                           guest_progress=guest_progress,
+                           guest_progress_count=guest_progress["positions"],
+                           guest_progress_available=any(guest_progress.values()))
 
 
 @app.route("/logout")

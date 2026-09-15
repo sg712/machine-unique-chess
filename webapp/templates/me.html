@@ -2,26 +2,40 @@
 {% block title %}Your progress{% endblock %}
 {% block body %}
 <h1>Your progress</h1>
-{% if bs %}<p class="small">Latest twelve-position test: <b>{{ bs.correct }}/{{ bs.n }}</b>
- &middot; rough Lichess comparison: <b>{{ bs.band }}</b> (not a chess rating) &middot;
- <a href="{{ url_for('blindspot_test') }}">retake</a></p>{% endif %}
 {% if email %}<p class="lede">Signed in as <b>{{ email }}</b>.</p>
 {% else %}<p class="lede">Your progress is linked to this browser.
 <a href="{{ url_for('register') }}">Register with an email</a> to continue on another device.</p>{% endif %}
 
+<section class="practice-return" aria-labelledby="next-practice">
+  <div><h2 id="next-practice">{% if practice.review %}{{ practice.review }} {{ 'position' if practice.review == 1 else 'positions' }} to revisit
+  {% elif tot.n %}Ready for another session{% else %}Start with a position{% endif %}</h2>
+  <p>{% if practice.review %}Your latest attempt missed the engine’s move. Review five at a time, across all groups.
+  {% elif tot.n %}Nothing is waiting in your review queue. Continue with fresh positions or revisit a group.
+  {% else %}Study four examples, then try five positions on your own.{% endif %}</p></div>
+  <div class="row">
+    {% if practice.review %}<a class="btn p" href="{{ url_for('review') }}">Review {{ [practice.review, 5]|min }}</a>{% endif %}
+    {% if nxt %}<a class="btn{% if not practice.review %} p{% endif %}" href="{{ nxt.next_url }}">{{ 'Continue practice' if tot.n else 'Choose a first group' }}</a>
+    {% else %}<a class="btn" href="{{ url_for('learn') }}">Choose a group</a>{% endif %}
+  </div>
+</section>
+
 {% if tot.n %}
-<p class="bignum">{{ tot.c or 0 }}<span>/{{ tot.n }}</span></p>
-<p>engine moves found across {{ tot.n }} positions tried.</p>
-<p class="small">Each position counts once. “Found” means you chose the engine’s move at least once.</p>
+<h2>What your answers show</h2>
+<dl class="practice-record">
+  <div><dt>First practice try</dt><dd>{{ practice.first }} <span>/ {{ tot.n }}</span><p>Found the engine’s move on your first saved practice attempt.</p></dd></div>
+  <div><dt>Latest try</dt><dd>{{ practice.latest }} <span>/ {{ tot.n }}</span><p>Found it on your most recent attempt at each position.</p></dd></div>
+  <div><dt>Found at least once</dt><dd>{{ tot.c or 0 }} <span>/ {{ tot.n }}</span><p>Found it at any point, including after seeing the answer.</p></dd></div>
+</dl>
+<p class="small">Each position counts once in each total. These are records of your answers, not a rating or evidence that practice improved your play.</p>
 {% if attempts.n > tot.n %}<p class="small">Including repeats: {{ attempts.n }} attempts,
 {{ attempts.c or 0 }} exact matches.</p>{% endif %}
 {% else %}
-<p class="lede">No positions tried yet. <a href="{{ url_for('index') }}">Pick a pattern</a> to start.</p>
+<p class="small">No positions tried yet. Your saved practice answers will appear here.</p>
 {% endif %}
 
 <h2>By pattern</h2>
 <div class="table-scroll" role="region" aria-label="Scrollable data table" tabindex="0"><table>
-<thead><tr><th>Pattern</th><th>Examples studied</th><th>Positions tried</th><th>Engine moves found</th><th>Found / tried</th></tr></thead>
+<thead><tr><th>Pattern</th><th>Examples studied</th><th>Positions tried</th><th>Found at least once</th><th>Found / tried</th><th>To revisit</th></tr></thead>
 <tbody>
 {% for c in concepts %}
 {% set p = prog[c.id] %}
@@ -31,8 +45,16 @@
   <td>{{ p.n }}/{{ p.of }}</td>
   <td>{{ p.correct }}</td>
   <td>{% if p.n %}{{ (100 * p.correct / p.n)|round(0)|int }}%{% else %}·{% endif %}</td>
+  <td>{% if p.review %}<a href="{{ url_for('drill', cid=c.id, mode='missed') }}">{{ p.review }} {{ 'position' if p.review == 1 else 'positions' }}</a>{% else %}0{% endif %}</td>
 </tr>
 {% endfor %}
 </tbody>
 </table></div>
+{% if bs %}
+<h2>Your latest twelve-position test</h2>
+<p><b>{{ bs.correct }} / {{ bs.n }}</b> engine moves found. Test results are separate from practice totals.</p>
+<details class="sigdrawer"><summary>Rough rating comparison</summary>
+<p>{{ bs.band }} on the Lichess scale used by the model. A twelve-position result is too small to establish a chess rating.</p></details>
+<p><a href="{{ url_for('blindspot_test') }}">Take another twelve-position test</a></p>
+{% endif %}
 {% endblock %}

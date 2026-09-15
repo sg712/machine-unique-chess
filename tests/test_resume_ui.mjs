@@ -57,10 +57,12 @@ test('study restores the chosen move, checked feedback, and next example after r
   assert.equal(second.document.getElementById('trypick').textContent, chosen);
   assert.equal(second.document.getElementById('trylock').disabled, false);
   assert.equal(second.document.querySelector('#try-replay .study-explanation'), null);
+  assert.equal(second.document.getElementById('study-attempt-workspace').hidden, false);
   second.document.getElementById('trylock').click();
   saved = snapshot(second); second.dom.window.close();
   const third = await setup(undefined, saved);
   assert.ok(third.document.querySelector('#try-replay .study-explanation'));
+  assert.equal(third.document.getElementById('study-attempt-workspace').hidden, true);
   assert.equal(third.document.getElementById('try-next-controls').hidden, false);
   third.document.getElementById('trynext').click();
   assert.equal(third.document.activeElement.id, 'trycounter');
@@ -68,6 +70,7 @@ test('study restores the chosen move, checked feedback, and next example after r
   const fourth = await setup(undefined, saved);
   assert.equal(fourth.document.getElementById('trycounter').textContent, 'Position 2 of 4');
   assert.equal(fourth.document.querySelector('#try-replay .study-explanation'), null);
+  assert.equal(fourth.document.getElementById('study-attempt-workspace').hidden, false);
   assert.match(fourth.document.querySelector('#trytally i').className, /hit|done/);
   fourth.dom.window.close();
 });

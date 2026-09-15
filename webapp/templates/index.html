@@ -1,6 +1,17 @@
 {% extends "base.html" %}
 {% block body %}
 
+{% if practice.tried %}
+<section class="practice-return" aria-label="Continue your practice">
+  <div><p><b>{{ practice.tried }} positions tried{% if practice.review %} · {{ practice.review }} to revisit{% endif %}</b></p>
+  <a href="{{ url_for('profile') }}">Your progress</a></div>
+  <div class="row">
+    {% if practice.review %}<a class="btn p" href="{{ url_for('review') }}">Review {{ [practice.review, 5]|min }}</a>{% endif %}
+    <a class="btn{% if not practice.review %} p{% endif %}" href="{{ nxt.next_url }}">Continue practice</a>
+  </div>
+</section>
+{% endif %}
+
 <section class="opening-position" id="home-demo" aria-labelledby="opening-title">
   <h1 id="opening-title">Black to move.<br>What would you play?</h1>
   <figure class="opening-board">

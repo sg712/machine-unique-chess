@@ -9,6 +9,14 @@
   <input type="email" id="email" name="email" required autocomplete="email" value="{{ request.form.get('email', '') }}">
   <label for="password">Password</label>
   <input type="password" id="password" name="password" required autocomplete="current-password">
+  {% if guest_progress_available %}
+  <div class="guest-import">
+    <label class="check-label" for="merge-progress"><input type="checkbox" id="merge-progress" name="merge_progress" value="on">
+      <span>Add this browser’s guest progress to my account</span></label>
+    <p class="small">{{ guest_progress.positions }} practice positions · {{ guest_progress.studied }} groups studied · {{ guest_progress.tests }} saved tests.
+    Leave this unchecked if someone else used this browser.</p>
+  </div>
+  {% endif %}
   <p style="margin-top:1.2rem"><button class="btn p" type="submit">Sign in</button></p>
 </form>
 <p class="small">Need an account? <a href="{{ url_for('register') }}">Create an account</a>.

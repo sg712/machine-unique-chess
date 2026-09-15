@@ -16,6 +16,14 @@
   {% if not code %}<span class="muted">progress saves in this browser</span>{% endif %}
 </div>
 
+{% if review_count %}
+<section class="practice-return" aria-labelledby="review-heading">
+  <div><h2 id="review-heading">{{ review_count }} {{ 'position' if review_count == 1 else 'positions' }} to revisit</h2>
+  <p>Your latest attempt missed the engine’s move. Take another look, across all groups.</p></div>
+  <a class="btn p" href="{{ url_for('review') }}">Review {{ [review_count, 5]|min }}</a>
+</section>
+{% endif %}
+
 {% if nxt %}
 <a class="uptop" href="{{ nxt.next_url }}">
   <span class="k">{{ 'Continue' if nxt.state != 'new' else 'Start here' }}</span>
@@ -44,6 +52,7 @@ the <a href="{{ url_for('blindspot_test') }}">twelve-position test</a>.</p>
         {% elif r.state == 'studied' %}Examples studied · ready to practice
         {% else %}Not started · 4 examples · {{ r.p.of }} to practice in short sessions{% endif %}
       </span>
+      {% if r.p.review %}<span class="st">{{ r.p.review }} to revisit</span>{% endif %}
     </span>
   </a>
   {% endfor %}

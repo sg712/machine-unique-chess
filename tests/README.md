@@ -31,3 +31,11 @@ The recovery endpoint is exercised with SQLite writes forbidden; ownership and p
 checks prevent stale or cross-account recovery. Keyboard checks cover both board orientations,
 nonwrapping navigation, legal-destination labels, promotions and next-position focus.
 These checks do not replace the browser layout and interaction verification described above.
+
+Cross-group review checks cover latest-miss re-entry after an earlier success, first/latest/ever
+denominators, ordering, duplicate numeric indices across groups, saved queue tails, older receipt
+recovery, and separation from test results. Account-integrity checks cover explicit guest import,
+transaction rollback, owner-bound test tokens, cross-origin writes and transfer/write races.
+Private candidate-review checks verify held-out-role exclusions, deterministic colour balance,
+any-origin game separation, evidence integrity and strict portable review notes. Generated private
+packets and their answers are Git-ignored; test fixtures use synthetic evidence.

@@ -24,26 +24,36 @@
 </div>
 <section id="result" hidden>
 <h1 class="tight" id="result-heading" tabindex="-1">Your results</h1>
+<div class="test-result-summary">
+<p class="score" id="test-score"></p>
 <p class="lede" id="verdictline"></p>
-<p><strong>This is a rough comparison, not a chess rating.</strong> The estimate depends on these twelve positions and whether you’ve practiced them before.</p>
-<div class="bars" id="staircase"></div>
-<details class="sigdrawer"><summary>How this comparison works</summary>
-<p class="small">The model picks the rating band that best fits your answers. The bars summarize the original source games, which include bot accounts. They do not measure human success rates on this test.</p>
-<p class="small">The practice bank is easier than the full dataset, so the comparison can overestimate your strength. The model still needs checking against independent test responses.</p>
-</details>
+<p id="review-guidance"></p>
+</div>
 <h2>Review your moves</h2>
-<p>Open a position to compare your move with the engine's line.</p>
+<p>Open a position to replay the engine’s line and read its explanation where available.</p>
+<div class="row test-review-filters" role="group" aria-label="Positions to review">
+  <button type="button" class="btn ghost" id="review-missed" aria-pressed="false" aria-controls="reveal">To revisit</button>
+  <button type="button" class="btn ghost" id="review-all" aria-pressed="true" aria-controls="reveal">All positions</button>
+</div>
 <div id="reveal"></div>
 <p class="row result-actions">
-  <button class="btn" id="sharebtn">Copy your result</button>
   <a class="btn p" href="{{ url_for('learn') }}">Back to practice</a>
+  <button class="btn" id="sharebtn">Copy your result</button>
   <a class="btn ghost" href="{{ url_for('blindspot_test', new=1) }}">New test</a>
 </p>
 <p id="share-status" role="status"></p>
+<details class="sigdrawer" id="rating-comparison"><summary>Rough rating comparison</summary>
+<p id="comparison-band"></p>
+<p><strong>This is not a chess rating.</strong> The estimate depends on these twelve positions and whether you’ve practiced them before.</p>
+<div class="bars" id="staircase"></div>
+<p class="small">The model picks the rating band that best fits your answers. The bars summarize the original source games, which include bot accounts. They do not measure human success rates on this test.</p>
+<p class="small">The practice bank is easier than the full dataset, so the comparison can overestimate your strength. The model still needs checking against independent test responses.</p>
+</details>
 </section>
 <script type="module">
 import { Board } from "{{ url_for('static', filename='board.js') }}";
 import { postJSON, replay, storage, focusHeading } from "{{ url_for('static', filename='training.js') }}";
+import { studyReplay } from "{{ url_for('static', filename='study.js') }}";
 const ITEMS = {{ items|tojson }}, PIECES = {{ pieces|tojson }};
 const TOKEN = {{ token|tojson }}, KEY = 'mu_test_' + {{ attempt_id|tojson }};
 let saved = storage.get(KEY);
@@ -103,7 +113,13 @@ async function submit() {
 retry.addEventListener('click', submit);
 function showResult(r) {
   document.getElementById('quiz').hidden = true; document.getElementById('result').hidden = false;
-  document.getElementById('verdictline').textContent = `You found ${r.correct} of ${r.n} engine moves. Closest comparison band: ${r.band}.`;
+  const missed = r.reveal.filter(item => !item.hit).length;
+  document.getElementById('test-score').textContent = `${r.correct} / ${r.n}`;
+  document.getElementById('verdictline').textContent = `You found ${r.correct} of ${r.n} engine moves.`;
+  document.getElementById('review-guidance').textContent = missed
+    ? `${missed} ${missed === 1 ? 'position' : 'positions'} to revisit. Compare your choice with the saved continuation before trying another set.`
+    : 'You found every engine move in this set. Revisit any line, or return to practice for more positions.';
+  document.getElementById('comparison-band').textContent = `Closest model comparison: Lichess ${r.band}.`;
   const bars = document.getElementById('staircase'); bars.replaceChildren();
   r.band_labels.forEach((label, i) => {
     const row = document.createElement('div'); row.className = 'bar' + (i === r.band_idx ? ' you' : '');
@@ -116,14 +132,36 @@ function showResult(r) {
   const revealed = document.getElementById('reveal'); revealed.replaceChildren();
   r.reveal.forEach((item, i) => {
     const detail = document.createElement('details'); detail.className = 'position-review';
+    detail.dataset.hit = String(item.hit);
     const summary = document.createElement('summary');
-    summary.textContent = `${i + 1}. ${item.hit ? 'Found it' : 'Revisit'} · ${item.concept} · you: ${item.picked_san}, engine: ${item.best_san}`;
+    summary.textContent = `${i + 1}. ${item.hit ? 'Found it' : 'Revisit'} · ${item.concept}`;
+    const choice = document.createElement('p'); choice.className = 'test-review-context';
+    choice.textContent = `You played ${item.picked_san}. The engine plays ${item.best_san}.`;
     const viewer = document.createElement('div'); viewer.className = 'replay';
     const link = document.createElement('a'); link.href = '/pattern/' + item.cid; link.textContent = 'Study ' + item.concept;
-    detail.append(summary, viewer, link); revealed.append(detail);
-    let built = false; detail.addEventListener('toggle', () => { if (detail.open && !built) { replay(viewer, item.line, PIECES, item.picked); built = true; } });
+    detail.append(summary, choice, viewer, link); revealed.append(detail);
+    let built = false; detail.addEventListener('toggle', () => {
+      if (detail.open && !built) {
+        if (item.line.note) studyReplay(viewer, item.line, PIECES, item.picked);
+        else replay(viewer, item.line, PIECES, item.picked);
+        built = true;
+      }
+    });
   });
-  shareText = `I found ${r.correct}/${r.n} engine moves on Machine Unique Chess. Rough comparison on these positions: Lichess ${r.band} (not a chess rating). Try it: https://www.machine-unique-chess.com/test`;
+  const missedButton = document.getElementById('review-missed'), allButton = document.getElementById('review-all');
+  missedButton.textContent = `To revisit (${missed})`; missedButton.disabled = missed === 0;
+  allButton.textContent = `All positions (${r.n})`;
+  function filterReview(onlyMissed) {
+    missedButton.setAttribute('aria-pressed', String(onlyMissed));
+    allButton.setAttribute('aria-pressed', String(!onlyMissed));
+    revealed.querySelectorAll('.position-review').forEach(detail => {
+      detail.hidden = onlyMissed && detail.dataset.hit === 'true';
+    });
+  }
+  missedButton.onclick = () => filterReview(true);
+  allButton.onclick = () => filterReview(false);
+  filterReview(missed > 0);
+  shareText = `I found ${r.correct}/${r.n} engine moves on Machine Unique Chess. Try the twelve-position test: https://www.machine-unique-chess.com/test`;
   focusHeading(document.getElementById('result-heading'));
 }
 document.getElementById('sharebtn').addEventListener('click', async () => {
