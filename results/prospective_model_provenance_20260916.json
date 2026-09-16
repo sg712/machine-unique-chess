@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "checked_on": "2026-09-16",
+  "model": "Maia3-5M",
+  "repository": "UofTCSSLab/Maia3-5M",
+  "revision": "b6559de2398d7140b985f28fd2c19fb5e47ddabe",
+  "weights_sha256": "ba14208b2992d85502f5fb501934abf6aaaeb355e9f3fdf90e326911f562524f",
+  "revision_metadata": {
+    "url": "https://huggingface.co/api/models/UofTCSSLab/Maia3-5M/revision/b6559de2398d7140b985f28fd2c19fb5e47ddabe",
+    "id": "UofTCSSLab/Maia3-5M",
+    "sha": "b6559de2398d7140b985f28fd2c19fb5e47ddabe",
+    "createdAt": "2026-05-17T23:37:02.000Z",
+    "lastModified": "2026-05-23T22:15:03.000Z"
+  },
+  "weight_identity_source": "https://huggingface.co/UofTCSSLab/Maia3-5M/blob/b6559de2398d7140b985f28fd2c19fb5e47ddabe/maia3-5m.pt",
+  "published_training_description": {
+    "url": "https://arxiv.org/html/2605.19091v1",
+    "section": "4.1 Dataset and Table 1",
+    "game_type": "Lichess blitz",
+    "first_training_month": "2023-01",
+    "last_training_month": "2025-07"
+  },
+  "prospective_source_date": "2026-08-01",
+  "documentary_temporal_separation_supported": true,
+  "exact_training_corpus_membership_audited": false,
+  "interpretation": "The declared August 2026 source games postdate the published pinned model revision. This is documentary temporal separation, not proof of new players, new board patterns, no transpositions, or exhaustive access to model training records."
+}

@@ -1,0 +1,433 @@
+{
+  "all_selected": {
+    "by_rating": {
+      "1700": {
+        "by_depth": {
+          "20": {
+            "candidate_gate_transitions": {},
+            "delta_capped_regret_cp": null,
+            "delta_p_acceptable": null,
+            "probability_gate_transitions": {},
+            "regret_gate_transitions": {}
+          },
+          "24": {
+            "candidate_gate_transitions": {},
+            "delta_capped_regret_cp": null,
+            "delta_p_acceptable": null,
+            "probability_gate_transitions": {},
+            "regret_gate_transitions": {}
+          }
+        },
+        "top_choice_changed_n": 0,
+        "total_variation": null
+      },
+      "2000": {
+        "by_depth": {
+          "20": {
+            "candidate_gate_transitions": {},
+            "delta_capped_regret_cp": null,
+            "delta_p_acceptable": null,
+            "probability_gate_transitions": {},
+            "regret_gate_transitions": {}
+          },
+          "24": {
+            "candidate_gate_transitions": {},
+            "delta_capped_regret_cp": null,
+            "delta_p_acceptable": null,
+            "probability_gate_transitions": {},
+            "regret_gate_transitions": {}
+          }
+        },
+        "top_choice_changed_n": 0,
+        "total_variation": null
+      }
+    },
+    "candidate_transitions": {},
+    "n": 0
+  },
+  "by_phase": {
+    "endgame": {
+      "by_rating": {
+        "1700": {
+          "by_depth": {
+            "20": {
+              "candidate_gate_transitions": {},
+              "delta_capped_regret_cp": null,
+              "delta_p_acceptable": null,
+              "probability_gate_transitions": {},
+              "regret_gate_transitions": {}
+            },
+            "24": {
+              "candidate_gate_transitions": {},
+              "delta_capped_regret_cp": null,
+              "delta_p_acceptable": null,
+              "probability_gate_transitions": {},
+              "regret_gate_transitions": {}
+            }
+          },
+          "top_choice_changed_n": 0,
+          "total_variation": null
+        },
+        "2000": {
+          "by_depth": {
+            "20": {
+              "candidate_gate_transitions": {},
+              "delta_capped_regret_cp": null,
+              "delta_p_acceptable": null,
+              "probability_gate_transitions": {},
+              "regret_gate_transitions": {}
+            },
+            "24": {
+              "candidate_gate_transitions": {},
+              "delta_capped_regret_cp": null,
+              "delta_p_acceptable": null,
+              "probability_gate_transitions": {},
+              "regret_gate_transitions": {}
+            }
+          },
+          "top_choice_changed_n": 0,
+          "total_variation": null
+        }
+      },
+      "candidate_transitions": {},
+      "n": 0
+    },
+    "middlegame": {
+      "by_rating": {
+        "1700": {
+          "by_depth": {
+            "20": {
+              "candidate_gate_transitions": {},
+              "delta_capped_regret_cp": null,
+              "delta_p_acceptable": null,
+              "probability_gate_transitions": {},
+              "regret_gate_transitions": {}
+            },
+            "24": {
+              "candidate_gate_transitions": {},
+              "delta_capped_regret_cp": null,
+              "delta_p_acceptable": null,
+              "probability_gate_transitions": {},
+              "regret_gate_transitions": {}
+            }
+          },
+          "top_choice_changed_n": 0,
+          "total_variation": null
+        },
+        "2000": {
+          "by_depth": {
+            "20": {
+              "candidate_gate_transitions": {},
+              "delta_capped_regret_cp": null,
+              "delta_p_acceptable": null,
+              "probability_gate_transitions": {},
+              "regret_gate_transitions": {}
+            },
+            "24": {
+              "candidate_gate_transitions": {},
+              "delta_capped_regret_cp": null,
+              "delta_p_acceptable": null,
+              "probability_gate_transitions": {},
+              "regret_gate_transitions": {}
+            }
+          },
+          "top_choice_changed_n": 0,
+          "total_variation": null
+        }
+      },
+      "candidate_transitions": {},
+      "n": 0
+    },
+    "opening": {
+      "by_rating": {
+        "1700": {
+          "by_depth": {
+            "20": {
+              "candidate_gate_transitions": {},
+              "delta_capped_regret_cp": null,
+              "delta_p_acceptable": null,
+              "probability_gate_transitions": {},
+              "regret_gate_transitions": {}
+            },
+            "24": {
+              "candidate_gate_transitions": {},
+              "delta_capped_regret_cp": null,
+              "delta_p_acceptable": null,
+              "probability_gate_transitions": {},
+              "regret_gate_transitions": {}
+            }
+          },
+          "top_choice_changed_n": 0,
+          "total_variation": null
+        },
+        "2000": {
+          "by_depth": {
+            "20": {
+              "candidate_gate_transitions": {},
+              "delta_capped_regret_cp": null,
+              "delta_p_acceptable": null,
+              "probability_gate_transitions": {},
+              "regret_gate_transitions": {}
+            },
+            "24": {
+              "candidate_gate_transitions": {},
+              "delta_capped_regret_cp": null,
+              "delta_p_acceptable": null,
+              "probability_gate_transitions": {},
+              "regret_gate_transitions": {}
+            }
+          },
+          "top_choice_changed_n": 0,
+          "total_variation": null
+        }
+      },
+      "candidate_transitions": {},
+      "n": 0
+    }
+  },
+  "by_side": {
+    "black": {
+      "by_rating": {
+        "1700": {
+          "by_depth": {
+            "20": {
+              "candidate_gate_transitions": {},
+              "delta_capped_regret_cp": null,
+              "delta_p_acceptable": null,
+              "probability_gate_transitions": {},
+              "regret_gate_transitions": {}
+            },
+            "24": {
+              "candidate_gate_transitions": {},
+              "delta_capped_regret_cp": null,
+              "delta_p_acceptable": null,
+              "probability_gate_transitions": {},
+              "regret_gate_transitions": {}
+            }
+          },
+          "top_choice_changed_n": 0,
+          "total_variation": null
+        },
+        "2000": {
+          "by_depth": {
+            "20": {
+              "candidate_gate_transitions": {},
+              "delta_capped_regret_cp": null,
+              "delta_p_acceptable": null,
+              "probability_gate_transitions": {},
+              "regret_gate_transitions": {}
+            },
+            "24": {
+              "candidate_gate_transitions": {},
+              "delta_capped_regret_cp": null,
+              "delta_p_acceptable": null,
+              "probability_gate_transitions": {},
+              "regret_gate_transitions": {}
+            }
+          },
+          "top_choice_changed_n": 0,
+          "total_variation": null
+        }
+      },
+      "candidate_transitions": {},
+      "n": 0
+    },
+    "white": {
+      "by_rating": {
+        "1700": {
+          "by_depth": {
+            "20": {
+              "candidate_gate_transitions": {},
+              "delta_capped_regret_cp": null,
+              "delta_p_acceptable": null,
+              "probability_gate_transitions": {},
+              "regret_gate_transitions": {}
+            },
+            "24": {
+              "candidate_gate_transitions": {},
+              "delta_capped_regret_cp": null,
+              "delta_p_acceptable": null,
+              "probability_gate_transitions": {},
+              "regret_gate_transitions": {}
+            }
+          },
+          "top_choice_changed_n": 0,
+          "total_variation": null
+        },
+        "2000": {
+          "by_depth": {
+            "20": {
+              "candidate_gate_transitions": {},
+              "delta_capped_regret_cp": null,
+              "delta_p_acceptable": null,
+              "probability_gate_transitions": {},
+              "regret_gate_transitions": {}
+            },
+            "24": {
+              "candidate_gate_transitions": {},
+              "delta_capped_regret_cp": null,
+              "delta_p_acceptable": null,
+              "probability_gate_transitions": {},
+              "regret_gate_transitions": {}
+            }
+          },
+          "top_choice_changed_n": 0,
+          "total_variation": null
+        }
+      },
+      "candidate_transitions": {},
+      "n": 0
+    }
+  },
+  "controls": null,
+  "counts": {
+    "editorial_pool_n": 1032,
+    "failed_n": 0,
+    "history_excluded_n": 7,
+    "paired_completed_n": 0,
+    "pending_n": 96,
+    "selected_n": 96,
+    "trainer_ready_n": 0
+  },
+  "fingerprints": {
+    "adapter_sha256": "0ffeef214c482eb59813792a8e6dfd22acbeb637b1fce6a641a6ce2f7d6fcd8f",
+    "audit_script_sha256": "36435a0ddb52935236cc10c283ca3980e374bdc755e5b1177f7de19e139f9f19",
+    "census_aggregate_sha256": "f7c8472f4f1d69818cec20be2bf80bcc82f77cd7589af0079cba3550ae01c3d0",
+    "dependency_sha256": {
+      "candidate_review.py": "88354aab64e44257484283aa37b99138d40e058e4017fc5f5edffc0b7c547a02",
+      "editorial_diagnostics.py": "3a87143bac960bdc0fb3e36e1b330d10900a2337c13ec73083346e47781799ee",
+      "mining_v2_engine.py": "a358695ef91a0588a037decad6b445680db2f3ded5c8ff08980368a4ccc45b70"
+    },
+    "inputs_sha256": "b0c54bf874bc2e50dfa3bbacf4526b3e02eae7d13812a2acf9a62d81f6e5720b",
+    "paired_batches": {},
+    "runtime_sha256": null,
+    "selection_manifest_sha256": "347565e5e4b946c77725c56c6e044a176e91503b326094a2a2c9a97114c3c277"
+  },
+  "limitations": [
+    "Purposive phase-balanced sample selected using old model/engine outcomes; do not treat frequencies as representative.",
+    "Both new conditions share one pinned model/runtime. Old census probabilities are not the paired baseline.",
+    "Real history changes model input only. Saved engine evaluations have no actual game-history stack.",
+    "Ratings are hypothetical equal self/opponent settings; clocks disabled; source time-control mismatch remains.",
+    "No human choices or learning outcomes measured; no assessment states used; no trainer promotion."
+  ],
+  "model_pin": {
+    "model": "Maia3-5M",
+    "source_commit": "1e13597c42d4858b7cfd7cfdae01e297263364b2",
+    "weights_revision": "b6559de2398d7140b985f28fd2c19fb5e47ddabe",
+    "weights_sha256": "ba14208b2992d85502f5fb501934abf6aaaeb355e9f3fdf90e326911f562524f"
+  },
+  "repetition_sensitive_selected_n": 0,
+  "schema_version": 1,
+  "scope": "Exploratory paired sensitivity within previously selected, editorial-eligible development states. Not a population estimate, human calibration, independent validation or trainer approval. All saved engine scores remain FEN-conditioned at depths 20 and 24.",
+  "selection": {
+    "history_eligible_n": 1025,
+    "history_excluded_by_reason": {
+      "missing_source_game_fingerprint": 2,
+      "multiple_origin_observations_excluded": 5
+    },
+    "phase_side_deficits": {
+      "endgame/black": 0,
+      "endgame/white": 0,
+      "middlegame/black": 0,
+      "middlegame/white": 0,
+      "opening/black": 0,
+      "opening/white": 0
+    },
+    "phase_side_requested_each": 16,
+    "selected_by_phase_side_multiplicity_margin": {
+      "endgame/black/multiple/interior": 2,
+      "endgame/black/single/interior": 11,
+      "endgame/black/single/near_gate": 3,
+      "endgame/white/multiple/interior": 5,
+      "endgame/white/single/interior": 10,
+      "endgame/white/single/near_gate": 1,
+      "middlegame/black/multiple/interior": 4,
+      "middlegame/black/multiple/near_gate": 4,
+      "middlegame/black/single/interior": 4,
+      "middlegame/black/single/near_gate": 4,
+      "middlegame/white/multiple/interior": 4,
+      "middlegame/white/multiple/near_gate": 4,
+      "middlegame/white/single/interior": 4,
+      "middlegame/white/single/near_gate": 4,
+      "opening/black/multiple/interior": 4,
+      "opening/black/multiple/near_gate": 4,
+      "opening/black/single/interior": 4,
+      "opening/black/single/near_gate": 4,
+      "opening/white/multiple/interior": 4,
+      "opening/white/multiple/near_gate": 4,
+      "opening/white/single/interior": 4,
+      "opening/white/single/near_gate": 4
+    },
+    "source_collision_skipped_n": 0
+  },
+  "selection_frozen_before_inference": true,
+  "settings": {
+    "batch_size": 32,
+    "battery_policy": "pause before loading model and before each chunk unless AC power is confirmed",
+    "clocks": "disabled/zero in both conditions",
+    "conditions": [
+      "fen_only",
+      "history"
+    ],
+    "device": "cpu",
+    "engine_context": "saved FEN-only roots at depth20 and depth24; unchanged",
+    "fen_only": "current state repeated eight times",
+    "history": "last eight true chronological source states including current; left-pad earliest if shorter",
+    "normalization": "raw logits softmax over every legal move; no post-hoc renormalization",
+    "position_chunk_size": 8,
+    "precision": "float32; no AMP",
+    "ratings_self_and_opponent": [
+      1700,
+      2000
+    ],
+    "temperature": 1,
+    "threads": 2
+  },
+  "status": "prepared_or_paused",
+  "without_repetition_sensitivity": {
+    "by_rating": {
+      "1700": {
+        "by_depth": {
+          "20": {
+            "candidate_gate_transitions": {},
+            "delta_capped_regret_cp": null,
+            "delta_p_acceptable": null,
+            "probability_gate_transitions": {},
+            "regret_gate_transitions": {}
+          },
+          "24": {
+            "candidate_gate_transitions": {},
+            "delta_capped_regret_cp": null,
+            "delta_p_acceptable": null,
+            "probability_gate_transitions": {},
+            "regret_gate_transitions": {}
+          }
+        },
+        "top_choice_changed_n": 0,
+        "total_variation": null
+      },
+      "2000": {
+        "by_depth": {
+          "20": {
+            "candidate_gate_transitions": {},
+            "delta_capped_regret_cp": null,
+            "delta_p_acceptable": null,
+            "probability_gate_transitions": {},
+            "regret_gate_transitions": {}
+          },
+          "24": {
+            "candidate_gate_transitions": {},
+            "delta_capped_regret_cp": null,
+            "delta_p_acceptable": null,
+            "probability_gate_transitions": {},
+            "regret_gate_transitions": {}
+          }
+        },
+        "top_choice_changed_n": 0,
+        "total_variation": null
+      }
+    },
+    "candidate_transitions": {},
+    "n": 0
+  }
+}

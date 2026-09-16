@@ -1,0 +1,177 @@
+{
+  "by_role": {
+    "calibration_development": {
+      "calibration": {
+        "fen_only": {
+          "bins": [],
+          "brier": null,
+          "log_loss": null,
+          "n": 0
+        },
+        "history": {
+          "bins": [],
+          "brier": null,
+          "log_loss": null,
+          "n": 0
+        }
+      },
+      "known_players_n": 32,
+      "players_repeated_across_games_n": 0,
+      "policy_completed_n": 0,
+      "root_status_counts": {
+        "pending": 1090
+      },
+      "selected_n": 16,
+      "state_counts": {
+        "incomplete_roots": 16
+      },
+      "verified_calibration_n": 0
+    },
+    "calibration_evaluation": {
+      "calibration": {
+        "fen_only": {
+          "bins": [],
+          "brier": null,
+          "log_loss": null,
+          "n": 0
+        },
+        "history": {
+          "bins": [],
+          "brier": null,
+          "log_loss": null,
+          "n": 0
+        }
+      },
+      "known_players_n": 32,
+      "players_repeated_across_games_n": 0,
+      "policy_completed_n": 0,
+      "root_status_counts": {
+        "pending": 1142
+      },
+      "selected_n": 16,
+      "state_counts": {
+        "incomplete_roots": 16
+      },
+      "verified_calibration_n": 0
+    },
+    "targeted_endgame": {
+      "approximate_screen_with_policy_n": 0,
+      "history_fixed1700_to2000_probability_increases_n": 0,
+      "known_players_n": 64,
+      "players_repeated_across_games_n": 0,
+      "policy_completed_n": 0,
+      "root_status_counts": {
+        "pending": 643
+      },
+      "selected_n": 32,
+      "state_counts": {
+        "incomplete_roots": 32
+      },
+      "verified_calibration_n": 0
+    }
+  },
+  "calibration_transform_fitted": false,
+  "cohort_n": 256,
+  "controls": null,
+  "documentary_model_provenance_sha256": "35ce0c8c6e744baa1838b615ffa6d95c5c237cf221d8f6c42569b8065a6a304d",
+  "fingerprints": {
+    "cohort": {
+      "calibration_development_sha256": "0dddae8dd63d64c6325670dcd5b7b4ef765c81760de13085faab8db4040509c3",
+      "calibration_evaluation_sha256": "379ca7668512fadc4773ce0a0e4262492497b5f45d49f8e381d762a455e91d84",
+      "compressed_prefix_sha256": "d8e9c900da9dbcd275a84e4fa08097fcca2c164ba183c04f2659929c10c8ab38",
+      "protocol_sha256": "fa99ab8ccf24400ad21baa6278361bfb10fbd0dbc16f5c29536b5d3ef2628c24",
+      "source_sha256": "e7a5dfaea396d22cc7947a1bf7dde9d23830075fcbde0613679b3e50e66b7714",
+      "summary_sha256": "59e1b6c94578bd6b6bc7cd06ebcfafeb38a8ac2590b8f34584de23c9afb6c040",
+      "targeted_endgame_sha256": "d018ed734bc852c119a8d148fe4a942babbdfff0b1160a09fddece1689e757cc"
+    },
+    "engine_runtime_sha256": null,
+    "evidence_files_n": 0,
+    "evidence_inventory_sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+    "inputs_sha256": "323aa977aeb6e489a94f9fc7b872af0561b388545186053c9174a23d66415f2f",
+    "model_controls_sha256": null,
+    "model_runtime_sha256": null,
+    "plan_sha256": "b0bb870524bb4be5016de18734af8c42b1ebb8e4f7bac4a5b8f9c82c3e452ff3",
+    "script_sha256": "c1b9011d6a319733d1422b4882961e79a736594710c5207293dedd4f986d5261"
+  },
+  "limitations": [
+    "Fresh bounded chronological convenience prefix; not a random whole-month sample.",
+    "Calibration metrics, if present, concern recorded online-game moves on the complete stable numeric subset; full selected coverage remains shown.",
+    "Incomplete, capped, bound, mate-valued and unstable items are not relabelled as complete; they remain in denominators.",
+    "August2026 games postdate published pinned May2026 weights and declared Jan2023\u2013July2025 training; this does not establish new players, novel patterns or exhaustive training-corpus exclusion.",
+    "Actual rating pairs are preserved; clocks disabled and source time-control/model mismatch remains.",
+    "Repeated-player and near-duplicate dependence limits uncertainty; small-bin frequencies are descriptive.",
+    "Targeted depth14 screening is approximate and cannot establish the frozen20/24 candidate criterion or a teaching family.",
+    "No human puzzle calibration, learning result, probability transform or trainer release."
+  ],
+  "plan": {
+    "calibration_depths": [
+      20,
+      24
+    ],
+    "calibration_event": "recorded source move is in complete stable20cp acceptable set",
+    "calibration_gate": "both depths reached, exact, all legal roots, numeric/no mates, same nonempty20cp set; no surprise or evaluation-window gate",
+    "calibration_transform_fitting": false,
+    "clear_hash_each_search": true,
+    "clock_inputs": "disabled/zero identically in both history conditions",
+    "controls": "same-FEN paired inputs for actual and fixed ratings; equal1700 separate-rating adapter matches pinned original adapter to1e-6",
+    "engine_board_context": "FEN-only for both model conditions",
+    "engine_hash_mb": 64,
+    "engine_stop_grace_seconds": 2,
+    "engine_threads": 1,
+    "history": "last8actual states including current; earliest-left padding; FEN condition repeats target",
+    "log_loss_probability_clip": 1e-12,
+    "model_batch_size": 24,
+    "model_pin": {
+      "model": "Maia3-5M",
+      "source_commit": "1e13597c42d4858b7cfd7cfdae01e297263364b2",
+      "weights_revision": "b6559de2398d7140b985f28fd2c19fb5e47ddabe",
+      "weights_sha256": "ba14208b2992d85502f5fb501934abf6aaaeb355e9f3fdf90e326911f562524f"
+    },
+    "model_position_chunk": 4,
+    "model_threads": 2,
+    "per_invocation_wall_seconds": 600,
+    "per_root_seconds": 30,
+    "power_policy": "confirmed AC only; check before model batches and during each engine search",
+    "probability": "temperature1 softmax on complete legal support; float32; no AMP; no posthoc transform",
+    "ratings": "calibration: actual mover and actual opponent; targeted: actual plus equal1700 and equal2000",
+    "regret_cap_cp": 300,
+    "reliability_bin_edges": [
+      0,
+      0.05,
+      0.1,
+      0.25,
+      0.5,
+      0.75,
+      0.9,
+      1.0
+    ],
+    "role_counts_requested": {
+      "calibration_development": 16,
+      "calibration_evaluation": 16,
+      "targeted_endgame": 32
+    },
+    "schema_version": 1,
+    "seed": "prospective-analysis-20260916-v1",
+    "targeted_depths": [
+      14
+    ],
+    "targeted_interpretation": "depth14 approximation only; not depth-stable candidates or teaching approvals",
+    "targeted_per_side_and_rating_group": 8,
+    "task_scheduling": "fewest prior attempts first; all never-attempted roots precede retries; seeded tranche role-interleaving breaks ties",
+    "tolerance_cp": 20,
+    "tranche_selection": "seeded SHA256 rank within calibration role, and targeted side/rating cells; frozen before outcomes",
+    "unit": "one selected actual source-game move; not a human puzzle response"
+  },
+  "quota_deficits": {
+    "calibration_development": 0,
+    "calibration_evaluation": 0,
+    "targeted_endgame/black/1400_1799": 0,
+    "targeted_endgame/black/1800_2399": 0,
+    "targeted_endgame/white/1400_1799": 0,
+    "targeted_endgame/white/1800_2399": 0
+  },
+  "schema_version": 1,
+  "selected_n": 64,
+  "status": "paused_power",
+  "trainer_ready_n": 0
+}

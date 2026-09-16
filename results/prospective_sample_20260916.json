@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "status": "source_selection_complete_not_engine_verified_or_calibrated",
+  "protocol_sha256": "fa99ab8ccf24400ad21baa6278361bfb10fbd0dbc16f5c29536b5d3ef2628c24",
+  "protocol": {
+    "schema_version": 1,
+    "seed": 20260916,
+    "archive_url": "https://database.lichess.org/standard/lichess_db_standard_rated_2026-08.pgn.zst",
+    "max_compressed_bytes": 8388608,
+    "max_complete_games": 8000,
+    "ratings_both_players_inclusive": [
+      1400,
+      2399
+    ],
+    "minimum_base_seconds": 180,
+    "sampling_plies_inclusive": [
+      14,
+      140
+    ],
+    "month": "2026.08",
+    "calibration_target_per_role": 64,
+    "endgame_target_per_side_and_rating_group": 32,
+    "role_allocation": "game hash modulo 4: 0 development, 1 evaluation, 2/3 targeted",
+    "calibration_state_selection": "minimum seeded hash among all eligible actual plies in one game",
+    "targeted_state_selection": "hash-assigned side; minimum seeded hash among endgame plies",
+    "game_selection": "minimum seeded game hash within role/target cell; one state per game",
+    "endgame_definition": "total nonpawn material <=20 (N/B=3,R=5,Q=9), existing phase_of rule",
+    "engine_or_model_selection": false,
+    "cross_role_exposure": "every selected target absent from every other selected game's complete state history",
+    "player_identity": "private unsalted SHA256 of normalized public Lichess usernames; pseudonymous, not anonymous",
+    "interpretation": "bounded prefix, filtered convenience sample; not whole-month population calibration",
+    "builder_sha256": "053a2e60f8db2230a5b400a0dcaa1a6bc15de5845a666af9549a40876c125be9",
+    "exclusions": {
+      "prior_state_index_sha256": "39686f88717c40a87990f6312ae449228762bd85c0665920697ba468c47dd405",
+      "excluded_states": 247924,
+      "excluded_game_ids": 18491,
+      "public_exclusion_inputs": {
+        "webapp/concepts.json": "1e736d4eba05a71b5e9729c8a068713b200b2b5eec13ae71a3f58e0a13213e59",
+        "webapp/research_examples.json": "85da02ebc829c5bea6c7d3c50d341770ac341bed318d9e096f722e933ff23341",
+        "results/master_all.csv": "2dd81c17c859d700da8749c575f280fccd3a2f2c81b38418d98a26ff5f6275ec"
+      }
+    }
+  },
+  "source": {
+    "status": 206,
+    "etag": "\"6aa282bd-704d55ad7\"",
+    "last_modified": "Thu, 10 Sep 2026 10:13:17 GMT",
+    "content_range": "bytes 0-8388607/30145862359",
+    "compressed_prefix_bytes": 8388608,
+    "compressed_prefix_sha256": "d8e9c900da9dbcd275a84e4fa08097fcca2c164ba183c04f2659929c10c8ab38",
+    "complete_month_downloaded": false
+  },
+  "scan_counts": {
+    "complete_games_scanned": 8000,
+    "time_control_outside_target": 2516,
+    "not_completed_rated_game": 76,
+    "rating_outside_target": 2626,
+    "eligible_games": 1754,
+    "previous_state_anywhere_in_game": 226,
+    "no_eligible_position_for_assigned_role": 773,
+    "bot": 27,
+    "missing_rating_or_time_control": 2
+  },
+  "selected_cells": {
+    "calibration_development": 64,
+    "calibration_evaluation": 64,
+    "targeted_endgame/white/1400_1799": 32,
+    "targeted_endgame/white/1800_2399": 32,
+    "targeted_endgame/black/1400_1799": 32,
+    "targeted_endgame/black/1800_2399": 32
+  },
+  "shortfall_cells": {
+    "calibration_development": 0,
+    "calibration_evaluation": 0,
+    "targeted_endgame/white/1400_1799": 0,
+    "targeted_endgame/white/1800_2399": 0,
+    "targeted_endgame/black/1400_1799": 0,
+    "targeted_endgame/black/1800_2399": 0
+  },
+  "selection_rejections": {},
+  "available_cells": {
+    "calibration_development": 611,
+    "calibration_evaluation": 664,
+    "targeted_endgame/black/1400_1799": 137,
+    "targeted_endgame/black/1800_2399": 113,
+    "targeted_endgame/white/1400_1799": 136,
+    "targeted_endgame/white/1800_2399": 93
+  },
+  "outputs": {
+    "calibration_development": {
+      "sha256": "0dddae8dd63d64c6325670dcd5b7b4ef765c81760de13085faab8db4040509c3",
+      "count": 64
+    },
+    "calibration_evaluation": {
+      "sha256": "379ca7668512fadc4773ce0a0e4262492497b5f45d49f8e381d762a455e91d84",
+      "count": 64
+    },
+    "targeted_endgame": {
+      "sha256": "d018ed734bc852c119a8d148fe4a942babbdfff0b1160a09fddece1689e757cc",
+      "count": 128
+    }
+  },
+  "selected_sides": {
+    "black": 128,
+    "white": 128
+  },
+  "selected_phases": {
+    "middlegame": 86,
+    "opening": 25,
+    "endgame": 145
+  },
+  "selected_rating_groups": {
+    "1400_1799": 138,
+    "1800_2399": 118
+  },
+  "selected_dates": {
+    "2026.08.01": 256
+  },
+  "missing_mover_clocks": 0,
+  "unique_known_players": 510,
+  "missing_player_identity_fields": 0,
+  "inference_run": false,
+  "engine_searches_run": 0,
+  "trainer_ready": false,
+  "limitations": [
+    "bounded chronological prefix, not a random month",
+    "external puzzle/public exposure not fully audited",
+    "no player or near-duplicate separation claimed",
+    "source choices differ from explicit puzzle solving",
+    "model training-overlap audit still required before inference"
+  ]
+}

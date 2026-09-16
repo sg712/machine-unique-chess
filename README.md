@@ -6,6 +6,8 @@ Practice engine moves that a model of human play assigns low probability. The pr
 
 ## Current evidence
 
+**Research implementation, 16 September:** the [follow-up work](docs/RESEARCH_EXECUTION_2026-09-16.md) adds three contrasting lesson drafts with nine real cases, versioned acceptable-set grading, and 256 fresh source observations in separate calibration/endgame queues. The bounded model/engine runs are prepared and power-paused; no new calibration or human-learning result is claimed. Private drafts have not entered the trainer.
+
 **Research review, 16 September:** a new [research synthesis](docs/RESEARCH_NEXT_2026-09-16.md) connects a 12-source literature audit, diagnostics of 1,032 safe development candidates, six private teaching drafts, and hypothetical study-design simulations. The strongest next steps are acceptable-set grading, contrasting lesson families, and behavioral calibration before more large mining runs. These analyses do not change the frozen census, add trainer puzzles, or establish human learning gains.
 
 Across 123,405 sampled positions, 5,155 meet the operational filter: the Stockfish depth-16 move scores at least 100cp above Maia-2's favourite at 2000, and Maia-2 assigns that move at most 5% probability at each of 1100, 1400, 1700 and 2000. A separate Maia-3 ranking experiment covers 77 selected positions and 56 controls through 2600.
