@@ -1,0 +1,51 @@
+/* Private owner pages inherit the site's paper, type, and rule colors. */
+.analytics-page .analytics-sheet { max-width:74rem; }
+.analytics-page .analytics-heading { display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:1rem 2rem; }
+.analytics-page .analytics-heading p { margin-bottom:0; }
+.analytics-page .analytics-period { display:flex; flex-wrap:wrap; gap:.4rem 1rem; font: .9rem/1.5 var(--sans); }
+.analytics-page .analytics-period a { padding:.35rem 0; text-underline-offset:.3em; }
+.analytics-page .analytics-period a[aria-current] { font-weight:700; color:var(--ink); text-decoration-thickness:2px; }
+.analytics-page .analytics-date-range { margin:.65rem 0 1.4rem; font-variant-numeric:tabular-nums; }
+.analytics-page .analytics-contents { display:flex; flex-wrap:wrap; gap:.6rem 1.4rem; border-block:1px solid var(--rule); margin:1.8rem 0; padding:.85rem 0; font:.9rem/1.5 var(--sans); }
+.analytics-page h2[id] { scroll-margin-top:1.5rem; }
+.analytics-page h3 { margin:1.8rem 0 .55rem; font-size:1.15rem; line-height:1.4; font-weight:600; }
+.analytics-page .analytics-table { max-width:none; margin:.6rem 0 1.2rem; }
+.analytics-page .analytics-table caption { text-align:left; color:var(--muted); font-size:.9rem; margin-bottom:.6rem; max-width:70ch; }
+.analytics-page .analytics-table th { vertical-align:top; }
+.analytics-page .analytics-table th, .analytics-page .analytics-table td { padding:.6rem .9rem .6rem 0; overflow-wrap:anywhere; }
+.analytics-page .analytics-table th:last-child, .analytics-page .analytics-table td:last-child { padding-right:0; }
+.analytics-page .analytics-table tbody th { color:var(--ink); font-weight:400; font-size:.9rem; border-bottom:1px solid var(--hair); }
+.analytics-page .analytics-table td { vertical-align:top; }
+.analytics-page .analytics-number { text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums; }
+.analytics-page .analytics-overview td:last-child { color:var(--muted); }
+.analytics-page .analytics-overview th:first-child { width:27%; }
+.analytics-page .analytics-overview td:nth-child(2) { width:12%; }
+.analytics-page .analytics-table-scroll { overflow-x:auto; margin-bottom:.4rem; }
+.analytics-page .analytics-table-scroll .analytics-table { min-width:35rem; }
+.analytics-page .analytics-table-scroll .analytics-wide-table { min-width:61rem; }
+.analytics-page .analytics-table-scroll .analytics-activity-table { min-width:53rem; }
+.analytics-page .analytics-traffic-columns { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:0 3rem; }
+.analytics-page .analytics-traffic-columns table { table-layout:fixed; }
+.analytics-page .analytics-traffic-columns th:last-child { width:5.5rem; }
+.analytics-page .analytics-details { margin:1.5rem 0; }
+.analytics-page .analytics-details > summary { padding:.5rem 0; cursor:pointer; color:var(--accent); }
+.analytics-page .analytics-id { display:block; max-width:17ch; font: .78rem/1.55 var(--mono); overflow-wrap:anywhere; }
+.analytics-page .analytics-account { display:block; margin-top:.25rem; color:var(--muted); font: .8rem/1.5 var(--sans); overflow-wrap:anywhere; }
+.analytics-page .analytics-selected-id { font: .8rem/1.5 var(--mono); overflow-wrap:anywhere; }
+.analytics-page .analytics-time { white-space:nowrap; font-variant-numeric:tabular-nums; }
+.analytics-page .analytics-path { overflow-wrap:anywhere; }
+.analytics-page .analytics-row-button { padding:.3rem .6rem; white-space:nowrap; min-height:2.2rem; }
+.analytics-page .analytics-row-button:hover { border-color:var(--ink); color:var(--ink); }
+.analytics-page .analytics-empty, .analytics-page .analytics-message { padding:1rem 0; border-block:1px solid var(--rule); }
+.analytics-page .analytics-footer { display:flex; flex-wrap:wrap; justify-content:space-between; gap:.6rem 1.5rem; border-top:1px solid var(--rule); margin-top:3rem; padding-top:1rem; font:.85rem/1.5 var(--sans); color:var(--muted); }
+.analytics-page .analytics-login { max-width:36rem; }
+.analytics-page .analytics-field-note { margin:.4rem 0 1.3rem; }
+@media (max-width:700px) {
+  .analytics-page .analytics-sheet { padding:1.6rem 1.1rem 3rem; }
+  .analytics-page .analytics-heading { gap:.7rem; }
+  .analytics-page .analytics-traffic-columns { grid-template-columns:minmax(0,1fr); }
+  .analytics-page .analytics-overview th:first-child { width:35%; }
+  .analytics-page .analytics-overview td:nth-child(2) { width:13%; }
+  .analytics-page .analytics-overview td:last-child { font-size:.83rem; }
+  .analytics-page .analytics-table th, .analytics-page .analytics-table td { padding-right:.65rem; }
+}

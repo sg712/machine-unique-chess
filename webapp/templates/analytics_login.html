@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Owner sign in · Machine Unique Chess</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='analytics_dashboard.css') }}">
+</head>
+<body class="analytics-page">
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="sheet analytics-sheet">
+  <header class="masthead">
+    <a class="brand" href="/">Machine Unique Chess</a>
+    <a href="/">Back to the site</a>
+  </header>
+  <main id="main" tabindex="-1" class="analytics-login">
+    <h1>Owner sign in</h1>
+    <p>Private site analytics. Use the owner access key to continue.</p>
+    {% if error is defined and error %}<p class="err" role="alert">{{ error }}</p>{% endif %}
+    <form method="post" action="/owner/login">
+      {% if csrf_token is defined and csrf_token %}<input type="hidden" name="csrf_token" value="{{ csrf_token }}">{% endif %}
+      <label for="access-key">Owner access key</label>
+      <input type="password" id="access-key" name="access_key" required autocomplete="current-password" aria-describedby="access-key-help">
+      <p id="access-key-help" class="small analytics-field-note">This is separate from a chess practice account.</p>
+      <button class="btn p" type="submit">Open analytics</button>
+    </form>
+    <p class="note">Signing in also excludes this browser from traffic counts.</p>
+  </main>
+</div>
+</body>
+</html>

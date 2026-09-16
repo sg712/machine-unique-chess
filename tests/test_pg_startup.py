@@ -123,7 +123,7 @@ class PostgresStartupTests(unittest.TestCase):
         first_commit = next(i for i, (number, event, _) in enumerate(events) if number == 0 and event == "commit")
         second_lock = next(i for i, (number, event, _) in enumerate(events) if number == 1 and event == "lock")
         self.assertGreater(second_lock, first_commit)
-        expected_ddl = sum(bool(statement.strip()) for statement in site.PG_SCHEMA.split(";")) + 2
+        expected_ddl = sum(bool(statement.strip()) for statement in site.PG_SCHEMA.split(";")) + 3 + len(site.ANALYTICS_SCHEMA)
         for number, connection in enumerate(database.connections):
             own = [event for owner, event, _ in events if owner == number]
             self.assertEqual(own[0], "lock")

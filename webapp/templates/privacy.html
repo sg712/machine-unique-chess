@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Privacy · Machine Unique Chess{% endblock %}
+{% block body %}
+<article class="narrow">
+  <h1>Privacy and visit history</h1>
+  <p class="lede">This project measures which pages and exercises people use to help improve the learning experience. You choose whether those visits are linked together.</p>
+
+  <h2>Your browser’s preference</h2>
+  <section class="privacy-controls" aria-label="Analytics preferences">
+    <p id="analytics-preference-state" role="status" aria-live="polite">{% if analytics_context.excluded %}This browser is excluded from analytics.{% elif analytics_context.consent == 'yes' %}Visit history is enabled in this browser.{% else %}Visit history is disabled. Pages are counted anonymously.{% endif %}</p>
+    <p id="analytics-signal-note" class="small" hidden>Your browser has Global Privacy Control or Do Not Track enabled. Visit history stays disabled while that signal is enabled.</p>
+    <div class="row">
+      {% for choice, label in [('yes', 'Allow visit history'), ('no', 'Disable visit history'), ('exclude', 'Exclude this browser'), ('include', 'Include this browser')] %}
+      <form method="post" action="/analytics/preference" data-analytics-preference>
+        <input type="hidden" name="page_token" value="{{ analytics_context.page_token }}">
+        <input type="hidden" name="choice" value="{{ choice }}">
+        <button class="btn" type="submit">{{ label }}</button>
+      </form>
+      {% endfor %}
+    </div>
+    <p class="small">Excluding this browser stops future analytics from it. Including it again enables anonymous counts; you can separately allow visit history. Your choices apply to this browser and are remembered in a first-party cookie for up to 90 days.</p>
+    <p id="analytics-preference-feedback" class="small" role="status" aria-live="polite"></p>
+  </section>
+
+  <h2>What is counted</h2>
+  <p>By default, pages are counted anonymously without a persistent analytics visitor ID. Counts can include the type of page, its pattern, and actions such as opening practice, saving an answer, or finishing a test. They also include a broad device category and the referring website’s hostname. These counts do not identify unique people.</p>
+  <p>If you allow visit history, a random first-party visitor ID saved in a cookie links future visits and learning actions from this browser. When you are signed in, opted-in activity can also be linked to your existing account. Guests’ names and email addresses are not collected for analytics.</p>
+  <p>Allowing visit history links future activity. Pages already counted anonymously stay anonymous. Disabling it stops future linking; it does not erase earlier analytics.</p>
+
+  <h2>What is kept</h2>
+  <p>Analytics uses this site’s own service, with no external analytics SDK. Analytics records do not store IP addresses, raw browser user-agent strings, URL query strings, or full referring URLs. The analytics dashboard is private to the project owner.</p>
+  <p>Analytics uses a 90-day retention window; older records are removed during routine cleanup. A browser’s cookie or privacy settings can affect counts, and automated traffic may still appear; visitor totals are estimates rather than a count of verified people.</p>
+
+  <h2>Your learning progress</h2>
+  <p>Practice answers, study progress, and test results are saved separately to provide the site’s learning features, regardless of your analytics preference. Disabling analytics does not delete your account or learning progress.</p>
+  <p>Global Privacy Control and Do Not Track signals disable optional visit history. Anonymous counts continue unless you exclude this browser using the controls above.</p>
+</article>
+{% endblock %}

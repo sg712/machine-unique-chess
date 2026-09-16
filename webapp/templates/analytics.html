@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Site analytics · Machine Unique Chess</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='analytics_dashboard.css') }}">
+</head>
+<body class="analytics-page">
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="sheet analytics-sheet">
+  <header class="masthead">
+    <a class="brand" href="/">Machine Unique Chess</a>
+    <form method="post" action="/owner/logout">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <button type="submit" class="btn ghost">Sign out of analytics</button>
+    </form>
+  </header>
+  <main id="main" tabindex="-1">
+    {% set selected_visitor = selected_visitor|default(none) %}
+    {% set event_labels = {'page_view': 'Page viewed', 'practice_started': 'Practice opened', 'review_started': 'Mixed review opened', 'practice_answer': 'Practice answer saved', 'test_started': 'Test opened', 'test_completed': 'Test completion saved', 'study_opened': 'Study opened', 'study_completed': 'Marked studied', 'registered': 'Account registered', 'login': 'Account sign-in'} %}
+    <div class="analytics-heading">
+      <div>
+        <h1>Site analytics</h1>
+        <p class="small">Private owner view. All dates and times are UTC.</p>
+      </div>
+      <nav class="analytics-period" aria-label="Analytics period">
+        <a href="/owner/analytics?days=7{% if selected_visitor %}&amp;visitor={{ selected_visitor }}{% endif %}"{% if summary.days == 7 %} aria-current="page"{% endif %}>Last 7 days</a>
+        <a href="/owner/analytics?days=30{% if selected_visitor %}&amp;visitor={{ selected_visitor }}{% endif %}"{% if summary.days == 30 %} aria-current="page"{% endif %}>Last 30 days</a>
+      </nav>
+    </div>
+    <p class="small analytics-date-range">{{ summary.start_at|analytics_utc }} to {{ summary.end_at|analytics_utc }}</p>
+    {% if message is defined and message %}<p class="analytics-message" role="status">{{ message }}</p>{% endif %}
+    <p>Browser IDs count tracked browsers, not people. A person can use several browsers, and several people can share one. Automated traffic may remain in these counts.</p>
+    <p class="small">Tracking begins with this installation; earlier traffic is not reconstructed.{% if summary.recorded_since_at %} First activity recorded: {{ summary.recorded_since_at|analytics_utc }} UTC.{% endif %} Records are retained for {{ summary.retention_days }} days. Excluded browsers are omitted from the totals below.</p>
+
+    <nav class="analytics-contents" aria-label="Analytics sections">
+      <a href="#overview">Overview</a>
+      <a href="#activity">Activity</a>
+      <a href="#traffic">Traffic</a>
+      <a href="#browsers">Browsers</a>
+      <a href="#exclusions">Exclusions</a>
+    </nav>
+
+    {% set totals = summary.totals %}
+    <section aria-labelledby="overview">
+      <h2 id="overview">Overview</h2>
+      {% if totals.events == 0 %}
+      <p class="analytics-empty">No included activity has been recorded in this period. New visits and saved practice activity will appear here as they arrive.</p>
+      {% endif %}
+      <table class="analytics-table analytics-overview">
+        <caption>Activity recorded in the selected period</caption>
+        <thead><tr><th scope="col">Measure</th><th scope="col" class="analytics-number">Count</th><th scope="col">What it counts</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Tracked browsers</th><td class="analytics-number">{{ totals.browser_ids }}</td><td>Browser IDs with recorded activity.</td></tr>
+          <tr><th scope="row">Returning browsers</th><td class="analytics-number">{{ totals.returning_browser_ids }}</td><td>Browser IDs first seen before this period or with more than one identified visit in it.</td></tr>
+          <tr><th scope="row">Page views</th><td class="analytics-number">{{ totals.page_views }}</td><td>Recorded page loads, including repeat views.</td></tr>
+          <tr><th scope="row">Anonymous page views</th><td class="analytics-number">{{ totals.anonymous_page_views }}</td><td>Page views without a browser ID because analytics was not enabled. These cannot identify returning browsers.</td></tr>
+          <tr><th scope="row">Recorded visits</th><td class="analytics-number">{{ totals.visits }}</td><td>Distinct recorded visit IDs.</td></tr>
+          <tr><th scope="row">Saved practice answers</th><td class="analytics-number">{{ totals.practice_answers }}</td><td>Answers successfully saved by the site.</td></tr>
+          <tr><th scope="row">Saved test completions</th><td class="analytics-number">{{ totals.tests_completed }}</td><td>Completed test results successfully saved.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section aria-labelledby="activity">
+      <h2 id="activity">Opened and saved activity</h2>
+      <p class="small">Opening a page does not mean someone answered a position. These are separate event counts, not a matched conversion funnel: an activity may open before this period, repeat, or finish on another browser.</p>
+      <div class="analytics-table-scroll" role="region" aria-label="Opened and saved activity table" tabindex="0">
+        <table class="analytics-table">
+          <thead><tr><th scope="col">Event</th><th scope="col" class="analytics-number">Count</th><th scope="col">What it means</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Practice opened</th><td class="analytics-number">{{ totals.practice_started }}</td><td>A practice page was opened.</td></tr>
+            <tr><th scope="row">Mixed review opened</th><td class="analytics-number">{{ totals.reviews_started }}</td><td>A mixed review page was opened.</td></tr>
+            <tr><th scope="row">Practice answers saved</th><td class="analytics-number">{{ totals.practice_answers }}</td><td>Individual answers successfully saved, including review answers.</td></tr>
+            <tr><th scope="row">Test opened</th><td class="analytics-number">{{ totals.tests_started }}</td><td>A test page was opened.</td></tr>
+            <tr><th scope="row">Test completions saved</th><td class="analytics-number">{{ totals.tests_completed }}</td><td>Completed test results successfully saved.</td></tr>
+            <tr><th scope="row">Study opened</th><td class="analytics-number">{{ totals.studies_opened }}</td><td>A study page was opened.</td></tr>
+            <tr><th scope="row">Marked studied</th><td class="analytics-number">{{ totals.studies_completed }}</td><td>The group was marked studied; this does not verify reading.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small">{{ totals.practice_correct }} correct saved practice answers · {{ totals.registrations }} registrations · {{ totals.logins }} account sign-ins.</p>
+
+      <h3>Daily activity</h3>
+      <div class="analytics-table-scroll" role="region" aria-label="Daily activity table" tabindex="0">
+        <table class="analytics-table">
+          <caption>Browser counts are distinct within each day; adding them does not give the period total.</caption>
+          <thead><tr><th scope="col">Date, UTC</th><th scope="col" class="analytics-number">Browsers</th><th scope="col" class="analytics-number">Page views</th><th scope="col" class="analytics-number">Visits</th><th scope="col" class="analytics-number">Saved answers</th><th scope="col" class="analytics-number">Saved tests</th></tr></thead>
+          <tbody>
+            {% for day in summary.daily %}
+            <tr><th scope="row">{{ day.day }}</th><td class="analytics-number">{{ day.browser_ids }}</td><td class="analytics-number">{{ day.page_views }}</td><td class="analytics-number">{{ day.visits }}</td><td class="analytics-number">{{ day.practice_answers }}</td><td class="analytics-number">{{ day.tests_completed }}</td></tr>
+            {% else %}<tr><td colspan="6">No daily activity recorded in this period.</td></tr>{% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section aria-labelledby="traffic">
+      <h2 id="traffic">Pages and traffic</h2>
+      <h3>Pages visited</h3>
+      <div class="analytics-table-scroll" role="region" aria-label="Pages visited table" tabindex="0">
+        <table class="analytics-table">
+          <thead><tr><th scope="col">Path</th><th scope="col" class="analytics-number">Page views</th><th scope="col" class="analytics-number">Browsers</th></tr></thead>
+          <tbody>
+            {% for page in summary.pages %}<tr><th scope="row" class="analytics-path">{{ page.path }}</th><td class="analytics-number">{{ page.page_views }}</td><td class="analytics-number">{{ page.browser_ids }}</td></tr>
+            {% else %}<tr><td colspan="3">No page views recorded in this period.</td></tr>{% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="analytics-traffic-columns">
+        <div>
+          <h3>Referring sources</h3>
+          <table class="analytics-table">
+            <caption>A missing referrer may be direct traffic, an app, or a browser that withheld it.</caption>
+            <thead><tr><th scope="col">Source</th><th scope="col" class="analytics-number">Page views</th></tr></thead>
+            <tbody>
+              {% for source in summary.sources %}<tr><th scope="row">{{ source.source_host or 'Direct or unknown' }}</th><td class="analytics-number">{{ source.page_views }}</td></tr>
+              {% else %}<tr><td colspan="2">No sources recorded.</td></tr>{% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <h3>Devices</h3>
+          <table class="analytics-table">
+            <caption>Device categories are inferred from browser information.</caption>
+            <thead><tr><th scope="col">Device</th><th scope="col" class="analytics-number">Page views</th></tr></thead>
+            <tbody>
+              {% for device in summary.devices %}<tr><th scope="row">{{ device.device|capitalize }}</th><td class="analytics-number">{{ device.page_views }}</td></tr>
+              {% else %}<tr><td colspan="2">No devices recorded.</td></tr>{% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <details class="analytics-details">
+        <summary>All recorded event types</summary>
+        <table class="analytics-table">
+          <thead><tr><th scope="col">Event</th><th scope="col" class="analytics-number">Events</th><th scope="col" class="analytics-number">Browsers</th></tr></thead>
+          <tbody>
+            {% for event in summary.events %}<tr><th scope="row">{{ event_labels.get(event.name, event.name|replace('_', ' ')|capitalize) }}</th><td class="analytics-number">{{ event.events }}</td><td class="analytics-number">{{ event.browser_ids }}</td></tr>
+            {% else %}<tr><td colspan="3">No events recorded in this period.</td></tr>{% endfor %}
+          </tbody>
+        </table>
+      </details>
+    </section>
+
+    <section aria-labelledby="browsers">
+      <h2 id="browsers">Recent browsers</h2>
+      <p class="small">Each row is a browser ID, not a verified person. Linked practice account codes help recognize your own testing activity. Counts apply to the selected period. This list shows the most recent browsers.</p>
+      <div class="analytics-table-scroll" role="region" aria-label="Recent browsers table" tabindex="0">
+        <table class="analytics-table analytics-wide-table">
+          <thead><tr><th scope="col">Browser / account</th><th scope="col">Last activity, UTC</th><th scope="col" class="analytics-number">Page views</th><th scope="col" class="analytics-number">Visits</th><th scope="col" class="analytics-number">Saved answers</th><th scope="col" class="analytics-number">Saved tests</th><th scope="col">Count this browser</th></tr></thead>
+          <tbody>
+            {% for visitor in summary.visitors %}
+            <tr>
+              <th scope="row"><a href="/owner/analytics?days={{ summary.days }}&amp;visitor={{ visitor.id }}#recent-activity" aria-label="View activity for browser {{ visitor.id }}"><code class="analytics-id">{{ visitor.id }}</code></a><span class="analytics-account">{{ visitor.account_code or 'No linked account' }}</span></th>
+              <td class="analytics-time">{{ visitor.last_at|analytics_utc }}</td>
+              <td class="analytics-number">{{ visitor.page_views }}</td><td class="analytics-number">{{ visitor.visits }}</td><td class="analytics-number">{{ visitor.practice_answers }}</td><td class="analytics-number">{{ visitor.tests_completed }}</td>
+              <td><form method="post" action="/owner/analytics/exclude">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="visitor_id" value="{{ visitor.id }}"><input type="hidden" name="excluded" value="1"><input type="hidden" name="days" value="{{ summary.days }}">
+                <button type="submit" class="btn ghost analytics-row-button" aria-label="Exclude browser {{ visitor.id }}">Exclude</button>
+              </form></td>
+            </tr>
+            {% else %}<tr><td colspan="7">No included browsers recorded in this period.</td></tr>{% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <h3 id="recent-activity">{{ 'Recent activity for this browser' if selected_visitor else 'Recent activity' }}</h3>
+      {% if selected_visitor %}
+      <p class="small">Showing this browser’s recorded activity in the selected period. The summary tables above still cover all included activity.</p>
+      <p class="small"><code class="analytics-selected-id">{{ selected_visitor }}</code> · <a href="/owner/analytics?days={{ summary.days }}#recent-activity">All recent activity</a></p>
+      {% endif %}
+      <div class="analytics-table-scroll" role="region" aria-label="Recent activity table" tabindex="0">
+        <table class="analytics-table analytics-activity-table">
+          <thead><tr><th scope="col">Time, UTC</th><th scope="col">Browser</th><th scope="col">Activity</th><th scope="col">Path / group</th><th scope="col">Source / device</th></tr></thead>
+          <tbody>
+            {% for event in summary.recent_activity %}
+            <tr>
+              <td class="analytics-time">{{ event.at|analytics_utc }}</td>
+              <td>{% if event.visitor_id %}<code class="analytics-id">{{ event.visitor_id }}</code>{% else %}<span class="analytics-account">No browser ID</span>{% endif %}{% if event.account_code %}<span class="analytics-account">{{ event.account_code }}</span>{% endif %}</td>
+              <td>{{ event_labels.get(event.name, event.name|replace('_', ' ')|capitalize) }}{% if event.name == 'practice_answer' and event.correct is not none %}<span class="analytics-account">{{ 'Correct answer' if event.correct else 'Incorrect answer' }}</span>{% elif event.name == 'test_completed' and event.correct is not none and event.n is not none %}<span class="analytics-account">{{ event.correct }} of {{ event.n }} correct</span>{% endif %}</td>
+              <td class="analytics-path">{{ event.path or '—' }}{% if event.concept is not none %}<span class="analytics-account">Group {{ event.concept }}</span>{% endif %}</td>
+              <td>{{ event.source_host or 'Direct or unknown' }}<span class="analytics-account">{{ event.device|capitalize }}</span></td>
+            </tr>
+            {% else %}<tr><td colspan="5">No recent activity recorded in this period.</td></tr>{% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section aria-labelledby="exclusions">
+      <h2 id="exclusions">Excluded browsers</h2>
+      <p class="small">Owner sign-in excludes that browser automatically. Exclude other browsers you use for testing here. Exclusions apply to retained records; including a browser again restores those records to the totals. Up to 100 recently active excluded browsers are shown.</p>
+      <div class="analytics-table-scroll" role="region" aria-label="Excluded browsers table" tabindex="0">
+        <table class="analytics-table">
+          <thead><tr><th scope="col">Browser</th><th scope="col">Last recorded activity, UTC</th><th scope="col">Count this browser</th></tr></thead>
+          <tbody>
+            {% for visitor in summary.excluded_visitors %}
+            <tr>
+              <th scope="row"><code class="analytics-id">{{ visitor.id }}</code></th><td class="analytics-time">{{ visitor.last_at|analytics_utc }}</td>
+              <td><form method="post" action="/owner/analytics/exclude">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="visitor_id" value="{{ visitor.id }}"><input type="hidden" name="excluded" value="0"><input type="hidden" name="days" value="{{ summary.days }}">
+                <button type="submit" class="btn ghost analytics-row-button" aria-label="Include browser {{ visitor.id }}">Include again</button>
+              </form></td>
+            </tr>
+            {% else %}<tr><td colspan="3">No excluded browser records.</td></tr>{% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <footer class="analytics-footer"><a href="/">Return to Machine Unique Chess</a><span>Private owner analytics</span></footer>
+</div>
+</body>
+</html>

@@ -12,6 +12,7 @@
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='analytics.css') }}">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -36,8 +37,13 @@
     <span>A project by Shivansh Gupta</span>
     <a href="{{ url_for('research') }}">Research notes</a>
     <a href="https://github.com/sg712/machine-unique-chess">Source code</a>
+    <a href="{{ url_for('privacy') }}">Privacy &amp; usage stats</a>
   </footer>
 </div>
 <script type="module" src="{{ url_for('static', filename='board.js') }}"></script>
+{% if analytics_context %}
+<script type="application/json" id="analytics-context">{{ analytics_context|tojson }}</script>
+<script type="module" src="{{ url_for('static', filename='analytics.js') }}"></script>
+{% endif %}
 </body>
 </html>

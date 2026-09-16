@@ -17,6 +17,7 @@ python webapp/app.py
 - `/test`: resumable, owner-bound signed attempts. Results lead with actual answers and missed/all review filters, including authored explanations when available. Rating comparisons are secondary and exploratory.
 - `/research`: methods, three worked examples, saved results, new robustness checks and study protocol.
 - `/me`: next-practice and review actions, distinct first-try/latest-try/ever-found totals, and per-group review counts. Repeated attempts and test results are separate. Email/password sign-in and legacy recovery codes preserve access across devices.
+- `/privacy`: visit-history preferences and browser exclusion. `/owner/login` provides separate private access to usage counts and opted-in browser histories; see [analytics documentation](../docs/ANALYTICS.md).
 
 The research page reads `research_examples.json` and the committed audit JSONs in `results/`; it does not run an engine during a request. Its comparison viewer reuses the existing board and replay components. Static starting boards and text continuations remain readable without JavaScript.
 

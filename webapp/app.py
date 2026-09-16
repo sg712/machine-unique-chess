@@ -19,6 +19,8 @@ from urllib.parse import urlsplit
 
 import chess
 from answers import answer_spec, feedback_metadata, grade, digest
+from analytics_routes import install_analytics, queue_activity, OWNER_SCHEMA
+from site_analytics import SCHEMA_STATEMENTS as ANALYTICS_SCHEMA
 from werkzeug.security import check_password_hash, generate_password_hash
 import chess.svg
 from flask import (Flask, g, jsonify, redirect, render_template, request,
@@ -227,6 +229,8 @@ def init_db():
                     id TEXT PRIMARY KEY, code TEXT NOT NULL, payload_hash TEXT NOT NULL,
                     response TEXT NOT NULL)""")
                 conn.execute("ALTER TABLE attempt ADD COLUMN IF NOT EXISTS grading_id TEXT")
+                for statement in (*ANALYTICS_SCHEMA, OWNER_SCHEMA):
+                    conn.execute(statement)
         finally:
             # Also close if commit itself fails while exiting psycopg's context.
             conn.close()
@@ -258,6 +262,8 @@ def init_db():
     """)
     if "grading_id" not in {row[1] for row in conn.execute("PRAGMA table_info(attempt)")}:
         conn.execute("ALTER TABLE attempt ADD COLUMN grading_id TEXT")
+    for statement in (*ANALYTICS_SCHEMA, OWNER_SCHEMA):
+        conn.execute(statement)
     conn.commit()
     conn.close()
 
@@ -563,6 +569,8 @@ def mark_studied(cid):
         db().execute("INSERT OR REPLACE INTO studied(code, concept, at) VALUES(?,?,?)",
                      (code, cid, time.time()))
     db().commit()
+    queue_activity("study_completed", f"/pattern/{cid}",
+                   identity=f"{code}:{cid}:{int(time.time() // 86400)}", concept=cid)
     return redirect(url_for("drill", cid=cid))
 
 
@@ -656,6 +664,13 @@ def reserve_submission(key, code, payload):
 def finish_submission(key, result):
     db().execute("UPDATE submission SET response=? WHERE id=?", (json.dumps(result), key))
     db().commit()
+    if key.startswith("drill:"):
+        cid = request.get_json()["concept"]
+        queue_activity("practice_answer", f"/pattern/{cid}/drill", identity=key,
+                       concept=cid, correct=int(result["correct"]), n=1)
+    elif key.startswith("test:"):
+        queue_activity("test_completed", "/test", identity=key,
+                       correct=result["correct"], n=result["n"])
     return jsonify(result)
 
 
@@ -999,6 +1014,7 @@ def register():
             db().commit()
             session["authenticated_code"] = code
             session.permanent = True
+            queue_activity("registered", "/register", identity=code)
             return redirect(url_for("profile"))
     return render_template("register.html", error=error, code=me())
 
@@ -1019,6 +1035,7 @@ def login():
             session["code"] = row["code"]
             session["authenticated_code"] = row["code"]
             session.permanent = True
+            queue_activity("login", "/login")
             return redirect(url_for("profile"))
         error = "Wrong email or password."
     return render_template("login.html", error=error, code=guest,
@@ -1057,6 +1074,24 @@ def totals() -> dict:
             "pct": round(100 * (r["c"] or 0) / r["n"], 1) if r["n"] else None,
             "positions": sum(len(c["drill"]) + len(c["study"]) for c in CONCEPTS)}
 
+
+def analytics_connection():
+    """Optional measurements never share the progress-write transaction."""
+    if DATABASE_URL:
+        return _PG(psycopg.connect(DATABASE_URL, row_factory=dict_row))
+    conn = sqlite3.connect(DB)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+def analytics_account():
+    code = session.get("authenticated_code")
+    return code if code and code == me() and current_email() else None
+
+
+install_analytics(app, connect=analytics_connection, actor=analytics_account,
+                  config_path=ROOT / "webapp" / "owner_analytics.json",
+                  secure=bool(os.environ.get("VERCEL")), origin_matches=_request_origin_matches)
 
 # Under gunicorn there is no __main__, so the schema has to be created at import
 # time or the first request hits a missing table.
