@@ -207,19 +207,29 @@ PG_SCHEMA = """
         band TEXT, detail TEXT);
 """
 
+# Stable application namespace (ASCII "MUCCHESS"). Every startup migration must
+# acquire this transaction lock before taking any table/index locks.
+PG_MIGRATION_LOCK = 0x4D55434348455353
+
 
 def init_db():
     if DATABASE_URL:
         conn = psycopg.connect(DATABASE_URL)
-        for stmt in PG_SCHEMA.split(";"):
-            if stmt.strip():
-                conn.execute(stmt)
-        conn.execute("""CREATE TABLE IF NOT EXISTS submission (
-            id TEXT PRIMARY KEY, code TEXT NOT NULL, payload_hash TEXT NOT NULL,
-            response TEXT NOT NULL)""")
-        conn.execute("ALTER TABLE attempt ADD COLUMN IF NOT EXISTS grading_id TEXT")
-        conn.commit()
-        conn.close()
+        try:
+            with conn:
+                # IF NOT EXISTS still takes locks. Without serialization, two
+                # cold starts can deadlock when CREATE locks are upgraded by ALTER.
+                conn.execute("SELECT pg_advisory_xact_lock(%s)", (PG_MIGRATION_LOCK,))
+                for stmt in PG_SCHEMA.split(";"):
+                    if stmt.strip():
+                        conn.execute(stmt)
+                conn.execute("""CREATE TABLE IF NOT EXISTS submission (
+                    id TEXT PRIMARY KEY, code TEXT NOT NULL, payload_hash TEXT NOT NULL,
+                    response TEXT NOT NULL)""")
+                conn.execute("ALTER TABLE attempt ADD COLUMN IF NOT EXISTS grading_id TEXT")
+        finally:
+            # Also close if commit itself fails while exiting psycopg's context.
+            conn.close()
         return
     DB.parent.mkdir(exist_ok=True)
     conn = sqlite3.connect(DB)
