@@ -336,6 +336,9 @@ def install_analytics(app, *, connect, actor, config_path, secure, origin_matche
         if request.path.startswith("/owner/"):
             response.headers["X-Robots-Tag"] = "noindex, nofollow, noarchive"
             response.headers["X-Frame-Options"] = "DENY"
-            response.headers["Referrer-Policy"] = "no-referrer"
+            # Native form POSTs under no-referrer can send Origin: null, which
+            # the write guard correctly rejects. Keep the origin while omitting
+            # private paths and visitor query strings from referrers.
+            response.headers["Referrer-Policy"] = "strict-origin"
             response.headers["Content-Security-Policy"] = "default-src 'self'; style-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'"
         return response

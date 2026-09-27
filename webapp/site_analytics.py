@@ -264,7 +264,9 @@ def dashboard_summary(conn, *, days=30, now=None, exclude_accounts=(), recent_li
         SUM(CASE WHEN e.name = 'page_view' THEN 1 ELSE 0 END) AS page_views,
         SUM(CASE WHEN e.name = 'practice_answer' THEN 1 ELSE 0 END) AS practice_answers,
         SUM(CASE WHEN e.name = 'test_completed' THEN 1 ELSE 0 END) AS tests_completed,
-        MAX(e.account_code) AS account_code""" + base +
+        COUNT(DISTINCT e.account_code) AS account_count,
+        CASE WHEN COUNT(DISTINCT e.account_code) = 1
+             THEN MIN(e.account_code) ELSE NULL END AS account_code""" + base +
         " AND e.visitor_id IS NOT NULL GROUP BY e.visitor_id ORDER BY last_at DESC, e.visitor_id LIMIT 100", params)
     recent = _rows(conn, "SELECT e.*" + base + " ORDER BY e.at DESC, e.id DESC LIMIT ?", [*params, recent_limit])
     excluded = _rows(conn, "SELECT id, first_at, last_at, excluded FROM analytics_visitor WHERE excluded = 1 ORDER BY last_at DESC, id LIMIT 100")

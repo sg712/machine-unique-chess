@@ -21,6 +21,18 @@ uncacheable and excluded from search indexing; their forms require an owner
 session and a matching CSRF token. Ordinary site logout leaves the browser's
 analytics preference in place.
 
+Owner pages use `Referrer-Policy: strict-origin`: form submissions retain the
+site origin needed by the cross-origin write check, while page paths and query
+strings are omitted. Do not change this to `no-referrer`; browser navigation
+POSTs can then send `Origin: null` and fail owner login, logout and exclusion
+forms. Null and foreign origins remain rejected. See the
+[browser behavior documented by MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Referrer-Policy#effect_on_the_origin_header).
+
+If owner sign-in returns the generic “Open this page on Machine Unique Chess”
+error, reload `/owner/login` before retrying; an already open page retains its
+old referrer policy. “That access key did not match” is a separate key error.
+Use the key from the private file, not a normal player password.
+
 The dashboard at `/owner/analytics` has 7-day and 30-day UTC views of:
 
 - Page views, referring hostnames and broad device categories.
@@ -37,6 +49,9 @@ an earlier first visit or multiple visits within the selected range. Opening
 practice does not prove an answer was attempted; marking a study group complete
 does not prove it was read. A browser history filter changes the activity list,
 while dashboard totals remain for the full selected period.
+If a browser has activity linked to several accounts in that period, its row
+shows the number of accounts. Each event keeps its original account code in the
+activity list; the summary does not attribute the whole browser to one account.
 
 ## Visitor preferences and counting
 

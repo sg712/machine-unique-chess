@@ -157,7 +157,7 @@
           <tbody>
             {% for visitor in summary.visitors %}
             <tr>
-              <th scope="row"><a href="/owner/analytics?days={{ summary.days }}&amp;visitor={{ visitor.id }}#recent-activity" aria-label="View activity for browser {{ visitor.id }}"><code class="analytics-id">{{ visitor.id }}</code></a><span class="analytics-account">{{ visitor.account_code or 'No linked account' }}</span></th>
+              <th scope="row"><a href="/owner/analytics?days={{ summary.days }}&amp;visitor={{ visitor.id }}#recent-activity" aria-label="View activity for browser {{ visitor.id }}"><code class="analytics-id">{{ visitor.id }}</code></a><span class="analytics-account">{% if visitor.account_count > 1 %}{{ visitor.account_count }} accounts{% else %}{{ visitor.account_code or 'No linked account' }}{% endif %}</span></th>
               <td class="analytics-time">{{ visitor.last_at|analytics_utc }}</td>
               <td class="analytics-number">{{ visitor.page_views }}</td><td class="analytics-number">{{ visitor.visits }}</td><td class="analytics-number">{{ visitor.practice_answers }}</td><td class="analytics-number">{{ visitor.tests_completed }}</td>
               <td><form method="post" action="/owner/analytics/exclude">

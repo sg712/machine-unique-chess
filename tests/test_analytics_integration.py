@@ -1,5 +1,6 @@
 """Exercise first-party analytics and private owner access offline."""
 import hashlib
+from html.parser import HTMLParser
 import json
 from pathlib import Path
 import re
@@ -10,6 +11,27 @@ import uuid
 
 from test_app import site
 import site_analytics as store
+
+
+class RenderedForms(HTMLParser):
+    """Read the forms the owner actually receives; no browser or server is run."""
+    def __init__(self, html):
+        super().__init__()
+        self.forms = []
+        self.current = None
+        self.feed(html)
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if tag == "form":
+            self.current = {"action": attrs.get("action"), "method": attrs.get("method"), "data": {}}
+            self.forms.append(self.current)
+        elif tag == "input" and self.current is not None and attrs.get("name"):
+            self.current["data"][attrs["name"]] = attrs.get("value", "")
+
+    def handle_endtag(self, tag):
+        if tag == "form":
+            self.current = None
 
 
 class AnalyticsIntegrationTests(unittest.TestCase):
@@ -194,6 +216,87 @@ class AnalyticsIntegrationTests(unittest.TestCase):
         self.assertNotIn(self.key,response.text)
         site.app.config["ANALYTICS_OWNER_KEY_SHA256"] = "a"*64
         self.assertEqual(self.client.get("/owner/analytics").status_code,302)
+
+    def test_rendered_owner_forms_preserve_origin_and_reject_untrusted_origins(self):
+        visitor = self.browser()
+        self.preference("yes", client=visitor)
+        self.page(consent=True, client=visitor)
+        same_origin = {"Origin": "http://localhost", "Referer": "http://localhost/",
+                       "Sec-Fetch-Site": "same-origin"}
+
+        response = self.client.get("/owner/login")
+        self.assertEqual(response.status_code, 200)
+        # no-referrer can turn a navigation POST's Origin into "null". Preserve
+        # just the origin, never private dashboard paths or visitor queries.
+        self.assertEqual(response.headers["Referrer-Policy"], "strict-origin")
+        login = RenderedForms(response.text).forms[0]
+        self.assertEqual((login["method"], login["action"]), ("post", "/owner/login"))
+        login["data"]["access_key"] = self.key
+        for origin in ("null", "https://evil.example"):
+            rejected = self.client.post(login["action"], data=login["data"],
+                                        headers={**same_origin, "Origin": origin})
+            self.assertEqual(rejected.status_code, 403)
+        self.assertEqual(self.rows("analytics_owner_session"), [])
+        accepted = self.client.post(login["action"], data=login["data"], headers=same_origin)
+        self.assertEqual((accepted.status_code, accepted.location), (302, "/owner/analytics"))
+
+        dashboard = self.client.get(accepted.location)
+        self.assertEqual(dashboard.status_code, 200)
+        self.assertEqual(dashboard.headers["Referrer-Policy"], "strict-origin")
+        forms = RenderedForms(dashboard.text).forms
+        exclude = next(form for form in forms if form["action"] == "/owner/analytics/exclude")
+        rejected = self.client.post(exclude["action"], data=exclude["data"],
+                                    headers={**same_origin, "Origin": "null"})
+        self.assertEqual(rejected.status_code, 403)
+        self.assertEqual(self.rows("analytics_visitor")[0]["excluded"], 0)
+        self.assertEqual(self.client.post(exclude["action"], data=exclude["data"],
+                                         headers=same_origin).status_code, 302)
+        self.assertEqual(self.rows("analytics_visitor")[0]["excluded"], 1)
+
+        logout = next(form for form in forms if form["action"] == "/owner/logout")
+        self.assertEqual(self.client.post(logout["action"], data=logout["data"],
+                                         headers={**same_origin, "Origin": "null"}).status_code, 403)
+        self.assertEqual(self.client.post(logout["action"], data=logout["data"],
+                                         headers=same_origin).status_code, 302)
+        self.assertEqual(self.rows("analytics_owner_session"), [])
+        self.assertEqual(self.client.get("/owner/analytics").status_code, 302)
+
+    def test_rendered_privacy_forms_keep_same_origin_fallback_working(self):
+        response = self.client.get("/privacy")
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(response.headers.get("Referrer-Policy"), "no-referrer")
+        forms = RenderedForms(response.text).forms
+        allow = next(form for form in forms if form["data"].get("choice") == "yes")
+        self.assertEqual((allow["method"], allow["action"]), ("post", "/analytics/preference"))
+        self.assertEqual(self.client.post(allow["action"], data=allow["data"],
+                                         headers={"Origin": "null"}).status_code, 403)
+        self.assertEqual(self.context()["consent"], "unset")
+        self.assertEqual(self.client.post(allow["action"], data=allow["data"],
+                                         headers={"Referer": "http://localhost/privacy",
+                                                  "Sec-Fetch-Site": "same-origin"}).status_code, 302)
+        self.assertEqual(self.context()["consent"], "yes")
+
+    def test_owner_forms_accept_https_origin_behind_vercel_proxy(self):
+        # Vercel forwards an HTTPS browser request to Flask over HTTP. Match the
+        # real host and permit only that transport change, not another origin.
+        with patch.dict("os.environ", {"VERCEL": "1"}):
+            response = self.client.get("/owner/login")
+            self.assertEqual(response.headers["Referrer-Policy"], "strict-origin")
+            login = RenderedForms(response.text).forms[0]
+            login["data"]["access_key"] = self.key
+            headers = {"Origin": "https://localhost", "Sec-Fetch-Site": "same-origin"}
+            for origin in ("null", "https://evil.example", "https://localhost:444"):
+                self.assertEqual(self.client.post(login["action"], data=login["data"],
+                                                 headers={**headers, "Origin": origin}).status_code, 403)
+            self.assertEqual(self.client.post(login["action"], data=login["data"],
+                                             headers=headers).status_code, 302)
+            dashboard = self.client.get("/owner/analytics")
+            self.assertEqual(dashboard.status_code, 200)
+            logout = next(form for form in RenderedForms(dashboard.text).forms
+                          if form["action"] == "/owner/logout")
+            self.assertEqual(self.client.post(logout["action"], data=logout["data"],
+                                             headers=headers).status_code, 302)
+            self.assertEqual(self.client.get("/owner/analytics").status_code, 302)
 
     def test_owner_login_excludes_current_browser_and_logout_revokes_cookie(self):
         self.preference("yes")

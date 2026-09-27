@@ -1085,8 +1085,13 @@ def analytics_connection():
 
 
 def analytics_account():
+    """Link only an authenticated, existing account without fetching its email."""
     code = session.get("authenticated_code")
-    return code if code and code == me() and current_email() else None
+    if not code or code != session.get("code"):
+        return None
+    account = db().execute("""SELECT 1 FROM account
+        JOIN player ON player.code = account.code WHERE account.code = ?""", (code,)).fetchone()
+    return code if account else None
 
 
 install_analytics(app, connect=analytics_connection, actor=analytics_account,

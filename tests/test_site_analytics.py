@@ -107,6 +107,30 @@ class SiteAnalyticsTests(unittest.TestCase):
         self.assertNotIn("learning", totals)
         self.assertNotIn("duration", totals)
 
+    def test_shared_browser_reports_distinct_accounts_without_picking_one(self):
+        visitor = "a" * 32
+        self.event("first-account", visitor_id=visitor, account_code="FFFFFF", at=NOW - 120)
+        self.event("second-account", visitor_id=visitor, account_code="000000", at=NOW - 90)
+        self.event("second-again", visitor_id=visitor, account_code="000000", at=NOW - 60)
+        self.event("guest-same-browser", visitor_id=visitor, at=NOW - 30)
+        row = self.summary()["visitors"][0]
+        self.assertEqual(row["account_count"], 2)
+        self.assertIsNone(row["account_code"])
+        timeline = analytics.visitor_timeline(self.db, visitor, now=NOW)
+        self.assertEqual([event["account_code"] for event in timeline],
+                         [None, "000000", "000000", "FFFFFF"])
+        included = self.summary(exclude_accounts=("FFFFFF",))["visitors"][0]
+        self.assertEqual((included["account_count"], included["account_code"]), (1, "000000"))
+
+    def test_browser_account_summary_respects_period_and_keeps_guest_unlinked(self):
+        visitor = "a" * 32
+        self.event("outside-period", visitor_id=visitor, account_code="FFFFFF", at=NOW - 10 * DAY)
+        self.event("inside-period", visitor_id=visitor, account_code="000000")
+        self.event("guest", visitor_id="b" * 32)
+        rows = {row["id"]: row for row in self.summary(days=7)["visitors"]}
+        self.assertEqual((rows[visitor]["account_count"], rows[visitor]["account_code"]), (1, "000000"))
+        self.assertEqual((rows["b" * 32]["account_count"], rows["b" * 32]["account_code"]), (0, None))
+
     def test_utc_date_window_includes_boundary_and_excludes_future(self):
         start = datetime(2026, 9, 10, tzinfo=timezone.utc).timestamp()
         midnight = datetime(2026, 9, 16, tzinfo=timezone.utc).timestamp()
