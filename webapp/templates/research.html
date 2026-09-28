@@ -22,9 +22,52 @@
 </div>
 {% endmacro %}
 {% block body %}
+{% set context_counts = context_audit.get('counts', {}) if context_audit else {} %}
+{% set context_complete = context_audit and context_audit.get('status') == 'complete'
+  and (context_audit.get('controls') or {}).get('passed') == true
+  and context_counts.get('selected_n', 0) > 0
+  and context_counts.get('paired_completed_n') == context_counts.get('selected_n')
+  and context_counts.get('pending_n') == 0 and context_counts.get('failed_n') == 0 %}
+{% set prospective_roles = [('calibration_development', 'Calibration development'), ('calibration_evaluation', 'Calibration evaluation'), ('targeted_endgame', 'Targeted endgames')] %}
+{% set prospective_groups = prospective_analysis.get('by_role', {}) if prospective_analysis else {} %}
+{% set prospective_coverage = namespace(policies=0, pending=0, unresolved=0, selected=0, unfinished_roots=0, roots_n=0, numeric_roots=0, mate_roots=0) %}
+{% for role, label in prospective_roles %}
+  {% set group = prospective_groups.get(role, {}) %}
+  {% set roots = group.get('root_status_counts', {}) %}
+  {% set prospective_coverage.policies = prospective_coverage.policies + group.get('policy_completed_n', 0) %}
+  {% set prospective_coverage.selected = prospective_coverage.selected + group.get('selected_n', 0) %}
+  {% set prospective_coverage.pending = prospective_coverage.pending + roots.get('pending', 0) %}
+  {% set prospective_coverage.roots_n = prospective_coverage.roots_n + (roots.values()|sum) %}
+  {% set prospective_coverage.numeric_roots = prospective_coverage.numeric_roots + roots.get('complete_numeric', 0) %}
+  {% set prospective_coverage.mate_roots = prospective_coverage.mate_roots + roots.get('mate_score', 0) %}
+  {% set prospective_coverage.unfinished_roots = prospective_coverage.unfinished_roots + roots.get('capped_or_interrupted', 0) + roots.get('bound_score', 0) + roots.get('engine_error', 0) %}
+  {% set prospective_coverage.unresolved = prospective_coverage.unresolved + group.get('state_counts', {}).get('incomplete_roots', 0) %}
+{% endfor %}
+{% set prospective_complete = prospective_analysis and prospective_analysis.get('status') == 'searches_complete'
+  and (prospective_analysis.get('controls') or {}).get('passed') == true
+  and prospective_coverage.selected == prospective_analysis.get('selected_n')
+  and prospective_coverage.selected > 0
+  and prospective_coverage.policies == prospective_coverage.selected
+  and prospective_coverage.pending == 0 and prospective_coverage.unresolved == 0
+  and prospective_coverage.unfinished_roots == 0 %}
+{% set prospective_stopped = prospective_analysis and prospective_analysis.get('status') in ['pass_complete_with_incomplete_roots', 'stopped_needs_review'] %}
+{% set prospective_finished_roots = prospective_coverage.numeric_roots + prospective_coverage.mate_roots %}
+{% set extension_baseline = prospective_extension.get('baseline_by_role', {}) if prospective_extension else {} %}
+{% set extension_groups = prospective_extension.get('supplemented_by_role', {}) if prospective_extension else {} %}
+{% set baseline_evidence_hash = (prospective_analysis.get('fingerprints') or {}).get('evidence_inventory_sha256') if prospective_analysis else none %}
+{% set extension_complete = prospective_extension and prospective_extension.get('status') == 'searches_complete'
+  and prospective_extension.get('selected_roots_n') == 2
+  and prospective_extension.get('completed_roots_n') == 2
+  and prospective_extension.get('incomplete_roots_n') == 0
+  and prospective_extension.get('exhausted_roots_n') == 0
+  and prospective_extension.get('unresolved_reservations_n') == 0
+  and baseline_evidence_hash
+  and (prospective_extension.get('base_fingerprints') or {}).get('evidence_content_sha256') == baseline_evidence_hash
+  and (prospective_extension.get('controls') or {}).get('passed') == true
+  and extension_baseline.get('calibration_development') and extension_groups.get('calibration_development') %}
 <article class="research-article">
 <h1>What I found in the positions</h1>
-<p class="research-byline">Shivansh Gupta · {% if mining_v3_full_deep and mining_v3_full_deep.complete %}Results updated
+<p class="research-byline">Shivansh Gupta · {% if mining_v3_full_deep and mining_v3_full_deep.complete %}Full-census snapshot
 <time datetime="{{ mining_v3_full_deep.created_at }}">{{ mining_v3_full_deep.created_at[:10] }} at {{ mining_v3_full_deep.created_at[11:16] }} UTC</time>{% else %}Page updated 9 September 2026{% endif %}</p>
 <p class="lede">I used Stockfish and Maia to look for strong moves that a model of human play
 rarely chooses. That gave me a collection of positions to study, and eventually this trainer.</p>
@@ -64,6 +107,27 @@ that needs a controlled study.</p>
       {% if mining_v3_full_deep and mining_v3_full_deep.complete %}<a href="#full-depth-checks">Read the full depth checks</a>.
       {% elif mining_v3_deep200 and mining_v3_deep200.complete %}<a href="#depth-checks">Read the depth checks</a>.{% endif %}
     </dd></div>
+    {% if context_audit %}
+    <div><dt>Adding the preceding moves</dt><dd>
+      {% if context_complete %}The paired context audit is complete for {{ context_counts.selected_n }} selected development positions;
+      {{ context_audit.all_selected.candidate_transitions.get('pass_to_pass', 0) }} retained the full criterion with real history.
+      {% else %}The saved context audit covers {{ context_counts.get('paired_completed_n', 0) }}/{{ context_counts.get('selected_n', 0) }} paired positions; its final checks are not complete.{% endif %}
+      <a href="#context-checks">What changes with history</a>.</dd></div>
+    {% endif %}
+    {% if prospective_analysis %}
+    <div><dt>The first fresh-data analysis</dt><dd>
+      Saved model predictions cover {{ prospective_coverage.policies }}/{{ prospective_analysis.selected_n }} selected source-game moves.
+      {% if prospective_complete %}The planned engine searches are complete; only eligible subsets enter the calibration scores.
+      {% elif prospective_stopped %}The original bounded run stopped for review with {{ prospective_coverage.roots_n - prospective_finished_roots }} incomplete root searches.
+      {% else %}The engine analysis is not complete in this snapshot.{% endif %}
+      <a href="#fresh-data">Coverage and exclusions</a>.</dd></div>
+    {% endif %}
+    {% if prospective_extension %}
+    <div><dt>A separate longer-budget check</dt><dd>
+      {% if extension_complete %}The supplemental searches are complete for {{ prospective_extension.selected_roots_n }} originally capped development roots.
+      {% else %}The supplemental check is not complete in this snapshot.{% endif %}
+      <a href="#supplemental-searches">Separate results and limits</a>.</dd></div>
+    {% endif %}
   </dl>
   {% if mining_v3_full_deep %}
   <p class="small">Full-run status comes from the published snapshot dated
@@ -78,6 +142,9 @@ that needs a controlled study.</p>
   {% if mining_v3_full_deep and mining_v3_full_deep.complete %}<a href="#full-depth-checks">Full depth checks</a>
   {% elif mining_v3_deep200 and mining_v3_deep200.complete %}<a href="#depth-checks">Deeper checks</a>{% endif %}
   <a href="#robustness">Robustness checks</a>
+  {% if context_audit %}<a href="#context-checks">Context audit</a>{% endif %}
+  {% if prospective_analysis %}<a href="#fresh-data">Fresh-data analysis</a>{% endif %}
+  {% if prospective_extension %}<a href="#supplemental-searches">Supplemental searches</a>{% endif %}
   <a href="#learning">Learning study</a><a href="#reproduce">Methods and data</a>
 </nav>
 
@@ -417,6 +484,157 @@ the initial {{ mining_v3_deep200.counts.checked_n }}-position sample; they are n
 {% endif %}
 <p class="small"><a href="https://github.com/sg712/machine-unique-chess/blob/main/docs/MINING_V3_FULL_DEEP.md">Full-run method</a> ·
 <a href="https://github.com/sg712/machine-unique-chess/blob/main/results/mining_v3_full_deep.json">{% if mining_v3_full_deep.complete %}Verified full results, source groups and runtime{% else %}Published run snapshot{% endif %}</a></p>
+{% endif %}
+
+{% if context_audit %}
+<h2 id="context-checks">Does the preceding play change the model’s choices?</h2>
+<p class="small">Follow-up reported <time datetime="2026-09-29">29 September 2026</time>; saved research snapshot, not a live progress feed.</p>
+<p>I selected {{ context_counts.get('selected_n', 0) }} development positions from the earlier candidate pool,
+balanced across colour and game phase. I compared Maia-3 with the current board alone and with
+the last eight real source-game states. The same pinned model runs both conditions, with clocks disabled.
+The saved Stockfish depth-20 and depth-24 root evaluations stay fixed and FEN-only:
+history changes the model input, not the engine’s board-history context.</p>
+{% if context_complete %}
+<p>The paired audit and same-input controls are complete. Adding history retained the full
+candidate criterion in <b>{{ context_audit.all_selected.candidate_transitions.get('pass_to_pass', 0) }}/{{ context_audit.all_selected.n }}</b>
+positions; <b>{{ context_audit.all_selected.candidate_transitions.get('pass_to_fail', 0) }}</b> lost it.</p>
+<div class="table-scroll" role="region" aria-label="Context audit by side to move" tabindex="0">
+<table class="research" id="context-audit-results"><caption>Selected development positions: current board compared with real history</caption>
+<thead><tr><th scope="col">Side to move</th><th scope="col">Paired positions</th><th scope="col">Criterion retained</th><th scope="col">Criterion lost</th></tr></thead>
+<tbody>{% for side in ['white', 'black'] %}{% set group = context_audit.by_side[side] %}
+<tr><th scope="row">{{ side|capitalize }}</th><td>{{ group.n }}</td>
+<td>{{ group.candidate_transitions.get('pass_to_pass', 0) }}</td><td>{{ group.candidate_transitions.get('pass_to_fail', 0) }}</td></tr>
+{% endfor %}</tbody></table></div>
+<p>Maia’s first choice changed in {{ context_audit.all_selected.by_rating['1700'].top_choice_changed_n }}/{{ context_audit.all_selected.n }}
+positions at the equal 1700 rating setting and {{ context_audit.all_selected.by_rating['2000'].top_choice_changed_n }}/{{ context_audit.all_selected.n }} at 2000.</p>
+{% else %}
+<p>The saved audit has {{ context_counts.get('paired_completed_n', 0) }}/{{ context_counts.get('selected_n', 0) }} paired positions,
+{{ context_counts.get('pending_n', 0) }} pending and {{ context_counts.get('failed_n', 0) }} failed.
+Final outcomes are withheld until the full paired audit and controls pass.</p>
+{% endif %}
+<p>This deliberately selected development sample is not a population estimate or an independent test.
+It measures model sensitivity to context, not human puzzle solving or learning. None of these positions
+has been approved for the trainer by this audit.</p>
+<p class="small"><a href="https://github.com/sg712/machine-unique-chess/blob/main/results/context_audit_20260916.json">Context audit counts, controls and frozen settings</a></p>
+{% endif %}
+
+{% if prospective_analysis %}
+<h2 id="fresh-data">Checking predictions against fresh source-game moves</h2>
+<p class="small">Follow-up reported <time datetime="2026-09-29">29 September 2026</time>; saved research snapshot, not a live progress feed.</p>
+<p>The first analysis selects {{ prospective_analysis.selected_n }} positions from a {{ prospective_analysis.cohort_n }}-position
+cohort of August 2026 games: {{ prospective_groups.get('calibration_development', {}).get('selected_n', 0) }} for calibration development,
+{{ prospective_groups.get('calibration_evaluation', {}).get('selected_n', 0) }} for evaluation and
+{{ prospective_groups.get('targeted_endgame', {}).get('selected_n', 0) }} targeted endgames.
+Selection was frozen before these results. The games come from a bounded chronological archive prefix,
+so this is not a random sample of the month. They postdate the pinned model’s published weights;
+that does not establish new players or novel chess patterns.</p>
+{% if prospective_complete %}
+<p><b>The planned engine searches are complete.</b> Completion does not make every position eligible for calibration.</p>
+{% elif prospective_stopped %}
+<p><b>The original bounded run stopped for review.</b> {{ prospective_coverage.roots_n - prospective_finished_roots }} root searches remain incomplete
+under its {{ prospective_analysis.get('plan', {}).get('per_root_seconds', 30) }}-second limit. The baseline below is preserved with those exclusions.</p>
+{% else %}
+<p><b>The engine analysis is not complete in this snapshot.</b> The saved coverage below includes unfinished and excluded work.</p>
+{% endif %}
+<p>The baseline completed <b>{{ '{:,}'.format(prospective_finished_roots) }}/{{ '{:,}'.format(prospective_coverage.roots_n) }}</b>
+planned root searches: {{ '{:,}'.format(prospective_coverage.numeric_roots) }} exact numeric results and
+{{ '{:,}'.format(prospective_coverage.mate_roots) }} mate-valued results. Completed searches can still exclude a position from calibration.</p>
+<p>Same-input model controls {% if (prospective_analysis.get('controls') or {}).get('passed') == true %}passed{% else %}have not yet passed{% endif %}.
+Calibration uses the actual mover and opponent ratings, with clocks disabled in both conditions.
+The event being predicted is whether the recorded source-game move belongs to the complete set of moves
+within 20 centipawns of the best. A position qualifies only when every legal root has an exact numeric
+score at both depths 20 and 24, there are no mate scores, and the acceptable set is unchanged.</p>
+<div class="table-scroll" role="region" aria-label="Fresh-data coverage by analysis role" tabindex="0">
+<table class="research" id="prospective-coverage"><caption>Original bounded run: full selected denominators</caption>
+<thead><tr><th scope="col">Analysis role</th><th scope="col">Selected</th><th scope="col">Model predictions</th><th scope="col">Verified for calibration</th></tr></thead>
+<tbody>{% for role, label in prospective_roles %}{% set group = prospective_groups.get(role, {}) %}
+<tr><th scope="row">{{ label }}</th><td>{{ group.get('selected_n', 0) }}</td>
+<td>{{ group.get('policy_completed_n', 0) }}/{{ group.get('selected_n', 0) }}</td>
+<td>{% if role == 'targeted_endgame' %}Not a calibration sample{% else %}{{ group.get('verified_calibration_n', 0) }}/{{ group.get('selected_n', 0) }}{% endif %}</td></tr>
+{% endfor %}</tbody></table></div>
+<details><summary>Engine coverage, caps and exclusions</summary>
+<p>Each root search checks one legal move at one requested depth. Pending searches have no saved result;
+capped or interrupted searches have not reached their target. Bound scores and engine errors also remain unresolved.</p>
+<div class="table-scroll" role="region" aria-label="Saved engine root-search status by analysis role" tabindex="0">
+<table class="research" id="prospective-root-status"><caption>Root searches, not counts of positions</caption>
+<thead><tr><th scope="col">Analysis role</th><th scope="col">Exact numeric</th><th scope="col">Pending</th><th scope="col">Capped / interrupted</th><th scope="col">Bound scores</th><th scope="col">Mate scores</th><th scope="col">Engine errors</th></tr></thead>
+<tbody>{% for role, label in prospective_roles %}{% set roots = prospective_groups.get(role, {}).get('root_status_counts', {}) %}
+<tr><th scope="row">{{ label }}</th>{% for key in ['complete_numeric', 'pending', 'capped_or_interrupted', 'bound_score', 'mate_score', 'engine_error'] %}<td>{{ roots.get(key, 0) }}</td>{% endfor %}</tr>
+{% endfor %}</tbody></table></div>
+<div class="table-scroll" role="region" aria-label="Position-level engine exclusions and approximate screens" tabindex="0">
+<table class="research" id="prospective-position-status"><caption>Position outcomes: incomplete roots are counted before mate or stability checks</caption>
+<thead><tr><th scope="col">Analysis role</th><th scope="col">Incomplete roots</th><th scope="col">Mate-valued root</th><th scope="col">Unstable acceptable set</th><th scope="col">Approximate depth-14 screen</th></tr></thead>
+<tbody>{% for role, label in prospective_roles %}{% set states = prospective_groups.get(role, {}).get('state_counts', {}) %}
+<tr><th scope="row">{{ label }}</th>{% for key in ['incomplete_roots', 'mate_in_legal_root', 'unstable_acceptable_set', 'approximate_targeted_screen'] %}<td>{{ states.get(key, 0) }}</td>{% endfor %}</tr>
+{% endfor %}</tbody></table></div></details>
+{% if (prospective_analysis.get('controls') or {}).get('passed') == true %}
+{% for role, label in prospective_roles if role != 'targeted_endgame' %}
+{% set group = prospective_groups.get(role, {}) %}
+{% if group.get('verified_calibration_n', 0) > 0 and group.get('calibration') %}
+<div class="table-scroll" role="region" aria-label="{{ label }} source-move prediction scores" tabindex="0">
+<table class="research" id="prospective-{{ role }}-scores"><caption>Original bounded run · {{ label }}: verified subset only</caption>
+<thead><tr><th scope="col">Model input</th><th scope="col">Scored / selected</th><th scope="col">Brier score</th><th scope="col">Log loss</th></tr></thead>
+<tbody>{% for condition, condition_label in [('fen_only', 'Current board only'), ('history', 'Real move history')] %}
+{% set scores = group.calibration.get(condition, {}) %}
+<tr><th scope="row">{{ condition_label }}</th><td>{{ scores.get('n', 0) }}/{{ group.get('selected_n', 0) }}</td>
+{% for key in ['brier', 'log_loss'] %}<td>{% if scores.get('n', 0) > 0 and scores.get(key) is number %}{{ '%.4f'|format(scores[key]) }}{% else %}Not available{% endif %}</td>{% endfor %}</tr>
+{% endfor %}</tbody></table></div>
+{% endif %}{% endfor %}
+{% endif %}
+<p>Brier score is the mean squared probability error; log loss penalises confident wrong predictions.
+Lower is better for both, but scores only describe each verified subset. Small samples, repeated players
+and related positions limit the conclusions. No probability adjustment has been fitted.</p>
+<p>The targeted endgames receive an approximate depth-14 screen only. They cannot establish the
+depth-20/24 candidate criterion or qualify a new teaching group. These are source-game move diagnostics,
+not human puzzle-solving responses or learning outcomes; no new trainer positions are released here.</p>
+<p class="small"><a href="https://github.com/sg712/machine-unique-chess/blob/main/results/prospective_analysis_20260916.json">Fresh-data coverage, calibration scores and frozen settings</a></p>
+{% endif %}
+
+{% if prospective_extension %}
+<h2 id="supplemental-searches">A separate check of the capped development searches</h2>
+<p class="small">Supplement reported <time datetime="2026-09-29">29 September 2026</time>; saved research snapshot, not a live progress feed.</p>
+<p>After the original bounded run stopped, I set up a separate supplement for its
+{{ prospective_extension.get('selected_roots_n', 0) }} capped development root searches.
+Each receives a {{ prospective_extension.get('protocol', {}).get('per_root_seconds', 120) }}-second limit at depth 24.
+The original 30-second baseline remains unchanged above. Only the selected development roots
+receive the larger budget; the evaluation sample and approximate endgame screen are not rerun.</p>
+{% if extension_complete %}
+<p><b>The supplemental searches are complete.</b> Reaching the requested depth does not by itself
+make either affected position eligible for calibration: numeric scores and an unchanged acceptable set are still required.</p>
+{% elif prospective_extension.get('status') == 'paused_power' %}
+<p><b>The supplemental searches are paused for mains power.</b> This is not a completed supplemental result.</p>
+{% elif prospective_extension.get('status') == 'cap_exhausted' %}
+<p><b>The supplemental check reached its retry limit.</b> Unresolved roots remain excluded; this is not a completed supplemental result.</p>
+{% else %}
+<p><b>The supplemental check is not complete in this snapshot.</b> Final comparisons are withheld until the selected searches and controls pass.</p>
+{% endif %}
+<p>Completed root searches: {{ prospective_extension.get('completed_roots_n', 0) }}/{{ prospective_extension.get('selected_roots_n', 0) }};
+incomplete: {{ prospective_extension.get('incomplete_roots_n', 0) }};
+retry limit reached: {{ prospective_extension.get('exhausted_roots_n', 0) }}.</p>
+{% if extension_complete %}
+<div class="table-scroll" role="region" aria-label="Development calibration coverage before and after supplemental searches" tabindex="0">
+<table class="research" id="prospective-supplement-coverage"><caption>Development positions only: original and supplemental coverage</caption>
+<thead><tr><th scope="col">Search budget</th><th scope="col">Verified / selected</th><th scope="col">Incomplete roots</th><th scope="col">Mate-valued root</th><th scope="col">Unstable acceptable set</th></tr></thead>
+<tbody>{% for groups, label in [(extension_baseline, 'Original bounded run'), (extension_groups, 'With supplemental searches')] %}
+{% set group = groups.calibration_development %}{% set states = group.get('state_counts', {}) %}
+<tr><th scope="row">{{ label }}</th><td>{{ group.get('verified_calibration_n', 0) }}/{{ group.get('selected_n', 0) }}</td>
+{% for key in ['incomplete_roots', 'mate_in_legal_root', 'unstable_acceptable_set'] %}<td>{{ states.get(key, 0) }}</td>{% endfor %}</tr>
+{% endfor %}</tbody></table></div>
+<div class="table-scroll" role="region" aria-label="Development source-move prediction scores before and after supplemental searches" tabindex="0">
+<table class="research" id="prospective-supplement-scores"><caption>Development diagnostics only; these small subsets are not pooled with evaluation</caption>
+<thead><tr><th scope="col">Search budget</th><th scope="col">Model input</th><th scope="col">Scored / selected</th><th scope="col">Brier score</th><th scope="col">Log loss</th></tr></thead>
+<tbody>{% for groups, label in [(extension_baseline, 'Original bounded run'), (extension_groups, 'With supplemental searches')] %}
+{% set group = groups.calibration_development %}
+{% for condition, condition_label in [('fen_only', 'Current board only'), ('history', 'Real move history')] %}
+{% set scores = group.get('calibration', {}).get(condition, {}) %}
+<tr><th scope="row">{{ label }}</th><td>{{ condition_label }}</td><td>{{ scores.get('n', 0) }}/{{ group.get('selected_n', 0) }}</td>
+{% for key in ['brier', 'log_loss'] %}<td>{% if group.get('verified_calibration_n', 0) > 0 and scores.get('n', 0) > 0 and scores.get(key) is number %}{{ '%.4f'|format(scores[key]) }}{% else %}Not available{% endif %}</td>{% endfor %}</tr>
+{% endfor %}{% endfor %}</tbody></table></div>
+{% endif %}
+<p>This supplement was chosen after seeing the capped baseline searches, so it is an exploratory
+budget-sensitivity check, not a fresh independent validation. The calibration event remains the recorded
+source-game move, not a human puzzle response. It establishes no learning effect or trainer approval.</p>
+<p class="small"><a href="https://github.com/sg712/machine-unique-chess/blob/main/results/prospective_extension_20260929.json">Separate supplemental protocol, coverage and results</a></p>
 {% endif %}
 
 <h2 id="learning">Does practicing these positions help?</h2>

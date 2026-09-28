@@ -127,6 +127,9 @@ MINING_V3 = _optional_result("mining_v3_summary.json")
 MINING_V3_PROVENANCE = _optional_result("mining_v3_provenance.json")
 MINING_V3_DEEP200 = _optional_result("mining_v3_deep200.json")
 MINING_V3_FULL_DEEP = _optional_result("mining_v3_full_deep.json")
+CONTEXT_AUDIT = _optional_result("context_audit_20260916.json")
+PROSPECTIVE_ANALYSIS = _optional_result("prospective_analysis_20260916.json")
+PROSPECTIVE_EXTENSION = _optional_result("prospective_extension_20260929.json")
 STUDY_NOTES = {n["id"]: n for n in json.load(open(ROOT / "webapp" / "study_notes.json"))["items"]}
 _practice_notes_path = ROOT / "webapp" / "practice_notes.json"
 PRACTICE_NOTES = {n["id"]: n for n in json.loads(_practice_notes_path.read_text())["items"]} if _practice_notes_path.exists() else {}
@@ -809,7 +812,10 @@ def research():
                            mining_v2=MINING_V2, mining_v3_dataset=MINING_V3_DATASET,
                            mining_v3=MINING_V3, mining_v3_provenance=MINING_V3_PROVENANCE,
                            mining_v3_deep200=MINING_V3_DEEP200,
-                           mining_v3_full_deep=MINING_V3_FULL_DEEP)
+                           mining_v3_full_deep=MINING_V3_FULL_DEEP,
+                           context_audit=CONTEXT_AUDIT,
+                           prospective_analysis=PROSPECTIVE_ANALYSIS,
+                           prospective_extension=PROSPECTIVE_EXTENSION)
 
 
 def test_signer():

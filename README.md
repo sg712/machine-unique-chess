@@ -6,7 +6,9 @@ Practice engine moves that a model of human play assigns low probability. The pr
 
 ## Current evidence
 
-**Research implementation, 16 September:** the [follow-up work](docs/RESEARCH_EXECUTION_2026-09-16.md) adds three contrasting lesson drafts with nine real cases, versioned acceptable-set grading, and 256 fresh source observations in separate calibration/endgame queues. The bounded model/engine runs are prepared and power-paused; no new calibration or human-learning result is claimed. Private drafts have not entered the trainer.
+**Research follow-ups, 29 September:** the [96-position context audit](docs/CONTEXT_AUDIT_2026-09-16.md) is complete: genuine game history leaves 83 positions meeting the full candidate criterion and removes 13. The original [fresh-data analysis](docs/PROSPECTIVE_ANALYSIS_2026-09-16.md) stopped with 2,873 of 2,875 searches at the requested depths; two searches exhausted three 30-second attempts. Development and held-out evaluation each have nine eligible calibration observations out of 16 selected, with exclusions reported explicitly. A separate two-minute supplement for only the two unfinished searches is prepared and waiting for AC power. These are model/source-game diagnostics, not human puzzle calibration or learning results; no trainer positions were added.
+
+**Research implementation, 16 September:** the [follow-up work](docs/RESEARCH_EXECUTION_2026-09-16.md) adds three contrasting lesson drafts with nine real cases, versioned acceptable-set grading, and 256 fresh source observations in separate calibration/endgame queues. Private drafts have not entered the trainer; human learning remains unmeasured.
 
 **Research review, 16 September:** a new [research synthesis](docs/RESEARCH_NEXT_2026-09-16.md) connects a 12-source literature audit, diagnostics of 1,032 safe development candidates, six private teaching drafts, and hypothetical study-design simulations. The strongest next steps are acceptable-set grading, contrasting lesson families, and behavioral calibration before more large mining runs. These analyses do not change the frozen census, add trainer puzzles, or establish human learning gains.
 
