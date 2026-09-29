@@ -352,7 +352,7 @@
       "verified_calibration_n": 0
     }
   },
-  "completed_roots_n": 0,
+  "completed_roots_n": 2,
   "controls": {
     "max_equal_rating_adapter_difference": 0.0,
     "max_paired_probability_difference": 0.0,
@@ -361,15 +361,15 @@
   },
   "exhausted_roots_n": 0,
   "extension_fingerprints": {
-    "evidence_files_n": 0,
-    "evidence_inventory_sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+    "evidence_files_n": 5,
+    "evidence_inventory_sha256": "46b0ae5d324209bca277473d78b87f1232f6c26ec257a88f3a8cc2919642c0b8",
     "manifest_sha256": "242c45805d7be17038a51ee0cee2ab3cef84db480cd617812c9cacf9e6a529fb",
     "script_sha256": "a799608c540b33e4e318b80102e7068c4d0259dbc6d21e2d4394140a6ee86f7f",
     "selection_sha256": "15b66971bd12dfb18f481b26780651c739cd4f970ca46d25f81883b29b5b1c86"
   },
-  "generated_utc": "2026-09-28T19:39:18.988519+00:00",
-  "incomplete_roots_n": 2,
-  "invocation_count": 0,
+  "generated_utc": "2026-09-29T08:25:16.259501+00:00",
+  "incomplete_roots_n": 0,
+  "invocation_count": 1,
   "limitations": [
     "Separate supplement authorized after baseline outcomes were observed; not preregistered or an independent replication.",
     "The original 30-second-cap baseline remains authoritative and unchanged; supplemented results must be labelled separately.",
@@ -398,7 +398,7 @@
   },
   "schema_version": 1,
   "selected_roots_n": 2,
-  "status": "prepared",
+  "status": "searches_complete",
   "supplemented_by_role": {
     "calibration_development": {
       "calibration": {
@@ -425,9 +425,9 @@
             {
               "last_upper_inclusive": false,
               "lower_inclusive": 0.1,
-              "mean_predicted": null,
-              "n": 0,
-              "observed_fraction": null,
+              "mean_predicted": 0.1934859361499548,
+              "n": 1,
+              "observed_fraction": 0.0,
               "sparse": true,
               "upper": 0.25
             },
@@ -468,9 +468,9 @@
               "upper": 1.0
             }
           ],
-          "brier": 0.16535095190670665,
-          "log_loss": 0.4952692272286947,
-          "n": 9
+          "brier": 0.15255953746481843,
+          "log_loss": 0.46724569884994,
+          "n": 10
         },
         "history": {
           "bins": [
@@ -495,9 +495,9 @@
             {
               "last_upper_inclusive": false,
               "lower_inclusive": 0.1,
-              "mean_predicted": null,
-              "n": 0,
-              "observed_fraction": null,
+              "mean_predicted": 0.12706182152032852,
+              "n": 1,
+              "observed_fraction": 0.0,
               "sparse": true,
               "upper": 0.25
             },
@@ -538,27 +538,25 @@
               "upper": 1.0
             }
           ],
-          "brier": 0.18391963077561668,
-          "log_loss": 0.52997791230142,
-          "n": 9
+          "brier": 0.16714213834686137,
+          "log_loss": 0.4905691751391831,
+          "n": 10
         }
       },
       "known_players_n": 32,
       "players_repeated_across_games_n": 0,
       "policy_completed_n": 16,
       "root_status_counts": {
-        "capped_or_interrupted": 2,
-        "complete_numeric": 1087,
+        "complete_numeric": 1089,
         "mate_score": 1
       },
       "selected_n": 16,
       "state_counts": {
-        "complete_stable_numeric": 9,
-        "incomplete_roots": 2,
+        "complete_stable_numeric": 10,
         "mate_in_legal_root": 1,
-        "unstable_acceptable_set": 4
+        "unstable_acceptable_set": 5
       },
-      "verified_calibration_n": 9
+      "verified_calibration_n": 10
     },
     "calibration_evaluation": {
       "calibration": {

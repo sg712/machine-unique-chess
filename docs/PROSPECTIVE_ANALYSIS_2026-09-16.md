@@ -43,7 +43,20 @@ Lower scores are better for both metrics. History scores lower on this small eli
 
 On 29 September, after the original stopping rule had been reached and reported, a separate check was authorized for **only the two unfinished development roots**. It permits one full 120-second attempt per root at the original requested depth 24, with the same engine, one thread, 64MB hash, cleared hash, 600-second invocation cap and AC-only policy. At most six invocations permit recovery from interruptions; exhausted full attempts are not retried. No other position or source-cohort row is added.
 
-The supplement is prepared and waiting for AC power. Its separate plan binds the stopped baseline and its evidence inventory. Original 30-second results stay unchanged; any supplemented development scores will be labelled separately beside the original values. The held-out evaluation and targeted endgame results do not change. Extending a cap after seeing its failures is a post-baseline analysis, not completion under the original cap.
+The supplement completed on 29 September in one invocation. Both selected roots reached scored depth 24 with exact numeric results, using 71.724 and 53.239 seconds respectively, within their 120-second limits. There were no interrupted, exhausted or unresolved opportunities. Combining these two results with the saved baseline gives 2,875 requested-depth searches in the supplemented view: 2,805 numeric and 70 mate-valued. The original 30-second result above remains unchanged at 2,873/2,875.
+
+Only one affected development position becomes eligible. The other has different acceptable sets at depths 20 and 24 and remains excluded. Supplemented development therefore has **10 eligible / 16 selected**, five unstable positions, one mate-valued position and none incomplete. Root completion does not override mate or stability exclusions.
+
+| Development result and input | Eligible / selected | Brier score | Log loss |
+| --- | ---: | ---: | ---: |
+| Original bounded run, real history | 9 / 16 | 0.183920 | 0.529978 |
+| With supplement, real history | 10 / 16 | 0.167142 | 0.490569 |
+| Original bounded run, FEN only | 9 / 16 | 0.165351 | 0.495269 |
+| With supplement, FEN only | 10 / 16 | 0.152560 | 0.467246 |
+
+The changed scores include one additional eligible source-game observation; they do not measure a change to the model or a learning effect. **Held-out evaluation remains unchanged at 9/16**, with the scores and exclusions in the original table. Targeted endgames also remain unchanged: 27 approximate depth-14 cases and five mate exclusions. No evaluation or targeted searches, model predictions or probability transformations were rerun or fitted.
+
+The separate plan binds the stopped baseline and its evidence inventory. Extending a cap after seeing its failures is a post-baseline analysis, not completion under the original cap or an independent replication. Both the original and supplemented diagnostics retain their small, outcome-dependent denominators.
 
 ## Limits on the original laptop work
 
@@ -63,4 +76,4 @@ The [pinned model provenance](../results/prospective_model_provenance_20260916.j
 
 Eighteen focused prospective tests passed again on 27 September, including actual mover/opponent tensor order, complete accepted sets, capped/mate/unstable exclusions, separate targeted screening, source-state leakage, deterministic tranche selection, control identities, power interruption, scored-depth integrity, fair retry scheduling and exact evidence inventories. Nineteen separate context-audit tests also pass. An independent final audit validated the full 2,953-file baseline evidence inventory, frozen input/script/model/engine hashes and controls, and reproduced all role-specific coverage and calibration scores. The completed context results are independent of the prospective analysis.
 
-On 29 September, the separate runner passed 17 focused mocked tests, including a stalled power check, an engine that ignores its stop request, immutable evidence, cap exhaustion, interruption recovery and baseline preservation. Independent code review passed. Preparation revalidated the stopped baseline and selected exactly two roots; zero supplemental searches or model predictions have run. The prepared snapshot was verified in an offline `/research` render, with supplemental comparisons correctly withheld.
+On 29 September, the separate runner passed 17 focused mocked tests, including a stalled power check, an engine that ignores its stop request, immutable evidence, cap exhaustion, interruption recovery and baseline preservation. Independent code review passed. The final read-only audit verified both exact depth-24 results, one invocation, two immutable reservations and two immutable attempts; all five evidence-file hashes and the frozen manifest match. It revalidated the original baseline and controls, recomputed supplemented development eligibility and scores, and confirmed identical evaluation and targeted summaries. No new model predictions were run. The final actual results were verified in an offline `/research` render, retaining the original baseline tables and displaying separate supplemental comparisons.
