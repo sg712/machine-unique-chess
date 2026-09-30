@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Exclude your browsing · Machine Unique Chess{% endblock %}
+{% block body %}
+<article class="narrow">
+  <h1>Keep your browsing out of the visitor counts</h1>
+  {% if excluded %}
+  <p class="lede" role="status">This browser is excluded from analytics.</p>
+  <p>Page views, practice answers and test activity from this browser will not be added to the analytics totals. Your learning progress still saves normally.</p>
+  <p><a class="btn p" href="{{ url_for('index') }}">Continue to the site</a></p>
+  {% else %}
+  <p class="lede">Use this before your own browsing or automated checks so that they stay out of the visitor totals.</p>
+  <form method="post" action="{{ url_for('analytics_preference_form') }}">
+    <input type="hidden" name="page_token" value="{{ page_token }}">
+    <input type="hidden" name="choice" value="exclude">
+    <input type="hidden" name="return_to" value="exclude">
+    <button class="btn p" type="submit">Exclude this browser</button>
+  </form>
+  {% endif %}
+  <p>This setup page is not counted. The preference lasts up to 90 days in this browser and applies to this site address ({{ request.host }}). Repeat this on each device, browser profile, private window or other site address you use, and after clearing cookies. Bookmark this page to check your status before testing.</p>
+  <p>Any retained activity already linked to this browser’s optional visit-history ID is also hidden from the totals. Earlier anonymous views cannot be attributed to this browser or removed by this setting.</p>
+  <p>Exclusion does not grant access to the private analytics dashboard. You can change your preference on the <a href="{{ url_for('privacy') }}">privacy page</a>.</p>
+</article>
+{% endblock %}

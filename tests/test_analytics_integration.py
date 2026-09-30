@@ -202,6 +202,97 @@ class AnalyticsIntegrationTests(unittest.TestCase):
         self.assertEqual(len(self.rows()),2)
         self.assertIsNone(self.rows()[-1]["visitor_id"])
 
+    def test_exclusion_setup_is_untracked_and_get_does_not_change_preference(self):
+        response = self.client.get("/analytics/exclude")
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn('id="analytics-context"', response.text)
+        self.assertNotIn('/static/analytics.js', response.text)
+        self.assertIn("no-store", response.headers["Cache-Control"])
+        self.assertIn("noindex", response.headers["X-Robots-Tag"])
+        self.assertEqual(response.headers["X-Frame-Options"], "DENY")
+        self.assertEqual(response.headers["Referrer-Policy"], "strict-origin")
+        forms = RenderedForms(response.text).forms
+        self.assertEqual(len(forms), 1)
+        form = forms[0]
+        self.assertEqual((form["method"], form["action"]), ("post", "/analytics/preference"))
+        self.assertEqual(form["data"]["choice"], "exclude")
+        self.assertEqual(form["data"]["return_to"], "exclude")
+        self.assertTrue(form["data"]["page_token"])
+        self.assertIsNone(self.client.get_cookie("muc_usage"))
+        self.assertEqual(self.rows(), [])
+        self.assertEqual(self.rows("analytics_visitor"), [])
+        context = self.context()
+        self.assertFalse(context["excluded"])
+        self.assertEqual(self.page(context).status_code, 204)
+        self.assertEqual(len(self.rows()), 1)
+
+    def test_setup_excludes_only_its_browser_and_keeps_learning_progress(self):
+        self.page()
+        anonymous_id = self.rows()[0]["id"]
+        self.preference("yes")
+        self.page(consent=True)
+        linked = next(row for row in self.rows() if row["visitor_id"])
+        pending_page = self.context("/learn")
+        form = RenderedForms(self.client.get("/analytics/exclude").text).forms[0]
+        response = self.client.post(form["action"], data=form["data"],
+                                    headers={"Origin": "http://localhost"}, follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.request.path, "/analytics/exclude")
+        self.assertIn("This browser is excluded from analytics.", response.text)
+        self.assertNotIn('/static/analytics.js', response.text)
+        self.assertEqual(RenderedForms(response.text).forms, [])
+        self.assertTrue(self.client.get_cookie("muc_usage").http_only)
+        self.assertEqual(self.rows("analytics_visitor")[0]["excluded"], 1)
+        # Even an already-open page and a direct event POST obey the saved exclusion.
+        self.assertEqual(self.page(pending_page, consent=True).status_code, 204)
+        self.assertTrue(self.context()["excluded"])
+        self.assertEqual(self.page().status_code, 204)
+        self.assertEqual(self.answer().status_code, 200)
+        self.assertEqual(len(self.rows("attempt")), 1)
+        self.assertEqual({row["id"] for row in self.rows()}, {anonymous_id, linked["id"]})
+        with site.app.app_context():
+            totals = store.dashboard_summary(site.db())["totals"]
+        self.assertEqual((totals["events"], totals["anonymous_page_views"], totals["browser_ids"]), (1, 1, 0))
+        other = self.browser()
+        self.assertEqual(self.page(client=other).status_code, 204)
+        with site.app.app_context():
+            totals = store.dashboard_summary(site.db())["totals"]
+        self.assertEqual((totals["events"], totals["anonymous_page_views"]), (2, 2))
+        self.assertFalse(self.context(client=other)["excluded"])
+        self.assertIsNone(self.client.get_cookie("muc_owner", path="/owner"))
+        self.assertEqual(self.rows("analytics_owner_session"), [])
+        self.assertEqual(self.client.get("/owner/analytics").location, "/owner/login")
+
+    def test_setup_rejects_invalid_tokens_and_untrusted_or_missing_origins(self):
+        form = RenderedForms(self.client.get("/analytics/exclude").text).forms[0]
+        cases = (
+            ({**form["data"], "page_token": "forged"}, {"Origin": "http://localhost"}, 400),
+            (form["data"], {"Origin": "https://evil.example"}, 403),
+            (form["data"], {"Origin": "null"}, 403),
+            (form["data"], {}, 400),
+        )
+        for data, headers, status in cases:
+            with self.subTest(headers=headers, token_valid=data["page_token"] != "forged"):
+                response = self.client.post(form["action"], data=data, headers=headers)
+                self.assertEqual(response.status_code, status)
+                self.assertIsNone(self.client.get_cookie("muc_usage"))
+                self.assertFalse(self.context()["excluded"])
+        self.assertEqual(self.rows(), [])
+        self.assertEqual(self.rows("analytics_visitor"), [])
+        self.assertEqual(self.rows("analytics_owner_session"), [])
+
+    def test_setup_return_target_is_allowlisted_and_never_creates_an_identity(self):
+        form = RenderedForms(self.client.get("/analytics/exclude").text).forms[0]
+        for target in ("https://evil.example", "//evil.example", "/owner/analytics", "exclude?next=elsewhere"):
+            with self.subTest(target=target):
+                response = self.client.post(form["action"], data={**form["data"], "return_to": target},
+                                            headers={"Referer": "http://localhost/analytics/exclude"})
+                self.assertEqual((response.status_code, response.location), (302, "/privacy"))
+        self.assertTrue(self.context()["excluded"])
+        self.assertEqual(self.rows(), [])
+        self.assertEqual(self.rows("analytics_visitor"), [])
+        self.assertEqual(self.rows("analytics_owner_session"), [])
+
     def test_owner_access_is_independent_of_user_sessions_and_key_rotation(self):
         self.assertEqual(self.client.get("/owner/analytics").status_code,302)
         with self.client.session_transaction() as state:

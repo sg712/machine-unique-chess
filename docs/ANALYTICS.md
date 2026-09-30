@@ -55,6 +55,24 @@ activity list; the summary does not attribute the whole browser to one account.
 
 ## Visitor preferences and counting
 
+For owner browsing or automated browser checks, start at `/analytics/exclude`
+on the same site hostname you will use, and choose **Exclude this browser**.
+The setup page itself is not counted, requires no owner key, and confirms the
+saved exclusion before linking back to the site. Bookmark it and check the
+status before a test session. Use it separately on each device, browser profile,
+private window and hostname, and again after clearing cookies or after the
+90-day preference expires. In particular, a regular Chrome automation tab is
+not identifiable as a bot simply because an agent controls it: confirm exclusion
+in that actual browser before navigating to measured pages. Offline tests and
+database-console reads do not create production website page views.
+
+Exclusion suppresses future page and completion events while preserving learning
+progress. It also hides retained events linked to that browser's current optional
+visitor ID. Earlier anonymous views cannot be retrospectively labelled as the
+owner, automation or someone else. Treat remaining anonymous counts as
+unclassified traffic, not confirmed external people. No IP-based exclusion or
+browser fingerprint is collected.
+
 Without optional visit history, page and action counts have no persistent
 analytics ID or account association. Allowing history on the page prompt or
 `/privacy` links future activity with a random browser ID. Existing anonymous

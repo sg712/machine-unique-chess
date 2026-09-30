@@ -217,7 +217,20 @@ def install_analytics(app, *, connect, actor, config_path, secure, origin_matche
             change_preference(request.form.to_dict())
         except (BadSignature, SignatureExpired, ValueError, KeyError, TypeError):
             return "Reload the privacy page and try again.", 400
-        return redirect(url_for("privacy"))
+        return redirect(url_for("analytics_exclude_browser" if request.form.get("return_to") == "exclude" else "privacy"))
+
+    @app.get("/analytics/exclude")
+    def analytics_exclude_browser():
+        # This setup route is deliberately absent from PUBLIC_PAGES: opening it
+        # must not add a view before the browser can opt out. The form reuses the
+        # signed, same-origin privacy preference flow, without an owner login.
+        pref = usage()
+        token = signer("usage-page-v1").dumps({
+            "nonce": secrets.token_hex(16), "path": "/privacy", "kind": "privacy",
+            "concept": None, "source_host": "", "device": device(),
+        })
+        return render_template("analytics_exclude.html", code=None, page_token=token,
+                               excluded=pref["excluded"] or pref["owner"])
 
     @app.get("/privacy")
     def privacy():
@@ -333,7 +346,7 @@ def install_analytics(app, *, connect, actor, config_path, secure, origin_matche
             # Preserve stricter responses already supplied by the write guard.
             if not response.cache_control.no_store:
                 response.headers["Cache-Control"] = "private, no-store"
-        if request.path.startswith("/owner/"):
+        if request.path.startswith("/owner/") or request.endpoint == "analytics_exclude_browser":
             response.headers["X-Robots-Tag"] = "noindex, nofollow, noarchive"
             response.headers["X-Frame-Options"] = "DENY"
             # Native form POSTs under no-referrer can send Origin: null, which
